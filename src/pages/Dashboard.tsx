@@ -1,103 +1,227 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Calendar, Target, TrendingUp, Award } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Play, Clock, Calendar, CheckCircle, Lock } from "lucide-react";
 
 const Dashboard = () => {
+  const [currentWeek] = useState(1);
+  const [currentDay] = useState(3);
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [completedToday] = useState({ video: false, hypnosis: false });
+
+  const weekData = {
+    1: {
+      title: "Quebrando Crenças e Aprendendo",
+      subtitle: "Continue fumando enquanto aprende",
+      video: { title: "Neurociência do Vício", duration: "5 min" },
+      hypnosis: { title: "Desconstruindo Mitos", duration: "10 min" }
+    },
+    2: {
+      title: "O Momento de Parar",
+      subtitle: "Hipnoses para enfrentar a abstinência",
+      video: { title: "Preparação Mental", duration: "4 min" },
+      hypnosis: { title: "Relaxamento Profundo", duration: "8 min" }
+    },
+    3: {
+      title: "Novos Hábitos Saudáveis",
+      subtitle: "Reprogramando seu estilo de vida",
+      video: { title: "Atividade Física", duration: "6 min" },
+      hypnosis: { title: "Motivação para Saúde", duration: "12 min" }
+    }
+  };
+
+  const currentWeekData = weekData[currentWeek as keyof typeof weekData];
+  const progressPercentage = (currentDay / 7) * 100;
+
+  if (showTimeline) {
+    return (
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b">
+          <div className="px-4 py-3">
+            <div className="flex items-center justify-between">
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowTimeline(false)}
+                className="p-2"
+              >
+                ← Voltar
+              </Button>
+              <h1 className="text-lg font-semibold text-foreground">Linha do Tempo</h1>
+              <div className="w-10"></div>
+            </div>
+          </div>
+        </header>
+
+        {/* Timeline Content */}
+        <main className="px-4 py-6 space-y-6">
+          {Object.entries(weekData).map(([week, data]) => (
+            <Card key={week} className={`${parseInt(week) > currentWeek ? 'opacity-50' : ''}`}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-base">Semana {week}</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">{data.title}</p>
+                  </div>
+                  {parseInt(week) > currentWeek ? (
+                    <Lock className="h-5 w-5 text-muted-foreground" />
+                  ) : (
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <div className="flex items-center space-x-3">
+                      <Play className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">Vídeo Educacional</span>
+                    </div>
+                    <Badge variant="secondary">{data.video.duration}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <div className="flex items-center space-x-3">
+                      <div className="h-4 w-4 rounded-full bg-accent" />
+                      <span className="text-sm font-medium">Hipnose</span>
+                    </div>
+                    <Badge variant="secondary">{data.hypnosis.duration}</Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
+      <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b">
+        <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg"></div>
-              <h1 className="text-2xl font-bold text-foreground">Sopro</h1>
+              <div className="w-6 h-6 bg-gradient-primary rounded-md"></div>
+              <h1 className="text-lg font-bold text-foreground">Sopro</h1>
             </div>
-            <Button variant="outline">Perfil</Button>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setShowTimeline(true)}
+            >
+              <Calendar className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {/* Progress Card */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Progresso</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">15 dias</div>
-              <p className="text-xs text-muted-foreground">sem fumar</p>
-              <Progress value={75} className="mt-2" />
+      <main className="px-4 py-6 space-y-6">
+        {/* Week Progress */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-foreground">
+              Semana {currentWeek}
+            </h2>
+            <Badge variant="outline">Dia {currentDay}/7</Badge>
+          </div>
+          
+          <div className="space-y-2">
+            <h3 className="text-lg font-medium text-foreground">
+              {currentWeekData.title}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {currentWeekData.subtitle}
+            </p>
+            <Progress value={progressPercentage} className="h-2" />
+          </div>
+        </div>
+
+        {/* Daily Motivation */}
+        <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
+          <CardContent className="p-4">
+            <p className="text-sm text-foreground/90 text-center">
+              "Hoje você está construindo a pessoa que será amanhã. Cada passo importa!"
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Daily Activities */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-foreground">Atividades do Dia</h3>
+          
+          {/* Video Card */}
+          <Card className="transition-all duration-200 hover:shadow-md">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <Play className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground">
+                      {currentWeekData.video.title}
+                    </h4>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">
+                        {currentWeekData.video.duration}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                {completedToday.video ? (
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                ) : (
+                  <Button size="sm">Assistir</Button>
+                )}
+              </div>
             </CardContent>
           </Card>
 
-          {/* Sessions Card */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sessões</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">8</div>
-              <p className="text-xs text-muted-foreground">concluídas este mês</p>
-            </CardContent>
-          </Card>
-
-          {/* Goals Card */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Meta</CardTitle>
-              <Target className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">30 dias</div>
-              <p className="text-xs text-muted-foreground">objetivo atual</p>
-            </CardContent>
-          </Card>
-
-          {/* Achievements Card */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Conquistas</CardTitle>
-              <Award className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">3</div>
-              <p className="text-xs text-muted-foreground">badges desbloqueadas</p>
+          {/* Hypnosis Card */}
+          <Card className="transition-all duration-200 hover:shadow-md">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-full bg-accent/10">
+                    <div className="h-5 w-5 rounded-full bg-accent" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground">
+                      {currentWeekData.hypnosis.title}
+                    </h4>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">
+                        {currentWeekData.hypnosis.duration}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                {completedToday.hypnosis ? (
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                ) : (
+                  <Button size="sm" variant="outline">Ouvir</Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Action Cards */}
-        <div className="grid gap-6 md:grid-cols-2 mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Sessão de Hipnose</CardTitle>
-              <CardDescription>
-                Continue sua jornada com uma sessão guiada
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full">Iniciar Sessão</Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Conteúdo Educativo</CardTitle>
-              <CardDescription>
-                Aprenda mais sobre os benefícios de parar de fumar
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">Explorar</Button>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Complete Day Button */}
+        <Button 
+          className="w-full h-12" 
+          disabled={!(completedToday.video && completedToday.hypnosis)}
+        >
+          {completedToday.video && completedToday.hypnosis ? 
+            "Finalizar Dia" : 
+            "Complete as atividades para finalizar"
+          }
+        </Button>
       </main>
     </div>
   );
