@@ -2,15 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, Heart, Brain } from "lucide-react";
 import heroImage from "@/assets/hero-sopro.jpg";
-
 const HeroSection = () => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      >
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
+      backgroundImage: `url(${heroImage})`
+    }}>
         <div className="absolute inset-0 bg-gradient-primary opacity-85"></div>
       </div>
 
@@ -33,9 +30,7 @@ const HeroSection = () => {
           </h2>
 
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Usando métodos cientificamente comprovados: hipnose, neurociência e educação personalizada
-          </p>
+          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">Usando métodos cientificamente comprovados</p>
 
           {/* Features highlights */}
           <div className="flex flex-wrap justify-center gap-6 mb-12">
@@ -68,13 +63,8 @@ const HeroSection = () => {
 
           {/* Social proof */}
           <div className="mt-12 text-white/70">
-            <p className="text-sm mb-2">Mais de 10.000 pessoas já transformaram suas vidas</p>
-            <div className="flex justify-center items-center space-x-1">
-              {[...Array(5)].map((_, i) => (
-                <Sparkles key={i} className="w-4 h-4 text-accent fill-current" />
-              ))}
-              <span className="ml-2 text-sm">4.9/5 de satisfação</span>
-            </div>
+            
+            
           </div>
         </div>
       </div>
@@ -82,8 +72,6 @@ const HeroSection = () => {
       {/* Floating elements */}
       <div className="absolute top-20 left-10 w-20 h-20 bg-accent/20 rounded-full animate-float"></div>
       <div className="absolute bottom-20 right-10 w-16 h-16 bg-secondary/20 rounded-full animate-breathe"></div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
