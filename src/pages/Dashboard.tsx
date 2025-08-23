@@ -120,34 +120,76 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="px-4 py-6 space-y-6">
-        {/* Week Progress */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-foreground">
-              Semana {currentWeek}
-            </h2>
-            <Badge variant="outline">Dia {currentDay}/7</Badge>
-          </div>
-          
-          <div className="space-y-2">
-            <h3 className="text-lg font-medium text-foreground">
-              {currentWeekData.title}
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              {currentWeekData.subtitle}
-            </p>
-            <Progress value={progressPercentage} className="h-2" />
+        {/* Week Overview & Timeline */}
+        <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 rounded-3xl p-6 border border-primary/20">
+          <div className="space-y-4">
+            {/* Current Week Header */}
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center space-x-3">
+                  <h2 className="text-xl font-semibold text-foreground">
+                    Semana {currentWeek}
+                  </h2>
+                  <Badge variant="outline" className="bg-white/10 border-white/20">
+                    Dia {currentDay}/7
+                  </Badge>
+                </div>
+                <Progress value={progressPercentage} className="h-2 w-32" />
+              </div>
+            </div>
+            
+            {/* Week Description */}
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium text-foreground">
+                {currentWeekData.title}
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {currentWeekData.subtitle}
+              </p>
+            </div>
+
+            {/* Week Navigation */}
+            <div className="space-y-3">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Sua jornada completa
+              </p>
+              <div className="grid grid-cols-1 gap-2">
+                {Object.entries(weekData).map(([week, data]) => (
+                  <button
+                    key={week}
+                    onClick={() => setShowTimeline(true)}
+                    className={`text-left p-3 rounded-xl border transition-all ${
+                      parseInt(week) === currentWeek
+                        ? 'bg-white/10 border-white/20 text-foreground'
+                        : parseInt(week) < currentWeek
+                        ? 'bg-primary/5 border-primary/10 text-foreground/80'
+                        : 'bg-black/5 border-black/10 text-muted-foreground'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium">
+                          Semana {week}: {data.title}
+                        </p>
+                        <p className="text-xs opacity-75 mt-1">
+                          {parseInt(week) === currentWeek ? 'Em andamento' : 
+                           parseInt(week) < currentWeek ? 'Concluída' : 'Em breve'}
+                        </p>
+                      </div>
+                      {parseInt(week) === currentWeek ? (
+                        <div className="w-2 h-2 bg-primary rounded-full" />
+                      ) : parseInt(week) < currentWeek ? (
+                        <CheckCircle className="h-4 w-4 text-primary" />
+                      ) : (
+                        <Lock className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Daily Motivation */}
-        <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
-          <CardContent className="p-4">
-            <p className="text-sm text-foreground/90 text-center">
-              "Hoje você está construindo a pessoa que será amanhã. Cada passo importa!"
-            </p>
-          </CardContent>
-        </Card>
 
         {/* Daily Activities */}
         <div className="space-y-4">
@@ -212,30 +254,11 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Progress Timeline Entry */}
-        <div className="bg-gradient-to-r from-primary/10 via-accent/5 to-primary/10 rounded-2xl p-5 border border-primary/20">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <h3 className="font-medium text-foreground">✨ Sua jornada completa</h3>
-              <p className="text-sm text-muted-foreground">
-                Explore todo o conteúdo das 3 semanas
-              </p>
-              <div className="flex flex-wrap gap-2 text-xs">
-                <span className="bg-primary/10 text-primary px-2 py-1 rounded-full">Semana 1: Aprender</span>
-                <span className="bg-accent/10 text-accent-foreground px-2 py-1 rounded-full">Semana 2: Parar</span>
-                <span className="bg-secondary/50 text-secondary-foreground px-2 py-1 rounded-full">Semana 3: Reprogramar</span>
-              </div>
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setShowTimeline(true)}
-              className="rounded-full bg-white/10 backdrop-blur-sm border border-white/20"
-            >
-              <Calendar className="h-4 w-4 mr-2" />
-              Ver tudo
-            </Button>
-          </div>
+        {/* Daily Motivation */}
+        <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-4 border border-primary/20">
+          <p className="text-sm text-foreground/90 text-center">
+            "Hoje você está construindo a pessoa que será amanhã. Cada passo importa!"
+          </p>
         </div>
 
         {/* Complete Day Button */}
