@@ -120,8 +120,8 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="px-4 py-6 space-y-6">
-        {/* Week Overview & Timeline */}
-        <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 rounded-3xl p-6 border border-primary/20">
+        {/* Week Overview */}
+        <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
           <div className="space-y-4">
             {/* Current Week Header */}
             <div className="flex items-center justify-between">
@@ -130,76 +130,62 @@ const Dashboard = () => {
                   <h2 className="text-xl font-semibold text-foreground">
                     Semana {currentWeek}
                   </h2>
-                  <Badge variant="outline" className="bg-white/10 border-white/20">
+                  <Badge variant="outline" className="bg-primary/20 border-primary/30 text-primary">
                     Dia {currentDay}/7
                   </Badge>
                 </div>
-                <Progress value={progressPercentage} className="h-2 w-32" />
+                <Progress value={progressPercentage} className="h-3 w-32" />
               </div>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowTimeline(true)}
+                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30"
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Ver timeline
+              </Button>
             </div>
             
             {/* Week Description */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <h3 className="text-lg font-medium text-foreground">
                 {currentWeekData.title}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                {currentWeekData.subtitle}
+                {currentWeek === 1 
+                  ? "Nesta semana você vai aprender como a nicotina age no corpo e na mente. Os vídeos e hipnoses vão ajudar a quebrar as falsas crenças sobre o cigarro e aumentar sua confiança para mudar. Você pode continuar fumando nesta fase."
+                  : currentWeekData.subtitle
+                }
               </p>
             </div>
+          </div>
+        </div>
 
-            {/* Week Navigation */}
-            <div className="space-y-3">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Sua jornada completa
-              </p>
-              <div className="grid grid-cols-1 gap-2">
-                {Object.entries(weekData).map(([week, data]) => (
-                  <button
-                    key={week}
-                    onClick={() => setShowTimeline(true)}
-                    className={`text-left p-3 rounded-xl border transition-all ${
-                      parseInt(week) === currentWeek
-                        ? 'bg-white/10 border-white/20 text-foreground'
-                        : parseInt(week) < currentWeek
-                        ? 'bg-primary/5 border-primary/10 text-foreground/80'
-                        : 'bg-black/5 border-black/10 text-muted-foreground'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium">
-                          Semana {week}: {data.title}
-                        </p>
-                        <p className="text-xs opacity-75 mt-1">
-                          {parseInt(week) === currentWeek ? 'Em andamento' : 
-                           parseInt(week) < currentWeek ? 'Concluída' : 'Em breve'}
-                        </p>
-                      </div>
-                      {parseInt(week) === currentWeek ? (
-                        <div className="w-2 h-2 bg-primary rounded-full" />
-                      ) : parseInt(week) < currentWeek ? (
-                        <CheckCircle className="h-4 w-4 text-primary" />
-                      ) : (
-                        <Lock className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
+        {/* Daily Motivation */}
+        <div className="bg-gradient-to-r from-secondary/20 via-accent/10 to-primary/15 rounded-2xl p-5 border border-secondary/30">
+          <div className="text-center space-y-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-accent to-secondary rounded-full mx-auto flex items-center justify-center">
+              <span className="text-white text-sm">✨</span>
             </div>
+            <p className="text-sm text-foreground font-medium">
+              "Hoje você está construindo a pessoa que será amanhã. Cada passo importa!"
+            </p>
           </div>
         </div>
 
         {/* Daily Activities */}
         <div className="space-y-4">
-          <h3 className="text-base font-medium text-foreground">Suas atividades hoje</h3>
+          <h3 className="text-base font-medium text-foreground flex items-center">
+            <span className="mr-2">🎯</span>
+            Suas atividades hoje
+          </h3>
           
           {/* Video Card */}
-          <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl p-4 border border-primary/20">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center shadow-lg">
                   <Play className="h-5 w-5 text-white fill-white" />
                 </div>
                 <div>
@@ -215,20 +201,22 @@ const Dashboard = () => {
                 </div>
               </div>
               {completedToday.video ? (
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-primary" />
+                <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-secondary" />
                 </div>
               ) : (
-                <Button size="sm" className="rounded-full px-6">Assistir</Button>
+                <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                  Assistir
+                </Button>
               )}
             </div>
           </div>
 
           {/* Hypnosis Card */}
-          <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+          <div className="bg-gradient-to-r from-accent/10 to-accent/5 backdrop-blur-sm rounded-2xl p-4 border border-accent/20">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent via-accent/90 to-secondary flex items-center justify-center shadow-lg">
                   <div className="w-6 h-6 rounded-full bg-white" />
                 </div>
                 <div>
@@ -244,30 +232,25 @@ const Dashboard = () => {
                 </div>
               </div>
               {completedToday.hypnosis ? (
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-primary" />
+                <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+                  <CheckCircle className="h-5 w-5 text-secondary" />
                 </div>
               ) : (
-                <Button size="sm" variant="outline" className="rounded-full px-6">Ouvir</Button>
+                <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
+                  Ouvir
+                </Button>
               )}
             </div>
           </div>
         </div>
 
-        {/* Daily Motivation */}
-        <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-4 border border-primary/20">
-          <p className="text-sm text-foreground/90 text-center">
-            "Hoje você está construindo a pessoa que será amanhã. Cada passo importa!"
-          </p>
-        </div>
 
-        {/* Complete Day Button */}
         <Button 
-          className="w-full h-14 rounded-2xl text-base font-medium" 
+          className="w-full h-14 rounded-2xl text-base font-medium bg-gradient-to-r from-secondary via-accent to-primary hover:from-secondary/90 hover:via-accent/90 hover:to-primary/90 shadow-lg" 
           disabled={!(completedToday.video && completedToday.hypnosis)}
         >
           {completedToday.video && completedToday.hypnosis ? 
-            "Finalizar Dia" : 
+            "✅ Finalizar Dia" : 
             "Complete as atividades para finalizar"
           }
         </Button>
