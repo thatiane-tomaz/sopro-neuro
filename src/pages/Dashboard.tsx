@@ -149,6 +149,34 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
+        {/* Progress Timeline Entry */}
+        <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <h3 className="font-semibold text-foreground">Sua Jornada</h3>
+                <p className="text-sm text-muted-foreground">
+                  Veja todo o conteúdo das 3 semanas
+                </p>
+                <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                  <span>• Semana 1: Aprender</span>
+                  <span>• Semana 2: Parar</span>
+                  <span>• Semana 3: Reprogramar</span>
+                </div>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setShowTimeline(true)}
+                className="flex items-center space-x-2"
+              >
+                <Calendar className="h-4 w-4" />
+                <span>Ver Timeline</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Daily Activities */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-foreground">Atividades do Dia</h3>
