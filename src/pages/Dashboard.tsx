@@ -124,8 +124,8 @@ const Dashboard = () => {
         <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
           <div className="space-y-4">
             {/* Current Week Header */}
-            <div className="flex items-start justify-between">
-              <div className="space-y-3">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-3 flex-1">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5">
                   <span className="text-sm font-medium text-primary">Fase {currentWeek}</span>
                   <span className="h-1 w-1 rounded-full bg-primary/40" />
@@ -145,10 +145,11 @@ const Dashboard = () => {
                 variant="ghost" 
                 size="sm"
                 onClick={() => setShowTimeline(true)}
-                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30"
+                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 shrink-0"
               >
-                <Route className="h-4 w-4 mr-2" />
-                Veja o processo
+                <Route className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">Veja o processo</span>
+                <span className="sm:hidden">Processo</span>
               </Button>
             </div>
             
