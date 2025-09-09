@@ -126,15 +126,9 @@ const Dashboard = () => {
             {/* Current Week Header */}
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <div className="flex items-center space-x-3">
-                  <h2 className="text-xl font-semibold text-foreground">
-                    Semana {currentWeek}
-                  </h2>
-                  <Badge variant="outline" className="bg-primary/20 border-primary/30 text-primary">
-                    Dia {currentDay}/7
-                  </Badge>
-                </div>
-                <Progress value={progressPercentage} className="h-3 w-32" />
+                <h2 className="text-xl font-semibold text-foreground">
+                  Phase {currentWeek}, {currentDay}/7
+                </h2>
               </div>
               <Button 
                 variant="ghost" 
