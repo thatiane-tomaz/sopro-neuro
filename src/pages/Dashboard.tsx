@@ -125,10 +125,21 @@ const Dashboard = () => {
           <div className="space-y-4">
             {/* Current Week Header */}
             <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-foreground">
-                  Phase {currentWeek}, {currentDay}/7
-                </h2>
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5">
+                  <span className="text-sm font-medium text-primary">Phase {currentWeek}</span>
+                  <span className="h-1 w-1 rounded-full bg-primary/40" />
+                  <span className="text-sm text-foreground/80">{currentDay}/7</span>
+                </div>
+                {/* Segmented progress - clean and subtle */}
+                <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
+                  {[...Array(7)].map((_, i) => (
+                    <div
+                      key={i}
+                      className={`h-1.5 w-6 rounded-full transition-colors ${i < currentDay ? 'bg-primary' : 'bg-muted'}`}
+                    />
+                  ))}
+                </div>
               </div>
               <Button 
                 variant="ghost" 
