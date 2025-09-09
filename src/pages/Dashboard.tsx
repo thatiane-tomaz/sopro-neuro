@@ -123,22 +123,22 @@ const Dashboard = () => {
         <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
           <div className="space-y-4">
             {/* Current Week Header */}
-            <div className="flex items-start gap-4">
-              <div className="space-y-3 flex-1">
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5">
-                  <span className="text-sm font-medium text-primary">Fase {currentWeek}</span>
+            <div className="flex items-start gap-2">
+              <div className="space-y-3 flex-1 min-w-0">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
+                  <span className="text-xs font-medium text-primary">Fase {currentWeek}</span>
                   <span className="h-1 w-1 rounded-full bg-primary/40" />
-                  <span className="text-sm text-foreground/80">{currentDay}/7</span>
+                  <span className="text-xs text-foreground/80">{currentDay}/7</span>
                 </div>
                 {/* Segmented progress - clean and subtle */}
                 <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
                   {[...Array(7)].map((_, i) => <div key={i} className={`h-1.5 w-6 rounded-full transition-colors ${i < currentDay ? 'bg-primary' : 'bg-muted'}`} />)}
                 </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)} className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 shrink-0">
-                <Route className="h-4 w-4 mr-1" />
-                <span className="hidden sm:inline">Veja o processo</span>
-                <span className="sm:hidden">Processo</span>
+              <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)} className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs">
+                <Route className="h-3 w-3 mr-1" />
+                <span className="hidden md:inline">Processo</span>
+                <span className="md:hidden">•••</span>
               </Button>
             </div>
             
