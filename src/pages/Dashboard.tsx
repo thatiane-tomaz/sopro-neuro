@@ -121,35 +121,22 @@ const Dashboard = () => {
       <main className="px-4 py-6 space-y-6">
         {/* Week Overview */}
         <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
-          <div className="space-y-4">
-            {/* Current Week Header */}
-            <div className="flex items-start gap-2">
-              <div className="space-y-3 flex-1 min-w-0">
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
-                  <span className="text-xs font-medium text-primary">Fase {currentWeek}</span>
-                  <span className="h-1 w-1 rounded-full bg-primary/40" />
-                  <span className="text-xs text-foreground/80">{currentDay}/7</span>
-                </div>
-                {/* Segmented progress - clean and subtle */}
-                <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
-                  {[...Array(7)].map((_, i) => <div key={i} className={`h-1.5 w-6 rounded-full transition-colors ${i < currentDay ? 'bg-primary' : 'bg-muted'}`} />)}
-                </div>
+          <div className="flex items-start gap-2">
+            <div className="space-y-3 flex-1 min-w-0">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
+                <span className="text-xs font-medium text-primary">Fase {currentWeek}</span>
+                <span className="h-1 w-1 rounded-full bg-primary/40" />
+                <span className="text-xs text-foreground/80">{currentDay}/7</span>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)} className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs">
-                <Route className="h-3 w-3 mr-1" />
-                <span>Caminho</span>
-              </Button>
+              {/* Segmented progress - clean and subtle */}
+              <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
+                {[...Array(7)].map((_, i) => <div key={i} className={`h-1.5 w-6 rounded-full transition-colors ${i < currentDay ? 'bg-primary' : 'bg-muted'}`} />)}
+              </div>
             </div>
-            
-            {/* Week Description */}
-            <div className="space-y-3">
-              <h3 className="text-lg font-medium text-foreground">
-                {currentWeekData.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {currentWeek === 1 ? "Nesta semana você vai aprender como a nicotina age no corpo e na mente. Os vídeos e hipnoses vão ajudar a quebrar as falsas crenças sobre o cigarro e aumentar sua confiança para mudar. Você pode continuar fumando nesta fase." : currentWeekData.subtitle}
-              </p>
-            </div>
+            <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)} className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs">
+              <Route className="h-3 w-3 mr-1" />
+              <span>Caminho</span>
+            </Button>
           </div>
         </div>
 
