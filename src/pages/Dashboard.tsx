@@ -155,63 +155,70 @@ const Dashboard = () => {
 
 
         {/* Daily Activities */}
-        <div className="space-y-4">
-          <h3 className="text-base font-medium text-foreground flex items-center">
-            
-            Conquista de Hoje
-          </h3>
-          
-          {/* Video Card */}
-          <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl p-4 border border-primary/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center shadow-lg">
-                  <Play className="h-5 w-5 text-white fill-white" />
-                </div>
-                <div>
-                  <h4 className="font-medium text-foreground text-base">
-                    {currentWeekData.video.title}
-                  </h4>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <Clock className="h-3 w-3 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">
-                      {currentWeekData.video.duration}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              {completedToday.video ? <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-secondary" />
-                </div> : <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-                  Assistir
-                </Button>}
-            </div>
+        <div className="space-y-6">
+          {/* Fase Section */}
+          <div className="space-y-3">
+            <h3 className="text-base font-medium text-foreground">Fase</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {currentWeek === 1 ? "Nesta fase você vai descobrir como a nicotina age no seu corpo e mente, quebrando falsas crenças sobre o cigarro." : "Descrição da fase atual"}
+            </p>
           </div>
 
-          {/* Hypnosis Card */}
-          <div className="bg-gradient-to-r from-accent/10 to-accent/5 backdrop-blur-sm rounded-2xl p-4 border border-accent/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent via-accent/90 to-secondary flex items-center justify-center shadow-lg">
-                  <div className="w-6 h-6 rounded-full bg-white" />
-                </div>
-                <div>
-                  <h4 className="font-medium text-foreground text-base">
-                    {currentWeekData.hypnosis.title}
-                  </h4>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <Clock className="h-3 w-3 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">
-                      {currentWeekData.hypnosis.duration}
-                    </span>
+          {/* Dia Section */}
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <h3 className="text-base font-medium text-foreground">Dia {currentDay}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {currentDay === 3 ? "Hoje você vai aprofundar seu conhecimento sobre neurociência e relaxar com uma hipnose de desconstrução de mitos." : "Atividades do dia para sua transformação"}
+              </p>
+            </div>
+            
+            {/* Video Card */}
+            <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl p-4 border border-primary/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center shadow-lg">
+                    <Play className="h-5 w-5 text-white fill-white" />
+                  </div>
+                  <div>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {currentWeekData.video.duration}
+                      </span>
+                    </div>
                   </div>
                 </div>
+                {completedToday.video ? <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-secondary" />
+                  </div> : <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                    Assistir
+                  </Button>}
               </div>
-              {completedToday.hypnosis ? <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-secondary" />
-                </div> : <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
-                  Ouvir
-                </Button>}
+            </div>
+
+            {/* Hypnosis Card */}
+            <div className="bg-gradient-to-r from-accent/10 to-accent/5 backdrop-blur-sm rounded-2xl p-4 border border-accent/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent via-accent/90 to-secondary flex items-center justify-center shadow-lg">
+                    <div className="w-6 h-6 rounded-full bg-white" />
+                  </div>
+                  <div>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {currentWeekData.hypnosis.duration}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                {completedToday.hypnosis ? <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-secondary" />
+                  </div> : <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
+                    Ouvir
+                  </Button>}
+              </div>
             </div>
           </div>
         </div>
