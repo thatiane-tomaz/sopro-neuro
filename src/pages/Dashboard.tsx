@@ -124,10 +124,10 @@ const Dashboard = () => {
         <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
           <div className="space-y-4">
             {/* Current Week Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-start justify-between">
               <div className="space-y-3">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5">
-                  <span className="text-sm font-medium text-primary">Phase {currentWeek}</span>
+                  <span className="text-sm font-medium text-primary">Fase {currentWeek}</span>
                   <span className="h-1 w-1 rounded-full bg-primary/40" />
                   <span className="text-sm text-foreground/80">{currentDay}/7</span>
                 </div>
