@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Play, Clock, Calendar, CheckCircle, Lock } from "lucide-react";
+import { Play, Clock, Route, CheckCircle, Lock } from "lucide-react";
 
 const Dashboard = () => {
   const [currentWeek] = useState(1);
@@ -112,7 +112,7 @@ const Dashboard = () => {
               size="sm"
               onClick={() => setShowTimeline(true)}
             >
-              <Calendar className="h-4 w-4" />
+              <Route className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -147,8 +147,8 @@ const Dashboard = () => {
                 onClick={() => setShowTimeline(true)}
                 className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30"
               >
-                <Calendar className="h-4 w-4 mr-2" />
-                Ver timeline
+                <Route className="h-4 w-4 mr-2" />
+                Veja o processo
               </Button>
             </div>
             
