@@ -4,49 +4,61 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Play, Clock, Route, CheckCircle, Lock } from "lucide-react";
-
 const Dashboard = () => {
   const [currentWeek] = useState(1);
   const [currentDay] = useState(3);
   const [showTimeline, setShowTimeline] = useState(false);
-  const [completedToday] = useState({ video: false, hypnosis: false });
-
+  const [completedToday] = useState({
+    video: false,
+    hypnosis: false
+  });
   const weekData = {
     1: {
       title: "Quebrando Crenças e Aprendendo",
       subtitle: "Continue fumando enquanto aprende",
-      video: { title: "Neurociência do Vício", duration: "5 min" },
-      hypnosis: { title: "Desconstruindo Mitos", duration: "10 min" }
+      video: {
+        title: "Neurociência do Vício",
+        duration: "5 min"
+      },
+      hypnosis: {
+        title: "Desconstruindo Mitos",
+        duration: "10 min"
+      }
     },
     2: {
       title: "O Momento de Parar",
       subtitle: "Hipnoses para enfrentar a abstinência",
-      video: { title: "Preparação Mental", duration: "4 min" },
-      hypnosis: { title: "Relaxamento Profundo", duration: "8 min" }
+      video: {
+        title: "Preparação Mental",
+        duration: "4 min"
+      },
+      hypnosis: {
+        title: "Relaxamento Profundo",
+        duration: "8 min"
+      }
     },
     3: {
       title: "Novos Hábitos Saudáveis",
       subtitle: "Reprogramando seu estilo de vida",
-      video: { title: "Atividade Física", duration: "6 min" },
-      hypnosis: { title: "Motivação para Saúde", duration: "12 min" }
+      video: {
+        title: "Atividade Física",
+        duration: "6 min"
+      },
+      hypnosis: {
+        title: "Motivação para Saúde",
+        duration: "12 min"
+      }
     }
   };
-
   const currentWeekData = weekData[currentWeek as keyof typeof weekData];
-  const progressPercentage = (currentDay / 7) * 100;
-
+  const progressPercentage = currentDay / 7 * 100;
   if (showTimeline) {
-    return (
-      <div className="min-h-screen bg-background">
+    return <div className="min-h-screen bg-background">
         {/* Header */}
         <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b">
           <div className="px-4 py-3">
             <div className="flex items-center justify-between">
-              <Button 
-                variant="ghost" 
-                onClick={() => setShowTimeline(false)}
-                className="p-2"
-              >
+              <Button variant="ghost" onClick={() => setShowTimeline(false)} className="p-2">
                 ← Voltar
               </Button>
               <h1 className="text-lg font-semibold text-foreground">Linha do Tempo</h1>
@@ -57,19 +69,14 @@ const Dashboard = () => {
 
         {/* Timeline Content */}
         <main className="px-4 py-6 space-y-6">
-          {Object.entries(weekData).map(([week, data]) => (
-            <Card key={week} className={`${parseInt(week) > currentWeek ? 'opacity-50' : ''}`}>
+          {Object.entries(weekData).map(([week, data]) => <Card key={week} className={`${parseInt(week) > currentWeek ? 'opacity-50' : ''}`}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-base">Semana {week}</CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">{data.title}</p>
                   </div>
-                  {parseInt(week) > currentWeek ? (
-                    <Lock className="h-5 w-5 text-muted-foreground" />
-                  ) : (
-                    <CheckCircle className="h-5 w-5 text-primary" />
-                  )}
+                  {parseInt(week) > currentWeek ? <Lock className="h-5 w-5 text-muted-foreground" /> : <CheckCircle className="h-5 w-5 text-primary" />}
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
@@ -90,15 +97,11 @@ const Dashboard = () => {
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          ))}
+            </Card>)}
         </main>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b">
         <div className="px-4 py-3">
@@ -107,11 +110,7 @@ const Dashboard = () => {
               <div className="w-6 h-6 bg-gradient-primary rounded-md"></div>
               <h1 className="text-lg font-bold text-foreground">Sopro</h1>
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setShowTimeline(true)}
-            >
+            <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)}>
               <Route className="h-4 w-4" />
             </Button>
           </div>
@@ -133,20 +132,10 @@ const Dashboard = () => {
                 </div>
                 {/* Segmented progress - clean and subtle */}
                 <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
-                  {[...Array(7)].map((_, i) => (
-                    <div
-                      key={i}
-                      className={`h-1.5 w-6 rounded-full transition-colors ${i < currentDay ? 'bg-primary' : 'bg-muted'}`}
-                    />
-                  ))}
+                  {[...Array(7)].map((_, i) => <div key={i} className={`h-1.5 w-6 rounded-full transition-colors ${i < currentDay ? 'bg-primary' : 'bg-muted'}`} />)}
                 </div>
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => setShowTimeline(true)}
-                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 min-w-0 max-w-full sm:px-4 px-3 truncate self-start"
-              >
+              <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)} className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 shrink-0">
                 <Route className="h-4 w-4 mr-1" />
                 <span className="hidden sm:inline">Veja o processo</span>
                 <span className="sm:hidden">Processo</span>
@@ -159,10 +148,7 @@ const Dashboard = () => {
                 {currentWeekData.title}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                {currentWeek === 1 
-                  ? "Nesta semana você vai aprender como a nicotina age no corpo e na mente. Os vídeos e hipnoses vão ajudar a quebrar as falsas crenças sobre o cigarro e aumentar sua confiança para mudar. Você pode continuar fumando nesta fase."
-                  : currentWeekData.subtitle
-                }
+                {currentWeek === 1 ? "Nesta semana você vai aprender como a nicotina age no corpo e na mente. Os vídeos e hipnoses vão ajudar a quebrar as falsas crenças sobre o cigarro e aumentar sua confiança para mudar. Você pode continuar fumando nesta fase." : currentWeekData.subtitle}
               </p>
             </div>
           </div>
@@ -172,7 +158,7 @@ const Dashboard = () => {
         {/* Daily Activities */}
         <div className="space-y-4">
           <h3 className="text-base font-medium text-foreground flex items-center">
-            <span className="mr-2">🎯</span>
+            
             Suas atividades hoje
           </h3>
           
@@ -195,15 +181,11 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-              {completedToday.video ? (
-                <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+              {completedToday.video ? <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
                   <CheckCircle className="h-5 w-5 text-secondary" />
-                </div>
-              ) : (
-                <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                </div> : <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
                   Assistir
-                </Button>
-              )}
+                </Button>}
             </div>
           </div>
 
@@ -226,32 +208,20 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-              {completedToday.hypnosis ? (
-                <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+              {completedToday.hypnosis ? <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
                   <CheckCircle className="h-5 w-5 text-secondary" />
-                </div>
-              ) : (
-                <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
+                </div> : <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
                   Ouvir
-                </Button>
-              )}
+                </Button>}
             </div>
           </div>
         </div>
 
 
-        <Button 
-          className="w-full h-14 rounded-2xl text-base font-medium bg-gradient-to-r from-secondary via-accent to-primary hover:from-secondary/90 hover:via-accent/90 hover:to-primary/90 shadow-lg" 
-          disabled={!(completedToday.video && completedToday.hypnosis)}
-        >
-          {completedToday.video && completedToday.hypnosis ? 
-            "✅ Finalizar Dia" : 
-            "Complete as atividades para finalizar"
-          }
+        <Button className="w-full h-14 rounded-2xl text-base font-medium bg-gradient-to-r from-secondary via-accent to-primary hover:from-secondary/90 hover:via-accent/90 hover:to-primary/90 shadow-lg" disabled={!(completedToday.video && completedToday.hypnosis)}>
+          {completedToday.video && completedToday.hypnosis ? "✅ Finalizar Dia" : "Complete as atividades para finalizar"}
         </Button>
       </main>
-    </div>
-  );
+    </div>;
 };
-
 export default Dashboard;
