@@ -145,7 +145,7 @@ const Dashboard = () => {
                 variant="ghost" 
                 size="sm"
                 onClick={() => setShowTimeline(true)}
-                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 shrink-0"
+                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 min-w-0 max-w-full sm:px-4 px-3 truncate self-start"
               >
                 <Route className="h-4 w-4 mr-1" />
                 <span className="hidden sm:inline">Veja o processo</span>
