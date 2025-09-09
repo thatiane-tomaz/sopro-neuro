@@ -121,40 +121,38 @@ const Dashboard = () => {
       <main className="px-4 py-6 space-y-6">
         {/* Week Overview */}
         <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
-          <div className="flex items-start gap-2">
-            <div className="space-y-3 flex-1 min-w-0">
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
-                <span className="text-xs font-medium text-primary">Fase {currentWeek}</span>
-                <span className="h-1 w-1 rounded-full bg-primary/40" />
-                <span className="text-xs text-foreground/80">{currentDay}/7</span>
+          <div className="space-y-4">
+            <div className="flex items-start gap-2">
+              <div className="space-y-3 flex-1 min-w-0">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
+                  <span className="text-xs font-medium text-primary">Fase {currentWeek}</span>
+                  <span className="h-1 w-1 rounded-full bg-primary/40" />
+                  <span className="text-xs text-foreground/80">{currentDay}/7</span>
+                </div>
+                {/* Segmented progress - clean and subtle */}
+                <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
+                  {[...Array(7)].map((_, i) => <div key={i} className={`h-1.5 w-6 rounded-full transition-colors ${i < currentDay ? 'bg-primary' : 'bg-muted'}`} />)}
+                </div>
               </div>
-              {/* Segmented progress - clean and subtle */}
-              <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
-                {[...Array(7)].map((_, i) => <div key={i} className={`h-1.5 w-6 rounded-full transition-colors ${i < currentDay ? 'bg-primary' : 'bg-muted'}`} />)}
-              </div>
+              <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)} className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs">
+                <Route className="h-3 w-3 mr-1" />
+                <span>Caminho</span>
+              </Button>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)} className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs">
-              <Route className="h-3 w-3 mr-1" />
-              <span>Caminho</span>
-            </Button>
-          </div>
-        </div>
-
-
-        {/* Daily Activities */}
-        <div className="space-y-6">
-          {/* Fase Section */}
-          <div className="space-y-3">
-            <h3 className="text-base font-medium text-foreground">Fase</h3>
+            
+            {/* Fase Description */}
             <p className="text-sm text-muted-foreground leading-relaxed">
               {currentWeek === 1 ? "Nesta fase você vai descobrir como a nicotina age no seu corpo e mente, quebrando falsas crenças sobre o cigarro." : "Descrição da fase atual"}
             </p>
           </div>
+        </div>
 
-          {/* Dia Section */}
-          <div className="space-y-4">
+        {/* Daily Activities Card */}
+        <div className="bg-gradient-to-br from-card/80 via-card to-card/90 rounded-3xl p-6 border border-border/50 shadow-lg">
+          <div className="space-y-6">
+            {/* Dia Section */}
             <div className="space-y-3">
-              <h3 className="text-base font-medium text-foreground">Dia {currentDay}</h3>
+              <h3 className="text-lg font-medium text-foreground">Seu caminho de Hoje</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {currentDay === 3 ? "Hoje você vai aprofundar seu conhecimento sobre neurociência e relaxar com uma hipnose de desconstrução de mitos." : "Atividades do dia para sua transformação"}
               </p>
@@ -168,6 +166,7 @@ const Dashboard = () => {
                     <Play className="h-5 w-5 text-white fill-white" />
                   </div>
                   <div>
+                    <span className="text-sm font-medium text-foreground">Vídeo</span>
                     <div className="flex items-center space-x-2 mt-1">
                       <Clock className="h-3 w-3 text-muted-foreground" />
                       <span className="text-sm text-muted-foreground">
@@ -192,6 +191,7 @@ const Dashboard = () => {
                     <div className="w-6 h-6 rounded-full bg-white" />
                   </div>
                   <div>
+                    <span className="text-sm font-medium text-foreground">Hipnose</span>
                     <div className="flex items-center space-x-2 mt-1">
                       <Clock className="h-3 w-3 text-muted-foreground" />
                       <span className="text-sm text-muted-foreground">
