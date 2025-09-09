@@ -158,7 +158,7 @@ const Dashboard = () => {
         <div className="space-y-4">
           <h3 className="text-base font-medium text-foreground flex items-center">
             
-            Suas atividades hoje
+            Conquista de Hoje
           </h3>
           
           {/* Video Card */}
