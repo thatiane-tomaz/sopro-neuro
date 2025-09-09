@@ -162,17 +162,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Daily Motivation */}
-        <div className="bg-gradient-to-r from-secondary/20 via-accent/10 to-primary/15 rounded-2xl p-5 border border-secondary/30">
-          <div className="text-center space-y-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-accent to-secondary rounded-full mx-auto flex items-center justify-center">
-              <span className="text-white text-sm">✨</span>
-            </div>
-            <p className="text-sm text-foreground font-medium">
-              "Hoje você está construindo a pessoa que será amanhã. Cada passo importa!"
-            </p>
-          </div>
-        </div>
 
         {/* Daily Activities */}
         <div className="space-y-4">
