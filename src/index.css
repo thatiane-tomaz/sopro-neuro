@@ -2,60 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Sopro Design System - Wellness & Transformation
-Colors: Azul profundo, Verde esmeralda, Laranja/dourado
+/* Sopro Design System - Blue & Purple Wellness
+Colors: Azul como base, Rosa/Roxo como acentos
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    --background: 220 28% 97%;
-    --foreground: 218 84% 12%;
+    --background: 225 30% 98%;
+    --foreground: 240 38% 20%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 218 84% 12%;
+    --card: 225 50% 98%;
+    --card-foreground: 240 38% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 218 84% 12%;
+    --popover: 225 50% 98%;
+    --popover-foreground: 240 38% 20%;
 
-    /* Azul profundo como cor primária */
-    --primary: 218 84% 12%;
+    /* Azul vibrante como cor primária */
+    --primary: 220 91% 60%;
     --primary-foreground: 0 0% 98%;
-    --primary-light: 218 54% 25%;
-    --primary-glow: 218 84% 45%;
+    --primary-light: 220 85% 75%;
+    --primary-glow: 220 100% 85%;
 
-    /* Verde esmeralda como cor secundária */
-    --secondary: 160 84% 39%;
-    --secondary-foreground: 0 0% 98%;
-    --secondary-light: 160 64% 55%;
+    /* Azul mais escuro como secundária */
+    --secondary: 235 39% 85%;
+    --secondary-foreground: 240 38% 20%;
+    --secondary-light: 235 45% 92%;
 
-    /* Laranja/dourado como accent */
-    --accent: 38 92% 58%;
-    --accent-foreground: 218 84% 12%;
-    --accent-light: 45 100% 70%;
+    /* Rosa/Roxo como accent */
+    --accent: 285 85% 70%;
+    --accent-foreground: 0 0% 98%;
+    --accent-light: 300 70% 85%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 218 25% 65%;
+    --muted: 225 25% 95%;
+    --muted-foreground: 240 15% 60%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 218 84% 12%;
+    --border: 225 20% 90%;
+    --input: 225 20% 90%;
+    --ring: 220 91% 60%;
 
     --radius: 0.75rem;
 
     /* Gradients para efeitos especiais */
-    --gradient-primary: linear-gradient(135deg, hsl(218 84% 12%), hsl(218 54% 25%));
-    --gradient-hero: linear-gradient(135deg, hsl(218 84% 12%), hsl(160 84% 39%), hsl(38 92% 58%));
-    --gradient-wellness: linear-gradient(180deg, hsl(160 84% 39%), hsl(160 64% 55%));
-    --gradient-transformation: linear-gradient(45deg, hsl(38 92% 58%), hsl(45 100% 70%));
+    --gradient-primary: linear-gradient(135deg, hsl(220 91% 60%), hsl(235 39% 85%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 91% 60%), hsl(285 85% 70%), hsl(300 70% 85%));
+    --gradient-wellness: linear-gradient(180deg, hsl(220 85% 75%), hsl(235 45% 92%));
+    --gradient-transformation: linear-gradient(45deg, hsl(285 85% 70%), hsl(300 70% 85%));
 
     /* Shadows com as cores do tema */
-    --shadow-primary: 0 10px 30px -10px hsl(218 84% 12% / 0.3);
-    --shadow-wellness: 0 8px 25px -8px hsl(160 84% 39% / 0.4);
-    --shadow-glow: 0 0 40px hsl(218 84% 45% / 0.3);
+    --shadow-primary: 0 10px 30px -10px hsl(220 91% 60% / 0.25);
+    --shadow-wellness: 0 8px 25px -8px hsl(220 85% 75% / 0.3);
+    --shadow-glow: 0 0 40px hsl(285 85% 70% / 0.4);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
