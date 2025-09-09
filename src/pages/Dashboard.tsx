@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Play, Clock, Route, CheckCircle, Lock } from "lucide-react";
+
 const Dashboard = () => {
   const [currentWeek] = useState(1);
   const [currentDay] = useState(3);
@@ -12,6 +13,7 @@ const Dashboard = () => {
     video: false,
     hypnosis: false
   });
+
   const weekData = {
     1: {
       title: "Quebrando Crenças e Aprendendo",
@@ -50,10 +52,12 @@ const Dashboard = () => {
       }
     }
   };
+
   const currentWeekData = weekData[currentWeek as keyof typeof weekData];
-  const progressPercentage = currentDay / 7 * 100;
+
   if (showTimeline) {
-    return <div className="min-h-screen bg-background">
+    return (
+      <div className="min-h-screen bg-background">
         {/* Header */}
         <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b">
           <div className="px-4 py-3">
@@ -69,14 +73,19 @@ const Dashboard = () => {
 
         {/* Timeline Content */}
         <main className="px-4 py-6 space-y-6">
-          {Object.entries(weekData).map(([week, data]) => <Card key={week} className={`${parseInt(week) > currentWeek ? 'opacity-50' : ''}`}>
+          {Object.entries(weekData).map(([week, data]) => (
+            <Card key={week} className={`${parseInt(week) > currentWeek ? 'opacity-50' : ''}`}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-base">Semana {week}</CardTitle>
                     <p className="text-sm text-muted-foreground mt-1">{data.title}</p>
                   </div>
-                  {parseInt(week) > currentWeek ? <Lock className="h-5 w-5 text-muted-foreground" /> : <CheckCircle className="h-5 w-5 text-primary" />}
+                  {parseInt(week) > currentWeek ? (
+                    <Lock className="h-5 w-5 text-muted-foreground" />
+                  ) : (
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
@@ -97,11 +106,15 @@ const Dashboard = () => {
                   </div>
                 </div>
               </CardContent>
-            </Card>)}
+            </Card>
+          ))}
         </main>
-      </div>;
+      </div>
+    );
   }
-  return <div className="min-h-screen bg-background">
+
+  return (
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b">
         <div className="px-4 py-3">
@@ -131,10 +144,22 @@ const Dashboard = () => {
                 </div>
                 {/* Segmented progress - clean and subtle */}
                 <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
-                  {[...Array(7)].map((_, i) => <div key={i} className={`h-1.5 w-6 rounded-full transition-colors ${i < currentDay ? 'bg-primary' : 'bg-muted'}`} />)}
+                  {[...Array(7)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`h-1.5 w-6 rounded-full transition-colors ${
+                        i < currentDay ? 'bg-primary' : 'bg-muted'
+                      }`} 
+                    />
+                  ))}
                 </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)} className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowTimeline(true)} 
+                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs"
+              >
                 <Route className="h-3 w-3 mr-1" />
                 <span>Caminho</span>
               </Button>
@@ -152,7 +177,7 @@ const Dashboard = () => {
           <div className="space-y-6">
             {/* Dia Section */}
             <div className="space-y-3">
-              <h3 className="text-lg font-medium text-foreground">Seu caminho de Hoje</h3>
+              <h3 className="text-lg font-medium text-foreground">Sua Conquista de Hoje</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {currentDay === 3 ? "Hoje você vai aprofundar seu conhecimento sobre neurociência e relaxar com uma hipnose de desconstrução de mitos." : "Atividades do dia para sua transformação"}
               </p>
@@ -175,11 +200,15 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                {completedToday.video ? <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+                {completedToday.video ? (
+                  <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
                     <CheckCircle className="h-5 w-5 text-secondary" />
-                  </div> : <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                  </div>
+                ) : (
+                  <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
                     Assistir
-                  </Button>}
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -200,21 +229,29 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                {completedToday.hypnosis ? <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+                {completedToday.hypnosis ? (
+                  <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
                     <CheckCircle className="h-5 w-5 text-secondary" />
-                  </div> : <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
+                  </div>
+                ) : (
+                  <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
                     Ouvir
-                  </Button>}
+                  </Button>
+                )}
               </div>
             </div>
+            
+            {/* Completion Message */}
+            {completedToday.video && completedToday.hypnosis && (
+              <div className="bg-gradient-to-r from-secondary/20 to-primary/20 rounded-2xl p-4 border border-secondary/30 text-center">
+                <p className="text-foreground font-medium">🎉 Parabéns, você completou a conquista de Hoje</p>
+              </div>
+            )}
           </div>
         </div>
-
-
-        <Button className="w-full h-14 rounded-2xl text-base font-medium bg-gradient-to-r from-secondary via-accent to-primary hover:from-secondary/90 hover:via-accent/90 hover:to-primary/90 shadow-lg" disabled={!(completedToday.video && completedToday.hypnosis)}>
-          {completedToday.video && completedToday.hypnosis ? "✅ Finalizar Dia" : "Complete as atividades para finalizar"}
-        </Button>
       </main>
-    </div>;
+    </div>
+  );
 };
+
 export default Dashboard;
