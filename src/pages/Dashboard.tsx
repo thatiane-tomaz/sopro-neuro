@@ -137,8 +137,7 @@ const Dashboard = () => {
               </div>
               <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)} className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs">
                 <Route className="h-3 w-3 mr-1" />
-                <span className="hidden md:inline">Processo</span>
-                <span className="md:hidden">•••</span>
+                <span>Caminho</span>
               </Button>
             </div>
             
