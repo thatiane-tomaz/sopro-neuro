@@ -9,53 +9,53 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 225 30% 98%;
-    --foreground: 240 38% 20%;
+    --background: 210 20% 98%;
+    --foreground: 215 25% 27%;
 
-    --card: 225 50% 98%;
-    --card-foreground: 240 38% 20%;
+    --card: 210 40% 98%;
+    --card-foreground: 215 25% 27%;
 
-    --popover: 225 50% 98%;
-    --popover-foreground: 240 38% 20%;
+    --popover: 210 40% 98%;
+    --popover-foreground: 215 25% 27%;
 
-    /* Azul vibrante como cor primária */
-    --primary: 220 91% 60%;
+    /* Azul suave como cor primária */
+    --primary: 210 40% 45%;
     --primary-foreground: 0 0% 98%;
-    --primary-light: 220 85% 75%;
-    --primary-glow: 220 100% 85%;
+    --primary-light: 210 35% 65%;
+    --primary-glow: 210 30% 75%;
 
-    /* Azul mais escuro como secundária */
-    --secondary: 235 39% 85%;
-    --secondary-foreground: 240 38% 20%;
-    --secondary-light: 235 45% 92%;
+    /* Azul acinzentado como secundária */
+    --secondary: 215 15% 88%;
+    --secondary-foreground: 215 25% 27%;
+    --secondary-light: 215 20% 94%;
 
-    /* Rosa/Roxo como accent */
-    --accent: 285 85% 70%;
-    --accent-foreground: 0 0% 98%;
-    --accent-light: 300 70% 85%;
+    /* Rosa suave como accent */
+    --accent: 330 25% 70%;
+    --accent-foreground: 215 25% 27%;
+    --accent-light: 330 20% 85%;
 
-    --muted: 225 25% 95%;
-    --muted-foreground: 240 15% 60%;
+    --muted: 210 15% 95%;
+    --muted-foreground: 215 15% 50%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 50% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 225 20% 90%;
-    --input: 225 20% 90%;
-    --ring: 220 91% 60%;
+    --border: 210 12% 88%;
+    --input: 210 12% 88%;
+    --ring: 210 40% 45%;
 
     --radius: 0.75rem;
 
-    /* Gradients para efeitos especiais */
-    --gradient-primary: linear-gradient(135deg, hsl(220 91% 60%), hsl(235 39% 85%));
-    --gradient-hero: linear-gradient(135deg, hsl(220 91% 60%), hsl(285 85% 70%), hsl(300 70% 85%));
-    --gradient-wellness: linear-gradient(180deg, hsl(220 85% 75%), hsl(235 45% 92%));
-    --gradient-transformation: linear-gradient(45deg, hsl(285 85% 70%), hsl(300 70% 85%));
+    /* Gradients sutis */
+    --gradient-primary: linear-gradient(135deg, hsl(210 40% 45%), hsl(215 15% 88%));
+    --gradient-hero: linear-gradient(135deg, hsl(210 35% 65%), hsl(330 25% 70%), hsl(330 20% 85%));
+    --gradient-wellness: linear-gradient(180deg, hsl(210 30% 75%), hsl(215 20% 94%));
+    --gradient-transformation: linear-gradient(45deg, hsl(330 25% 70%), hsl(330 20% 85%));
 
-    /* Shadows com as cores do tema */
-    --shadow-primary: 0 10px 30px -10px hsl(220 91% 60% / 0.25);
-    --shadow-wellness: 0 8px 25px -8px hsl(220 85% 75% / 0.3);
-    --shadow-glow: 0 0 40px hsl(285 85% 70% / 0.4);
+    /* Shadows suaves */
+    --shadow-primary: 0 4px 20px -8px hsl(210 40% 45% / 0.15);
+    --shadow-wellness: 0 3px 15px -5px hsl(210 35% 65% / 0.2);
+    --shadow-glow: 0 0 25px hsl(330 25% 70% / 0.2);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
