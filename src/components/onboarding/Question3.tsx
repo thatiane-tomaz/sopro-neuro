@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft } from "lucide-react";
@@ -14,11 +14,25 @@ interface Question3Props {
 }
 
 const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
-  const handleSelection = (value: string) => {
-    updateData({ previousAttempts: value });
+  const smokingTypes = [
+    { id: "cigarro-industrializado", label: "Cigarro industrializado" },
+    { id: "tabaco-enrolado", label: "Tabaco enrolado" },
+    { id: "cigarro-palha", label: "Cigarro de palha" },
+    { id: "vape-pod", label: "Vape / Pod eletrônico" },
+    { id: "charuto-nargile", label: "Charuto / narguilé" },
+    { id: "outro", label: "Outro" }
+  ];
+
+  const handleTypeToggle = (typeId: string, checked: boolean) => {
+    const currentTypes = data.smokingTypes || [];
+    const updatedTypes = checked
+      ? [...currentTypes, typeId]
+      : currentTypes.filter(id => id !== typeId);
+    
+    updateData({ smokingTypes: updatedTypes });
   };
 
-  const canProceed = data.previousAttempts !== "";
+  const canProceed = data.smokingTypes && data.smokingTypes.length > 0;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -36,44 +50,32 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
         <Card className="border-primary/20 shadow-wellness">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl text-foreground">
-              Você já tentou parar de fumar antes?
+              O que você costuma fumar?
             </CardTitle>
+            <p className="text-sm text-muted-foreground mt-2">
+              Selecione todos que se aplicam
+            </p>
           </CardHeader>
           <CardContent className="space-y-6">
-            <RadioGroup value={data.previousAttempts} onValueChange={handleSelection}>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="nunca" id="nunca" />
-                  <Label htmlFor="nunca" className="flex-1 cursor-pointer">
-                    Nunca tentei antes
+            <div className="grid gap-4">
+              {smokingTypes.map((type) => (
+                <div 
+                  key={type.id}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors"
+                >
+                  <Checkbox
+                    id={type.id}
+                    checked={data.smokingTypes?.includes(type.id) || false}
+                    onCheckedChange={(checked) => 
+                      handleTypeToggle(type.id, checked as boolean)
+                    }
+                  />
+                  <Label htmlFor={type.id} className="flex-1 cursor-pointer">
+                    {type.label}
                   </Label>
                 </div>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="1-vez" id="1-vez" />
-                  <Label htmlFor="1-vez" className="flex-1 cursor-pointer">
-                    Tentei 1 vez
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="2-3-vezes" id="2-3-vezes" />
-                  <Label htmlFor="2-3-vezes" className="flex-1 cursor-pointer">
-                    Tentei 2-3 vezes
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="muitas-vezes" id="muitas-vezes" />
-                  <Label htmlFor="muitas-vezes" className="flex-1 cursor-pointer">
-                    Tentei muitas vezes
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="prefiro-nao-dizer" id="prefiro-nao-dizer" />
-                  <Label htmlFor="prefiro-nao-dizer" className="flex-1 cursor-pointer">
-                    Prefiro não dizer
-                  </Label>
-                </div>
-              </div>
-            </RadioGroup>
+              ))}
+            </div>
 
             <div className="flex gap-3">
               <Button 

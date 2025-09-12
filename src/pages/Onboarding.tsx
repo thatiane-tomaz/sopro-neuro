@@ -6,19 +6,21 @@ import Question3 from "@/components/onboarding/Question3";
 import Question4 from "@/components/onboarding/Question4";
 
 export interface OnboardingData {
+  age: string;
+  gender: string;
   smokingFrequency: string;
-  motivation: string;
-  previousAttempts: string;
-  challenges: string[];
+  smokingTypes: string[];
+  smokingReasons: string[];
 }
 
 const Onboarding = () => {
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [data, setData] = useState<OnboardingData>({
+    age: "",
+    gender: "",
     smokingFrequency: "",
-    motivation: "",
-    previousAttempts: "",
-    challenges: []
+    smokingTypes: [],
+    smokingReasons: []
   });
 
   const updateData = (newData: Partial<OnboardingData>) => {

@@ -14,27 +14,25 @@ interface Question4Props {
 }
 
 const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
-  const challenges = [
-    { id: "ansiedade", label: "Ansiedade e nervosismo" },
-    { id: "habitos", label: "Quebrar hábitos rotineiros" },
-    { id: "social", label: "Situações sociais" },
-    { id: "stress", label: "Momentos de estresse" },
-    { id: "concentracao", label: "Dificuldade de concentração" },
-    { id: "peso", label: "Medo de ganhar peso" },
-    { id: "abstinencia", label: "Sintomas de abstinência" },
-    { id: "tedio", label: "Momentos de tédio" }
+  const reasons = [
+    { id: "estresse-ansiedade", label: "Para aliviar estresse ou ansiedade" },
+    { id: "relaxar-pausa", label: "Para relaxar em momentos de pausa" },
+    { id: "habito-automatico", label: "Por hábito automático, sem perceber" },
+    { id: "socializar", label: "Para socializar (com amigos, colegas, família)" },
+    { id: "concentracao", label: "Para se sentir mais concentrado(a)" },
+    { id: "prazer", label: "Por prazer (sabor/sensação)" }
   ];
 
-  const handleChallengeToggle = (challengeId: string, checked: boolean) => {
-    const currentChallenges = data.challenges || [];
-    const updatedChallenges = checked
-      ? [...currentChallenges, challengeId]
-      : currentChallenges.filter(id => id !== challengeId);
+  const handleReasonToggle = (reasonId: string, checked: boolean) => {
+    const currentReasons = data.smokingReasons || [];
+    const updatedReasons = checked
+      ? [...currentReasons, reasonId]
+      : currentReasons.filter(id => id !== reasonId);
     
-    updateData({ challenges: updatedChallenges });
+    updateData({ smokingReasons: updatedReasons });
   };
 
-  const canProceed = data.challenges && data.challenges.length > 0;
+  const canProceed = data.smokingReasons && data.smokingReasons.length > 0;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -52,7 +50,7 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
         <Card className="border-primary/20 shadow-wellness">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl text-foreground">
-              Quais são seus maiores desafios para parar de fumar?
+              Quais são os principais motivos pelos quais você fuma?
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-2">
               Selecione todos que se aplicam
@@ -60,20 +58,20 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid gap-4">
-              {challenges.map((challenge) => (
+              {reasons.map((reason) => (
                 <div 
-                  key={challenge.id}
+                  key={reason.id}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors"
                 >
                   <Checkbox
-                    id={challenge.id}
-                    checked={data.challenges?.includes(challenge.id) || false}
+                    id={reason.id}
+                    checked={data.smokingReasons?.includes(reason.id) || false}
                     onCheckedChange={(checked) => 
-                      handleChallengeToggle(challenge.id, checked as boolean)
+                      handleReasonToggle(reason.id, checked as boolean)
                     }
                   />
-                  <Label htmlFor={challenge.id} className="flex-1 cursor-pointer">
-                    {challenge.label}
+                  <Label htmlFor={reason.id} className="flex-1 cursor-pointer">
+                    {reason.label}
                   </Label>
                 </div>
               ))}

@@ -15,10 +15,10 @@ interface Question2Props {
 
 const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
   const handleSelection = (value: string) => {
-    updateData({ motivation: value });
+    updateData({ smokingFrequency: value });
   };
 
-  const canProceed = data.motivation !== "";
+  const canProceed = data.smokingFrequency !== "";
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -36,40 +36,40 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
         <Card className="border-primary/20 shadow-wellness">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl text-foreground">
-              Qual é sua principal motivação para parar de fumar?
+              Com que frequência você fuma atualmente?
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <RadioGroup value={data.motivation} onValueChange={handleSelection}>
+            <RadioGroup value={data.smokingFrequency} onValueChange={handleSelection}>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="saude" id="saude" />
-                  <Label htmlFor="saude" className="flex-1 cursor-pointer">
-                    Melhorar minha saúde
+                  <RadioGroupItem value="mais-de-5-dia" id="mais-de-5-dia" />
+                  <Label htmlFor="mais-de-5-dia" className="flex-1 cursor-pointer">
+                    Mais de 5 vezes por dia
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="familia" id="familia" />
-                  <Label htmlFor="familia" className="flex-1 cursor-pointer">
-                    Família e entes queridos
+                  <RadioGroupItem value="menos-de-5-dia" id="menos-de-5-dia" />
+                  <Label htmlFor="menos-de-5-dia" className="flex-1 cursor-pointer">
+                    Menos de 5 vezes por dia
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="dinheiro" id="dinheiro" />
-                  <Label htmlFor="dinheiro" className="flex-1 cursor-pointer">
-                    Economizar dinheiro
+                  <RadioGroupItem value="menos-de-5-semana" id="menos-de-5-semana" />
+                  <Label htmlFor="menos-de-5-semana" className="flex-1 cursor-pointer">
+                    Menos de 5 vezes por semana
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="autoestima" id="autoestima" />
-                  <Label htmlFor="autoestima" className="flex-1 cursor-pointer">
-                    Aumentar minha autoestima
+                  <RadioGroupItem value="raramente" id="raramente" />
+                  <Label htmlFor="raramente" className="flex-1 cursor-pointer">
+                    Raramente
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="outro" id="outro" />
-                  <Label htmlFor="outro" className="flex-1 cursor-pointer">
-                    Outro motivo
+                  <RadioGroupItem value="abstinencia" id="abstinencia" />
+                  <Label htmlFor="abstinencia" className="flex-1 cursor-pointer">
+                    Estou em abstinência no momento
                   </Label>
                 </div>
               </div>
