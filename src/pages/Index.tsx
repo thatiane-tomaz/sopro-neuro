@@ -7,11 +7,16 @@ const Index = () => {
 
   useEffect(() => {
     const hasVisitedBefore = localStorage.getItem("sopro-visited");
+    const hasCompletedOnboarding = localStorage.getItem("sopro-onboarding-completed");
     
     if (!hasVisitedBefore) {
       localStorage.setItem("sopro-visited", "true");
       setIsFirstVisit(true);
+    } else if (!hasCompletedOnboarding) {
+      // User has visited before but hasn't completed onboarding
+      setIsFirstVisit(false);
     } else {
+      // User has completed onboarding, go to dashboard
       setIsFirstVisit(false);
     }
   }, []);
@@ -20,7 +25,14 @@ const Index = () => {
     return null; // Loading state
   }
 
-  if (!isFirstVisit) {
+  // Check if user needs to go through onboarding
+  const hasCompletedOnboarding = localStorage.getItem("sopro-onboarding-completed");
+  
+  if (!isFirstVisit && !hasCompletedOnboarding) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  if (!isFirstVisit && hasCompletedOnboarding) {
     return <Navigate to="/dashboard" replace />;
   }
 
