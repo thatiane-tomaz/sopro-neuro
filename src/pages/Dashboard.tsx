@@ -3,7 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Play, Clock, Route, CheckCircle, Lock } from "lucide-react";
+import { Play, Clock, Route, CheckCircle, Lock, Crown } from "lucide-react";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { ContentAccessWrapper } from "@/components/upgrade/UpgradeCard";
+import UpgradeCard from "@/components/upgrade/UpgradeCard";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Dashboard = () => {
   const [currentWeek] = useState(1);
@@ -13,6 +18,22 @@ const Dashboard = () => {
     video: false,
     hypnosis: false
   });
+  
+  const { user, loading: authLoading } = useAuth();
+  const { profile, loading: profileLoading, isFree, isPremium } = useUserProfile();
+
+  // Redirect to login if not authenticated
+  if (!authLoading && !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (authLoading || profileLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">Carregando...</div>
+      </div>
+    );
+  }
 
   const weekData = {
     1: {
@@ -122,6 +143,17 @@ const Dashboard = () => {
             <div className="flex items-center space-x-2">
               <div className="w-6 h-6 bg-gradient-primary rounded-md"></div>
               <h1 className="text-lg font-bold text-foreground">Sopro</h1>
+              {isFree && (
+                <Badge variant="secondary" className="text-xs">
+                  Acesso Gratuito
+                </Badge>
+              )}
+              {isPremium && (
+                <Badge className="text-xs bg-accent">
+                  <Crown className="w-3 h-3 mr-1" />
+                  Premium
+                </Badge>
+              )}
             </div>
             <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)}>
               <Route className="h-4 w-4" />
@@ -132,6 +164,11 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="px-4 py-6 space-y-6">
+        {/* Upgrade Card for Free Users */}
+        {isFree && (
+          <UpgradeCard onUpgrade={() => console.log('Upgrade clicked')} />
+        )}
+
         {/* Week Overview */}
         <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
           <div className="space-y-4">
@@ -184,62 +221,66 @@ const Dashboard = () => {
             </div>
             
             {/* Video Card */}
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl p-4 border border-primary/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center shadow-lg">
-                    <Play className="h-5 w-5 text-white fill-white" />
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-foreground">Vídeo</span>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Clock className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        {currentWeekData.video.duration}
-                      </span>
+            <ContentAccessWrapper day={currentDay} contentType="video" contentId={`video_week_${currentWeek}_day_${currentDay}`}>
+              <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl p-4 border border-primary/20">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center shadow-lg">
+                      <Play className="h-5 w-5 text-white fill-white" />
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-foreground">Vídeo</span>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <Clock className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {currentWeekData.video.duration}
+                        </span>
+                      </div>
                     </div>
                   </div>
+                  {completedToday.video ? (
+                    <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+                      <CheckCircle className="h-5 w-5 text-secondary" />
+                    </div>
+                  ) : (
+                    <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                      Assistir
+                    </Button>
+                  )}
                 </div>
-                {completedToday.video ? (
-                  <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-secondary" />
-                  </div>
-                ) : (
-                  <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-                    Assistir
-                  </Button>
-                )}
               </div>
-            </div>
+            </ContentAccessWrapper>
 
             {/* Hypnosis Card */}
-            <div className="bg-gradient-to-r from-accent/10 to-accent/5 backdrop-blur-sm rounded-2xl p-4 border border-accent/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent via-accent/90 to-secondary flex items-center justify-center shadow-lg">
-                    <div className="w-6 h-6 rounded-full bg-white" />
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-foreground">Hipnose</span>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Clock className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        {currentWeekData.hypnosis.duration}
-                      </span>
+            <ContentAccessWrapper day={currentDay} contentType="hypnosis" contentId={`hypnosis_week_${currentWeek}_day_${currentDay}`}>
+              <div className="bg-gradient-to-r from-accent/10 to-accent/5 backdrop-blur-sm rounded-2xl p-4 border border-accent/20">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent via-accent/90 to-secondary flex items-center justify-center shadow-lg">
+                      <div className="w-6 h-6 rounded-full bg-white" />
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-foreground">Hipnose</span>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <Clock className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">
+                          {currentWeekData.hypnosis.duration}
+                        </span>
+                      </div>
                     </div>
                   </div>
+                  {completedToday.hypnosis ? (
+                    <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+                      <CheckCircle className="h-5 w-5 text-secondary" />
+                    </div>
+                  ) : (
+                    <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
+                      Ouvir
+                    </Button>
+                  )}
                 </div>
-                {completedToday.hypnosis ? (
-                  <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-secondary" />
-                  </div>
-                ) : (
-                  <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
-                    Ouvir
-                  </Button>
-                )}
               </div>
-            </div>
+            </ContentAccessWrapper>
             
             {/* Completion Message */}
             {completedToday.video && completedToday.hypnosis && (
