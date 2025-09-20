@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Dashboard = () => {
   const [currentWeek] = useState(1);
-  const [currentDay] = useState(3);
+  const [currentDay] = useState(1);
   const [showTimeline, setShowTimeline] = useState(false);
   const [completedToday] = useState({
     video: false,
