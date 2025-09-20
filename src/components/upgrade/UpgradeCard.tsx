@@ -22,10 +22,10 @@ const UpgradeCard = ({ onUpgrade }: UpgradeCardProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">✓ Acesso a todos os 28 dias</p>
+          <p className="text-sm text-muted-foreground">✓ Processo completo de 21 dias</p>
           <p className="text-sm text-muted-foreground">✓ Todas as hipnoses exclusivas</p>
-          <p className="text-sm text-muted-foreground">✓ Suporte prioritário</p>
-          <p className="text-sm text-muted-foreground">✓ Acesso vitalício</p>
+          <p className="text-sm text-muted-foreground">✓ Explicações sobre neurociência do vício</p>
+          <p className="text-sm text-muted-foreground">✓ Técnicas práticas para lidar com abstinência e gatilhos</p>
         </div>
         <Button 
           onClick={onUpgrade} 

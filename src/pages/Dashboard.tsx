@@ -164,10 +164,6 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="px-4 py-6 space-y-6">
-        {/* Upgrade Card for Free Users */}
-        {isFree && (
-          <UpgradeCard onUpgrade={() => console.log('Upgrade clicked')} />
-        )}
 
         {/* Week Overview */}
         <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
@@ -298,6 +294,11 @@ const Dashboard = () => {
               Você tem 2 dias liberados para experimentar. Aproveite cada momento!
             </p>
           </div>
+        )}
+
+        {/* Upgrade Card for Free Users - Moved to bottom */}
+        {isFree && (
+          <UpgradeCard onUpgrade={() => console.log('Upgrade clicked')} />
         )}
       </main>
     </div>
