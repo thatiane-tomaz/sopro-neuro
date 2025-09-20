@@ -9,6 +9,7 @@ import { ContentAccessWrapper } from "@/components/upgrade/UpgradeCard";
 import UpgradeCard from "@/components/upgrade/UpgradeCard";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useContent } from "@/hooks/useContent";
 
 const Dashboard = () => {
   const [currentWeek] = useState(1);
@@ -21,13 +22,14 @@ const Dashboard = () => {
   
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading, isFree, isPremium } = useUserProfile();
+  const { getVideoContent, getHypnosisContent, loading: contentLoading } = useContent(currentWeek, currentDay);
 
   // Redirect to login if not authenticated
   if (!authLoading && !user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (authLoading || profileLoading) {
+  if (authLoading || profileLoading || contentLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">Carregando...</div>
@@ -75,6 +77,8 @@ const Dashboard = () => {
   };
 
   const currentWeekData = weekData[currentWeek as keyof typeof weekData];
+  const videoContent = getVideoContent();
+  const hypnosisContent = getHypnosisContent();
 
   if (showTimeline) {
     return (
@@ -225,11 +229,13 @@ const Dashboard = () => {
                       <Play className="h-5 w-5 text-white fill-white" />
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-foreground">Vídeo</span>
+                      <span className="text-sm font-medium text-foreground">
+                        {videoContent?.title || 'Vídeo'}
+                      </span>
                       <div className="flex items-center space-x-2 mt-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
-                          {currentWeekData.video.duration}
+                          {videoContent?.duration_minutes ? `${videoContent.duration_minutes} min` : '5 min'}
                         </span>
                       </div>
                     </div>
@@ -256,11 +262,13 @@ const Dashboard = () => {
                       <div className="w-6 h-6 rounded-full bg-white" />
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-foreground">Hipnose</span>
+                      <span className="text-sm font-medium text-foreground">
+                        {hypnosisContent?.title || 'Hipnose'}
+                      </span>
                       <div className="flex items-center space-x-2 mt-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
-                          {currentWeekData.hypnosis.duration}
+                          {hypnosisContent?.duration_minutes ? `${hypnosisContent.duration_minutes} min` : '10 min'}
                         </span>
                       </div>
                     </div>
