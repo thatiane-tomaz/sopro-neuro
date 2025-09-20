@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-export interface Content {
+interface ContentItem {
   id: string;
   title: string;
   description: string | null;
@@ -13,28 +13,38 @@ export interface Content {
   file_url: string | null;
   thumbnail_url: string | null;
   is_premium: boolean;
-  sort_order: number | null;
-  created_at: string;
-  updated_at: string;
+  sort_order: number;
 }
 
 export const useContent = (weekNumber: number, dayNumber: number) => {
-  const [content, setContent] = useState<Content[]>([]);
+  const [content, setContent] = useState<{
+    video: ContentItem | null;
+    hypnosis: ContentItem | null;
+  }>({
+    video: null,
+    hypnosis: null
+  });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchContent = async () => {
       try {
+        setLoading(true);
+        
         const { data, error } = await supabase
           .from('content')
           .select('*')
           .eq('week_number', weekNumber)
           .eq('day_number', dayNumber)
-          .order('sort_order', { ascending: true });
+          .order('content_type');
 
         if (error) throw error;
-        setContent(data as Content[] || []);
+
+        const video = data?.find(item => item.content_type === 'video') as ContentItem | undefined || null;
+        const hypnosis = data?.find(item => item.content_type === 'hypnosis') as ContentItem | undefined || null;
+
+        setContent({ video, hypnosis });
       } catch (error) {
         console.error('Error fetching content:', error);
         toast({
@@ -50,13 +60,5 @@ export const useContent = (weekNumber: number, dayNumber: number) => {
     fetchContent();
   }, [weekNumber, dayNumber, toast]);
 
-  const getVideoContent = () => content.find(c => c.content_type === 'video');
-  const getHypnosisContent = () => content.find(c => c.content_type === 'hypnosis');
-
-  return {
-    content,
-    loading,
-    getVideoContent,
-    getHypnosisContent
-  };
+  return { content, loading };
 };
