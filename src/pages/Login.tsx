@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,15 +7,43 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Mail, Lock, User, Sparkles } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [signupData, setSignupData] = useState({ name: "", email: "", password: "" });
+  const { user, signIn, signUp } = useAuth();
+
+  // Redirect if already logged in
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => setIsLoading(false), 2000);
+    
+    const { error } = await signIn(loginData.email, loginData.password);
+    
+    if (!error) {
+      // Redirect will happen automatically via auth state change
+    }
+    
+    setIsLoading(false);
   };
-  return <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    const { error } = await signUp(signupData.email, signupData.password, signupData.name);
+    
+    setIsLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <Link to="/" className="inline-flex items-center text-white/80 hover:text-white transition-smooth mb-6">
@@ -30,7 +59,6 @@ const Login = () => {
 
         <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
           <CardHeader className="text-center">
-            
             <CardDescription>
               Acesse sua conta e continue sua transformação
             </CardDescription>
@@ -43,19 +71,35 @@ const Login = () => {
               </TabsList>
               
               <TabsContent value="login">
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input id="email" type="email" placeholder="seu@email.com" className="pl-10" required />
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        placeholder="seu@email.com" 
+                        className="pl-10"
+                        value={loginData.email}
+                        onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
+                        required 
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Senha</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input id="password" type="password" placeholder="••••••••" className="pl-10" required />
+                      <Input 
+                        id="password" 
+                        type="password" 
+                        placeholder="••••••••" 
+                        className="pl-10"
+                        value={loginData.password}
+                        onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
+                        required 
+                      />
                     </div>
                   </div>
                   <Button type="submit" variant="hero" className="w-full" disabled={isLoading}>
@@ -65,26 +109,50 @@ const Login = () => {
               </TabsContent>
               
               <TabsContent value="register">
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSignup} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Nome completo</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input id="name" type="text" placeholder="Seu nome" className="pl-10" required />
+                      <Input 
+                        id="name" 
+                        type="text" 
+                        placeholder="Seu nome" 
+                        className="pl-10"
+                        value={signupData.name}
+                        onChange={(e) => setSignupData(prev => ({ ...prev, name: e.target.value }))}
+                        required 
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="register-email">Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input id="register-email" type="email" placeholder="seu@email.com" className="pl-10" required />
+                      <Input 
+                        id="register-email" 
+                        type="email" 
+                        placeholder="seu@email.com" 
+                        className="pl-10"
+                        value={signupData.email}
+                        onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
+                        required 
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="register-password">Senha</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input id="register-password" type="password" placeholder="••••••••" className="pl-10" required />
+                      <Input 
+                        id="register-password" 
+                        type="password" 
+                        placeholder="••••••••" 
+                        className="pl-10"
+                        value={signupData.password}
+                        onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
+                        required 
+                      />
                     </div>
                   </div>
                   <Button type="submit" variant="wellness" className="w-full" disabled={isLoading}>
@@ -109,6 +177,8 @@ const Login = () => {
           </p>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Login;

@@ -14,7 +14,105 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      app_sessions: {
+        Row: {
+          id: string
+          opened_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          opened_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          opened_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      content_views: {
+        Row: {
+          content_identifier: string
+          content_type: string
+          id: string
+          user_id: string
+          viewed_at: string
+        }
+        Insert: {
+          content_identifier: string
+          content_type: string
+          id?: string
+          user_id: string
+          viewed_at?: string
+        }
+        Update: {
+          content_identifier?: string
+          content_type?: string
+          id?: string
+          user_id?: string
+          viewed_at?: string
+        }
+        Relationships: []
+      }
+      onboarding_responses: {
+        Row: {
+          age: string | null
+          completed_at: string
+          gender: string | null
+          id: string
+          smoking_frequency: string | null
+          smoking_reasons: string[] | null
+          smoking_types: string[] | null
+          user_id: string
+        }
+        Insert: {
+          age?: string | null
+          completed_at?: string
+          gender?: string | null
+          id?: string
+          smoking_frequency?: string | null
+          smoking_reasons?: string[] | null
+          smoking_types?: string[] | null
+          user_id: string
+        }
+        Update: {
+          age?: string | null
+          completed_at?: string
+          gender?: string | null
+          id?: string
+          smoking_frequency?: string | null
+          smoking_reasons?: string[] | null
+          smoking_types?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

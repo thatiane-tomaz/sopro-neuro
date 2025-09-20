@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import Question1 from "@/components/onboarding/Question1";
 import Question2 from "@/components/onboarding/Question2";
 import Question3 from "@/components/onboarding/Question3";
@@ -22,6 +25,19 @@ const Onboarding = () => {
     smokingTypes: [],
     smokingReasons: []
   });
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
+
+  // Redirect to login if not authenticated
+  if (!loading && !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (loading) {
+    return <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center">
+      <div className="text-center">Carregando...</div>
+    </div>;
+  }
 
   const updateData = (newData: Partial<OnboardingData>) => {
     setData(prev => ({ ...prev, ...newData }));
@@ -39,11 +55,40 @@ const Onboarding = () => {
     }
   };
 
-  const finishOnboarding = () => {
-    localStorage.setItem("sopro-onboarding-completed", "true");
-    localStorage.setItem("sopro-onboarding-data", JSON.stringify(data));
-    // Trigger completion
-    window.location.href = "/dashboard";
+  const finishOnboarding = async () => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('onboarding_responses')
+        .insert({
+          user_id: user.id,
+          age: data.age,
+          gender: data.gender,
+          smoking_frequency: data.smokingFrequency,
+          smoking_types: data.smokingTypes,
+          smoking_reasons: data.smokingReasons
+        });
+
+      if (error) throw error;
+
+      localStorage.setItem("sopro-onboarding-completed", "true");
+      localStorage.setItem("sopro-onboarding-data", JSON.stringify(data));
+      
+      toast({
+        title: "Onboarding concluído",
+        description: "Suas respostas foram salvas com sucesso!"
+      });
+      
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.error('Error saving onboarding:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao salvar suas respostas. Tente novamente.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Check if onboarding is already completed
