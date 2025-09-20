@@ -290,6 +290,15 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+
+        {/* Free Trial Message for Free Users */}
+        {isFree && (
+          <div className="bg-gradient-to-r from-accent/10 to-primary/10 backdrop-blur-sm rounded-2xl p-6 border border-accent/30 text-center">
+            <p className="text-foreground font-medium">
+              Você tem 2 dias liberados para experimentar. Aproveite cada momento!
+            </p>
+          </div>
+        )}
       </main>
     </div>
   );
