@@ -59,9 +59,6 @@ const Login = () => {
 
         <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
           <CardHeader className="text-center">
-            <CardDescription>
-              Acesse sua conta e continue sua transformação
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login" className="w-full">
