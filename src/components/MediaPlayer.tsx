@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Play, Pause, X } from 'lucide-react';
+import { Play, Pause, X, Volume2 } from 'lucide-react';
 
 interface MediaPlayerProps {
   title: string;
@@ -13,10 +13,44 @@ interface MediaPlayerProps {
 
 const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: MediaPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
+
+  useEffect(() => {
+    const media = mediaRef.current;
+    if (!media) return;
+
+    const updateTime = () => setCurrentTime(media.currentTime);
+    const updateDuration = () => setDuration(media.duration);
+
+    media.addEventListener('timeupdate', updateTime);
+    media.addEventListener('loadedmetadata', updateDuration);
+    media.addEventListener('ended', () => setIsPlaying(false));
+
+    return () => {
+      media.removeEventListener('timeupdate', updateTime);
+      media.removeEventListener('loadedmetadata', updateDuration);
+      media.removeEventListener('ended', () => setIsPlaying(false));
+    };
+  }, []);
 
   const handlePlayPause = () => {
+    const media = mediaRef.current;
+    if (!media) return;
+
+    if (isPlaying) {
+      media.pause();
+    } else {
+      media.play();
+    }
     setIsPlaying(!isPlaying);
-    // TODO: Implementar controle real de mídia
+  };
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -33,29 +67,45 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
             <p className="text-sm text-muted-foreground">{description}</p>
           )}
           
-          <div className="bg-muted rounded-lg p-8 text-center">
+          <div className="bg-muted rounded-lg overflow-hidden">
             {contentType === 'video' ? (
-              <div className="space-y-4">
-                <div className="w-16 h-16 mx-auto rounded-full bg-primary flex items-center justify-center">
-                  <Play className="h-8 w-8 text-white" />
-                </div>
-                <p className="text-muted-foreground">
-                  Player de vídeo será implementado aqui
-                </p>
-              </div>
+              <video
+                ref={mediaRef as React.RefObject<HTMLVideoElement>}
+                className="w-full h-auto max-h-96"
+                controls
+                src={fileUrl}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+              >
+                Seu navegador não suporta vídeo HTML5.
+              </video>
             ) : (
-              <div className="space-y-4">
-                <div className="w-16 h-16 mx-auto rounded-full bg-accent flex items-center justify-center">
-                  <div className="w-8 h-8 rounded-full bg-white" />
+              <div className="p-8">
+                <audio
+                  ref={mediaRef as React.RefObject<HTMLAudioElement>}
+                  className="w-full"
+                  controls
+                  src={fileUrl}
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                >
+                  Seu navegador não suporta áudio HTML5.
+                </audio>
+                <div className="mt-4 text-center">
+                  <div className="w-16 h-16 mx-auto rounded-full bg-accent flex items-center justify-center mb-4">
+                    <Volume2 className="h-8 w-8 text-white" />
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {duration > 0 && (
+                      <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
+                    )}
+                  </div>
                 </div>
-                <p className="text-muted-foreground">
-                  Player de áudio será implementado aqui
-                </p>
               </div>
             )}
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center space-x-4">
             <Button onClick={handlePlayPause} className="px-8">
               {isPlaying ? (
                 <>
