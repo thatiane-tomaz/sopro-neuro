@@ -32,54 +32,6 @@ export type Database = {
         }
         Relationships: []
       }
-      content: {
-        Row: {
-          content_type: string
-          created_at: string
-          day_number: number
-          description: string | null
-          duration_minutes: number | null
-          file_url: string | null
-          id: string
-          is_premium: boolean
-          sort_order: number | null
-          thumbnail_url: string | null
-          title: string
-          updated_at: string
-          week_number: number
-        }
-        Insert: {
-          content_type: string
-          created_at?: string
-          day_number: number
-          description?: string | null
-          duration_minutes?: number | null
-          file_url?: string | null
-          id?: string
-          is_premium?: boolean
-          sort_order?: number | null
-          thumbnail_url?: string | null
-          title: string
-          updated_at?: string
-          week_number: number
-        }
-        Update: {
-          content_type?: string
-          created_at?: string
-          day_number?: number
-          description?: string | null
-          duration_minutes?: number | null
-          file_url?: string | null
-          id?: string
-          is_premium?: boolean
-          sort_order?: number | null
-          thumbnail_url?: string | null
-          title?: string
-          updated_at?: string
-          week_number?: number
-        }
-        Relationships: []
-      }
       content_views: {
         Row: {
           content_identifier: string
