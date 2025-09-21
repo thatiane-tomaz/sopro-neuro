@@ -105,10 +105,16 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
                 ref={mediaRef as React.RefObject<HTMLVideoElement>}
                 className="w-full h-auto max-h-96"
                 controls
-                src={fileUrl}
+                crossOrigin="anonymous"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
+                onError={(e) => {
+                  console.error('Video error details:', e.currentTarget.error);
+                  setError(`Erro no vídeo: ${e.currentTarget.error?.message || 'Falha ao carregar'}`);
+                }}
+                onLoadStart={() => console.log('Video load started:', fileUrl)}
               >
+                {fileUrl && <source src={fileUrl} type="video/mp4" />}
                 Seu navegador não suporta vídeo HTML5.
               </video>
             ) : (
@@ -117,10 +123,16 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
                   ref={mediaRef as React.RefObject<HTMLAudioElement>}
                   className="w-full"
                   controls
-                  src={fileUrl}
+                  crossOrigin="anonymous"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
+                  onError={(e) => {
+                    console.error('Audio error details:', e.currentTarget.error);
+                    setError(`Erro no áudio: ${e.currentTarget.error?.message || 'Falha ao carregar'}`);
+                  }}
+                  onLoadStart={() => console.log('Audio load started:', fileUrl)}
                 >
+                  {fileUrl && <source src={fileUrl} type="audio/mpeg" />}
                   Seu navegador não suporta áudio HTML5.
                 </audio>
                 <div className="mt-4 text-center">
@@ -131,6 +143,9 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
                     {duration > 0 && (
                       <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
                     )}
+                  </div>
+                  <div className="mt-2 text-xs text-muted-foreground">
+                    {fileUrl && <span>URL: {fileUrl}</span>}
                   </div>
                 </div>
               </div>
