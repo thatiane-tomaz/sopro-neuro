@@ -1,0 +1,107 @@
+-- Limpar a tabela e inserir apenas textos que realmente existem no código
+DELETE FROM public.daily_texts;
+
+-- Inserir apenas os textos que realmente existem no app
+INSERT INTO public.daily_texts (day_number, text_key, text_content, text_type) VALUES
+-- Hero Section (Landing page)
+(0, 'app_name', 'Sopro', 'brand'),
+(0, 'hero_title', 'Transforme sua vida e pare de fumar definitivamente', 'title'),
+(0, 'hero_subtitle', 'Usando métodos cientificamente comprovados', 'subtitle'),
+(0, 'hero_cta_primary', 'Comece sua transformação', 'button'),
+(0, 'hero_cta_secondary', 'Saiba como funciona', 'button'),
+(0, 'feature_neurociencia', 'Neurociência', 'feature'),
+(0, 'feature_hipnose', 'Hipnose', 'feature'),
+(0, 'feature_educacao', 'Educação', 'feature'),
+
+-- Methods Section
+(0, 'methods_title', 'Nossa abordagem científica', 'title'),
+(0, 'methods_subtitle', 'Combinamos três métodos comprovados para garantir que você pare de fumar de forma definitiva e natural, sem sofrimento ou ansiedade.', 'description'),
+(0, 'stat_pessoas', '10K+', 'stat_number'),
+(0, 'stat_pessoas_label', 'Pessoas transformadas', 'stat_label'),
+(0, 'stat_sucesso', '95%', 'stat_number'),
+(0, 'stat_sucesso_label', 'Taxa de sucesso', 'stat_label'),
+(0, 'stat_dias', '30', 'stat_number'),
+(0, 'stat_dias_label', 'Dias para mudança', 'stat_label'),
+(0, 'method_neurociencia_title', 'Neurociência', 'title'),
+(0, 'method_neurociencia_desc', 'Baseado em pesquisas sobre como o cérebro funciona e como mudar padrões de comportamento definitivamente.', 'description'),
+(0, 'method_hipnose_title', 'Hipnose Clínica', 'title'),
+(0, 'method_hipnose_desc', 'Técnicas de hipnose terapêutica para acessar o subconsciente e reprogramar comportamentos automáticos.', 'description'),
+(0, 'method_educacao_title', 'Educação Personalizada', 'title'),
+(0, 'method_educacao_desc', 'Conteúdo educativo adaptado ao seu perfil, necessidades e momento na jornada de transformação.', 'description'),
+(0, 'cta_transformacao_title', 'Pronto para começar sua transformação?', 'title'),
+(0, 'cta_transformacao_subtitle', 'Cada dia que você espera é um dia a menos de vida saudável', 'subtitle'),
+(0, 'cta_comecar', 'Começar agora', 'button'),
+(0, 'cta_especialista', 'Falar com especialista', 'button'),
+
+-- Dashboard texts
+(0, 'badge_gratuito', 'Acesso Gratuito', 'badge'),
+(0, 'badge_premium', 'Premium', 'badge'),
+(0, 'linha_tempo', 'Linha do Tempo', 'button'),
+(0, 'voltar', 'Voltar', 'button'),
+(0, 'caminho', 'Caminho', 'button'),
+(1, 'fase_numero', 'Fase 1', 'phase_indicator'),
+(1, 'dia_progresso', '1/7', 'progress_indicator'),
+(1, 'fase_description', 'Nesta fase você vai descobrir como a nicotina age no seu corpo e mente, quebrando falsas crenças sobre o cigarro.', 'description'),
+(1, 'conquista_titulo', 'Sua Conquista de Hoje', 'title'),
+(3, 'conquista_description', 'Hoje você vai aprofundar seu conhecimento sobre neurociência e relaxar com uma hipnose de desconstrução de mitos.', 'description'),
+(0, 'btn_assistir', 'Assistir', 'button'),
+(0, 'btn_ouvir', 'Ouvir', 'button'),
+(0, 'completion_message', '🎉 Parabéns, você completou a conquista de Hoje', 'completion_message'),
+(0, 'trial_message', 'Você tem 2 dias liberados para experimentar. Aproveite cada momento!', 'system_message'),
+
+-- Timeline data
+(1, 'semana_1_title', 'Quebrando Crenças e Aprendendo', 'title'),
+(1, 'semana_1_subtitle', 'Continue fumando enquanto aprende', 'subtitle'),
+(2, 'semana_2_title', 'O Momento de Parar', 'title'),
+(2, 'semana_2_subtitle', 'Hipnoses para enfrentar a abstinência', 'subtitle'),
+(3, 'semana_3_title', 'Novos Hábitos Saudáveis', 'title'),
+(3, 'semana_3_subtitle', 'Reprogramando seu estilo de vida', 'subtitle'),
+
+-- Content titles and durations from weekData
+(1, 'video_neurociencia_title', 'Neurociência do Vício', 'content_title'),
+(1, 'video_neurociencia_duration', '5 min', 'duration'),
+(1, 'hypnosis_mitos_title', 'Desconstruindo Mitos', 'content_title'),
+(1, 'hypnosis_mitos_duration', '10 min', 'duration'),
+(2, 'video_preparacao_title', 'Preparação Mental', 'content_title'),
+(2, 'video_preparacao_duration', '4 min', 'duration'),
+(2, 'hypnosis_relaxamento_title', 'Relaxamento Profundo', 'content_title'),
+(2, 'hypnosis_relaxamento_duration', '8 min', 'duration'),
+(3, 'video_atividade_title', 'Atividade Física', 'content_title'),
+(3, 'video_atividade_duration', '6 min', 'duration'),
+(3, 'hypnosis_motivacao_title', 'Motivação para Saúde', 'content_title'),
+(3, 'hypnosis_motivacao_duration', '12 min', 'duration'),
+(0, 'video_educacional_label', 'Vídeo Educacional', 'label'),
+(0, 'hipnose_label', 'Hipnose', 'label'),
+
+-- Onboarding questions
+(0, 'question1_title', 'Vamos nos conhecer melhor', 'title'),
+(0, 'question1_progress', 'Pergunta 1 de 4', 'progress_text'),
+(0, 'question1_percentage', '25%', 'progress_percentage'),
+(0, 'question_idade', 'Qual é a sua idade?', 'question'),
+(0, 'question_genero', 'Como você se identifica em relação ao gênero?', 'question'),
+(0, 'genero_mulher', 'Mulher', 'option'),
+(0, 'genero_homem', 'Homem', 'option'),
+(0, 'genero_nao_binarie', 'Não-binárie', 'option'),
+(0, 'genero_prefiro_nao_responder', 'Prefiro não responder', 'option'),
+(0, 'btn_proxima', 'Próxima', 'button'),
+
+(0, 'question2_title', 'Com que frequência você fuma atualmente?', 'title'),
+(0, 'question2_progress', 'Pergunta 2 de 4', 'progress_text'),
+(0, 'question2_percentage', '50%', 'progress_percentage'),
+(0, 'freq_mais_5_dia', 'Mais de 5 vezes por dia', 'option'),
+(0, 'freq_menos_5_dia', 'Menos de 5 vezes por dia', 'option'),
+(0, 'freq_menos_5_semana', 'Menos de 5 vezes por semana', 'option'),
+(0, 'freq_raramente', 'Raramente', 'option'),
+(0, 'freq_abstinencia', 'Estou em abstinência no momento', 'option'),
+
+-- Upgrade card
+(0, 'upgrade_title', 'Acesso Premium', 'title'),
+(0, 'upgrade_description', 'Desbloqueie todo o programa de transformação', 'description'),
+(0, 'upgrade_feature_1', 'Processo completo de 21 dias', 'feature'),
+(0, 'upgrade_feature_2', 'Todas as hipnoses exclusivas', 'feature'),
+(0, 'upgrade_feature_3', 'Explicações sobre neurociência do vício', 'feature'),
+(0, 'upgrade_feature_4', 'Técnicas práticas para lidar com abstinência e gatilhos', 'feature'),
+(0, 'upgrade_btn', 'Fazer Upgrade Agora', 'button'),
+(0, 'content_premium_title', 'Conteúdo Premium', 'title'),
+(0, 'content_premium_description', 'Faça upgrade para acessar este conteúdo', 'description'),
+(0, 'content_indisponivel', 'Conteúdo não disponível', 'message');
