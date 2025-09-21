@@ -15,7 +15,10 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
+
+  console.log('MediaPlayer opened with:', { title, fileUrl, contentType });
 
   useEffect(() => {
     const media = mediaRef.current;
@@ -23,17 +26,34 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
 
     const updateTime = () => setCurrentTime(media.currentTime);
     const updateDuration = () => setDuration(media.duration);
+    const handleError = (e: Event) => {
+      console.error('Media error:', e);
+      setError('Erro ao carregar o arquivo. Verifique se o arquivo existe no storage.');
+    };
+    const handleLoadStart = () => {
+      console.log('Media load started for:', fileUrl);
+      setError(null);
+    };
+    const handleCanPlay = () => {
+      console.log('Media can play');
+    };
 
     media.addEventListener('timeupdate', updateTime);
     media.addEventListener('loadedmetadata', updateDuration);
     media.addEventListener('ended', () => setIsPlaying(false));
+    media.addEventListener('error', handleError);
+    media.addEventListener('loadstart', handleLoadStart);
+    media.addEventListener('canplay', handleCanPlay);
 
     return () => {
       media.removeEventListener('timeupdate', updateTime);
       media.removeEventListener('loadedmetadata', updateDuration);
       media.removeEventListener('ended', () => setIsPlaying(false));
+      media.removeEventListener('error', handleError);
+      media.removeEventListener('loadstart', handleLoadStart);
+      media.removeEventListener('canplay', handleCanPlay);
     };
-  }, []);
+  }, [fileUrl]);
 
   const handlePlayPause = () => {
     const media = mediaRef.current;
@@ -65,6 +85,18 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
         <CardContent className="space-y-4">
           {description && (
             <p className="text-sm text-muted-foreground">{description}</p>
+          )}
+          
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
+              <p className="text-sm text-destructive">{error}</p>
+            </div>
+          )}
+
+          {!fileUrl && (
+            <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
+              <p className="text-sm text-warning">Arquivo não encontrado no storage</p>
+            </div>
           )}
           
           <div className="bg-muted rounded-lg overflow-hidden">
