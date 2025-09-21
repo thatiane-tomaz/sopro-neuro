@@ -104,6 +104,36 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_texts: {
+        Row: {
+          created_at: string
+          day_number: number
+          id: string
+          text_content: string
+          text_key: string
+          text_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          day_number: number
+          id?: string
+          text_content: string
+          text_key: string
+          text_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          day_number?: number
+          id?: string
+          text_content?: string
+          text_key?: string
+          text_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       onboarding_responses: {
         Row: {
           age: string | null
