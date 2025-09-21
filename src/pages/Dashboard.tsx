@@ -8,6 +8,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { useContent } from "@/hooks/useContent";
 import { ContentAccessWrapper } from "@/components/upgrade/UpgradeCard";
 import UpgradeCard from "@/components/upgrade/UpgradeCard";
+import MediaPlayer from "@/components/MediaPlayer";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -19,6 +20,12 @@ const Dashboard = () => {
     video: false,
     hypnosis: false
   });
+  const [selectedMedia, setSelectedMedia] = useState<{
+    title: string;
+    description?: string;
+    fileUrl?: string;
+    contentType: 'video' | 'hypnosis';
+  } | null>(null);
   
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading, isFree, isPremium } = useUserProfile();
@@ -243,7 +250,16 @@ const Dashboard = () => {
                       <CheckCircle className="h-5 w-5 text-secondary" />
                     </div>
                   ) : (
-                    <Button size="sm" className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                    <Button 
+                      size="sm" 
+                      className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                      onClick={() => setSelectedMedia({
+                        title: content.video?.title || 'Vídeo',
+                        description: content.video?.description || undefined,
+                        fileUrl: content.video?.file_url || undefined,
+                        contentType: 'video'
+                      })}
+                    >
                       Assistir
                     </Button>
                   )}
@@ -276,7 +292,17 @@ const Dashboard = () => {
                       <CheckCircle className="h-5 w-5 text-secondary" />
                     </div>
                   ) : (
-                    <Button size="sm" variant="outline" className="rounded-full px-6 border-accent/30 hover:bg-accent/10">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="rounded-full px-6 border-accent/30 hover:bg-accent/10"
+                      onClick={() => setSelectedMedia({
+                        title: content.hypnosis?.title || 'Hipnose',
+                        description: content.hypnosis?.description || undefined,
+                        fileUrl: content.hypnosis?.file_url || undefined,
+                        contentType: 'hypnosis'
+                      })}
+                    >
                       Ouvir
                     </Button>
                   )}
@@ -307,6 +333,17 @@ const Dashboard = () => {
           <UpgradeCard onUpgrade={() => console.log('Upgrade clicked')} />
         )}
       </main>
+
+      {/* Media Player Modal */}
+      {selectedMedia && (
+        <MediaPlayer
+          title={selectedMedia.title}
+          description={selectedMedia.description}
+          fileUrl={selectedMedia.fileUrl}
+          contentType={selectedMedia.contentType}
+          onClose={() => setSelectedMedia(null)}
+        />
+      )}
     </div>
   );
 };
