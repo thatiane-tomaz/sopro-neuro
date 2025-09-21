@@ -144,9 +144,6 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
                       <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
                     )}
                   </div>
-                  <div className="mt-2 text-xs text-muted-foreground">
-                    {fileUrl && <span>URL: {fileUrl}</span>}
-                  </div>
                 </div>
               </div>
             )}
@@ -168,11 +165,6 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
             </Button>
           </div>
 
-          {fileUrl && (
-            <p className="text-xs text-muted-foreground text-center">
-              URL: {fileUrl}
-            </p>
-          )}
         </CardContent>
       </Card>
     </div>
