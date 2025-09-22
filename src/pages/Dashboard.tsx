@@ -88,6 +88,62 @@ const Dashboard = () => {
   const currentWeekData = weekData[currentWeek as keyof typeof weekData];
 
   if (showTimeline) {
+    const phases = [
+      {
+        id: 1,
+        title: "Fase 1",
+        subtitle: "Quebrando Crenças e Aprendendo",
+        description: "Continue fumando enquanto aprende sobre o vício e quebra crenças limitantes.",
+        days: [1, 2, 3]
+      },
+      {
+        id: 2,
+        title: "Fase 2", 
+        subtitle: "O Momento de Parar",
+        description: "Hipnoses e técnicas para enfrentar a abstinência e o processo de parar.",
+        days: [4, 5]
+      },
+      {
+        id: 3,
+        title: "Fase 3",
+        subtitle: "Novos Hábitos Saudáveis", 
+        description: "Reprogramando seu estilo de vida com novos hábitos e rotinas saudáveis.",
+        days: [6, 7]
+      }
+    ];
+
+    const getDayStatus = (day: number) => {
+      if (day < currentDay) return 'completed';
+      if (day === currentDay) return 'current';
+      return 'locked';
+    };
+
+    const getDayTitle = (day: number) => {
+      const titles = {
+        1: "Preparação Mental",
+        2: "Entendendo o Vício", 
+        3: "Quebrando Padrões",
+        4: "Dia da Decisão",
+        5: "Enfrentando a Abstinência",
+        6: "Novos Hábitos",
+        7: "Consolidação"
+      };
+      return titles[day as keyof typeof titles] || `Dia ${day}`;
+    };
+
+    const getDayDescription = (day: number) => {
+      const descriptions = {
+        1: "Prepare sua mente para a jornada de transformação que está começando.",
+        2: "Compreenda como funciona o vício e por que é difícil parar de fumar.",
+        3: "Identifique e quebre os padrões automáticos que te fazem fumar.",
+        4: "O momento chegou! Técnicas para tomar a decisão definitiva.",
+        5: "Estratégias para lidar com os sintomas da abstinência.",
+        6: "Construa novos hábitos saudáveis para substituir o cigarro.",
+        7: "Consolide sua nova identidade como não fumante."
+      };
+      return descriptions[day as keyof typeof descriptions] || "Descrição do dia será carregada em breve.";
+    };
+
     return (
       <div className="min-h-screen bg-background">
         {/* Header */}
@@ -97,48 +153,114 @@ const Dashboard = () => {
               <Button variant="ghost" onClick={() => setShowTimeline(false)} className="p-2">
                 ← Voltar
               </Button>
-              <h1 className="text-lg font-semibold text-foreground">Linha do Tempo</h1>
+              <h1 className="text-lg font-semibold text-foreground">Caminho do Processo</h1>
               <div className="w-10"></div>
             </div>
           </div>
         </header>
 
-        {/* Timeline Content */}
-        <main className="px-4 py-6 space-y-6">
-          {Object.entries(weekData).map(([week, data]) => (
-            <Card key={week} className={`${parseInt(week) > currentWeek ? 'opacity-50' : ''}`}>
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
+        {/* Process Path Content */}
+        <main className="px-4 py-6 space-y-8">
+          {phases.map((phase) => (
+            <div key={phase.id} className="space-y-4">
+              {/* Phase Header */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+                    phase.id <= Math.ceil(currentDay / 2.5) 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {phase.id}
+                  </div>
                   <div>
-                    <CardTitle className="text-base">Semana {week}</CardTitle>
-                    <p className="text-sm text-muted-foreground mt-1">{data.title}</p>
-                  </div>
-                  {parseInt(week) > currentWeek ? (
-                    <Lock className="h-5 w-5 text-muted-foreground" />
-                  ) : (
-                    <CheckCircle className="h-5 w-5 text-primary" />
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                    <div className="flex items-center space-x-3">
-                      <Play className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">Vídeo Educacional</span>
-                    </div>
-                    <Badge variant="secondary">{data.video.duration}</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                    <div className="flex items-center space-x-3">
-                      <div className="h-4 w-4 rounded-full bg-accent" />
-                      <span className="text-sm font-medium">Hipnose</span>
-                    </div>
-                    <Badge variant="secondary">{data.hypnosis.duration}</Badge>
+                    <h2 className="text-xl font-semibold text-foreground">{phase.title}</h2>
+                    <p className="text-sm font-medium text-primary">{phase.subtitle}</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <p className="text-sm text-muted-foreground leading-relaxed ml-11">
+                  {phase.description}
+                </p>
+              </div>
+
+              {/* Days Grid */}
+              <div className="grid gap-4 ml-11">
+                {phase.days.map((day) => {
+                  const status = getDayStatus(day);
+                  const isAccessible = status === 'completed' || status === 'current';
+                  
+                  return (
+                    <Card key={day} className={`transition-all duration-200 ${
+                      status === 'locked' ? 'opacity-50' : 'hover:shadow-md'
+                    }`}>
+                      <CardContent className="p-4">
+                        <div className="space-y-3">
+                          {/* Day Header */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                                status === 'completed' ? 'bg-secondary text-secondary-foreground' :
+                                status === 'current' ? 'bg-primary text-primary-foreground' :
+                                'bg-muted text-muted-foreground'
+                              }`}>
+                                {day}
+                              </div>
+                              <div>
+                                <h3 className="font-medium text-foreground">{getDayTitle(day)}</h3>
+                                <p className="text-xs text-muted-foreground">Dia {day}</p>
+                              </div>
+                            </div>
+                            {status === 'completed' && <CheckCircle className="h-4 w-4 text-secondary" />}
+                            {status === 'locked' && <Lock className="h-4 w-4 text-muted-foreground" />}
+                          </div>
+
+                          {/* Day Description */}
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {getDayDescription(day)}
+                          </p>
+
+                          {/* Action Buttons */}
+                          {isAccessible && (
+                            <div className="flex gap-2 pt-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="flex-1 h-8 text-xs"
+                                onClick={() => {
+                                  setShowTimeline(false);
+                                  setSelectedMedia({
+                                    title: `Vídeo - ${getDayTitle(day)}`,
+                                    contentType: 'video'
+                                  });
+                                }}
+                              >
+                                <Play className="h-3 w-3 mr-1" />
+                                Vídeo
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="flex-1 h-8 text-xs"
+                                onClick={() => {
+                                  setShowTimeline(false);
+                                  setSelectedMedia({
+                                    title: `Hipnose - ${getDayTitle(day)}`,
+                                    contentType: 'hypnosis'
+                                  });
+                                }}
+                              >
+                                <div className="w-3 h-3 rounded-full bg-accent mr-1" />
+                                Hipnose
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
           ))}
         </main>
       </div>
@@ -205,7 +327,7 @@ const Dashboard = () => {
                 className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs"
               >
                 <Route className="h-3 w-3 mr-1" />
-                <span>Caminho</span>
+                <span>Processo</span>
               </Button>
             </div>
             
