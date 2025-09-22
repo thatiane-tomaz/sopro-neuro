@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Play, Clock, Route, CheckCircle, Lock, Crown } from "lucide-react";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { useContent } from "@/hooks/useContent";
+import { useDailyTexts } from "@/hooks/useDailyTexts";
 import { ContentAccessWrapper } from "@/components/upgrade/UpgradeCard";
 import UpgradeCard from "@/components/upgrade/UpgradeCard";
 import MediaPlayer from "@/components/MediaPlayer";
@@ -29,14 +29,14 @@ const Dashboard = () => {
   
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading, isFree, isPremium } = useUserProfile();
-  const { content, loading: contentLoading } = useContent(currentWeek, currentDay);
+  const { texts, loading: textsLoading } = useDailyTexts(currentDay);
 
   // Redirect to login if not authenticated
   if (!authLoading && !user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (authLoading || profileLoading || contentLoading) {
+  if (authLoading || profileLoading || textsLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">Carregando...</div>
@@ -209,7 +209,7 @@ const Dashboard = () => {
             
             {/* Fase Description */}
             <p className="text-sm text-muted-foreground leading-relaxed">
-              {currentWeek === 1 ? "Nesta fase você vai descobrir como a nicotina age no seu corpo e mente, quebrando falsas crenças sobre o cigarro." : "Descrição da fase atual"}
+              {texts.fase_descricao || "Carregando descrição da fase..."}
             </p>
           </div>
         </div>
@@ -221,7 +221,7 @@ const Dashboard = () => {
             <div className="space-y-3">
               <h3 className="text-lg font-medium text-foreground">Sua Conquista de Hoje</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                {currentDay === 3 ? "Hoje você vai aprofundar seu conhecimento sobre neurociência e relaxar com uma hipnose de desconstrução de mitos." : "Atividades do dia para sua transformação"}
+                {texts.dia_descricao || "Carregando atividades do dia..."}
               </p>
             </div>
             
@@ -235,12 +235,12 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <span className="text-sm font-medium text-foreground">
-                        {content.video?.title || 'Vídeo'}
+                        Vídeo Educacional
                       </span>
                       <div className="flex items-center space-x-2 mt-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
-                          {content.video?.duration_minutes ? `${content.video.duration_minutes} min` : '5 min'}
+                          5 min
                         </span>
                       </div>
                     </div>
@@ -254,9 +254,9 @@ const Dashboard = () => {
                       size="sm" 
                       className="rounded-full px-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                       onClick={() => setSelectedMedia({
-                        title: content.video?.title || 'Vídeo',
-                        description: content.video?.description || undefined,
-                        fileUrl: content.video?.file_url || undefined,
+                        title: 'Vídeo Educacional',
+                        description: undefined,
+                        fileUrl: undefined,
                         contentType: 'video'
                       })}
                     >
@@ -277,12 +277,12 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <span className="text-sm font-medium text-foreground">
-                        {content.hypnosis?.title || 'Hipnose'}
+                        Hipnose Terapêutica
                       </span>
                       <div className="flex items-center space-x-2 mt-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
-                          {content.hypnosis?.duration_minutes ? `${content.hypnosis.duration_minutes} min` : '10 min'}
+                          10 min
                         </span>
                       </div>
                     </div>
@@ -297,9 +297,9 @@ const Dashboard = () => {
                       variant="outline" 
                       className="rounded-full px-6 border-accent/30 hover:bg-accent/10"
                       onClick={() => setSelectedMedia({
-                        title: content.hypnosis?.title || 'Hipnose',
-                        description: content.hypnosis?.description || undefined,
-                        fileUrl: content.hypnosis?.file_url || undefined,
+                        title: 'Hipnose Terapêutica',
+                        description: undefined,
+                        fileUrl: undefined,
                         contentType: 'hypnosis'
                       })}
                     >
