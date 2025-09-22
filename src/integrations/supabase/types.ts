@@ -60,6 +60,7 @@ export type Database = {
         Row: {
           created_at: string
           day_number: number
+          duration_minutes: number | null
           id: string
           text_content: string
           text_key: string
@@ -69,6 +70,7 @@ export type Database = {
         Insert: {
           created_at?: string
           day_number: number
+          duration_minutes?: number | null
           id?: string
           text_content: string
           text_key: string
@@ -78,6 +80,7 @@ export type Database = {
         Update: {
           created_at?: string
           day_number?: number
+          duration_minutes?: number | null
           id?: string
           text_content?: string
           text_key?: string

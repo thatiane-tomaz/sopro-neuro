@@ -240,7 +240,7 @@ const Dashboard = () => {
                       <div className="flex items-center space-x-2 mt-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
-                          5 min
+                          {texts.video_duracao ? `${texts.video_duracao} min` : '5 min'}
                         </span>
                       </div>
                     </div>
@@ -282,7 +282,7 @@ const Dashboard = () => {
                       <div className="flex items-center space-x-2 mt-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
-                          10 min
+                          {texts.hipnose_duracao ? `${texts.hipnose_duracao} min` : '10 min'}
                         </span>
                       </div>
                     </div>
