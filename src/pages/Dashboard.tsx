@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Play, Clock, Route, CheckCircle, Lock, Crown } from "lucide-react";
+import { Play, Clock, Route, CheckCircle, Lock, Crown, Headphones } from "lucide-react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useDailyTexts } from "@/hooks/useDailyTexts";
 import { ContentAccessWrapper } from "@/components/upgrade/UpgradeCard";
@@ -12,7 +12,7 @@ import MediaPlayer from "@/components/MediaPlayer";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import videoCalmMan from "@/assets/video-calm-man.jpg";
+import videoCalmMan from "@/assets/video-calm-man-dark.jpg";
 import hypnosisWomanHeadphones from "@/assets/hypnosis-woman-headphones.jpg";
 
 const Dashboard = () => {
@@ -401,14 +401,20 @@ const Dashboard = () => {
             <ContentAccessWrapper day={currentDay} contentType="video" contentId={`video_week_${currentWeek}_day_${currentDay}`}>
               <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl border border-primary/20 overflow-hidden">
                 {/* Video Image - Larger */}
-                <div className="relative w-full h-40 overflow-hidden">
+                <div className="relative w-full h-40 overflow-hidden cursor-pointer group"
+                     onClick={() => setSelectedMedia({
+                       title: 'Vídeo de Preparação',
+                       description: undefined,
+                       fileUrl: getMediaUrl(currentDay, 'video'),
+                       contentType: 'video'
+                     })}>
                   <img 
                     src={videoCalmMan} 
-                    alt="Vídeo Introdutório" 
-                    className="w-full h-full object-cover"
+                    alt="Vídeo de Preparação" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                       <Play className="h-6 w-6 text-primary fill-primary ml-1" />
                     </div>
                   </div>
@@ -418,9 +424,9 @@ const Dashboard = () => {
                 <div className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <h3 className="text-sm font-medium text-foreground mb-1">
-                        Vídeo Introdutório
-                      </h3>
+                       <h3 className="text-sm font-medium text-foreground mb-1">
+                        Vídeo de Preparação
+                       </h3>
                       <div className="flex items-center space-x-1">
                         <Clock className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
@@ -437,8 +443,8 @@ const Dashboard = () => {
                       <Button 
                         size="sm" 
                         className="rounded-full px-4 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                        onClick={() => setSelectedMedia({
-                          title: 'Vídeo Introdutório',
+                         onClick={() => setSelectedMedia({
+                          title: 'Vídeo de Preparação',
                           description: undefined,
                           fileUrl: getMediaUrl(currentDay, 'video'),
                           contentType: 'video'
@@ -456,15 +462,21 @@ const Dashboard = () => {
             <ContentAccessWrapper day={currentDay} contentType="hypnosis" contentId={`hypnosis_week_${currentWeek}_day_${currentDay}`}>
               <div className="bg-gradient-to-r from-accent/10 to-accent/5 backdrop-blur-sm rounded-2xl border border-accent/20 overflow-hidden">
                 {/* Hypnosis Image - Larger */}
-                <div className="relative w-full h-40 overflow-hidden">
+                <div className="relative w-full h-40 overflow-hidden cursor-pointer group"
+                     onClick={() => setSelectedMedia({
+                       title: 'Hipnose Terapêutica',
+                       description: undefined,
+                       fileUrl: getMediaUrl(currentDay, 'hypnosis'),
+                       contentType: 'hypnosis'
+                     })}>
                   <img 
                     src={hypnosisWomanHeadphones} 
                     alt="Hipnose Terapêutica" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-                      <div className="w-4 h-4 rounded-full bg-accent" />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Headphones className="h-6 w-6 text-accent" />
                     </div>
                   </div>
                 </div>
