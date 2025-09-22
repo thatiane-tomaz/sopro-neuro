@@ -149,6 +149,69 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          cancellation_notes: string | null
+          cancellation_reason:
+            | Database["public"]["Enums"]["cancellation_reason"]
+            | null
+          cancelled_at: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          plan_type: string
+          previous_status:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancellation_notes?: string | null
+          cancellation_reason?:
+            | Database["public"]["Enums"]["cancellation_reason"]
+            | null
+          cancelled_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan_type?: string
+          previous_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancellation_notes?: string | null
+          cancellation_reason?:
+            | Database["public"]["Enums"]["cancellation_reason"]
+            | null
+          cancelled_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          plan_type?: string
+          previous_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -175,6 +238,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_current_subscription: {
+        Args: { user_uuid: string }
+        Returns: {
+          cancellation_notes: string | null
+          cancellation_reason:
+            | Database["public"]["Enums"]["cancellation_reason"]
+            | null
+          cancelled_at: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          plan_type: string
+          previous_status:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -185,6 +271,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      cancellation_reason:
+        | "user_request"
+        | "payment_failed"
+        | "expired"
+        | "upgrade"
+        | "downgrade"
+        | "admin_action"
+      subscription_status: "free" | "premium" | "cancelled" | "expired"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -313,6 +407,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      cancellation_reason: [
+        "user_request",
+        "payment_failed",
+        "expired",
+        "upgrade",
+        "downgrade",
+        "admin_action",
+      ],
+      subscription_status: ["free", "premium", "cancelled", "expired"],
     },
   },
 } as const
