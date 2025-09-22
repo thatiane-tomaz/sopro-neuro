@@ -94,21 +94,21 @@ const Dashboard = () => {
         title: "Fase 1",
         subtitle: "Quebrando Crenças e Aprendendo",
         description: "Continue fumando enquanto aprende sobre o vício e quebra crenças limitantes.",
-        days: [1, 2, 3]
+        days: [1, 2, 3, 4, 5, 6, 7]
       },
       {
         id: 2,
         title: "Fase 2", 
         subtitle: "O Momento de Parar",
         description: "Hipnoses e técnicas para enfrentar a abstinência e o processo de parar.",
-        days: [4, 5]
+        days: [8, 9, 10, 11, 12, 13, 14]
       },
       {
         id: 3,
         title: "Fase 3",
         subtitle: "Novos Hábitos Saudáveis", 
         description: "Reprogramando seu estilo de vida com novos hábitos e rotinas saudáveis.",
-        days: [6, 7]
+        days: [15, 16, 17, 18, 19, 20, 21]
       }
     ];
 
@@ -120,26 +120,64 @@ const Dashboard = () => {
 
     const getDayTitle = (day: number) => {
       const titles = {
+        // Fase 1: Quebrando Crenças e Aprendendo
         1: "Preparação Mental",
         2: "Entendendo o Vício", 
         3: "Quebrando Padrões",
-        4: "Dia da Decisão",
-        5: "Enfrentando a Abstinência",
-        6: "Novos Hábitos",
-        7: "Consolidação"
+        4: "Identificando Gatilhos",
+        5: "Neurociência do Tabaco",
+        6: "Mitos e Verdades",
+        7: "Motivação Interna",
+        
+        // Fase 2: O Momento de Parar
+        8: "Dia da Decisão",
+        9: "Primeiras 24h",
+        10: "Enfrentando a Abstinência",
+        11: "Controle da Ansiedade",
+        12: "Resistindo às Tentações",
+        13: "Fortalecendo a Mente",
+        14: "Primeira Semana Livre",
+        
+        // Fase 3: Novos Hábitos Saudáveis
+        15: "Construindo Rotinas",
+        16: "Exercícios e Movimento",
+        17: "Alimentação Consciente",
+        18: "Relacionamentos Saudáveis",
+        19: "Gerenciando o Estresse",
+        20: "Autoestima e Confiança",
+        21: "Consolidação e Futuro"
       };
       return titles[day as keyof typeof titles] || `Dia ${day}`;
     };
 
     const getDayDescription = (day: number) => {
       const descriptions = {
+        // Fase 1
         1: "Prepare sua mente para a jornada de transformação que está começando.",
         2: "Compreenda como funciona o vício e por que é difícil parar de fumar.",
         3: "Identifique e quebre os padrões automáticos que te fazem fumar.",
-        4: "O momento chegou! Técnicas para tomar a decisão definitiva.",
-        5: "Estratégias para lidar com os sintomas da abstinência.",
-        6: "Construa novos hábitos saudáveis para substituir o cigarro.",
-        7: "Consolide sua nova identidade como não fumante."
+        4: "Reconheça os gatilhos emocionais e situacionais que levam ao cigarro.",
+        5: "Entenda o que acontece no seu cérebro quando você fuma.",
+        6: "Desconstrua mitos sobre o cigarro e enxergue a realidade.",
+        7: "Encontre sua motivação verdadeira para parar de fumar.",
+        
+        // Fase 2
+        8: "O momento chegou! Técnicas para tomar a decisão definitiva.",
+        9: "Estratégias para superar as primeiras 24 horas sem cigarro.",
+        10: "Aprenda a lidar com os sintomas físicos da abstinência.",
+        11: "Técnicas de respiração e relaxamento para controlar a ansiedade.",
+        12: "Fortaleça sua resistência contra as tentações e recaídas.",
+        13: "Desenvolva força mental e determinação para continuar.",
+        14: "Celebre sua primeira semana livre do cigarro.",
+        
+        // Fase 3
+        15: "Estabeleça novas rotinas saudáveis em seu dia a dia.",
+        16: "Incorpore atividades físicas para fortalecer corpo e mente.",
+        17: "Desenvolva uma relação saudável com a comida e nutrição.",
+        18: "Melhore seus relacionamentos e comunicação interpessoal.",
+        19: "Aprenda técnicas avançadas de gerenciamento do estresse.",
+        20: "Construa uma autoestima sólida e confiança em si mesmo.",
+        21: "Consolide sua nova identidade e planeje seu futuro livre."
       };
       return descriptions[day as keyof typeof descriptions] || "Descrição do dia será carregada em breve.";
     };
@@ -167,7 +205,7 @@ const Dashboard = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                    phase.id <= Math.ceil(currentDay / 2.5) 
+                    phase.id <= Math.ceil(currentDay / 7) 
                       ? 'bg-primary text-primary-foreground' 
                       : 'bg-muted text-muted-foreground'
                   }`}>
