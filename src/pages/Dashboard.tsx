@@ -11,6 +11,7 @@ import UpgradeCard from "@/components/upgrade/UpgradeCard";
 import MediaPlayer from "@/components/MediaPlayer";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import videoCalmMan from "@/assets/video-calm-man.jpg";
 import hypnosisWomanHeadphones from "@/assets/hypnosis-woman-headphones.jpg";
 
@@ -28,6 +29,13 @@ const Dashboard = () => {
     fileUrl?: string;
     contentType: 'video' | 'hypnosis';
   } | null>(null);
+
+  // Função para gerar URL do arquivo no Supabase Storage
+  const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
+    const bucketName = type === 'video' ? 'videos' : 'hypnosis';
+    const fileName = type === 'video' ? `video_${Math.ceil(day / 3)}.mp4` : `hipnose_${Math.ceil(day / 3.5)}.mp3`;
+    return `${supabase.storage.from(bucketName).getPublicUrl(fileName).data.publicUrl}`;
+  };
   
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading, isFree, isPremium } = useUserProfile();
@@ -268,6 +276,7 @@ const Dashboard = () => {
                                   setShowTimeline(false);
                                   setSelectedMedia({
                                     title: `Vídeo - ${getDayTitle(day)}`,
+                                    fileUrl: getMediaUrl(day, 'video'),
                                     contentType: 'video'
                                   });
                                 }}
@@ -283,6 +292,7 @@ const Dashboard = () => {
                                   setShowTimeline(false);
                                   setSelectedMedia({
                                     title: `Hipnose - ${getDayTitle(day)}`,
+                                    fileUrl: getMediaUrl(day, 'hypnosis'),
                                     contentType: 'hypnosis'
                                   });
                                 }}
@@ -430,7 +440,7 @@ const Dashboard = () => {
                         onClick={() => setSelectedMedia({
                           title: 'Vídeo Introdutório',
                           description: undefined,
-                          fileUrl: undefined,
+                          fileUrl: getMediaUrl(currentDay, 'video'),
                           contentType: 'video'
                         })}
                       >
@@ -486,7 +496,7 @@ const Dashboard = () => {
                         onClick={() => setSelectedMedia({
                           title: 'Hipnose Terapêutica',
                           description: undefined,
-                          fileUrl: undefined,
+                          fileUrl: getMediaUrl(currentDay, 'hypnosis'),
                           contentType: 'hypnosis'
                         })}
                       >
