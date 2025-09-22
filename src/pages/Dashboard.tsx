@@ -11,6 +11,8 @@ import UpgradeCard from "@/components/upgrade/UpgradeCard";
 import MediaPlayer from "@/components/MediaPlayer";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import videoCalmMan from "@/assets/video-calm-man.jpg";
+import hypnosisWomanHeadphones from "@/assets/hypnosis-woman-headphones.jpg";
 
 const Dashboard = () => {
   const [currentWeek] = useState(1);
@@ -228,23 +230,33 @@ const Dashboard = () => {
             {/* Video Card */}
             <ContentAccessWrapper day={currentDay} contentType="video" contentId={`video_week_${currentWeek}_day_${currentDay}`}>
               <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl p-4 border border-primary/20">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center shadow-lg">
-                      <Play className="h-5 w-5 text-white fill-white" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-foreground">
-                        Vídeo Educacional
-                      </span>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">
-                          {texts.video_duracao ? `${texts.video_duracao} min` : '5 min'}
-                        </span>
+                <div className="flex items-center space-x-4">
+                  {/* Video Thumbnail */}
+                  <div className="relative w-20 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                    <img 
+                      src={videoCalmMan} 
+                      alt="Vídeo Educacional" 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center">
+                        <Play className="h-3 w-3 text-primary fill-primary ml-0.5" />
                       </div>
                     </div>
                   </div>
+                  
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-foreground">
+                      Vídeo Educacional
+                    </span>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {texts.video_duracao ? `${texts.video_duracao} min` : '5 min'}
+                      </span>
+                    </div>
+                  </div>
+                  
                   {completedToday.video ? (
                     <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
                       <CheckCircle className="h-5 w-5 text-secondary" />
@@ -270,23 +282,33 @@ const Dashboard = () => {
             {/* Hypnosis Card */}
             <ContentAccessWrapper day={currentDay} contentType="hypnosis" contentId={`hypnosis_week_${currentWeek}_day_${currentDay}`}>
               <div className="bg-gradient-to-r from-accent/10 to-accent/5 backdrop-blur-sm rounded-2xl p-4 border border-accent/20">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent via-accent/90 to-secondary flex items-center justify-center shadow-lg">
-                      <div className="w-6 h-6 rounded-full bg-white" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-foreground">
-                        Hipnose Terapêutica
-                      </span>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">
-                          {texts.hipnose_duracao ? `${texts.hipnose_duracao} min` : '10 min'}
-                        </span>
+                <div className="flex items-center space-x-4">
+                  {/* Hypnosis Thumbnail */}
+                  <div className="relative w-20 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                    <img 
+                      src={hypnosisWomanHeadphones} 
+                      alt="Hipnose Terapêutica" 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center">
+                        <div className="w-2 h-2 rounded-full bg-accent" />
                       </div>
                     </div>
                   </div>
+                  
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-foreground">
+                      Hipnose Terapêutica
+                    </span>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {texts.hipnose_duracao ? `${texts.hipnose_duracao} min` : '10 min'}
+                      </span>
+                    </div>
+                  </div>
+                  
                   {completedToday.hypnosis ? (
                     <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
                       <CheckCircle className="h-5 w-5 text-secondary" />
