@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import videoCalmMan from "@/assets/video-calm-man-dark.jpg";
 import hypnosisWomanHeadphones from "@/assets/hypnosis-woman-headphones.jpg";
+import soproLogo from "@/assets/sopro-logo.png";
 
 const Dashboard = () => {
   const [currentWeek] = useState(1);
@@ -322,8 +323,7 @@ const Dashboard = () => {
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-gradient-primary rounded-md"></div>
-              <h1 className="text-lg font-bold text-foreground">Sopro</h1>
+              <img src={soproLogo} alt="Sopro" className="h-8" />
               {isFree && (
                 <Badge variant="secondary" className="text-xs">
                   Acesso Gratuito

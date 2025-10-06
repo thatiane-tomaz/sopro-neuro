@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, Heart, Brain } from "lucide-react";
 import heroImage from "@/assets/hero-sopro.jpg";
+import soproLogo from "@/assets/sopro-logo.png";
 const HeroSection = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -16,10 +17,7 @@ const HeroSection = () => {
         <div className="animate-fade-in">
           {/* Logo/Brand */}
           <div className="flex items-center justify-center mb-8">
-            <Sparkles className="w-12 h-12 text-accent mr-4 animate-float" />
-            <h1 className="text-5xl md:text-7xl font-bold text-white">
-              Sopro
-            </h1>
+            <img src={soproLogo} alt="Sopro" className="h-16 md:h-20 animate-float" />
           </div>
 
           {/* Main headline */}

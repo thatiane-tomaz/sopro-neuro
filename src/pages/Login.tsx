@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Mail, Lock, User, Sparkles } from "lucide-react";
+import { ArrowLeft, Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import soproLogo from "@/assets/sopro-logo.png";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -51,8 +52,7 @@ const Login = () => {
             Voltar ao início
           </Link>
           <div className="flex items-center justify-center mb-4">
-            <Sparkles className="w-8 h-8 text-accent mr-2" />
-            <h1 className="text-3xl font-bold text-white">Sopro</h1>
+            <img src={soproLogo} alt="Sopro" className="h-12" />
           </div>
           <p className="text-white/80">Entre na sua jornada de transformação</p>
         </div>
