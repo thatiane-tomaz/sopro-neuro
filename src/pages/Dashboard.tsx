@@ -322,15 +322,15 @@ const Dashboard = () => {
       <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b">
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-3">
               <img src={soproLogo} alt="Sopro" className="h-8" />
               {isFree && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-xs self-center">
                   Acesso Gratuito
                 </Badge>
               )}
               {isPremium && (
-                <Badge className="text-xs bg-accent">
+                <Badge className="text-xs bg-accent self-center">
                   <Crown className="w-3 h-3 mr-1" />
                   Premium
                 </Badge>
