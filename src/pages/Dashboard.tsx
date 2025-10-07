@@ -34,7 +34,7 @@ const Dashboard = () => {
   // Função para gerar URL do arquivo no Supabase Storage
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
     const bucketName = type === 'video' ? 'videos' : 'hypnosis';
-    const fileName = type === 'video' ? `video_${Math.ceil(day / 3)}.mp4` : `hipnose_${Math.ceil(day / 3.5)}.mp3`;
+    const fileName = type === 'video' ? `video_${day}.mp4` : `hipnose_${day}.mp3`;
     return `${supabase.storage.from(bucketName).getPublicUrl(fileName).data.publicUrl}`;
   };
   
