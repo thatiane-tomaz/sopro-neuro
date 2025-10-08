@@ -397,66 +397,68 @@ const Dashboard = () => {
               </p>
             </div>
             
-            {/* Video Card */}
-            <ContentAccessWrapper day={currentDay} contentType="video" contentId={`video_week_${currentWeek}_day_${currentDay}`}>
-              <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl border border-primary/20 overflow-hidden">
-                {/* Video Image - Larger */}
-                <div className="relative w-full h-40 overflow-hidden cursor-pointer group"
-                     onClick={() => setSelectedMedia({
-                       title: 'Vídeo de Preparação',
-                       description: undefined,
-                       fileUrl: getMediaUrl(currentDay, 'video'),
-                       contentType: 'video'
-                     })}>
-                  <img 
-                    src={videoCalmMan} 
-                    alt="Vídeo de Preparação" 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <Play className="h-6 w-6 text-primary fill-primary ml-1" />
+            {/* Video Card - Only show for days 1-7 */}
+            {currentDay <= 7 && (
+              <ContentAccessWrapper day={currentDay} contentType="video" contentId={`video_week_${currentWeek}_day_${currentDay}`}>
+                <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl border border-primary/20 overflow-hidden">
+                  {/* Video Image - Larger */}
+                  <div className="relative w-full h-40 overflow-hidden cursor-pointer group"
+                       onClick={() => setSelectedMedia({
+                         title: 'Vídeo de Preparação',
+                         description: undefined,
+                         fileUrl: getMediaUrl(currentDay, 'video'),
+                         contentType: 'video'
+                       })}>
+                    <img 
+                      src={videoCalmMan} 
+                      alt="Vídeo de Preparação" 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <Play className="h-6 w-6 text-primary fill-primary ml-1" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Bottom Info */}
+                  <div className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                         <h3 className="text-sm font-medium text-foreground mb-1">
+                          Vídeo de Preparação
+                         </h3>
+                        <div className="flex items-center space-x-1">
+                          <Clock className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-sm text-muted-foreground">
+                            {texts.video_duracao ? `${texts.video_duracao} min` : '3 min'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {completedToday.video ? (
+                        <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
+                          <CheckCircle className="h-5 w-5 text-secondary" />
+                        </div>
+                      ) : (
+                        <Button 
+                          size="sm" 
+                          className="rounded-full px-4 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                           onClick={() => setSelectedMedia({
+                            title: 'Vídeo de Preparação',
+                            description: undefined,
+                            fileUrl: getMediaUrl(currentDay, 'video'),
+                            contentType: 'video'
+                          })}
+                        >
+                          Assistir
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
-                
-                {/* Bottom Info */}
-                <div className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                       <h3 className="text-sm font-medium text-foreground mb-1">
-                        Vídeo de Preparação
-                       </h3>
-                      <div className="flex items-center space-x-1">
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">
-                          {texts.video_duracao ? `${texts.video_duracao} min` : '3 min'}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    {completedToday.video ? (
-                      <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
-                        <CheckCircle className="h-5 w-5 text-secondary" />
-                      </div>
-                    ) : (
-                      <Button 
-                        size="sm" 
-                        className="rounded-full px-4 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                         onClick={() => setSelectedMedia({
-                          title: 'Vídeo de Preparação',
-                          description: undefined,
-                          fileUrl: getMediaUrl(currentDay, 'video'),
-                          contentType: 'video'
-                        })}
-                      >
-                        Assistir
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </ContentAccessWrapper>
+              </ContentAccessWrapper>
+            )}
 
             {/* Hypnosis Card */}
             <ContentAccessWrapper day={currentDay} contentType="hypnosis" contentId={`hypnosis_week_${currentWeek}_day_${currentDay}`}>
