@@ -54,9 +54,11 @@ const HeroSection = () => {
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Button variant="transformation" size="lg">
-              Saiba como funciona
-            </Button>
+            <Link to="/login">
+              <Button variant="transformation" size="lg">
+                Saiba como funciona
+              </Button>
+            </Link>
           </div>
 
           {/* Social proof */}
