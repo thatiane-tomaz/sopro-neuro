@@ -354,7 +354,7 @@ const Dashboard = () => {
                 <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
                   <span className="text-xs font-medium text-primary">Fase {currentWeek}</span>
                   <span className="h-1 w-1 rounded-full bg-primary/40" />
-                  <span className="text-xs text-foreground/80">Dia {currentDay}/7</span>
+                  <span className="text-xs font-medium text-primary">Dia {currentDay}/7</span>
                 </div>
                 {/* Segmented progress - clean and subtle */}
                 <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
