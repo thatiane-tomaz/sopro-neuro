@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Play, Clock, Route, CheckCircle, Lock, Crown, Headphones } from "lucide-react";
+import { Play, Clock, Route, CheckCircle, Lock, Crown, Headphones, LogOut } from "lucide-react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useDailyTexts } from "@/hooks/useDailyTexts";
 import { ContentAccessWrapper } from "@/components/upgrade/UpgradeCard";
@@ -38,7 +38,7 @@ const Dashboard = () => {
     return `${supabase.storage.from(bucketName).getPublicUrl(fileName).data.publicUrl}`;
   };
   
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   const { profile, loading: profileLoading, isFree, isPremium } = useUserProfile();
   const { texts, loading: textsLoading } = useDailyTexts(currentDay);
 
@@ -336,9 +336,14 @@ const Dashboard = () => {
                 </Badge>
               )}
             </div>
-            <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)}>
-              <Route className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)}>
+                <Route className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={signOut} title="Sair">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
