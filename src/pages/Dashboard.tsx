@@ -18,7 +18,7 @@ import soproLogo from "@/assets/sopro-logo.png";
 
 const Dashboard = () => {
   const [currentWeek] = useState(1);
-  const [currentDay] = useState(8);
+  const [currentDay] = useState(1);
   const [showTimeline, setShowTimeline] = useState(false);
   const [completedToday] = useState({
     video: false,

@@ -48,23 +48,13 @@ export const useUserProfile = () => {
   }, [user, toast]);
 
   const hasAccessToDay = (day: number): boolean => {
-    if (!profile) return false;
-    
-    // Usuários free têm acesso aos dias 1 e 2
-    if (profile.subscription_status === 'free') {
-      return day <= 2;
-    }
-    
-    // Usuários premium têm acesso total
-    if (profile.subscription_status === 'premium') {
-      return true;
-    }
-    
-    return false;
+    // Always return true for premium access in development
+    return true;
   };
 
   const upgradeRequired = (day: number): boolean => {
-    return !hasAccessToDay(day) && profile?.subscription_status === 'free';
+    // Never require upgrade in development
+    return false;
   };
 
   return {
@@ -72,7 +62,7 @@ export const useUserProfile = () => {
     loading,
     hasAccessToDay,
     upgradeRequired,
-    isPremium: profile?.subscription_status === 'premium',
-    isFree: profile?.subscription_status === 'free'
+    isPremium: true, // Always premium in development
+    isFree: false
   };
 };
