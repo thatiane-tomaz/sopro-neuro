@@ -354,33 +354,22 @@ const Dashboard = () => {
         {/* Week Overview */}
         <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
           <div className="space-y-4">
-            <div className="flex items-start gap-2">
+            <div className="flex items-start justify-between gap-4">
               <div className="space-y-3 flex-1 min-w-0">
                 <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
                   <span className="text-xs font-medium text-primary">Fase {currentWeek}</span>
                   <span className="h-1 w-1 rounded-full bg-primary/40" />
-                  <span className="text-xs font-medium text-primary">Dia {currentDay}/7</span>
-                </div>
-                {/* Segmented progress - clean and subtle */}
-                <div className="flex items-center gap-1.5" aria-label={`Progresso do dia: ${currentDay} de 7`}>
-                  {[...Array(7)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className={`h-1.5 w-6 rounded-full transition-colors ${
-                        i < currentDay ? 'bg-primary' : 'bg-muted'
-                      }`} 
-                    />
-                  ))}
+                  <span className="text-xs font-medium text-primary">Dia {currentDay}</span>
                 </div>
               </div>
               <Button 
                 variant="ghost" 
-                size="sm" 
+                size="default"
                 onClick={() => setShowTimeline(true)} 
-                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 flex-shrink-0 px-2 text-xs"
+                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 text-xs whitespace-nowrap px-4"
               >
-                <Route className="h-3 w-3 mr-1" />
-                <span>Processo</span>
+                <Route className="h-3 w-3 mr-2" />
+                <span>Processo completo 3 fases 21 dias</span>
               </Button>
             </div>
             
