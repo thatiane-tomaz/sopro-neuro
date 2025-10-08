@@ -5,6 +5,17 @@ import heroImage from "@/assets/hero-sopro.jpg";
 import soproLogo from "@/assets/sopro-logo.png";
 const HeroSection = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Header with Login Button */}
+      <div className="absolute top-0 left-0 right-0 z-20 p-4">
+        <div className="container mx-auto flex justify-end">
+          <Link to="/login">
+            <Button variant="outline" className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
+              Entrar
+            </Button>
+          </Link>
+        </div>
+      </div>
+
       {/* Background Image */}
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
       backgroundImage: `url(${heroImage})`
