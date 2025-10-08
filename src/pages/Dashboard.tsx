@@ -369,7 +369,7 @@ const Dashboard = () => {
                 className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 text-xs whitespace-nowrap px-4"
               >
                 <Route className="h-3 w-3 mr-2" />
-                <span>Processo completo 3 fases 21 dias</span>
+                <span>Processo: 3 fases 21 dias</span>
               </Button>
             </div>
             
