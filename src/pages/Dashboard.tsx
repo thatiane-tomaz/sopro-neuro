@@ -385,7 +385,7 @@ const Dashboard = () => {
           <div className="space-y-6">
             {/* Dia Section */}
             <div className="space-y-3">
-              <h3 className="text-lg font-medium text-foreground">Sua Conquista de Hoje</h3>
+              <h3 className="text-2xl font-playfair font-bold text-primary">Conquista de Hoje</h3>
               <p className="text-sm text-muted-foreground leading-relaxed text-justify">
                 {texts.dia_descricao || "Carregando atividades do dia..."}
               </p>
