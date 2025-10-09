@@ -225,7 +225,7 @@ const Dashboard = () => {
                     <p className="text-sm font-medium text-primary">{phase.subtitle}</p>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed ml-11">
+                <p className="text-sm text-muted-foreground leading-relaxed text-justify ml-11">
                   {phase.description}
                 </p>
               </div>
@@ -262,7 +262,7 @@ const Dashboard = () => {
                           </div>
 
                           {/* Day Description */}
-                          <p className="text-sm text-muted-foreground leading-relaxed">
+                          <p className="text-sm text-muted-foreground leading-relaxed text-justify">
                             {getDayDescription(day)}
                           </p>
 
@@ -374,7 +374,7 @@ const Dashboard = () => {
             </div>
             
             {/* Fase Description */}
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed text-justify">
               {texts.fase_descricao || "Carregando descrição da fase..."}
             </p>
           </div>
@@ -386,7 +386,7 @@ const Dashboard = () => {
             {/* Dia Section */}
             <div className="space-y-3">
               <h3 className="text-lg font-medium text-foreground">Sua Conquista de Hoje</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed text-justify">
                 {texts.dia_descricao || "Carregando atividades do dia..."}
               </p>
             </div>
