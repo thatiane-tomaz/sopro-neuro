@@ -76,6 +76,8 @@ const Dashboard = () => {
   const [currentDay] = useState(1);
   const { toast } = useToast();
 
+  console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
+
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
     const bucket = type === 'video' ? 'videos' : 'hypnosis';
     const fileName = `dia${day}.mp3`;
@@ -88,12 +90,8 @@ const Dashboard = () => {
     return 'locked';
   };
 
-  if (!user) {
-    navigate('/login');
-    return null;
-  }
-
   if (authLoading || profileLoading) {
+    console.log('Loading state:', { authLoading, profileLoading });
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary">
         <div className="text-center">
@@ -103,6 +101,14 @@ const Dashboard = () => {
       </div>
     );
   }
+
+  if (!user) {
+    console.log('No user, redirecting to login');
+    navigate('/login');
+    return null;
+  }
+
+  console.log('Rendering dashboard content');
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
