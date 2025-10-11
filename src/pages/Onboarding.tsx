@@ -25,15 +25,47 @@ const Onboarding = () => {
     smokingTypes: [],
     smokingReasons: []
   });
+  const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const { user, loading } = useAuth();
   const { toast } = useToast();
+
+  // Check if user already completed onboarding
+  useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      if (!user) {
+        setCheckingOnboarding(false);
+        return;
+      }
+
+      try {
+        const { data: existingResponse, error } = await supabase
+          .from('onboarding_responses')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (existingResponse && !error) {
+          // User already completed onboarding, redirect to dashboard
+          window.location.href = "/dashboard";
+        }
+      } catch (error) {
+        console.error('Error checking onboarding:', error);
+      } finally {
+        setCheckingOnboarding(false);
+      }
+    };
+
+    if (!loading) {
+      checkOnboardingStatus();
+    }
+  }, [user, loading]);
 
   // Redirect to login if not authenticated
   if (!loading && !user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (loading) {
+  if (loading || checkingOnboarding) {
     return <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center">
       <div className="text-center">Carregando...</div>
     </div>;
@@ -71,9 +103,6 @@ const Onboarding = () => {
         });
 
       if (error) throw error;
-
-      localStorage.setItem("sopro-onboarding-completed", "true");
-      localStorage.setItem("sopro-onboarding-data", JSON.stringify(data));
       
       toast({
         title: "Onboarding concluído",
@@ -90,12 +119,6 @@ const Onboarding = () => {
       });
     }
   };
-
-  // Check if onboarding is already completed
-  const isCompleted = localStorage.getItem("sopro-onboarding-completed");
-  if (isCompleted) {
-    return <Navigate to="/dashboard" replace />;
-  }
 
   const questionComponents = {
     1: <Question1 data={data} updateData={updateData} onNext={nextQuestion} />,
