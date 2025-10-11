@@ -56,36 +56,33 @@ export type Database = {
         }
         Relationships: []
       }
-      daily_texts: {
+      daily_content: {
         Row: {
           created_at: string
           day_number: number
-          duration_minutes: number | null
+          hypnosis_minutes: number | null
           id: string
-          text_content: string
-          text_key: string
-          text_type: string
+          title: string
           updated_at: string
+          video_minutes: number | null
         }
         Insert: {
           created_at?: string
           day_number: number
-          duration_minutes?: number | null
+          hypnosis_minutes?: number | null
           id?: string
-          text_content: string
-          text_key: string
-          text_type: string
+          title: string
           updated_at?: string
+          video_minutes?: number | null
         }
         Update: {
           created_at?: string
           day_number?: number
-          duration_minutes?: number | null
+          hypnosis_minutes?: number | null
           id?: string
-          text_content?: string
-          text_key?: string
-          text_type?: string
+          title?: string
           updated_at?: string
+          video_minutes?: number | null
         }
         Relationships: []
       }
@@ -119,6 +116,33 @@ export type Database = {
           smoking_reasons?: string[] | null
           smoking_types?: string[] | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      phases: {
+        Row: {
+          created_at: string
+          id: string
+          phase_number: number
+          subtitle: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          phase_number: number
+          subtitle: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          phase_number?: number
+          subtitle?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
