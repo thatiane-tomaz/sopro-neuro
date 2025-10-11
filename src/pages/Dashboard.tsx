@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { journeyPhases } from '@/data/journeyData';
 import { LogOut, PlayCircle, Headphones, Lock, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -45,27 +46,6 @@ const dayImages = [
   day15, day16, day17, day18, day19, day20, day21
 ];
 
-const phases = [
-  {
-    id: 1,
-    title: "Fase 1",
-    subtitle: "Despertar Interior",
-    days: [1, 2, 3, 4, 5, 6, 7]
-  },
-  {
-    id: 2,
-    title: "Fase 2", 
-    subtitle: "Transformação Profunda",
-    days: [8, 9, 10, 11, 12, 13, 14]
-  },
-  {
-    id: 3,
-    title: "Fase 3",
-    subtitle: "Integração e Renovação",
-    days: [15, 16, 17, 18, 19, 20, 21]
-  }
-];
-
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -75,10 +55,12 @@ const Dashboard = () => {
     fileUrl: string;
     contentType: 'video' | 'hypnosis';
   } | null>(null);
-  const [currentDay] = useState(21);
   const { toast } = useToast();
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
+
+  // Calculate current day - for now use day 1, can be enhanced later with user progress tracking
+  const currentDay = 1;
 
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
     const bucket = type === 'video' ? 'videos' : 'hypnosis';
@@ -87,9 +69,9 @@ const Dashboard = () => {
   };
 
   const getDayStatus = (day: number): 'completed' | 'current' | 'locked' => {
-    // Desbloqueia todos os dias para visualização
     if (day < currentDay) return 'completed';
-    return 'current'; // Todos os dias disponíveis
+    if (day === currentDay) return 'current';
+    return 'locked';
   };
 
   if (authLoading || profileLoading) {
@@ -151,23 +133,15 @@ const Dashboard = () => {
         </header>
 
         {/* Welcome Message */}
-        <div className="mb-8 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 backdrop-blur-sm border border-primary/20 p-6 md:p-8">
-          <h2 className="text-xl md:text-2xl font-bold text-primary mb-3">
-            Bem-vindo à sua jornada, {profile?.display_name || 'Usuário'}!
+        <div className="mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-primary">
+            Continue a sua jornada!
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-            Prepare-se para uma transformação completa em 21 dias. Cada fase foi cuidadosamente 
-            desenvolvida para guiá-lo através de um processo de autoconhecimento e crescimento pessoal. 
-            Navegue pelos dias usando as setas ou arrastando com o dedo no celular.
-          </p>
         </div>
 
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
-          {phases.map((phase) => {
-            const phaseHasCurrent = phase.days.includes(currentDay);
-            const initialSlide = phaseHasCurrent ? phase.days.indexOf(currentDay) : 0;
-            
+          {journeyPhases.map((phase) => {
             return (
               <div key={phase.id} className="rounded-2xl bg-card/50 backdrop-blur-sm border border-border p-4 md:p-6 shadow-lg">
                 <div className="mb-4">
@@ -186,7 +160,8 @@ const Dashboard = () => {
                   className="w-full"
                 >
                   <CarouselContent className="-ml-2 md:-ml-4">
-                    {phase.days.map((day) => {
+                    {phase.days.map((dayContent) => {
+                      const day = dayContent.day;
                       const status = getDayStatus(day);
                       const isLocked = status === 'locked';
                       const isCompleted = status === 'completed';
@@ -200,13 +175,13 @@ const Dashboard = () => {
                                 ? 'opacity-50 cursor-not-allowed border-border/50' 
                                 : isCurrent
                                   ? 'border-primary shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl'
-                                  : 'border-border/50 opacity-75 cursor-pointer hover:opacity-100'
+                                  : 'border-border/50 opacity-60 cursor-pointer hover:opacity-80'
                             }`}
                           >
                             <div className="relative aspect-video">
                               <img 
                                 src={dayImages[day - 1]} 
-                                alt={`Dia ${day}`}
+                                alt={dayContent.title}
                                 className="w-full h-full object-cover"
                               />
                               {isLocked && (
@@ -223,7 +198,7 @@ const Dashboard = () => {
 
                             <div className={`p-4 ${isLocked ? 'pointer-events-none' : ''}`}>
                               <h3 className="text-lg font-semibold text-foreground mb-3">
-                                Dia {day}
+                                {dayContent.title}
                               </h3>
                               
                               <div className="flex gap-2">
@@ -236,14 +211,19 @@ const Dashboard = () => {
                                       : ''
                                   }`}
                                   onClick={() => !isLocked && setSelectedMedia({ 
-                                    title: `Vídeo - Dia ${day}`,
+                                    title: `${dayContent.title} - Vídeo`,
                                     fileUrl: getMediaUrl(day, 'video'), 
                                     contentType: 'video' 
                                   })}
                                   disabled={isLocked}
                                 >
                                   <PlayCircle className="h-4 w-4 mr-2" />
-                                  <span className="text-sm">Vídeo</span>
+                                  <span className="text-sm">
+                                    Vídeo
+                                    <span className="text-xs opacity-70 ml-1">
+                                      {dayContent.videoMinutes}min
+                                    </span>
+                                  </span>
                                 </Button>
                                 
                                 <Button
@@ -255,14 +235,19 @@ const Dashboard = () => {
                                       : ''
                                   }`}
                                   onClick={() => !isLocked && setSelectedMedia({ 
-                                    title: `Hipnose - Dia ${day}`,
+                                    title: `${dayContent.title} - Hipnose`,
                                     fileUrl: getMediaUrl(day, 'hypnosis'), 
                                     contentType: 'hypnosis' 
                                   })}
                                   disabled={isLocked}
                                 >
                                   <Headphones className="h-4 w-4 mr-2" />
-                                  <span className="text-sm">Hipnose</span>
+                                  <span className="text-sm">
+                                    Hipnose
+                                    <span className="text-xs opacity-70 ml-1">
+                                      {dayContent.hypnosisMinutes}min
+                                    </span>
+                                  </span>
                                 </Button>
                               </div>
                             </div>
