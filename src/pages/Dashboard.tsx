@@ -4,8 +4,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, PlayCircle, Headphones, Lock } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import MediaPlayer from '@/components/MediaPlayer';
 import {
   Carousel,
@@ -36,6 +37,7 @@ import day18 from '@/assets/day-18.jpg';
 import day19 from '@/assets/day-19.jpg';
 import day20 from '@/assets/day-20.jpg';
 import day21 from '@/assets/day-21.jpg';
+import soproLogo from '@/assets/sopro-logo.png';
 
 const dayImages = [
   day1, day2, day3, day4, day5, day6, day7,
@@ -119,27 +121,28 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         {/* Header */}
-        <header className="mb-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">
-                Bem-vindo, {profile?.display_name || 'Usuário'}!
-              </h1>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Continue sua jornada de transformação
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="px-3 py-1 rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30">
-                <span className="text-accent text-xs md:text-sm font-medium">
-                  {profile?.subscription_status === 'premium' ? 'Premium' : 'Free'}
-                </span>
+        <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b mb-6">
+          <div className="px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <img src={soproLogo} alt="Sopro" className="h-8" />
+                {profile?.subscription_status === 'free' && (
+                  <Badge variant="secondary" className="text-xs">
+                    Acesso Gratuito
+                  </Badge>
+                )}
+                {profile?.subscription_status === 'premium' && (
+                  <Badge className="text-xs bg-accent">
+                    <Crown className="w-3 h-3 mr-1" />
+                    Premium
+                  </Badge>
+                )}
               </div>
               <Button 
                 variant="ghost" 
-                size="icon"
+                size="sm"
                 onClick={handleLogout}
-                className="rounded-full hover:bg-destructive/20 hover:text-destructive h-8 w-8 md:h-9 md:w-9"
+                title="Sair"
               >
                 <LogOut className="h-4 w-4" />
               </Button>
