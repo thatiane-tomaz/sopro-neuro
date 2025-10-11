@@ -85,7 +85,7 @@ const Dashboard = () => {
 
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
     const bucket = type === 'video' ? 'videos' : 'hypnosis';
-    const fileName = `dia${day}.mp3`;
+    const fileName = type === 'video' ? `video_${day}.mp3` : `hipnose_${day}.mp3`;
     return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${fileName}`;
   };
 
@@ -297,8 +297,8 @@ const Dashboard = () => {
                       );
                     })}
                   </CarouselContent>
-                  <CarouselPrevious className="hidden sm:flex -left-4 md:-left-6" />
-                  <CarouselNext className="hidden sm:flex -right-4 md:-right-6" />
+                  <CarouselPrevious className="-left-4 md:-left-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
+                  <CarouselNext className="-right-4 md:-right-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
                 </Carousel>
               </div>
             );
