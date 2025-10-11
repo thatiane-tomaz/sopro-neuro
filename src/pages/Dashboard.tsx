@@ -215,7 +215,7 @@ const Dashboard = () => {
         <div className="space-y-8">
           {phases.map((phase) => {
             const phaseHasCurrent = phase.days.includes(currentDay);
-            const initialSlide = phaseHasCurrent ? Math.min(phase.days.indexOf(currentDay), 2) : 0;
+            const initialSlide = phaseHasCurrent ? phase.days.indexOf(currentDay) : 0;
             
             return (
               <div key={phase.id} className="rounded-2xl bg-card/50 backdrop-blur-sm border border-border p-4 md:p-6 shadow-lg">
@@ -230,8 +230,8 @@ const Dashboard = () => {
 
                 <Carousel 
                   opts={{ 
-                    align: "center",
-                    loop: false,
+                    align: "start",
+                    startIndex: initialSlide,
                   }}
                   className="w-full"
                 >
