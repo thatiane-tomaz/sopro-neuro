@@ -83,7 +83,8 @@ const Dashboard = () => {
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
     const bucket = type === 'video' ? 'videos' : 'hypnosis';
     const extension = type === 'video' ? 'mp4' : 'mp3';
-    const fileName = `dia${day}.${extension}`;
+    const prefix = type === 'video' ? 'video' : 'hipnose';
+    const fileName = `${prefix}_${day}.${extension}`;
     return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${fileName}`;
   };
 
