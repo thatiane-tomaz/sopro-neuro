@@ -75,7 +75,7 @@ const Dashboard = () => {
     fileUrl: string;
     contentType: 'video' | 'hypnosis';
   } | null>(null);
-  const [currentDay] = useState(1);
+  const [currentDay] = useState(3);
   const { toast } = useToast();
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
