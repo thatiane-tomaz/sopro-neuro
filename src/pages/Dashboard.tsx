@@ -281,39 +281,53 @@ const Dashboard = () => {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className={`flex-1 justify-center ${
+                                  className={`flex-1 justify-center flex-col h-auto py-2 ${
                                     !isLocked 
                                       ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200' 
                                       : ''
                                   }`}
                                   onClick={() => !isLocked && setSelectedMedia({ 
-                                    title: `Vídeo - Dia ${day}`,
+                                    title: `Vídeo - ${dayData?.title || `Dia ${day}`}`,
                                     fileUrl: getMediaUrl(day, 'video'), 
                                     contentType: 'video' 
                                   })}
                                   disabled={isLocked}
                                 >
-                                  <PlayCircle className="h-4 w-4 mr-2" />
-                                  <span className="text-sm">Vídeo</span>
+                                  <div className="flex items-center">
+                                    <PlayCircle className="h-4 w-4 mr-2" />
+                                    <span className="text-sm">Vídeo</span>
+                                  </div>
+                                  {dayData?.video_minutes && (
+                                    <span className="text-xs text-muted-foreground mt-1">
+                                      {dayData.video_minutes} min
+                                    </span>
+                                  )}
                                 </Button>
                                 
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className={`flex-1 justify-center ${
+                                  className={`flex-1 justify-center flex-col h-auto py-2 ${
                                     !isLocked 
                                       ? 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200' 
                                       : ''
                                   }`}
                                   onClick={() => !isLocked && setSelectedMedia({ 
-                                    title: `Hipnose - Dia ${day}`,
+                                    title: `Hipnose - ${dayData?.title || `Dia ${day}`}`,
                                     fileUrl: getMediaUrl(day, 'hypnosis'), 
                                     contentType: 'hypnosis' 
                                   })}
                                   disabled={isLocked}
                                 >
-                                  <Headphones className="h-4 w-4 mr-2" />
-                                  <span className="text-sm">Hipnose</span>
+                                  <div className="flex items-center">
+                                    <Headphones className="h-4 w-4 mr-2" />
+                                    <span className="text-sm">Hipnose</span>
+                                  </div>
+                                  {dayData?.hypnosis_minutes && (
+                                    <span className="text-xs text-muted-foreground mt-1">
+                                      {dayData.hypnosis_minutes} min
+                                    </span>
+                                  )}
                                 </Button>
                               </div>
                             </div>
