@@ -87,9 +87,9 @@ const Dashboard = () => {
   };
 
   const getDayStatus = (day: number): 'completed' | 'current' | 'locked' => {
+    // Desbloqueia todos os dias para visualização
     if (day < currentDay) return 'completed';
-    if (day === currentDay) return 'current';
-    return 'locked';
+    return 'current'; // Todos os dias disponíveis
   };
 
   if (authLoading || profileLoading) {
@@ -149,6 +149,18 @@ const Dashboard = () => {
             </div>
           </div>
         </header>
+
+        {/* Welcome Message */}
+        <div className="mb-8 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 backdrop-blur-sm border border-primary/20 p-6 md:p-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+            Bem-vindo à sua jornada, {profile?.display_name || 'Usuário'}!
+          </h2>
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+            Prepare-se para uma transformação completa em 21 dias. Cada fase foi cuidadosamente 
+            desenvolvida para guiá-lo através de um processo de autoconhecimento e crescimento pessoal. 
+            Navegue pelos dias usando as setas ou arrastando com o dedo no celular.
+          </p>
+        </div>
 
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
