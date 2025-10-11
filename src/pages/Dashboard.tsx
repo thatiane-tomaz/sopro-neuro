@@ -69,7 +69,7 @@ const Dashboard = () => {
     fileUrl: string;
     contentType: 'video' | 'hypnosis';
   } | null>(null);
-  const [currentDay] = useState(3);
+  const [currentDay] = useState(21);
   const { toast } = useToast();
   const [phases, setPhases] = useState<Phase[]>([]);
   const [dailyContent, setDailyContent] = useState<Record<number, DayContent>>({});
