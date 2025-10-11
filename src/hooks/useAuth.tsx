@@ -10,6 +10,8 @@ interface AuthContextType {
   signUp: (email: string, password: string, displayName?: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  updatePassword: (newPassword: string) => Promise<{ error: any }>;
+  updateEmail: (newEmail: string) => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -110,6 +112,48 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    if (error) {
+      toast({
+        title: "Erro ao atualizar senha",
+        description: error.message,
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Senha atualizada",
+        description: "Sua senha foi alterada com sucesso"
+      });
+    }
+
+    return { error };
+  };
+
+  const updateEmail = async (newEmail: string) => {
+    const { error } = await supabase.auth.updateUser({
+      email: newEmail
+    });
+
+    if (error) {
+      toast({
+        title: "Erro ao atualizar email",
+        description: error.message,
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Email atualizado",
+        description: "Verifique seu novo email para confirmar a mudança"
+      });
+    }
+
+    return { error };
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -117,7 +161,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       loading,
       signUp,
       signIn,
-      signOut
+      signOut,
+      updatePassword,
+      updateEmail
     }}>
       {children}
     </AuthContext.Provider>

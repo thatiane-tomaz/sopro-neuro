@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, PlayCircle, Headphones, Lock, Crown } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import MediaPlayer from '@/components/MediaPlayer';
@@ -141,14 +141,24 @@ const Dashboard = () => {
                   </Badge>
                 )}
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={handleLogout}
-                title="Sair"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => navigate('/settings')}
+                  title="Configurações"
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={handleLogout}
+                  title="Sair"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </header>
