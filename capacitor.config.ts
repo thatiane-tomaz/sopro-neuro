@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'sopro-mente-livre',
   webDir: 'dist',
   server: {
-    url: 'https://2814fbf6-4b2c-4db2-bb16-4476746b13fe.lovableproject.com?forceHideBadge=true',
+    url: 'https://2814fbf6-4b2c-4db2-bb16-4476746b13fe.lovableproject.com',
     cleartext: true
   }
 };
