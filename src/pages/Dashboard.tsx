@@ -215,11 +215,15 @@ const Dashboard = () => {
                                 Dia {day}
                               </h3>
                               
-                              <div className="space-y-2">
+                              <div className="flex gap-2">
                                 <Button
-                                  variant={isCurrent ? "default" : "outline"}
+                                  variant="outline"
                                   size="sm"
-                                  className="w-full justify-start"
+                                  className={`flex-1 justify-center ${
+                                    !isLocked 
+                                      ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200' 
+                                      : ''
+                                  }`}
                                   onClick={() => !isLocked && setSelectedMedia({ 
                                     title: `Vídeo - Dia ${day}`,
                                     fileUrl: getMediaUrl(day, 'video'), 
@@ -228,13 +232,17 @@ const Dashboard = () => {
                                   disabled={isLocked}
                                 >
                                   <PlayCircle className="h-4 w-4 mr-2" />
-                                  <span className="text-sm">1. Vídeo</span>
+                                  <span className="text-sm">Vídeo</span>
                                 </Button>
                                 
                                 <Button
-                                  variant={isCurrent ? "default" : "outline"}
+                                  variant="outline"
                                   size="sm"
-                                  className="w-full justify-start"
+                                  className={`flex-1 justify-center ${
+                                    !isLocked 
+                                      ? 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200' 
+                                      : ''
+                                  }`}
                                   onClick={() => !isLocked && setSelectedMedia({ 
                                     title: `Hipnose - Dia ${day}`,
                                     fileUrl: getMediaUrl(day, 'hypnosis'), 
@@ -243,7 +251,7 @@ const Dashboard = () => {
                                   disabled={isLocked}
                                 >
                                   <Headphones className="h-4 w-4 mr-2" />
-                                  <span className="text-sm">2. Hipnose</span>
+                                  <span className="text-sm">Hipnose</span>
                                 </Button>
                               </div>
                             </div>
