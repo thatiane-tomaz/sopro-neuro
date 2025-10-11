@@ -85,7 +85,7 @@ const Dashboard = () => {
 
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
     const bucket = type === 'video' ? 'videos' : 'hypnosis';
-    const fileName = type === 'video' ? `video_${day}.mp3` : `hipnose_${day}.mp3`;
+    const fileName = type === 'video' ? `video_${day}.mp4` : `hipnose_${day}.mp3`;
     return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${fileName}`;
   };
 
