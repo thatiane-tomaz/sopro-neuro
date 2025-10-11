@@ -166,6 +166,9 @@ const Dashboard = () => {
             return (
               <div key={phase.id} className="rounded-2xl bg-card/50 backdrop-blur-sm border border-border p-4 md:p-6 shadow-lg">
                 <div className="mb-4">
+                  <p className="text-sm font-semibold text-primary mb-1">
+                    Fase {phase.phase_number}
+                  </p>
                   <h2 className="text-xl md:text-2xl font-bold text-foreground">
                     {phase.title}
                   </h2>
@@ -218,7 +221,10 @@ const Dashboard = () => {
                             </div>
 
                             <div className={`p-4 ${isLocked ? 'pointer-events-none' : ''}`}>
-                              <h3 className="text-lg font-semibold text-foreground mb-3">
+                              <p className="text-xs font-semibold text-primary mb-1">
+                                Dia {day}
+                              </p>
+                              <h3 className="text-base font-semibold text-foreground mb-3">
                                 {dayContent.title}
                               </h3>
                               
