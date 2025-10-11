@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
@@ -45,20 +45,26 @@ const dayImages = [
   day15, day16, day17, day18, day19, day20, day21
 ];
 
-interface Phase {
-  id: string;
-  phase_number: number;
-  title: string;
-  subtitle: string;
-  days: number[];
-}
-
-interface DayContent {
-  day_number: number;
-  title: string;
-  video_minutes: number | null;
-  hypnosis_minutes: number | null;
-}
+const phases = [
+  {
+    id: 1,
+    title: "Fase 1",
+    subtitle: "Despertar Interior",
+    days: [1, 2, 3, 4, 5, 6, 7]
+  },
+  {
+    id: 2,
+    title: "Fase 2", 
+    subtitle: "Transformação Profunda",
+    days: [8, 9, 10, 11, 12, 13, 14]
+  },
+  {
+    id: 3,
+    title: "Fase 3",
+    subtitle: "Integração e Renovação",
+    days: [15, 16, 17, 18, 19, 20, 21]
+  }
+];
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -71,64 +77,6 @@ const Dashboard = () => {
   } | null>(null);
   const [currentDay] = useState(3);
   const { toast } = useToast();
-  const [phases, setPhases] = useState<Phase[]>([]);
-  const [dailyContent, setDailyContent] = useState<Record<number, DayContent>>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch phases
-        const { data: phasesData, error: phasesError } = await supabase
-          .from('phases')
-          .select('*')
-          .order('phase_number');
-
-        if (phasesError) throw phasesError;
-
-        // Fetch daily content
-        const { data: contentData, error: contentError } = await supabase
-          .from('daily_content')
-          .select('*')
-          .order('day_number');
-
-        if (contentError) throw contentError;
-
-        // Map phases with their days
-        const mappedPhases: Phase[] = (phasesData || []).map((phase, index) => {
-          const startDay = index * 7 + 1;
-          const endDay = startDay + 6;
-          return {
-            id: phase.id,
-            phase_number: phase.phase_number,
-            title: phase.title,
-            subtitle: phase.subtitle,
-            days: Array.from({ length: 7 }, (_, i) => startDay + i)
-          };
-        });
-
-        // Map daily content by day number
-        const contentMap = (contentData || []).reduce((acc, content) => {
-          acc[content.day_number] = content;
-          return acc;
-        }, {} as Record<number, DayContent>);
-
-        setPhases(mappedPhases);
-        setDailyContent(contentMap);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        toast({
-          title: "Erro",
-          description: "Erro ao carregar dados do programa",
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [toast]);
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
 
@@ -146,8 +94,8 @@ const Dashboard = () => {
     return 'locked';
   };
 
-  if (authLoading || profileLoading || loading) {
-    console.log('Loading state:', { authLoading, profileLoading, loading });
+  if (authLoading || profileLoading) {
+    console.log('Loading state:', { authLoading, profileLoading });
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary">
         <div className="text-center">
@@ -241,7 +189,6 @@ const Dashboard = () => {
                       const isLocked = status === 'locked';
                       const isCompleted = status === 'completed';
                       const isCurrent = status === 'current';
-                      const dayData = dailyContent[day];
 
                       return (
                         <CarouselItem key={day} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
@@ -274,7 +221,7 @@ const Dashboard = () => {
 
                             <div className={`p-4 ${isLocked ? 'pointer-events-none' : ''}`}>
                               <h3 className="text-lg font-semibold text-foreground mb-3">
-                                {dayData?.title || `Dia ${day}`}
+                                Dia {day}
                               </h3>
                               
                               <div className="flex gap-2">
