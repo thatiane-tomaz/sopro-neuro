@@ -206,7 +206,7 @@ const Dashboard = () => {
 
         {/* Welcome Message */}
         <div className="mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+          <h2 className="text-xl md:text-2xl font-bold text-primary">
             Bem-vindo à sua jornada!
           </h2>
         </div>
