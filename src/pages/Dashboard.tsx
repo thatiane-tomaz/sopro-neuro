@@ -87,9 +87,9 @@ const Dashboard = () => {
   };
 
   const getDayStatus = (day: number): 'completed' | 'current' | 'locked' => {
+    // Desbloqueia todos os dias para visualização
     if (day < currentDay) return 'completed';
-    if (day === currentDay) return 'current';
-    return 'locked';
+    return 'current'; // Todos os dias disponíveis
   };
 
   if (authLoading || profileLoading) {
