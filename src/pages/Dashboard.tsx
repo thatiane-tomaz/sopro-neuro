@@ -364,12 +364,11 @@ const Dashboard = () => {
               </div>
               <Button 
                 variant="ghost" 
-                size="default"
+                size="icon"
                 onClick={() => setShowTimeline(true)} 
-                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 text-xs whitespace-nowrap px-4"
+                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 h-9 w-9"
               >
-                <Route className="h-3 w-3 mr-2" />
-                <span>Processo: 3 fases 21 dias</span>
+                <Route className="h-4 w-4" />
               </Button>
             </div>
             
