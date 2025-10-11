@@ -1,549 +1,261 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Play, Clock, Route, CheckCircle, Lock, Crown, Headphones, LogOut } from "lucide-react";
-import { useUserProfile } from "@/hooks/useUserProfile";
-import { useDailyTexts } from "@/hooks/useDailyTexts";
-import { ContentAccessWrapper } from "@/components/upgrade/UpgradeCard";
-import UpgradeCard from "@/components/upgrade/UpgradeCard";
-import MediaPlayer from "@/components/MediaPlayer";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import videoCalmMan from "@/assets/video-calm-man-dark.jpg";
-import hypnosisWomanHeadphones from "@/assets/hypnosis-woman-headphones.jpg";
-import soproLogo from "@/assets/sopro-logo.png";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { LogOut, PlayCircle, Headphones, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import MediaPlayer from '@/components/MediaPlayer';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+import day1 from '@/assets/day-1.jpg';
+import day2 from '@/assets/day-2.jpg';
+import day3 from '@/assets/day-3.jpg';
+import day4 from '@/assets/day-4.jpg';
+import day5 from '@/assets/day-5.jpg';
+import day6 from '@/assets/day-6.jpg';
+import day7 from '@/assets/day-7.jpg';
+import day8 from '@/assets/day-8.jpg';
+import day9 from '@/assets/day-9.jpg';
+import day10 from '@/assets/day-10.jpg';
+import day11 from '@/assets/day-11.jpg';
+import day12 from '@/assets/day-12.jpg';
+import day13 from '@/assets/day-13.jpg';
+import day14 from '@/assets/day-14.jpg';
+import day15 from '@/assets/day-15.jpg';
+import day16 from '@/assets/day-16.jpg';
+import day17 from '@/assets/day-17.jpg';
+import day18 from '@/assets/day-18.jpg';
+import day19 from '@/assets/day-19.jpg';
+import day20 from '@/assets/day-20.jpg';
+import day21 from '@/assets/day-21.jpg';
+
+const dayImages = [
+  day1, day2, day3, day4, day5, day6, day7,
+  day8, day9, day10, day11, day12, day13, day14,
+  day15, day16, day17, day18, day19, day20, day21
+];
+
+const phases = [
+  {
+    id: 1,
+    title: "Fase 1",
+    subtitle: "Despertar Interior",
+    days: [1, 2, 3, 4, 5, 6, 7]
+  },
+  {
+    id: 2,
+    title: "Fase 2", 
+    subtitle: "Transformação Profunda",
+    days: [8, 9, 10, 11, 12, 13, 14]
+  },
+  {
+    id: 3,
+    title: "Fase 3",
+    subtitle: "Integração e Renovação",
+    days: [15, 16, 17, 18, 19, 20, 21]
+  }
+];
 
 const Dashboard = () => {
-  const [currentWeek] = useState(1);
-  const [currentDay] = useState(1);
-  const [showTimeline, setShowTimeline] = useState(false);
-  const [completedToday] = useState({
-    video: false,
-    hypnosis: false
-  });
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const { profile, loading: profileLoading } = useUserProfile();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
-    description?: string;
-    fileUrl?: string;
+    fileUrl: string;
     contentType: 'video' | 'hypnosis';
   } | null>(null);
+  const [currentDay] = useState(1);
+  const { toast } = useToast();
 
-  // Função para gerar URL do arquivo no Supabase Storage
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
-    const bucketName = type === 'video' ? 'videos' : 'hypnosis';
-    const fileName = type === 'video' ? `video_${day}.mp4` : `hipnose_${day}.mp3`;
-    return `${supabase.storage.from(bucketName).getPublicUrl(fileName).data.publicUrl}`;
+    const bucket = type === 'video' ? 'videos' : 'hypnosis';
+    const fileName = `dia${day}.mp3`;
+    return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${fileName}`;
   };
-  
-  const { user, loading: authLoading, signOut } = useAuth();
-  const { profile, loading: profileLoading, isFree, isPremium } = useUserProfile();
-  const { texts, loading: textsLoading } = useDailyTexts(currentDay);
 
-  // Redirect to login if not authenticated
-  if (!authLoading && !user) {
-    return <Navigate to="/login" replace />;
+  const getDayStatus = (day: number): 'completed' | 'current' | 'locked' => {
+    if (day < currentDay) return 'completed';
+    if (day === currentDay) return 'current';
+    return 'locked';
+  };
+
+  if (!user) {
+    navigate('/login');
+    return null;
   }
 
-  if (authLoading || profileLoading || textsLoading) {
+  if (authLoading || profileLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">Carregando...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <p className="mt-4 text-muted-foreground">Carregando...</p>
+        </div>
       </div>
     );
   }
 
-  const weekData = {
-    1: {
-      title: "Quebrando Crenças e Aprendendo",
-      subtitle: "Continue fumando enquanto aprende",
-      video: {
-        title: "Neurociência do Vício",
-        duration: "5 min"
-      },
-      hypnosis: {
-        title: "Desconstruindo Mitos",
-        duration: "10 min"
-      }
-    },
-    2: {
-      title: "O Momento de Parar",
-      subtitle: "Hipnoses para enfrentar a abstinência",
-      video: {
-        title: "Preparação Mental",
-        duration: "4 min"
-      },
-      hypnosis: {
-        title: "Relaxamento Profundo",
-        duration: "8 min"
-      }
-    },
-    3: {
-      title: "Novos Hábitos Saudáveis",
-      subtitle: "Reprogramando seu estilo de vida",
-      video: {
-        title: "Atividade Física",
-        duration: "6 min"
-      },
-      hypnosis: {
-        title: "Motivação para Saúde",
-        duration: "12 min"
-      }
-    }
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
   };
-
-  const currentWeekData = weekData[currentWeek as keyof typeof weekData];
-
-  if (showTimeline) {
-    const phases = [
-      {
-        id: 1,
-        title: "Fase 1",
-        subtitle: "Quebrando Crenças e Aprendendo",
-        description: "Continue fumando enquanto aprende sobre o vício e quebra crenças limitantes.",
-        days: [1, 2, 3, 4, 5, 6, 7]
-      },
-      {
-        id: 2,
-        title: "Fase 2", 
-        subtitle: "O Momento de Parar",
-        description: "Hipnoses e técnicas para enfrentar a abstinência e o processo de parar.",
-        days: [8, 9, 10, 11, 12, 13, 14]
-      },
-      {
-        id: 3,
-        title: "Fase 3",
-        subtitle: "Novos Hábitos Saudáveis", 
-        description: "Reprogramando seu estilo de vida com novos hábitos e rotinas saudáveis.",
-        days: [15, 16, 17, 18, 19, 20, 21]
-      }
-    ];
-
-    const getDayStatus = (day: number) => {
-      if (day < currentDay) return 'completed';
-      if (day === currentDay) return 'current';
-      return 'locked';
-    };
-
-    const getDayTitle = (day: number) => {
-      const titles = {
-        // Fase 1: Quebrando Crenças e Aprendendo
-        1: "Preparação Mental",
-        2: "Entendendo o Vício", 
-        3: "Quebrando Padrões",
-        4: "Identificando Gatilhos",
-        5: "Neurociência do Tabaco",
-        6: "Mitos e Verdades",
-        7: "Motivação Interna",
-        
-        // Fase 2: O Momento de Parar
-        8: "Dia da Decisão",
-        9: "Primeiras 24h",
-        10: "Enfrentando a Abstinência",
-        11: "Controle da Ansiedade",
-        12: "Resistindo às Tentações",
-        13: "Fortalecendo a Mente",
-        14: "Primeira Semana Livre",
-        
-        // Fase 3: Novos Hábitos Saudáveis
-        15: "Construindo Rotinas",
-        16: "Exercícios e Movimento",
-        17: "Alimentação Consciente",
-        18: "Relacionamentos Saudáveis",
-        19: "Gerenciando o Estresse",
-        20: "Autoestima e Confiança",
-        21: "Consolidação e Futuro"
-      };
-      return titles[day as keyof typeof titles] || `Dia ${day}`;
-    };
-
-    const getDayDescription = (day: number) => {
-      const descriptions = {
-        // Fase 1
-        1: "Prepare sua mente para a jornada de transformação que está começando.",
-        2: "Compreenda como funciona o vício e por que é difícil parar de fumar.",
-        3: "Identifique e quebre os padrões automáticos que te fazem fumar.",
-        4: "Reconheça os gatilhos emocionais e situacionais que levam ao cigarro.",
-        5: "Entenda o que acontece no seu cérebro quando você fuma.",
-        6: "Desconstrua mitos sobre o cigarro e enxergue a realidade.",
-        7: "Encontre sua motivação verdadeira para parar de fumar.",
-        
-        // Fase 2
-        8: "O momento chegou! Técnicas para tomar a decisão definitiva.",
-        9: "Estratégias para superar as primeiras 24 horas sem cigarro.",
-        10: "Aprenda a lidar com os sintomas físicos da abstinência.",
-        11: "Técnicas de respiração e relaxamento para controlar a ansiedade.",
-        12: "Fortaleça sua resistência contra as tentações e recaídas.",
-        13: "Desenvolva força mental e determinação para continuar.",
-        14: "Celebre sua primeira semana livre do cigarro.",
-        
-        // Fase 3
-        15: "Estabeleça novas rotinas saudáveis em seu dia a dia.",
-        16: "Incorpore atividades físicas para fortalecer corpo e mente.",
-        17: "Desenvolva uma relação saudável com a comida e nutrição.",
-        18: "Melhore seus relacionamentos e comunicação interpessoal.",
-        19: "Aprenda técnicas avançadas de gerenciamento do estresse.",
-        20: "Construa uma autoestima sólida e confiança em si mesmo.",
-        21: "Consolide sua nova identidade e planeje seu futuro livre."
-      };
-      return descriptions[day as keyof typeof descriptions] || "Descrição do dia será carregada em breve.";
-    };
-
-    return (
-      <div className="min-h-screen bg-background">
-        {/* Header */}
-        <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b">
-          <div className="px-4 py-3">
-            <div className="flex items-center justify-between">
-              <Button variant="ghost" onClick={() => setShowTimeline(false)} className="p-2">
-                ← Voltar
-              </Button>
-              <h1 className="text-lg font-semibold text-foreground">Caminho do Processo</h1>
-              <div className="w-10"></div>
-            </div>
-          </div>
-        </header>
-
-        {/* Process Path Content */}
-        <main className="px-4 py-6 space-y-8">
-          {phases.map((phase) => (
-            <div key={phase.id} className="space-y-4">
-              {/* Phase Header */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                    phase.id <= Math.ceil(currentDay / 7) 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-muted text-muted-foreground'
-                  }`}>
-                    {phase.id}
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-foreground">{phase.title}</h2>
-                    <p className="text-sm font-medium text-primary">{phase.subtitle}</p>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed text-justify ml-11">
-                  {phase.description}
-                </p>
-              </div>
-
-              {/* Days Grid */}
-              <div className="grid gap-4 ml-11">
-                {phase.days.map((day) => {
-                  const status = getDayStatus(day);
-                  const isAccessible = status === 'completed' || status === 'current';
-                  
-                  return (
-                    <Card key={day} className={`transition-all duration-200 ${
-                      status === 'locked' ? 'opacity-50' : 'hover:shadow-md'
-                    }`}>
-                      <CardContent className="p-4">
-                        <div className="space-y-3">
-                          {/* Day Header */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                                status === 'completed' ? 'bg-secondary text-secondary-foreground' :
-                                status === 'current' ? 'bg-primary text-primary-foreground' :
-                                'bg-muted text-muted-foreground'
-                              }`}>
-                                {day}
-                              </div>
-                              <div>
-                                <h3 className="font-medium text-foreground">{getDayTitle(day)}</h3>
-                                <p className="text-xs text-muted-foreground">Dia {day}</p>
-                              </div>
-                            </div>
-                            {status === 'completed' && <CheckCircle className="h-4 w-4 text-secondary" />}
-                            {status === 'locked' && <Lock className="h-4 w-4 text-muted-foreground" />}
-                          </div>
-
-                          {/* Day Description */}
-                          <p className="text-sm text-muted-foreground leading-relaxed text-justify">
-                            {getDayDescription(day)}
-                          </p>
-
-                          {/* Action Buttons */}
-                          {isAccessible && (
-                            <div className="flex gap-2 pt-2">
-                              <Button 
-                                size="sm" 
-                                variant="outline" 
-                                className="flex-1 h-8 text-xs"
-                                onClick={() => {
-                                  setShowTimeline(false);
-                                  setSelectedMedia({
-                                    title: `Vídeo - ${getDayTitle(day)}`,
-                                    fileUrl: getMediaUrl(day, 'video'),
-                                    contentType: 'video'
-                                  });
-                                }}
-                              >
-                                <Play className="h-3 w-3 mr-1" />
-                                Vídeo
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="outline" 
-                                className="flex-1 h-8 text-xs"
-                                onClick={() => {
-                                  setShowTimeline(false);
-                                  setSelectedMedia({
-                                    title: `Hipnose - ${getDayTitle(day)}`,
-                                    fileUrl: getMediaUrl(day, 'hypnosis'),
-                                    contentType: 'hypnosis'
-                                  });
-                                }}
-                              >
-                                <div className="w-3 h-3 rounded-full bg-accent mr-1" />
-                                Hipnose
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </main>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b">
-        <div className="px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={soproLogo} alt="Sopro" className="h-8" />
-              {isFree && (
-                <Badge variant="secondary" className="text-xs self-center">
-                  Acesso Gratuito
-                </Badge>
-              )}
-              {isPremium && (
-                <Badge className="text-xs bg-accent self-center">
-                  <Crown className="w-3 h-3 mr-1" />
-                  Premium
-                </Badge>
-              )}
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
+        {/* Header */}
+        <header className="mb-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-1">
+                Bem-vindo, {profile?.display_name || 'Usuário'}!
+              </h1>
+              <p className="text-sm md:text-base text-muted-foreground">
+                Continue sua jornada de transformação
+              </p>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={() => setShowTimeline(true)}>
-                <Route className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={signOut} title="Sair">
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-4 py-6 space-y-6">
-
-        {/* Week Overview */}
-        <div className="bg-gradient-to-br from-primary/15 via-accent/10 to-secondary/15 rounded-3xl p-6 border border-primary/30">
-          <div className="space-y-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="space-y-3 flex-1 min-w-0">
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
-                  <span className="text-xs font-medium text-primary">Fase {currentWeek}</span>
-                  <span className="h-1 w-1 rounded-full bg-primary/40" />
-                  <span className="text-xs font-medium text-primary">Dia {currentDay}</span>
-                </div>
+              <div className="px-3 py-1 rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30">
+                <span className="text-accent text-xs md:text-sm font-medium">
+                  {profile?.subscription_status === 'premium' ? 'Premium' : 'Free'}
+                </span>
               </div>
               <Button 
                 variant="ghost" 
                 size="icon"
-                onClick={() => setShowTimeline(true)} 
-                className="rounded-full bg-accent/20 backdrop-blur-sm border border-accent/30 text-accent-foreground hover:bg-accent/30 h-9 w-9"
+                onClick={handleLogout}
+                className="rounded-full hover:bg-destructive/20 hover:text-destructive h-8 w-8 md:h-9 md:w-9"
               >
-                <Route className="h-4 w-4" />
+                <LogOut className="h-4 w-4" />
               </Button>
             </div>
-            
-            {/* Fase Description */}
-            <p className="text-sm text-muted-foreground leading-relaxed text-justify">
-              {texts.fase_descricao || "Carregando descrição da fase..."}
-            </p>
           </div>
-        </div>
+        </header>
 
-        {/* Daily Activities Card */}
-        <div className="bg-gradient-to-br from-card/80 via-card to-card/90 rounded-3xl p-6 border border-border/50 shadow-lg">
-          <div className="space-y-6">
-            {/* Dia Section */}
-            <div className="space-y-3">
-              <h3 className="text-2xl font-playfair font-bold text-primary">Conquista de Hoje</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed text-justify">
-                {texts.dia_descricao || "Carregando atividades do dia..."}
-              </p>
-            </div>
+        {/* Phases with Day Carousels */}
+        <div className="space-y-8">
+          {phases.map((phase) => {
+            const phaseHasCurrent = phase.days.includes(currentDay);
+            const initialSlide = phaseHasCurrent ? phase.days.indexOf(currentDay) : 0;
             
-            {/* Video Card - Only show for days 1-7 */}
-            {currentDay <= 7 && (
-              <ContentAccessWrapper day={currentDay} contentType="video" contentId={`video_week_${currentWeek}_day_${currentDay}`}>
-                <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl border border-primary/20 overflow-hidden">
-                  {/* Video Image - Larger */}
-                  <div className="relative w-full h-40 overflow-hidden cursor-pointer group"
-                       onClick={() => setSelectedMedia({
-                         title: 'Vídeo de Preparação',
-                         description: undefined,
-                         fileUrl: getMediaUrl(currentDay, 'video'),
-                         contentType: 'video'
-                       })}>
-                    <img 
-                      src={videoCalmMan} 
-                      alt="Vídeo de Preparação" 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <Play className="h-6 w-6 text-primary fill-primary ml-1" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Bottom Info */}
-                  <div className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                         <h3 className="text-sm font-medium text-foreground mb-1">
-                          Vídeo de Preparação
-                         </h3>
-                        <div className="flex items-center space-x-1">
-                          <Clock className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-sm text-muted-foreground">
-                            {texts.video_duracao ? `${texts.video_duracao} min` : '3 min'}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      {completedToday.video ? (
-                        <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
-                          <CheckCircle className="h-5 w-5 text-secondary" />
-                        </div>
-                      ) : (
-                        <Button 
-                          size="sm" 
-                          className="rounded-full px-4 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                           onClick={() => setSelectedMedia({
-                            title: 'Vídeo de Preparação',
-                            description: undefined,
-                            fileUrl: getMediaUrl(currentDay, 'video'),
-                            contentType: 'video'
-                          })}
-                        >
-                          Assistir
-                        </Button>
-                      )}
-                    </div>
-                  </div>
+            return (
+              <div key={phase.id} className="rounded-2xl bg-card/50 backdrop-blur-sm border border-border p-4 md:p-6 shadow-lg">
+                <div className="mb-4">
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                    {phase.title}
+                  </h2>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    {phase.subtitle}
+                  </p>
                 </div>
-              </ContentAccessWrapper>
-            )}
 
-            {/* Hypnosis Card */}
-            <ContentAccessWrapper day={currentDay} contentType="hypnosis" contentId={`hypnosis_week_${currentWeek}_day_${currentDay}`}>
-              <div className="bg-gradient-to-r from-accent/10 to-accent/5 backdrop-blur-sm rounded-2xl border border-accent/20 overflow-hidden">
-                {/* Hypnosis Image - Larger */}
-                <div className="relative w-full h-40 overflow-hidden cursor-pointer group"
-                     onClick={() => setSelectedMedia({
-                       title: 'Hipnose Terapêutica',
-                       description: undefined,
-                       fileUrl: getMediaUrl(currentDay, 'hypnosis'),
-                       contentType: 'hypnosis'
-                     })}>
-                  <img 
-                    src={hypnosisWomanHeadphones} 
-                    alt="Hipnose Terapêutica" 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <Headphones className="h-6 w-6 text-accent" />
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Bottom Info */}
-                <div className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-sm font-medium text-foreground mb-1">
-                        Hipnose Terapêutica
-                      </h3>
-                      <div className="flex items-center space-x-1">
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">
-                          {texts.hipnose_duracao ? `${texts.hipnose_duracao} min` : '10 min'}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    {completedToday.hypnosis ? (
-                      <div className="w-8 h-8 rounded-full bg-secondary/30 flex items-center justify-center">
-                        <CheckCircle className="h-5 w-5 text-secondary" />
-                      </div>
-                    ) : (
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="rounded-full px-4 border-accent/30 hover:bg-accent/10"
-                        onClick={() => setSelectedMedia({
-                          title: 'Hipnose Terapêutica',
-                          description: undefined,
-                          fileUrl: getMediaUrl(currentDay, 'hypnosis'),
-                          contentType: 'hypnosis'
-                        })}
-                      >
-                        Ouvir
-                      </Button>
-                    )}
-                  </div>
-                </div>
+                <Carousel 
+                  opts={{ 
+                    align: "start",
+                    startIndex: initialSlide,
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent className="-ml-2 md:-ml-4">
+                    {phase.days.map((day) => {
+                      const status = getDayStatus(day);
+                      const isLocked = status === 'locked';
+                      const isCompleted = status === 'completed';
+                      const isCurrent = status === 'current';
+
+                      return (
+                        <CarouselItem key={day} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+                          <div 
+                            className={`relative overflow-hidden rounded-xl border transition-all duration-300 ${
+                              isLocked 
+                                ? 'opacity-50 cursor-not-allowed border-border/50' 
+                                : isCurrent
+                                  ? 'border-primary shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl'
+                                  : 'border-border/50 opacity-75 cursor-pointer hover:opacity-100'
+                            }`}
+                          >
+                            <div className="relative aspect-video">
+                              <img 
+                                src={dayImages[day - 1]} 
+                                alt={`Dia ${day}`}
+                                className="w-full h-full object-cover"
+                              />
+                              {isLocked && (
+                                <div className="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center">
+                                  <div className="text-center">
+                                    <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-2">
+                                      <Lock className="h-6 w-6 text-muted-foreground" />
+                                    </div>
+                                    <p className="text-sm text-muted-foreground">Bloqueado</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+
+                            <div className={`p-4 ${isLocked ? 'pointer-events-none' : ''}`}>
+                              <h3 className="text-lg font-semibold text-foreground mb-3">
+                                Dia {day}
+                              </h3>
+                              
+                              <div className="space-y-2">
+                                <Button
+                                  variant={isCurrent ? "default" : "outline"}
+                                  size="sm"
+                                  className="w-full justify-start"
+                                  onClick={() => !isLocked && setSelectedMedia({ 
+                                    title: `Vídeo - Dia ${day}`,
+                                    fileUrl: getMediaUrl(day, 'video'), 
+                                    contentType: 'video' 
+                                  })}
+                                  disabled={isLocked}
+                                >
+                                  <PlayCircle className="h-4 w-4 mr-2" />
+                                  <span className="text-sm">1. Vídeo</span>
+                                </Button>
+                                
+                                <Button
+                                  variant={isCurrent ? "default" : "outline"}
+                                  size="sm"
+                                  className="w-full justify-start"
+                                  onClick={() => !isLocked && setSelectedMedia({ 
+                                    title: `Hipnose - Dia ${day}`,
+                                    fileUrl: getMediaUrl(day, 'hypnosis'), 
+                                    contentType: 'hypnosis' 
+                                  })}
+                                  disabled={isLocked}
+                                >
+                                  <Headphones className="h-4 w-4 mr-2" />
+                                  <span className="text-sm">2. Hipnose</span>
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </CarouselItem>
+                      );
+                    })}
+                  </CarouselContent>
+                  <CarouselPrevious className="hidden sm:flex -left-4 md:-left-6" />
+                  <CarouselNext className="hidden sm:flex -right-4 md:-right-6" />
+                </Carousel>
               </div>
-            </ContentAccessWrapper>
-            
-            {/* Completion Message */}
-            {completedToday.video && completedToday.hypnosis && (
-              <div className="bg-gradient-to-r from-secondary/20 to-primary/20 rounded-2xl p-4 border border-secondary/30 text-center">
-                <p className="text-foreground font-medium">🎉 Parabéns, você completou a conquista de Hoje</p>
-              </div>
-            )}
-          </div>
+            );
+          })}
         </div>
+      </div>
 
-        {/* Free Trial Message for Free Users */}
-        {isFree && (
-          <div className="bg-gradient-to-r from-accent/10 to-primary/10 backdrop-blur-sm rounded-2xl p-6 border border-accent/30 text-center">
-            <p className="text-foreground font-medium">
-              Você tem 2 dias liberados para experimentar. Aproveite cada momento!
-            </p>
-          </div>
-        )}
-
-        {/* Upgrade Card for Free Users - Moved to bottom */}
-        {isFree && (
-          <UpgradeCard onUpgrade={() => console.log('Upgrade clicked')} />
-        )}
-      </main>
-
-      {/* Media Player Modal */}
+      {/* Media Player */}
       {selectedMedia && (
         <MediaPlayer
           title={selectedMedia.title}
-          description={selectedMedia.description}
           fileUrl={selectedMedia.fileUrl}
           contentType={selectedMedia.contentType}
           onClose={() => setSelectedMedia(null)}
