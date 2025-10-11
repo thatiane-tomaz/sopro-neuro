@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useToast } from '@/hooks/use-toast';
+import { usePhases } from '@/hooks/usePhases';
+import { useDailyContent } from '@/hooks/useDailyContent';
 import { supabase } from '@/integrations/supabase/client';
-import { journeyPhases } from '@/data/journeyData';
 import { LogOut, PlayCircle, Headphones, Lock, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -50,6 +51,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile();
+  const { data: phases, isLoading: phasesLoading } = usePhases();
+  const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
     fileUrl: string;
@@ -61,6 +64,24 @@ const Dashboard = () => {
 
   // Calculate current day - for now use day 1, can be enhanced later with user progress tracking
   const currentDay = 1;
+
+  // Group daily content by phases
+  const phaseGroups = useMemo(() => {
+    if (!phases || !dailyContent) return [];
+    
+    return phases.map(phase => {
+      const startDay = (phase.phase_number - 1) * 7 + 1;
+      const endDay = phase.phase_number * 7;
+      const phaseDays = dailyContent.filter(
+        content => content.day_number >= startDay && content.day_number <= endDay
+      );
+      
+      return {
+        ...phase,
+        days: phaseDays
+      };
+    });
+  }, [phases, dailyContent]);
 
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
     const bucket = type === 'video' ? 'videos' : 'hypnosis';
@@ -74,7 +95,7 @@ const Dashboard = () => {
     return 'locked';
   };
 
-  if (authLoading || profileLoading) {
+  if (authLoading || profileLoading || phasesLoading || contentLoading) {
     console.log('Loading state:', { authLoading, profileLoading });
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary">
@@ -141,7 +162,7 @@ const Dashboard = () => {
 
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
-          {journeyPhases.map((phase) => {
+          {phaseGroups.map((phase) => {
             return (
               <div key={phase.id} className="rounded-2xl bg-card/50 backdrop-blur-sm border border-border p-4 md:p-6 shadow-lg">
                 <div className="mb-4">
@@ -161,7 +182,7 @@ const Dashboard = () => {
                 >
                   <CarouselContent className="-ml-2 md:-ml-4">
                     {phase.days.map((dayContent) => {
-                      const day = dayContent.day;
+                      const day = dayContent.day_number;
                       const status = getDayStatus(day);
                       const isLocked = status === 'locked';
                       const isCompleted = status === 'completed';
@@ -220,9 +241,11 @@ const Dashboard = () => {
                                   <PlayCircle className="h-4 w-4 mr-2" />
                                   <span className="text-sm">
                                     Vídeo
-                                    <span className="text-xs opacity-70 ml-1">
-                                      {dayContent.videoMinutes}min
-                                    </span>
+                                    {dayContent.video_minutes && (
+                                      <span className="text-xs opacity-70 ml-1">
+                                        {dayContent.video_minutes}min
+                                      </span>
+                                    )}
                                   </span>
                                 </Button>
                                 
@@ -244,9 +267,11 @@ const Dashboard = () => {
                                   <Headphones className="h-4 w-4 mr-2" />
                                   <span className="text-sm">
                                     Hipnose
-                                    <span className="text-xs opacity-70 ml-1">
-                                      {dayContent.hypnosisMinutes}min
-                                    </span>
+                                    {dayContent.hypnosis_minutes && (
+                                      <span className="text-xs opacity-70 ml-1">
+                                        {dayContent.hypnosis_minutes}min
+                                      </span>
+                                    )}
                                   </span>
                                 </Button>
                               </div>
