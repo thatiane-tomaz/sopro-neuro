@@ -75,7 +75,7 @@ const Dashboard = () => {
     fileUrl: string;
     contentType: 'video' | 'hypnosis';
   } | null>(null);
-  const [currentDay] = useState(1);
+  const [currentDay] = useState(21);
   const { toast } = useToast();
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
@@ -152,7 +152,7 @@ const Dashboard = () => {
 
         {/* Welcome Message */}
         <div className="mb-8 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 backdrop-blur-sm border border-primary/20 p-6 md:p-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+          <h2 className="text-xl md:text-2xl font-bold text-primary mb-3">
             Bem-vindo à sua jornada, {profile?.display_name || 'Usuário'}!
           </h2>
           <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
@@ -181,8 +181,7 @@ const Dashboard = () => {
 
                 <Carousel 
                   opts={{ 
-                    align: "start",
-                    startIndex: initialSlide,
+                    align: "center",
                   }}
                   className="w-full"
                 >
