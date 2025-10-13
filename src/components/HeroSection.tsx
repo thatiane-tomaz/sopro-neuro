@@ -34,14 +34,26 @@ const HeroSection = () => {
           {/* Main headline */}
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 max-w-4xl mx-auto leading-tight">
             Conheça seu corpo e mente e
-            <span className="text-accent"> pare de fumar </span>
+            <span className="text-primary-foreground drop-shadow-lg"> pare de fumar </span>
             com mais facilidade
           </h1>
 
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Usando métodos de <span className="font-semibold text-white">neurociência e hipnose</span>
+            Usando métodos de neurociência e hipnose
           </p>
+
+          {/* Features highlights */}
+          <div className="flex flex-wrap justify-center gap-6 mb-8">
+            <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
+              <Brain className="w-5 h-5 text-accent mr-2" />
+              <span className="text-white font-medium">Neurociência</span>
+            </div>
+            <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
+              <Sparkles className="w-5 h-5 text-accent mr-2" />
+              <span className="text-white font-medium">Hipnose</span>
+            </div>
+          </div>
 
           {/* Journey highlight */}
           <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-8 py-4 mb-12 border border-white/20">
@@ -57,11 +69,11 @@ const HeroSection = () => {
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/login">
-              <Button variant="transformation" size="lg">
-                Saiba como funciona
-              </Button>
-            </Link>
+          </div>
+
+          {/* Free trial info */}
+          <div className="mt-8 text-white/80 text-lg">
+            ✨ 2 primeiros dias liberados para teste
           </div>
 
           {/* Social proof */}
