@@ -47,7 +47,8 @@ const stories: Story[] = [
     highlights: [
       { icon: "apple", text: "Melhorar a alimentação" },
       { icon: "users", text: "Aproveitar momentos com outras pessoas" },
-      { icon: "activity", text: "Praticar exercícios físicos" }
+      { icon: "activity", text: "Praticar exercícios físicos" },
+      { icon: "check", text: "Encontrar novas formas de se divertir" }
     ]
   },
   {
