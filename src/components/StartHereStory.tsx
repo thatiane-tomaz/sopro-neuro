@@ -14,6 +14,7 @@ const stories: Story[] = [
   {
     id: 1,
     title: "3 Fases de 7 Dias",
+    description: "Uma jornada completa de 21 dias dividida em:",
     highlights: [
       { icon: "brain", text: "Fase 1: Quebrando crenças para entender que você não está perdendo nada ao parar de fumar" },
       { icon: "wind", text: "Fase 2: Técnicas respiratórias para atravessar a abstinência com calma e foco" },
@@ -28,7 +29,7 @@ const stories: Story[] = [
       { icon: "video", text: "1 vídeo explicativo com neurociência, biologia e psicologia" },
       { icon: "headphones", text: "1 hipnose reforçando esses conceitos" }
     ],
-    footer: "Menos de 15 minutos por dia"
+    footer: "Ao final desta fase, você fumará seu último cigarro já mais confiante de que não está perdendo nada"
   },
   {
     id: 3,
@@ -41,6 +42,17 @@ const stories: Story[] = [
   },
   {
     id: 4,
+    title: "Por Que Parar de Uma Vez?",
+    description: "Parar de fumar de uma vez aumenta suas chances de sucesso:",
+    highlights: [
+      { icon: "check", text: "Diminui o tempo total que você sentirá os sintomas de abstinência" },
+      { icon: "check", text: "Evita passar por múltiplos ciclos de abstinência que acontecem ao reduzir gradualmente" },
+      { icon: "check", text: "Remove completamente o cigarro da sua rotina desde o início" }
+    ],
+    footer: "O método científico comprova: parar de uma vez é mais eficaz"
+  },
+  {
+    id: 5,
     title: "Fase 3: Hábitos Saudáveis",
     description: "Esta fase reforça hábitos que sustentam sua nova vida:",
     highlights: [
@@ -50,7 +62,7 @@ const stories: Story[] = [
     ]
   },
   {
-    id: 5,
+    id: 6,
     title: "Pronto para Começar?",
     highlights: [
       { icon: "repeat", text: "A repetição de conceitos é importante para criar novas conexões cerebrais" },
