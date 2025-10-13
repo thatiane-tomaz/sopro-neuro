@@ -33,12 +33,12 @@ const HeroSection = () => {
 
           {/* Main headline - foco no problema e solução */}
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 max-w-4xl mx-auto leading-tight">
-            Você <span className="text-primary-foreground drop-shadow-lg">pode parar de fumar</span> sem sofrimento
+            Parar de fumar <span className="text-primary-foreground drop-shadow-lg">pode ser mais fácil</span> do que você imagina
           </h1>
 
           {/* Subtitle - como funciona */}
           <p className="text-xl md:text-2xl text-white/95 mb-10 max-w-3xl mx-auto leading-relaxed font-light">
-            Em 21 dias, usando neurociência e hipnose, você vai entender seu corpo e mente de uma forma totalmente nova
+            Em 21 dias, com neurociência e hipnose, você entende seu corpo e mente de uma forma totalmente nova
           </p>
 
           {/* Trust badges */}
