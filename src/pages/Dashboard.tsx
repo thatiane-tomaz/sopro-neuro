@@ -179,17 +179,9 @@ const Dashboard = () => {
             onClick={() => setShowStartHere(true)}
           >
             <div className="flex items-center justify-between gap-4">
-              <div className="flex-1">
-                <Badge className="mb-2 bg-primary/10 text-primary border-primary/20">
-                  Antes de começar
-                </Badge>
-                <h3 className="text-lg font-bold text-foreground mb-1">
-                  Tutorial de Boas-Vindas
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Entenda como funciona sua jornada de 21 dias
-                </p>
-              </div>
+              <p className="text-sm text-muted-foreground flex-1">
+                Entenda como funciona sua jornada de 21 dias
+              </p>
               
               <Button 
                 variant="default"
