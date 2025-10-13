@@ -175,33 +175,29 @@ const Dashboard = () => {
         {/* Start Here Section */}
         <div className="mb-8">
           <div 
-            className="relative overflow-hidden rounded-2xl border-2 border-primary shadow-xl shadow-primary/30 cursor-pointer hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5"
+            className="relative overflow-hidden rounded-xl border-2 border-primary shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4"
             onClick={() => setShowStartHere(true)}
           >
-            <div className="flex flex-col md:flex-row items-center gap-6 p-6 md:p-8">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center flex-shrink-0 shadow-lg">
-                <Sparkles className="h-16 w-16 md:h-20 md:w-20 text-white animate-pulse" />
-              </div>
-              
-              <div className="flex-1 text-center md:text-left">
-                <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <Badge className="mb-2 bg-primary/10 text-primary border-primary/20">
                   Antes de começar
                 </Badge>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  Comece Aqui
-                </h2>
-                <p className="text-muted-foreground mb-4 text-sm md:text-base">
-                  Entenda como funciona sua jornada de 21 dias para se libertar do cigarro
+                <h3 className="text-lg font-bold text-foreground mb-1">
+                  Tutorial de Boas-Vindas
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Entenda como funciona sua jornada de 21 dias
                 </p>
-                <Button 
-                  variant="default"
-                  size="lg"
-                  className="shadow-lg"
-                >
-                  <Sparkles className="h-5 w-5 mr-2" />
-                  Ver Tutorial Completo
-                </Button>
               </div>
+              
+              <Button 
+                variant="default"
+                className="shadow-lg flex-shrink-0"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                Comece aqui
+              </Button>
             </div>
           </div>
         </div>
