@@ -6,10 +6,11 @@ import { useToast } from '@/hooks/use-toast';
 import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Settings } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Settings, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import MediaPlayer from '@/components/MediaPlayer';
+import StartHereStory from '@/components/StartHereStory';
 import {
   Carousel,
   CarouselContent,
@@ -58,6 +59,7 @@ const Dashboard = () => {
     fileUrl: string;
     contentType: 'video' | 'hypnosis';
   } | null>(null);
+  const [showStartHere, setShowStartHere] = useState(false);
   const { toast } = useToast();
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
@@ -194,6 +196,42 @@ const Dashboard = () => {
                   className="w-full"
                 >
                   <CarouselContent className="-ml-2 md:-ml-4">
+                    {/* Start Here Card for Day 1 */}
+                    {phase.phase_number === 1 && (
+                      <CarouselItem className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+                        <div 
+                          className="relative overflow-hidden rounded-xl border-2 border-primary shadow-lg shadow-primary/30 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/10 to-accent/10"
+                          onClick={() => setShowStartHere(true)}
+                        >
+                          <div className="aspect-video bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center">
+                            <div className="text-center">
+                              <Sparkles className="h-16 w-16 text-white mx-auto mb-3 animate-pulse" />
+                              <p className="text-white font-bold text-xl">Comece Aqui</p>
+                            </div>
+                          </div>
+                          <div className="p-4 bg-card/80 backdrop-blur-sm">
+                            <p className="text-xs font-semibold text-primary mb-1">
+                              Antes do Dia 1
+                            </p>
+                            <h3 className="text-base font-semibold text-foreground mb-2">
+                              Introdução ao Programa
+                            </h3>
+                            <p className="text-sm text-muted-foreground mb-3">
+                              Entenda como funciona sua jornada de 21 dias
+                            </p>
+                            <Button 
+                              variant="default"
+                              size="sm"
+                              className="w-full"
+                            >
+                              <Sparkles className="h-4 w-4 mr-2" />
+                              Ver Tutorial
+                            </Button>
+                          </div>
+                        </div>
+                      </CarouselItem>
+                    )}
+                    
                     {phase.days.map((dayContent) => {
                       const day = dayContent.day_number;
                       const status = getDayStatus(day);
@@ -314,6 +352,11 @@ const Dashboard = () => {
           contentType={selectedMedia.contentType}
           onClose={() => setSelectedMedia(null)}
         />
+      )}
+
+      {/* Start Here Story */}
+      {showStartHere && (
+        <StartHereStory onClose={() => setShowStartHere(false)} />
       )}
     </div>
   );
