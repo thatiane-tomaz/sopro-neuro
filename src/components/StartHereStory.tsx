@@ -42,6 +42,16 @@ const stories: Story[] = [
   },
   {
     id: 4,
+    title: "Fase 3: Hábitos Saudáveis",
+    description: "Esta fase reforça hábitos que sustentam sua nova vida:",
+    highlights: [
+      { icon: "apple", text: "Melhorar a alimentação" },
+      { icon: "users", text: "Aproveitar momentos com outras pessoas" },
+      { icon: "activity", text: "Praticar exercícios físicos" }
+    ]
+  },
+  {
+    id: 5,
     title: "Por Que Parar de Uma Vez?",
     description: "Parar de fumar de uma vez aumenta suas chances de sucesso:",
     highlights: [
@@ -50,16 +60,6 @@ const stories: Story[] = [
       { icon: "check", text: "Remove completamente o cigarro da sua rotina desde o início" }
     ],
     footer: "O método científico comprova: parar de uma vez é mais eficaz"
-  },
-  {
-    id: 5,
-    title: "Fase 3: Hábitos Saudáveis",
-    description: "Esta fase reforça hábitos que sustentam sua nova vida:",
-    highlights: [
-      { icon: "apple", text: "Melhorar a alimentação" },
-      { icon: "users", text: "Aproveitar momentos com outras pessoas" },
-      { icon: "activity", text: "Praticar exercícios físicos" }
-    ]
   },
   {
     id: 6,
