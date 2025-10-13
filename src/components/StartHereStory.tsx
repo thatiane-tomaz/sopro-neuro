@@ -53,36 +53,10 @@ interface StartHereStoryProps {
 
 const StartHereStory = ({ onClose }: StartHereStoryProps) => {
   const [currentStory, setCurrentStory] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const storyDuration = 5000; // 5 seconds per story
-
-  useEffect(() => {
-    if (isPaused) return;
-
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          if (currentStory < stories.length - 1) {
-            setCurrentStory((curr) => curr + 1);
-            return 0;
-          } else {
-            onClose();
-            return 100;
-          }
-        }
-        return prev + (100 / (storyDuration / 100));
-      });
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [currentStory, isPaused, onClose]);
 
   const nextStory = () => {
     if (currentStory < stories.length - 1) {
       setCurrentStory((prev) => prev + 1);
-      setProgress(0);
     } else {
       onClose();
     }
@@ -91,32 +65,19 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
   const prevStory = () => {
     if (currentStory > 0) {
       setCurrentStory((prev) => prev - 1);
-      setProgress(0);
-    }
-  };
-
-  const handleAreaClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const middle = rect.width / 2;
-
-    if (clickX < middle) {
-      prevStory();
-    } else {
-      nextStory();
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-      {/* Progress bars */}
+      {/* Progress indicators */}
       <div className="absolute top-0 left-0 right-0 flex gap-1 p-2 z-10">
         {stories.map((_, index) => (
           <div key={index} className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
             <div
-              className="h-full bg-white transition-all duration-100 ease-linear"
+              className="h-full bg-white transition-all duration-300"
               style={{
-                width: index < currentStory ? '100%' : index === currentStory ? `${progress}%` : '0%',
+                width: index <= currentStory ? '100%' : '0%',
               }}
             />
           </div>
@@ -133,14 +94,27 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
       </button>
 
       {/* Story content */}
-      <div
-        className="relative w-full max-w-md h-full md:h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent cursor-pointer"
-        onClick={handleAreaClick}
-        onMouseDown={() => setIsPaused(true)}
-        onMouseUp={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
-      >
+      <div className="relative w-full max-w-md h-full md:h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
+        {/* Navigation arrows */}
+        {currentStory > 0 && (
+          <button
+            onClick={prevStory}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-gray-400 hover:text-gray-300 transition-colors"
+            aria-label="Anterior"
+          >
+            <ChevronLeft className="h-10 w-10" />
+          </button>
+        )}
+        
+        {currentStory < stories.length - 1 && (
+          <button
+            onClick={nextStory}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-gray-400 hover:text-gray-300 transition-colors"
+            aria-label="Próximo"
+          >
+            <ChevronRight className="h-10 w-10" />
+          </button>
+        )}
         <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
           <div className="animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
@@ -151,19 +125,6 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
             </p>
           </div>
 
-          {/* Navigation hint on first story */}
-          {currentStory === 0 && (
-            <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-8 text-white/60 text-sm">
-              <div className="flex items-center gap-2">
-                <ChevronLeft className="h-4 w-4" />
-                <span>Voltar</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span>Avançar</span>
-                <ChevronRight className="h-4 w-4" />
-              </div>
-            </div>
-          )}
 
           {/* Start button on last story */}
           {currentStory === stories.length - 1 && (
