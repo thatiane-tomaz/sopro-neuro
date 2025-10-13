@@ -12,38 +12,28 @@ interface Story {
 const stories: Story[] = [
   {
     id: 1,
-    title: "Bem-vindo ao Sopro! 🌟",
-    description: "Este é um programa de 21 dias para você se libertar do cigarro através da hipnose e neurociência.",
+    title: "3 Fases de 7 Dias",
+    description: "Fase 1: Quebrando crenças para entender que você não está perdendo nada ao parar de fumar.\n\nFase 2: Técnicas respiratórias para atravessar a abstinência com calma e foco.\n\nFase 3: Reforçando hábitos saudáveis que sustentam a decisão de parar de fumar.",
   },
   {
     id: 2,
-    title: "Como funciona? 📱",
-    description: "Todos os dias você terá acesso a um vídeo educativo e uma sessão de hipnose para te ajudar nessa jornada.",
+    title: "Fase 1: Quebrando Crenças",
+    description: "Em cada dia você irá trabalhar uma crença assistindo 1 vídeo explicativo com conceitos de neurociência, biologia e psicologia e ouvindo 1 hipnose reforçando esses conceitos.\n\nMenos de 15 minutos por dia.",
   },
   {
     id: 3,
-    title: "Vídeo Diário (15 min) 🎬",
-    description: "Cada dia tem um vídeo com informações importantes sobre como o cérebro funciona e técnicas para lidar com a dependência.",
+    title: "Fase 2: Técnicas Respiratórias",
+    description: "Você irá aprender técnicas respiratórias de relaxamento que te ajudam a dissolver a ansiedade e reencontrar equilíbrio durante os sintomas de abstinência.",
   },
   {
     id: 4,
-    title: "Hipnose Guiada (20 min) 🎧",
-    description: "Depois do vídeo, você fará uma sessão de hipnose. Use fones de ouvido e escolha um lugar tranquilo.",
+    title: "Fase 3: Hábitos Saudáveis",
+    description: "Esta fase é sobre reforçar hábitos saudáveis, como melhorar a alimentação, aproveitar momentos com outras pessoas e praticar exercícios físicos.",
   },
   {
     id: 5,
-    title: "Compromisso Diário 💪",
-    description: "A transformação acontece com consistência. Faça o vídeo e a hipnose todos os dias, de preferência no mesmo horário.",
-  },
-  {
-    id: 6,
-    title: "3 Fases de 7 dias 🎯",
-    description: "Fase 1: Despertar Interior\nFase 2: Transformação Profunda\nFase 3: Integração e Renovação",
-  },
-  {
-    id: 7,
-    title: "Vamos começar! 🚀",
-    description: "Agora você está pronto para iniciar sua jornada. Assista ao vídeo do Dia 1 e depois faça a hipnose. Você consegue!",
+    title: "Pronto para Começar?",
+    description: "A repetição de conceitos é importante para criar novas conexões cerebrais.\n\nDurante a hipnose use fones de ouvido, sente-se ou deite-se em um lugar sem interrupções.",
   },
 ];
 
