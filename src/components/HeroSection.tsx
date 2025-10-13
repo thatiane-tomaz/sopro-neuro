@@ -32,29 +32,21 @@ const HeroSection = () => {
           </div>
 
           {/* Main headline */}
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 max-w-4xl mx-auto leading-tight">
-            Transforme sua vida e
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 max-w-4xl mx-auto leading-tight">
+            Conheça seu corpo e mente e
             <span className="text-accent"> pare de fumar </span>
-            definitivamente
-          </h2>
+            com mais facilidade
+          </h1>
 
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">Usando métodos cientificamente comprovados</p>
+          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Usando métodos de <span className="font-semibold text-white">neurociência e hipnose</span>
+          </p>
 
-          {/* Features highlights */}
-          <div className="flex flex-wrap justify-center gap-6 mb-12">
-            <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-              <Brain className="w-5 h-5 text-accent mr-2" />
-              <span className="text-white font-medium">Neurociência</span>
-            </div>
-            <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-              <Sparkles className="w-5 h-5 text-accent mr-2" />
-              <span className="text-white font-medium">Hipnose</span>
-            </div>
-            <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-              <Heart className="w-5 h-5 text-accent mr-2" />
-              <span className="text-white font-medium">Educação</span>
-            </div>
+          {/* Journey highlight */}
+          <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-8 py-4 mb-12 border border-white/20">
+            <Sparkles className="w-6 h-6 text-accent mr-3" />
+            <span className="text-white text-lg md:text-xl font-medium">Caminho simples e claro de 21 dias</span>
           </div>
 
           {/* CTA Buttons */}
