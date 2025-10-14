@@ -239,6 +239,42 @@ export type Database = {
         }
         Relationships: []
       }
+      triggers_content: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          duration_minutes: number | null
+          file_name: string
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          display_order?: number
+          duration_minutes?: number | null
+          file_name: string
+          id?: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          duration_minutes?: number | null
+          file_name?: string
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
