@@ -367,7 +367,10 @@ const Dashboard = () => {
                     </h3>
                   </div>
                   <p className="text-base text-muted-foreground mb-2">
-                    Você tem acesso gratuito a 2 dias. Desbloqueie todos os 21 dias da jornada completa para parar de fumar de vez
+                    Você tem acesso gratuito a 2 dias.
+                  </p>
+                  <p className="text-base text-muted-foreground mb-2">
+                    Desbloqueie a jornada completa para parar de fumar de vez.
                   </p>
                   <p className="text-sm text-muted-foreground">
                     ✓ 21 dias de conteúdo exclusivo • ✓ Vídeos + Hipnoses • ✓ Suporte completo
