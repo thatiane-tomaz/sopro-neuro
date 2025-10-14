@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Settings, Sparkles } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Settings, Sparkles, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import MediaPlayer from '@/components/MediaPlayer';
@@ -144,6 +144,16 @@ const Dashboard = () => {
                 )}
               </div>
               <div className="flex items-center gap-2">
+                {currentDay > 1 && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setShowStartHere(true)}
+                    title="Informações"
+                  >
+                    <Info className="h-4 w-4" />
+                  </Button>
+                )}
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -172,27 +182,60 @@ const Dashboard = () => {
           </h2>
         </div>
 
-        {/* Start Here Section */}
-        <div className="mb-8">
-          <div 
-            className="relative overflow-hidden rounded-xl border-2 border-primary shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4"
-            onClick={() => setShowStartHere(true)}
-          >
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-sm text-muted-foreground flex-1">
-                Entenda como funciona sua jornada de 21 dias
-              </p>
-              
-              <Button 
-                variant="default"
-                className="shadow-lg flex-shrink-0"
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                Comece aqui
-              </Button>
+        {/* Start Here Section - Only Day 1 */}
+        {currentDay === 1 && (
+          <div className="mb-8">
+            <div 
+              className="relative overflow-hidden rounded-xl border-2 border-primary shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4"
+              onClick={() => setShowStartHere(true)}
+            >
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm text-muted-foreground flex-1">
+                  Entenda como funciona sua jornada de 21 dias
+                </p>
+                
+                <Button 
+                  variant="default"
+                  className="shadow-lg flex-shrink-0"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Comece aqui
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Premium Upgrade CTA */}
+        {profile?.subscription_status === 'free' && (
+          <div className="mb-8">
+            <div 
+              className="relative overflow-hidden rounded-xl border-2 border-accent shadow-lg shadow-accent/30 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-accent/10 to-primary/5 p-6"
+            >
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex-1 text-center md:text-left">
+                  <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                    <Crown className="h-5 w-5 text-accent" />
+                    <h3 className="text-lg font-bold text-foreground">
+                      Desbloqueie os 21 Dias Completos
+                    </h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Acesse todos os vídeos e hipnoses da jornada completa para parar de fumar de vez
+                  </p>
+                </div>
+                
+                <Button 
+                  size="lg"
+                  className="bg-accent hover:bg-accent/90 text-white shadow-lg flex-shrink-0"
+                >
+                  <Crown className="h-4 w-4 mr-2" />
+                  Seja Premium
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
