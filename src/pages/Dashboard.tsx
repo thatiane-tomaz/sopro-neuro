@@ -132,9 +132,19 @@ const Dashboard = () => {
               <div className="flex items-center gap-3">
                 <img src={soproLogo} alt="Sopro" className="h-8" />
                 {profile?.subscription_status === 'free' && (
-                  <Badge variant="secondary" className="text-xs">
-                    Acesso Gratuito
-                  </Badge>
+                  <>
+                    <Badge variant="secondary" className="text-xs">
+                      Acesso Gratuito
+                    </Badge>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="text-xs h-7 gap-1 border-accent text-accent hover:bg-accent hover:text-white"
+                    >
+                      <Crown className="w-3 h-3" />
+                      Upgrade
+                    </Button>
+                  </>
                 )}
                 {profile?.subscription_status === 'premium' && (
                   <Badge className="text-xs bg-accent">
@@ -206,36 +216,6 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Premium Upgrade CTA */}
-        {profile?.subscription_status === 'free' && (
-          <div className="mb-8">
-            <div 
-              className="relative overflow-hidden rounded-xl border-2 border-accent shadow-lg shadow-accent/30 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-accent/10 to-primary/5 p-6"
-            >
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex-1 text-center md:text-left">
-                  <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                    <Crown className="h-5 w-5 text-accent" />
-                    <h3 className="text-lg font-bold text-foreground">
-                      Desbloqueie os 21 Dias Completos
-                    </h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Acesse todos os vídeos e hipnoses da jornada completa para parar de fumar de vez
-                  </p>
-                </div>
-                
-                <Button 
-                  size="lg"
-                  className="bg-accent hover:bg-accent/90 text-white shadow-lg flex-shrink-0"
-                >
-                  <Crown className="h-4 w-4 mr-2" />
-                  Seja Premium
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
@@ -371,6 +351,40 @@ const Dashboard = () => {
             );
           })}
         </div>
+
+        {/* Premium Upgrade CTA - Bottom */}
+        {profile?.subscription_status === 'free' && (
+          <div className="mt-12 mb-8">
+            <div 
+              className="relative overflow-hidden rounded-2xl border-2 border-accent shadow-2xl shadow-accent/30 cursor-pointer hover:shadow-accent/40 transition-all duration-300 bg-gradient-to-br from-accent/10 via-primary/5 to-accent/5 p-8"
+            >
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex-1 text-center md:text-left">
+                  <div className="flex items-center justify-center md:justify-start gap-2 mb-3">
+                    <Crown className="h-6 w-6 text-accent" />
+                    <h3 className="text-2xl font-bold text-foreground">
+                      Desbloqueie os 21 Dias Completos
+                    </h3>
+                  </div>
+                  <p className="text-base text-muted-foreground mb-2">
+                    Acesse todos os vídeos e hipnoses da jornada completa para parar de fumar de vez
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    ✓ 21 dias de conteúdo exclusivo • ✓ Vídeos + Hipnoses • ✓ Suporte completo
+                  </p>
+                </div>
+                
+                <Button 
+                  size="lg"
+                  className="bg-accent hover:bg-accent/90 text-white shadow-lg flex-shrink-0 text-base px-8 py-6"
+                >
+                  <Crown className="h-5 w-5 mr-2" />
+                  Seja Premium Agora
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Media Player */}
