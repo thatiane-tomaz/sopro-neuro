@@ -65,6 +65,8 @@ export type Database = {
           title: string
           updated_at: string
           video_minutes: number | null
+          welcome_subtitle: string | null
+          welcome_title: string | null
         }
         Insert: {
           created_at?: string
@@ -74,6 +76,8 @@ export type Database = {
           title: string
           updated_at?: string
           video_minutes?: number | null
+          welcome_subtitle?: string | null
+          welcome_title?: string | null
         }
         Update: {
           created_at?: string
@@ -83,6 +87,8 @@ export type Database = {
           title?: string
           updated_at?: string
           video_minutes?: number | null
+          welcome_subtitle?: string | null
+          welcome_title?: string | null
         }
         Relationships: []
       }

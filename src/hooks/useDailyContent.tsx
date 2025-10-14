@@ -7,6 +7,8 @@ export interface DailyContent {
   title: string;
   video_minutes: number | null;
   hypnosis_minutes: number | null;
+  welcome_title: string | null;
+  welcome_subtitle: string | null;
   created_at: string;
   updated_at: string;
 }
