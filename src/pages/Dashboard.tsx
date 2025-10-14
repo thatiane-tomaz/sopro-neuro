@@ -223,31 +223,29 @@ const Dashboard = () => {
         {currentDay >= 8 && (
           <div className="mb-8">
             <div 
-              className="relative overflow-hidden rounded-2xl border-2 border-purple-500/50 shadow-2xl shadow-purple-500/20 cursor-pointer hover:shadow-purple-500/30 bg-gradient-to-br from-purple-500/10 via-primary/5 to-purple-500/5 p-6 transition-all duration-300"
+              className="rounded-xl bg-card/50 backdrop-blur-sm border border-border p-4 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
               onClick={() => navigate('/triggers')}
             >
-              <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                    <Headphones className="h-8 w-8 text-purple-600" />
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                    <Headphones className="h-5 w-5 text-purple-600" />
                   </div>
-                  <div className="flex-1 text-center md:text-left">
-                    <h3 className="text-2xl font-bold text-foreground mb-2">
+                  <div>
+                    <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
                       Hipnoses para Gatilhos
                     </h3>
-                    <p className="text-base text-muted-foreground">
-                      Áudios especiais para momentos de desejo intenso • 6 gatilhos diferentes
+                    <p className="text-sm text-muted-foreground">
+                      6 áudios para momentos de desejo intenso
                     </p>
                   </div>
                 </div>
-                
                 <Button 
-                  size="lg"
-                  className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg flex-shrink-0"
-                  onClick={() => navigate('/triggers')}
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-primary"
                 >
-                  <Headphones className="h-5 w-5 mr-2" />
-                  Acessar Gatilhos
+                  Acessar →
                 </Button>
               </div>
             </div>
