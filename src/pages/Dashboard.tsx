@@ -231,14 +231,9 @@ const Dashboard = () => {
                   <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
                     <Headphones className="h-5 w-5 text-purple-600" />
                   </div>
-                  <div>
-                    <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
-                      Hipnoses para Gatilhos
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      6 áudios para momentos de desejo intenso
-                    </p>
-                  </div>
+                  <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
+                    Hipnoses para Gatilhos
+                  </h3>
                 </div>
                 <Button 
                   variant="ghost"
