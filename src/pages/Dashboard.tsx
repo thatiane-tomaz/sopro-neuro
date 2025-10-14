@@ -195,7 +195,7 @@ const Dashboard = () => {
         </div>
 
         {/* Start Here Section - Only Day 1 */}
-        {currentDay === 1 && (
+        {currentDay < 8 && (
           <div className="mb-8">
             <div 
               className="relative overflow-hidden rounded-xl border-2 border-primary shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4"
@@ -219,22 +219,92 @@ const Dashboard = () => {
         )}
 
 
+        {/* Trigger Hypnosis Section - Shows from Day 8 onwards */}
+        {currentDay >= 8 && (
+          <div className="mb-8">
+            <div 
+              className="relative overflow-hidden rounded-2xl border-2 border-purple-500/50 shadow-2xl shadow-purple-500/20 bg-gradient-to-br from-purple-500/10 via-primary/5 to-purple-500/5 p-6"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
+                  <Headphones className="h-6 w-6 text-purple-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-foreground mb-1">
+                    Hipnoses para Gatilhos
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Áudios especiais para momentos de desejo intenso
+                  </p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <Button
+                  variant="outline"
+                  className="justify-start bg-purple-50/50 hover:bg-purple-100/50 text-purple-700 border-purple-200"
+                >
+                  <Headphones className="h-4 w-4 mr-2" />
+                  Gatilho: Café
+                </Button>
+                <Button
+                  variant="outline"
+                  className="justify-start bg-purple-50/50 hover:bg-purple-100/50 text-purple-700 border-purple-200"
+                >
+                  <Headphones className="h-4 w-4 mr-2" />
+                  Gatilho: Estresse
+                </Button>
+                <Button
+                  variant="outline"
+                  className="justify-start bg-purple-50/50 hover:bg-purple-100/50 text-purple-700 border-purple-200"
+                >
+                  <Headphones className="h-4 w-4 mr-2" />
+                  Gatilho: Social
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
           {phaseGroups.map((phase) => {
+            const isPhase1 = phase.phase_number === 1;
+            const isPhase1Completed = currentDay >= 8 && isPhase1;
+            
             return (
-              <div key={phase.id} className="rounded-2xl bg-card/50 backdrop-blur-sm border border-border p-4 md:p-6 shadow-lg">
-                <div className="mb-4">
-                  <p className="text-sm font-semibold text-primary mb-1">
-                    Fase {phase.phase_number}
-                  </p>
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground">
-                    {phase.title}
-                  </h2>
-                  <p className="text-sm md:text-base text-muted-foreground">
-                    {phase.subtitle}
-                  </p>
+              <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border border-border shadow-lg transition-all duration-300 ${
+                isPhase1Completed ? 'p-4' : 'p-4 md:p-6'
+              }`}>
+                <div 
+                  className={`mb-4 ${isPhase1Completed ? 'cursor-pointer' : ''}`}
+                  onClick={() => isPhase1Completed && setSelectedMedia(null)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-semibold text-primary mb-1">
+                          Fase {phase.phase_number}
+                        </p>
+                        {isPhase1Completed && (
+                          <Badge className="bg-green-500/20 text-green-700 border-green-500/30 text-xs">
+                            Concluído
+                          </Badge>
+                        )}
+                      </div>
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                        {phase.title}
+                      </h2>
+                      {!isPhase1Completed && (
+                        <p className="text-sm md:text-base text-muted-foreground">
+                          {phase.subtitle}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
+
+                {!isPhase1Completed && (
 
                 <Carousel 
                   opts={{ 
@@ -349,6 +419,7 @@ const Dashboard = () => {
                   <CarouselPrevious className="-left-4 md:-left-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
                   <CarouselNext className="-right-4 md:-right-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
                 </Carousel>
+                )}
               </div>
             );
           })}
