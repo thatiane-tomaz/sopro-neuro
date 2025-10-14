@@ -21,16 +21,19 @@ const Landing = () => {
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-accent rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
       </div>
 
-      {/* Logo and name */}
-      <div className="relative z-10 flex flex-col items-center gap-8 animate-fade-in">
-        <img 
-          src={soproLogo} 
-          alt="Sopro" 
-          className="w-32 h-32 object-contain animate-float"
-        />
-        <h1 className="text-6xl font-bold text-white tracking-wider">
-          Sopro
-        </h1>
+      {/* Logo with enhanced animation */}
+      <div className="relative z-10 animate-scale-in">
+        <div className="relative">
+          {/* Glow effect behind logo */}
+          <div className="absolute inset-0 bg-white/30 rounded-full blur-2xl animate-pulse" />
+          
+          {/* Logo */}
+          <img 
+            src={soproLogo} 
+            alt="Sopro" 
+            className="relative w-48 h-48 object-contain animate-float drop-shadow-2xl"
+          />
+        </div>
       </div>
     </main>
   );
