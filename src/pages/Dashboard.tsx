@@ -65,7 +65,7 @@ const Dashboard = () => {
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
 
   // Calculate current day - for now use day 1, can be enhanced later with user progress tracking
-  const currentDay = 8; // Temporarily set to 8 for preview
+  const currentDay = 1;
 
   // Group daily content by phases
   const phaseGroups = useMemo(() => {
@@ -223,43 +223,31 @@ const Dashboard = () => {
         {currentDay >= 8 && (
           <div className="mb-8">
             <div 
-              className="relative overflow-hidden rounded-2xl border-2 border-purple-500/50 shadow-2xl shadow-purple-500/20 bg-gradient-to-br from-purple-500/10 via-primary/5 to-purple-500/5 p-6"
+              className="relative overflow-hidden rounded-2xl border-2 border-purple-500/50 shadow-2xl shadow-purple-500/20 cursor-pointer hover:shadow-purple-500/30 bg-gradient-to-br from-purple-500/10 via-primary/5 to-purple-500/5 p-6 transition-all duration-300"
+              onClick={() => navigate('/triggers')}
             >
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center">
-                  <Headphones className="h-6 w-6 text-purple-600" />
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                    <Headphones className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
+                      Hipnoses para Gatilhos
+                    </h3>
+                    <p className="text-base text-muted-foreground">
+                      Áudios especiais para momentos de desejo intenso • 6 gatilhos diferentes
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-foreground mb-1">
-                    Hipnoses para Gatilhos
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Áudios especiais para momentos de desejo intenso
-                  </p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <Button
-                  variant="outline"
-                  className="justify-start bg-purple-50/50 hover:bg-purple-100/50 text-purple-700 border-purple-200"
+                
+                <Button 
+                  size="lg"
+                  className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg flex-shrink-0"
+                  onClick={() => navigate('/triggers')}
                 >
-                  <Headphones className="h-4 w-4 mr-2" />
-                  Gatilho: Café
-                </Button>
-                <Button
-                  variant="outline"
-                  className="justify-start bg-purple-50/50 hover:bg-purple-100/50 text-purple-700 border-purple-200"
-                >
-                  <Headphones className="h-4 w-4 mr-2" />
-                  Gatilho: Estresse
-                </Button>
-                <Button
-                  variant="outline"
-                  className="justify-start bg-purple-50/50 hover:bg-purple-100/50 text-purple-700 border-purple-200"
-                >
-                  <Headphones className="h-4 w-4 mr-2" />
-                  Gatilho: Social
+                  <Headphones className="h-5 w-5 mr-2" />
+                  Acessar Gatilhos
                 </Button>
               </div>
             </div>
