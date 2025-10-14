@@ -188,16 +188,9 @@ const Dashboard = () => {
         {/* Welcome Message */}
         <div className="mb-8">
           {dailyContent && dailyContent[currentDay - 1] && (
-            <>
-              <h2 className="text-2xl md:text-3xl font-bold text-primary">
-                {dailyContent[currentDay - 1].welcome_title || 'Continue a sua jornada!'}
-              </h2>
-              {dailyContent[currentDay - 1].welcome_subtitle && (
-                <p className="text-base text-muted-foreground mt-2">
-                  {dailyContent[currentDay - 1].welcome_subtitle}
-                </p>
-              )}
-            </>
+            <h2 className="text-2xl md:text-3xl font-bold text-primary">
+              {dailyContent[currentDay - 1].welcome_title || 'Continue a sua jornada!'}
+            </h2>
           )}
         </div>
 
