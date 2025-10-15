@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useJourneyTracking } from '@/hooks/useJourneyTracking';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useToast } from '@/hooks/use-toast';
 import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
@@ -62,6 +63,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading, hasAccessToDay, upgradeRequired } = useUserProfile();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { 
     getCurrentDay, 
     isDayCompleted, 
@@ -85,10 +87,10 @@ const Dashboard = () => {
   const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
   const { toast } = useToast();
 
-  console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
+  console.log('Dashboard render:', { user, authLoading, profileLoading, profile, isAdmin });
 
   // Calculate current day based on user progress  
-  const currentDay = getCurrentDay();
+  const currentDay: number = 8; // For preview - admins can see all, but this simulates user experience
   
   console.log('Current day from tracking:', currentDay);
 
@@ -117,6 +119,16 @@ const Dashboard = () => {
   };
 
   const getDayStatus = (day: number): 'completed' | 'current' | 'locked' | 'subscription_locked' => {
+    // Admins can see everything, but we still check subscription for display purposes
+    if (isAdmin) {
+      // Show as if user is free to see the blocked experience
+      if (day > 2) return 'subscription_locked';
+      if (isDayCompleted(day)) return 'completed';
+      if (day === currentDay) return 'current';
+      if (day < currentDay) return 'completed';
+      return 'locked';
+    }
+    
     // Check subscription access first
     if (!hasAccessToDay(day)) return 'subscription_locked';
     
@@ -129,6 +141,21 @@ const Dashboard = () => {
   };
 
   const handleMediaOpen = (day: number, type: 'video' | 'hypnosis') => {
+    // Admins can open all media for testing
+    if (!isAdmin) {
+      const status = getDayStatus(day);
+      if (status === 'locked' || status === 'subscription_locked') {
+        toast({
+          title: "Conteúdo bloqueado",
+          description: status === 'subscription_locked' 
+            ? "Faça upgrade para acessar este conteúdo"
+            : "Complete o dia anterior para desbloquear",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+    
     const interactionType = `${type === 'video' ? 'video' : 'hipnose'}_dia_${day}`;
     
     setSelectedMedia({
@@ -168,8 +195,8 @@ const Dashboard = () => {
     }
   };
 
-  if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading) {
-    console.log('Loading state:', { authLoading, profileLoading, trackingLoading });
+  if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
+    console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary">
         <div className="text-center">
@@ -203,7 +230,12 @@ const Dashboard = () => {
               <img src={soproLogo} alt="Sopro" className="h-8" />
               
               <div className="flex items-center gap-2">
-                {profile?.subscription_status === 'premium' && (
+                {isAdmin && (
+                  <Badge className="text-xs bg-purple-500 text-white whitespace-nowrap">
+                    Admin
+                  </Badge>
+                )}
+                {profile?.subscription_status === 'premium' && !isAdmin && (
                   <Badge className="text-xs bg-accent whitespace-nowrap">
                     <Crown className="w-3 h-3 mr-1" />
                     Premium
@@ -318,7 +350,7 @@ const Dashboard = () => {
             
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border border-border shadow-lg transition-all duration-300 ${
-                isPhase1Completed ? 'p-4' : 'p-4 md:p-6'
+                isPhase1Completed ? 'p-4 opacity-70' : 'p-4 md:p-6'
               }`}>
                 <div 
                   className={`mb-4 ${isPhase1Completed ? 'cursor-pointer hover:bg-accent/10 rounded-lg p-2 -m-2 transition-colors' : ''}`}
@@ -331,16 +363,16 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold text-primary mb-1">
+                        <p className={`text-sm font-semibold mb-1 ${isPhase1Completed ? 'text-muted-foreground' : 'text-primary'}`}>
                           Fase {phase.phase_number}
                         </p>
                         {isPhase1Completed && (
-                          <Badge className="bg-green-500/20 text-green-700 border-green-500/30 text-xs">
+                          <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30 text-xs">
                             Concluído
                           </Badge>
                         )}
                       </div>
-                      <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                      <h2 className={`text-xl md:text-2xl font-bold ${isPhase1Completed ? 'text-muted-foreground' : 'text-foreground'}`}>
                         {phase.title}
                       </h2>
                       {!isPhase1Completed && (
@@ -438,8 +470,12 @@ const Dashboard = () => {
                                       ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200' 
                                       : ''
                                   }`}
-                                  onClick={() => !isLocked && handleMediaOpen(day, 'video')}
-                                  disabled={isLocked}
+                                  onClick={() => {
+                                    if (!isLocked || isAdmin) {
+                                      handleMediaOpen(day, 'video');
+                                    }
+                                  }}
+                                  disabled={isLocked && !isAdmin}
                                 >
                                   <PlayCircle className="h-4 w-4 mr-2" />
                                   <span className="text-sm">
