@@ -419,6 +419,7 @@ const Dashboard = () => {
                 <Carousel 
                   opts={{ 
                     align: "center",
+                    startIndex: phase.days.findIndex(d => d.day_number === currentDay),
                   }}
                   className="w-full"
                 >
@@ -481,9 +482,9 @@ const Dashboard = () => {
                                   {day}
                                 </span>
                                 {isCompleted && (
-                                  <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
-                                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                                  </div>
+                                  <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
+                                    Concluído
+                                  </Badge>
                                 )}
                               </div>
                               
