@@ -484,48 +484,43 @@ const Dashboard = () => {
             </div>
 
             {/* Triggers Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
               {triggers?.map((trigger) => (
                 <Card
                   key={trigger.id}
-                  className="overflow-hidden border-border bg-accent/30 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group"
+                  className="overflow-hidden border-border bg-accent/30 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                  onClick={() =>
+                    setSelectedMedia({
+                      title: trigger.title,
+                      fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/${trigger.file_name}`,
+                      contentType: 'hypnosis',
+                    })
+                  }
                 >
-                  <div className="p-5">
-                    <div className="flex items-start gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                        <Headphones className="h-5 w-5 text-primary" />
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                        <Headphones className="h-4 w-4 text-primary" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
-                          {trigger.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {trigger.description}
-                        </p>
-                      </div>
+                      <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                        {trigger.title}
+                      </h3>
                     </div>
+                    
+                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+                      {trigger.description}
+                    </p>
 
-                    <div className="flex items-center justify-between mt-4">
+                    <div className="flex items-center justify-between">
                       {trigger.duration_minutes && (
                         <span className="text-xs font-medium text-muted-foreground">
                           {trigger.duration_minutes} min
                         </span>
                       )}
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="ml-auto text-primary hover:text-primary hover:bg-primary/10"
-                        onClick={() =>
-                          setSelectedMedia({
-                            title: trigger.title,
-                            fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/${trigger.file_name}`,
-                            contentType: 'hypnosis',
-                          })
-                        }
-                      >
-                        <Play className="h-4 w-4 mr-2" />
+                      <div className="flex items-center text-xs text-primary ml-auto">
+                        <Play className="h-3 w-3 mr-1" />
                         Ouvir
-                      </Button>
+                      </div>
                     </div>
                   </div>
                 </Card>
