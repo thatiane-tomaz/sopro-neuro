@@ -230,12 +230,7 @@ const Dashboard = () => {
               <img src={soproLogo} alt="Sopro" className="h-8" />
               
               <div className="flex items-center gap-2">
-                {isAdmin && (
-                  <Badge className="text-xs bg-purple-500 text-white whitespace-nowrap">
-                    Admin
-                  </Badge>
-                )}
-                {profile?.subscription_status === 'premium' && !isAdmin && (
+                {profile?.subscription_status === 'premium' && (
                   <Badge className="text-xs bg-accent whitespace-nowrap">
                     <Crown className="w-3 h-3 mr-1" />
                     Premium
@@ -367,7 +362,7 @@ const Dashboard = () => {
                           Fase {phase.phase_number}
                         </p>
                         {isPhase1Completed && (
-                          <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30 text-xs">
+                          <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
                             Concluído
                           </Badge>
                         )}
@@ -542,11 +537,8 @@ const Dashboard = () => {
                   <p className="text-base text-muted-foreground mb-2">
                     Você está no período gratuito com acesso a 2 dias.
                   </p>
-                  <p className="text-base text-muted-foreground mb-2">
+                  <p className="text-base text-muted-foreground">
                     Faça upgrade e desbloqueie a jornada completa para parar de fumar de vez.
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    ✓ 14 dias de conteúdo exclusivo • ✓ Vídeos + Hipnoses • ✓ Suporte completo
                   </p>
                 </div>
                 
