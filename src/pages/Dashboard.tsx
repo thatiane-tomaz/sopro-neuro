@@ -510,11 +510,11 @@ const Dashboard = () => {
                                   onClick={() => !isLocked && handleMediaOpen(day, 'hypnosis')}
                                   disabled={isLocked}
                                 >
-                                  <Headphones className="h-4 w-4 mr-2" />
-                                  <span className="text-sm">
+                                  <Headphones className="h-3.5 w-3.5 mr-1.5" />
+                                  <span className="text-xs">
                                     Hipnose
                                     {dayContent.hypnosis_minutes && (
-                                      <span className="text-xs opacity-70 ml-1">
+                                      <span className="text-[10px] opacity-70 ml-1">
                                         {dayContent.hypnosis_minutes}min
                                       </span>
                                     )}
