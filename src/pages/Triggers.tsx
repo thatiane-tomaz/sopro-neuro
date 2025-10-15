@@ -67,7 +67,7 @@ const Triggers = () => {
           {triggers?.map((trigger) => (
             <Card
               key={trigger.id}
-              className="overflow-hidden border-border bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group"
+              className="overflow-hidden border-border bg-accent/30 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group"
             >
               <div className="p-5">
                 <div className="flex items-start gap-3 mb-4">
