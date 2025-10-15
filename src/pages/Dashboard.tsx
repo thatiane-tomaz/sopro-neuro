@@ -434,43 +434,58 @@ const Dashboard = () => {
                       return (
                         <CarouselItem key={day} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                           <div 
-                            className={`relative overflow-hidden rounded-xl border transition-all duration-300 ${
+                            className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 ${
                               isLocked 
-                                ? 'opacity-50 cursor-not-allowed border-border/50' 
+                                ? 'opacity-50 cursor-not-allowed border-border/50 bg-card/30' 
                                 : isCurrent
-                                  ? 'border-primary shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl'
-                                  : 'border-border/50 opacity-60 cursor-pointer hover:opacity-80'
+                                  ? 'border-accent/40 shadow-lg shadow-accent/10 cursor-pointer hover:shadow-xl hover:shadow-accent/20 hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-primary/5'
+                                  : 'border-border/50 opacity-70 cursor-pointer hover:opacity-100 hover:-translate-y-0.5 bg-card/50 backdrop-blur-sm'
                             }`}
                           >
-                            <div className="relative aspect-video">
+                            <div className="relative aspect-video overflow-hidden">
                               <img 
                                 src={dayImages[day - 1]} 
                                 alt={dayContent.title}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                               />
                               {isLocked && (
-                                <div className="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center">
+                                <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center">
                                   <div className="text-center">
-                                    <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-2">
+                                    <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-3 shadow-lg">
                                       {needsUpgrade ? (
-                                        <Crown className="h-6 w-6 text-accent" />
+                                        <Crown className="h-7 w-7 text-accent" />
                                       ) : (
-                                        <Lock className="h-6 w-6 text-muted-foreground" />
+                                        <Lock className="h-7 w-7 text-muted-foreground" />
                                       )}
                                     </div>
-                                    <p className="text-sm text-muted-foreground">
-                                      {needsUpgrade ? 'Premium' : 'Bloqueado'}
+                                    <p className="text-sm font-medium text-muted-foreground">
+                                      {needsUpgrade ? 'Premium' : 'Em breve'}
                                     </p>
+                                  </div>
+                                </div>
+                              )}
+                              {isCurrent && (
+                                <div className="absolute top-3 right-3">
+                                  <div className="bg-accent text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+                                    Atual
                                   </div>
                                 </div>
                               )}
                             </div>
 
-                            <div className={`p-4 ${isLocked ? 'pointer-events-none' : ''}`}>
-                              <p className="text-xs font-semibold text-primary mb-1">
-                                Dia {day}
-                              </p>
-                              <h3 className="text-lg font-bold bg-gradient-to-r from-purple-800 via-purple-600 to-primary bg-clip-text text-transparent mb-3 leading-tight">
+                            <div className={`p-5 ${isLocked ? 'pointer-events-none' : ''}`}>
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-bold">
+                                  {day}
+                                </span>
+                                {isCompleted && (
+                                  <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              <h3 className="text-lg font-bold text-purple-900 dark:text-purple-100 mb-4 leading-tight tracking-tight">
                                 {dayContent.title}
                               </h3>
                               
