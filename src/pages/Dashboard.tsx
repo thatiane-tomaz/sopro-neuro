@@ -477,7 +477,7 @@ const Dashboard = () => {
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {triggers?.slice(0, 3).map((trigger) => (
                     <Card
                       key={trigger.id}
@@ -491,27 +491,27 @@ const Dashboard = () => {
                       }
                     >
                       <div className="p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                            <Headphones className="h-3 w-3 text-primary" />
+                        <div className="flex items-start gap-2 mb-2">
+                          <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                            <Headphones className="h-3.5 w-3.5 text-primary" />
                           </div>
-                          <h3 className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                          <h3 className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                             {trigger.title}
                           </h3>
                         </div>
                         
-                        <p className="text-[10px] text-muted-foreground mb-2 line-clamp-2 leading-tight">
+                        <p className="text-[11px] text-muted-foreground mb-2 line-clamp-2 leading-tight">
                           {trigger.description}
                         </p>
 
-                        <div className="flex items-center justify-between text-[10px]">
+                        <div className="flex items-center justify-between text-[11px]">
                           {trigger.duration_minutes && (
                             <span className="font-medium text-muted-foreground">
                               {trigger.duration_minutes}min
                             </span>
                           )}
-                          <div className="flex items-center text-primary ml-auto">
-                            <Play className="h-2.5 w-2.5 mr-0.5" />
+                          <div className="flex items-center text-primary ml-auto font-medium">
+                            <Play className="h-3 w-3 mr-0.5" />
                             Ouvir
                           </div>
                         </div>
@@ -538,7 +538,7 @@ const Dashboard = () => {
                   </p>
                 </div>
                 
-                <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 ${currentDay < 8 ? 'opacity-50' : ''}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ${currentDay < 8 ? 'opacity-50' : ''}`}>
                   {triggers?.slice(3).map((trigger) => (
                     <Card
                       key={trigger.id}
@@ -561,27 +561,27 @@ const Dashboard = () => {
                             <Lock className="h-5 w-5 text-muted-foreground" />
                           </div>
                         )}
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                            <Headphones className="h-3 w-3 text-primary" />
+                        <div className="flex items-start gap-2 mb-2">
+                          <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                            <Headphones className="h-3.5 w-3.5 text-primary" />
                           </div>
-                          <h3 className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                          <h3 className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                             {trigger.title}
                           </h3>
                         </div>
                         
-                        <p className="text-[10px] text-muted-foreground mb-2 line-clamp-2 leading-tight">
+                        <p className="text-[11px] text-muted-foreground mb-2 line-clamp-2 leading-tight">
                           {trigger.description}
                         </p>
 
-                        <div className="flex items-center justify-between text-[10px]">
+                        <div className="flex items-center justify-between text-[11px]">
                           {trigger.duration_minutes && (
                             <span className="font-medium text-muted-foreground">
                               {trigger.duration_minutes}min
                             </span>
                           )}
-                          <div className="flex items-center text-primary ml-auto">
-                            <Play className="h-2.5 w-2.5 mr-0.5" />
+                          <div className="flex items-center text-primary ml-auto font-medium">
+                            <Play className="h-3 w-3 mr-0.5" />
                             Ouvir
                           </div>
                         </div>
