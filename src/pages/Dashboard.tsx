@@ -85,18 +85,19 @@ const Dashboard = () => {
   const [currentTrackingId, setCurrentTrackingId] = useState<string | null>(null);
   const [showStartHere, setShowStartHere] = useState(false);
   const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
+  const [adminSimulatedDay, setAdminSimulatedDay] = useState<number>(1);
   const { toast } = useToast();
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile, isAdmin });
 
   // Calculate current day based on user progress
-  // For free users (including admin simulating free), limit to day 2
-  const actualDay = getCurrentDay();
+  // Admins can override to simulate any day
+  const actualDay = isAdmin ? adminSimulatedDay : getCurrentDay();
   const currentDay: number = (!isAdmin && profile?.subscription_status === 'free') 
     ? Math.min(actualDay, 2) 
     : actualDay;
   
-  console.log('Current day from tracking:', { actualDay, currentDay, isFree: profile?.subscription_status === 'free' });
+  console.log('Current day from tracking:', { actualDay, currentDay, isFree: profile?.subscription_status === 'free', isAdmin, adminSimulatedDay });
 
   // Group daily content by phases
   const phaseGroups = useMemo(() => {
@@ -236,6 +237,20 @@ const Dashboard = () => {
               <img src={soproLogo} alt="Sopro" className="h-8" />
               
               <div className="flex items-center gap-2">
+                {isAdmin && (
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs text-muted-foreground">Simular dia:</label>
+                    <select
+                      value={adminSimulatedDay}
+                      onChange={(e) => setAdminSimulatedDay(Number(e.target.value))}
+                      className="text-xs border rounded px-2 py-1 bg-background"
+                    >
+                      {Array.from({ length: 14 }, (_, i) => i + 1).map(day => (
+                        <option key={day} value={day}>Dia {day}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 {profile?.subscription_status === 'premium' && (
                   <Badge className="text-xs bg-accent whitespace-nowrap">
                     <Crown className="w-3 h-3 mr-1" />
