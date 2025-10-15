@@ -89,10 +89,14 @@ const Dashboard = () => {
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile, isAdmin });
 
-  // Calculate current day based on user progress  
-  const currentDay: number = 8; // For preview - admins can see all, but this simulates user experience
+  // Calculate current day based on user progress
+  // For free users (including admin simulating free), limit to day 2
+  const actualDay = getCurrentDay();
+  const currentDay: number = (!isAdmin && profile?.subscription_status === 'free') 
+    ? Math.min(actualDay, 2) 
+    : actualDay;
   
-  console.log('Current day from tracking:', currentDay);
+  console.log('Current day from tracking:', { actualDay, currentDay, isFree: profile?.subscription_status === 'free' });
 
   // Group daily content by phases
   const phaseGroups = useMemo(() => {
@@ -119,23 +123,25 @@ const Dashboard = () => {
   };
 
   const getDayStatus = (day: number): 'completed' | 'current' | 'locked' | 'subscription_locked' => {
-    // Admins can see everything, but we still check subscription for display purposes
-    if (isAdmin) {
-      // Show as if user is free to see the blocked experience
-      if (day > 2) return 'subscription_locked';
-      if (isDayCompleted(day)) return 'completed';
-      if (day === currentDay) return 'current';
-      if (day < currentDay) return 'completed';
-      return 'locked';
+    // First check subscription access
+    const hasSubAccess = isAdmin || hasAccessToDay(day);
+    
+    if (!hasSubAccess) {
+      return 'subscription_locked';
     }
     
-    // Check subscription access first
-    if (!hasAccessToDay(day)) return 'subscription_locked';
+    // Then check progress-based access
+    if (isDayCompleted(day)) {
+      return 'completed';
+    }
     
-    // Then check progress-based locking
-    if (isDayCompleted(day)) return 'completed';
-    if (day === currentDay) return 'current';
-    if (day < currentDay) return 'completed';
+    if (day === currentDay) {
+      return 'current';
+    }
+    
+    if (day < currentDay) {
+      return 'completed';
+    }
     
     return 'locked';
   };
@@ -341,7 +347,9 @@ const Dashboard = () => {
         <div className="space-y-8">
           {phaseGroups.map((phase) => {
             const isPhase1 = phase.phase_number === 1;
-            const isPhase1Completed = currentDay >= 8 && isPhase1;
+            // Phase 1 is only completed if user actually completed all 7 days
+            const phase1LastDay = 7;
+            const isPhase1Completed = isPhase1 && isDayCompleted(phase1LastDay);
             
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border border-border shadow-lg transition-all duration-300 ${
