@@ -41,12 +41,13 @@ const stories: Story[] = [
   },
   {
     id: 4,
-    title: "Hipnoses de Apoio",
+    title: "Hipnoses de Apoio & Hábitos",
     description: "Disponíveis após completar a Fase 1, estas hipnoses te ajudam a:",
     highlights: [
       { icon: "brain", text: "Reforçar as novas crenças sobre o cigarro" },
       { icon: "heart", text: "Manter a calma e o relaxamento" },
-      { icon: "check", text: "Lidar com gatilhos específicos do dia a dia" }
+      { icon: "check", text: "Lidar com gatilhos específicos do dia a dia" },
+      { icon: "apple", text: "Criar hábitos saudáveis para substituir o cigarro" }
     ],
     footer: "Use sempre que sentir necessidade de reforço"
   },
