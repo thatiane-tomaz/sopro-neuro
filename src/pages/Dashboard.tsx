@@ -371,22 +371,20 @@ const Dashboard = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className={`px-3 py-1 rounded-lg ${isPhase1Completed ? 'bg-muted/50' : 'bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20'}`}>
-                          <p className={`text-xs font-black uppercase tracking-wider ${isPhase1Completed ? 'text-muted-foreground' : 'text-primary'}`}>
-                            Fase {phase.phase_number}
-                          </p>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <p className={`text-sm font-semibold mb-1 ${isPhase1Completed ? 'text-muted-foreground' : 'text-primary'}`}>
+                          Fase {phase.phase_number}
+                        </p>
                         {isPhase1Completed && (
-                          <Badge className="bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 text-xs font-bold">
-                            ✓ Concluído
+                          <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
+                            Concluído
                           </Badge>
                         )}
                       </div>
-                      <h2 className={`text-2xl md:text-4xl font-black tracking-tight ${
+                      <h2 className={`text-xl md:text-2xl font-bold ${
                         isPhase1Completed 
                           ? 'text-muted-foreground' 
-                          : 'bg-gradient-to-r from-purple-800 via-purple-600 to-pink-600 dark:from-purple-400 dark:via-purple-300 dark:to-pink-400 bg-clip-text text-transparent'
+                          : 'bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent'
                       }`}>
                         {phase.title}
                       </h2>
@@ -436,103 +434,69 @@ const Dashboard = () => {
                       return (
                         <CarouselItem key={day} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                           <div 
-                            className={`group relative overflow-hidden rounded-3xl transition-all duration-500 ${
+                            className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 ${
                               isLocked 
-                                ? 'opacity-40 cursor-not-allowed bg-gradient-to-br from-muted/20 to-muted/5 border-2 border-dashed border-muted' 
+                                ? 'opacity-50 cursor-not-allowed border-border/50 bg-card/30' 
                                 : isCurrent
-                                  ? 'cursor-pointer hover:scale-[1.02] hover:-translate-y-2 shadow-2xl hover:shadow-accent/30 bg-white dark:bg-card border-2 border-accent/30'
-                                  : 'cursor-pointer hover:scale-[1.01] hover:-translate-y-1 shadow-lg hover:shadow-xl bg-white dark:bg-card/80 border border-border/40'
+                                  ? 'border-accent/40 shadow-lg shadow-accent/10 cursor-pointer hover:shadow-xl hover:shadow-accent/20 hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-primary/5'
+                                  : 'border-border/50 opacity-70 cursor-pointer hover:opacity-100 hover:-translate-y-0.5 bg-card/50 backdrop-blur-sm'
                             }`}
-                            style={{
-                              transform: isCurrent ? 'perspective(1000px)' : undefined,
-                            }}
                           >
-                            {/* Badge Dia Atual - Redesenhado */}
-                            {isCurrent && (
-                              <div className="absolute -top-2 -right-2 z-20">
-                                <div className="relative">
-                                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 rounded-full blur-md opacity-70 animate-pulse"></div>
-                                  <div className="relative bg-gradient-to-r from-purple-700 via-purple-600 to-pink-600 text-white text-[11px] font-black px-4 py-2 rounded-full shadow-xl uppercase tracking-wide">
-                                    Agora
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Imagem com overlay gradiente */}
-                            <div className="relative aspect-[16/10] overflow-hidden">
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/20 z-10"></div>
+                            <div className="relative aspect-video overflow-hidden">
                               <img 
                                 src={dayImages[day - 1]} 
                                 alt={dayContent.title}
-                                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-1"
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                               />
-                              
-                              {/* Número do dia - Grande e destacado */}
-                              <div className="absolute top-4 left-4 z-20">
-                                <div className="relative">
-                                  <div className="absolute inset-0 bg-white dark:bg-black blur-xl opacity-50"></div>
-                                  <div className="relative bg-white/95 dark:bg-black/95 backdrop-blur-sm w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl border border-white/20">
-                                    <span className="text-2xl font-black bg-gradient-to-br from-purple-700 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                      {day}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Indicador de conclusão - Moderno */}
-                              {isCompleted && (
-                                <div className="absolute top-4 right-4 z-20">
-                                  <div className="relative">
-                                    <div className="absolute inset-0 bg-emerald-500 blur-md opacity-60 animate-pulse"></div>
-                                    <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-xl">
-                                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                      </svg>
+                              {isLocked && (
+                                <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center">
+                                  <div className="text-center">
+                                    <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-3 shadow-lg">
+                                      {needsUpgrade ? (
+                                        <Crown className="h-7 w-7 text-accent" />
+                                      ) : (
+                                        <Lock className="h-7 w-7 text-muted-foreground" />
+                                      )}
                                     </div>
+                                    <p className="text-sm font-medium text-muted-foreground">
+                                      {needsUpgrade ? 'Premium' : 'Em breve'}
+                                    </p>
                                   </div>
                                 </div>
                               )}
-
-                              {/* Overlay de bloqueio - Redesenhado */}
-                              {isLocked && (
-                                <div className="absolute inset-0 bg-gradient-to-br from-background/95 via-background/90 to-muted/95 backdrop-blur-2xl flex items-center justify-center z-30">
-                                  <div className="text-center transform -translate-y-2">
-                                    <div className="relative mb-3">
-                                      <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-primary/20 blur-2xl"></div>
-                                      <div className="relative mx-auto w-20 h-20 rounded-3xl bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center shadow-2xl border border-muted">
-                                        {needsUpgrade ? (
-                                          <Crown className="h-10 w-10 text-accent drop-shadow-lg" />
-                                        ) : (
-                                          <Lock className="h-10 w-10 text-muted-foreground/60 drop-shadow-lg" />
-                                        )}
-                                      </div>
-                                    </div>
-                                    <p className="text-sm font-bold text-foreground/80 tracking-wide">
-                                      {needsUpgrade ? 'Premium' : 'Em Breve'}
-                                    </p>
+                              {isCurrent && (
+                                <div className="absolute top-3 right-3">
+                                  <div className="bg-accent text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+                                    Atual
                                   </div>
                                 </div>
                               )}
                             </div>
 
-                            {/* Conteúdo do card */}
-                            <div className={`p-6 ${isLocked ? 'pointer-events-none' : ''}`}>
-                              {/* Título com gradiente roxo mais intenso */}
-                              <h3 className="text-xl font-black mb-5 leading-tight tracking-tight">
-                                <span className="bg-gradient-to-r from-purple-800 via-purple-700 to-purple-900 dark:from-purple-400 dark:via-purple-300 dark:to-purple-500 bg-clip-text text-transparent">
-                                  {dayContent.title}
+                            <div className={`p-5 ${isLocked ? 'pointer-events-none' : ''}`}>
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-bold">
+                                  {day}
                                 </span>
+                                {isCompleted && (
+                                  <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
+                                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              <h3 className="text-lg font-bold text-purple-900 dark:text-purple-100 mb-4 leading-tight tracking-tight">
+                                {dayContent.title}
                               </h3>
                               
-                              {/* Botões de ação - Modernos com ícones maiores */}
-                              <div className="flex gap-3">
+                              <div className="flex gap-2">
                                 <Button
                                   variant="outline"
-                                  className={`flex-1 h-12 rounded-xl font-bold transition-all duration-300 ${
+                                  size="sm"
+                                  className={`flex-1 justify-center ${
                                     !isLocked 
-                                      ? 'bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-900 dark:hover:to-blue-800 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700 shadow-lg shadow-blue-200/50 dark:shadow-blue-900/50 hover:shadow-xl hover:shadow-blue-300/50 dark:hover:shadow-blue-800/50 hover:scale-105' 
-                                      : 'opacity-50'
+                                      ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200' 
+                                      : ''
                                   }`}
                                   onClick={() => {
                                     if (!isLocked || isAdmin) {
@@ -541,36 +505,37 @@ const Dashboard = () => {
                                   }}
                                   disabled={isLocked && !isAdmin}
                                 >
-                                  <PlayCircle className="h-5 w-5 mr-2" />
-                                  <div className="flex flex-col items-start">
-                                    <span className="text-sm font-bold">Vídeo</span>
+                                  <PlayCircle className="h-3.5 w-3.5 mr-1.5" />
+                                  <span className="text-xs">
+                                    Vídeo
                                     {dayContent.video_minutes && (
-                                      <span className="text-[10px] opacity-70">
+                                      <span className="text-[10px] opacity-70 ml-1">
                                         {dayContent.video_minutes}min
                                       </span>
                                     )}
-                                  </div>
+                                  </span>
                                 </Button>
                                 
                                 <Button
                                   variant="outline"
-                                  className={`flex-1 h-12 rounded-xl font-bold transition-all duration-300 ${
+                                  size="sm"
+                                  className={`flex-1 justify-center ${
                                     !isLocked 
-                                      ? 'bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 hover:from-purple-100 hover:to-purple-200 dark:hover:from-purple-900 dark:hover:to-purple-800 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700 shadow-lg shadow-purple-200/50 dark:shadow-purple-900/50 hover:shadow-xl hover:shadow-purple-300/50 dark:hover:shadow-purple-800/50 hover:scale-105' 
-                                      : 'opacity-50'
+                                      ? 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200' 
+                                      : ''
                                   }`}
                                   onClick={() => !isLocked && handleMediaOpen(day, 'hypnosis')}
                                   disabled={isLocked}
                                 >
-                                  <Headphones className="h-5 w-5 mr-2" />
-                                  <div className="flex flex-col items-start">
-                                    <span className="text-sm font-bold">Hipnose</span>
+                                  <Headphones className="h-3.5 w-3.5 mr-1.5" />
+                                  <span className="text-xs">
+                                    Hipnose
                                     {dayContent.hypnosis_minutes && (
-                                      <span className="text-[10px] opacity-70">
+                                      <span className="text-[10px] opacity-70 ml-1">
                                         {dayContent.hypnosis_minutes}min
                                       </span>
                                     )}
-                                  </div>
+                                  </span>
                                 </Button>
                               </div>
                             </div>
