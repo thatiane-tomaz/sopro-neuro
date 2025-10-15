@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, CalendarDays } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, CalendarDays, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -212,7 +212,7 @@ const Dashboard = () => {
               <CalendarDays className="h-5 w-5" />
             </TabsTrigger>
             <TabsTrigger value="support">
-              <Headphones className="h-5 w-5" />
+              <Layers className="h-5 w-5" />
             </TabsTrigger>
           </TabsList>
 
