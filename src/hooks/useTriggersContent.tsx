@@ -8,6 +8,7 @@ export interface TriggerContent {
   file_name: string;
   duration_minutes: number | null;
   display_order: number;
+  section: string;
 }
 
 export const useTriggersContent = () => {

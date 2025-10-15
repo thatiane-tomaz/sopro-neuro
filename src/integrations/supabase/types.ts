@@ -248,6 +248,7 @@ export type Database = {
           file_name: string
           id: string
           is_active: boolean
+          section: string
           title: string
           updated_at: string
         }
@@ -259,6 +260,7 @@ export type Database = {
           file_name: string
           id?: string
           is_active?: boolean
+          section?: string
           title: string
           updated_at?: string
         }
@@ -270,6 +272,7 @@ export type Database = {
           file_name?: string
           id?: string
           is_active?: boolean
+          section?: string
           title?: string
           updated_at?: string
         }

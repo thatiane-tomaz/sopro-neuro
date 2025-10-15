@@ -470,15 +470,14 @@ const Dashboard = () => {
             <div className="space-y-6">
               {/* Seção 1 - Sempre disponível */}
               <div>
-                <div className="mb-4">
-                  <h3 className="text-lg font-bold text-foreground mb-2">Hipnoses Iniciais</h3>
+                <div className="mb-3">
                   <p className="text-sm text-muted-foreground">
-                    Disponíveis desde o primeiro dia para te apoiar
+                    Apoio para quando precisar
                   </p>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {triggers?.slice(0, 3).map((trigger) => (
+                  {triggers?.filter(t => t.section === 'initial').map((trigger) => (
                     <Card
                       key={trigger.id}
                       className="overflow-hidden border-border bg-accent/30 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
@@ -539,7 +538,7 @@ const Dashboard = () => {
                 </div>
                 
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ${currentDay < 8 ? 'opacity-50' : ''}`}>
-                  {triggers?.slice(3).map((trigger) => (
+                  {triggers?.filter(t => t.section === 'post_cigarette').map((trigger) => (
                     <Card
                       key={trigger.id}
                       className={`overflow-hidden border-border bg-accent/30 backdrop-blur-sm transition-all duration-300 group ${
