@@ -563,28 +563,23 @@ const Dashboard = () => {
         {/* Premium Upgrade CTA - Bottom */}
         {profile?.subscription_status === 'free' && currentDay <= 2 && (
           <div className="mt-12 mb-8">
-            <div 
-              className="relative overflow-hidden rounded-2xl border-2 border-accent shadow-2xl shadow-accent/30 cursor-pointer hover:shadow-accent/40 transition-all duration-300 bg-gradient-to-br from-accent/10 via-primary/5 to-accent/5 p-8"
-            >
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-sm p-6">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex-1 text-center md:text-left">
-                  <div className="flex items-center justify-center md:justify-start gap-2 mb-3">
-                    <Crown className="h-6 w-6 text-accent" />
-                    <h3 className="text-2xl font-bold text-foreground">
+                  <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                    <Crown className="h-5 w-5 text-accent" />
+                    <h3 className="text-lg font-semibold text-muted-foreground">
                       Desbloqueie os 14 Dias Completos
                     </h3>
                   </div>
-                  <p className="text-base text-muted-foreground mb-2">
-                    Você está no período gratuito com acesso a 2 dias.
-                  </p>
-                  <p className="text-base text-muted-foreground">
-                    Faça upgrade e desbloqueie a jornada completa para parar de fumar de vez.
+                  <p className="text-sm text-muted-foreground/80">
+                    Faça upgrade e complete sua jornada para parar de fumar de vez.
                   </p>
                 </div>
                 
                 <Button 
-                  size="lg"
-                  className="bg-accent hover:bg-accent/90 text-white shadow-lg flex-shrink-0 text-base px-8 py-6"
+                  size="sm"
+                  className="bg-accent hover:bg-accent/90 text-white flex-shrink-0"
                   onClick={() => {
                     toast({
                       title: "Upgrade Premium",
@@ -592,8 +587,8 @@ const Dashboard = () => {
                     });
                   }}
                 >
-                  <Crown className="h-5 w-5 mr-2" />
-                  Seja Premium Agora
+                  <Crown className="h-4 w-4 mr-2" />
+                  Upgrade
                 </Button>
               </div>
             </div>
