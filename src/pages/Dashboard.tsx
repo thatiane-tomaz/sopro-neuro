@@ -563,18 +563,18 @@ const Dashboard = () => {
         {/* Premium Upgrade CTA - Bottom */}
         {profile?.subscription_status === 'free' && currentDay <= 2 && (
           <div className="mt-12 mb-8">
-            <div className="relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-sm p-6">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex-1 text-center md:text-left">
-                  <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                    <Crown className="h-5 w-5 text-accent" />
-                    <h3 className="text-lg font-semibold text-muted-foreground">
+            <div className="relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-sm p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <Crown className="h-5 w-5 text-accent" />
+                  <div>
+                    <h3 className="text-sm font-semibold text-muted-foreground">
                       Desbloqueie os 14 Dias Completos
                     </h3>
+                    <p className="text-xs text-muted-foreground/70">
+                      Complete sua jornada para parar de fumar de vez
+                    </p>
                   </div>
-                  <p className="text-sm text-muted-foreground/80">
-                    Faça upgrade e complete sua jornada para parar de fumar de vez.
-                  </p>
                 </div>
                 
                 <Button 
