@@ -66,7 +66,7 @@ const Dashboard = () => {
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
 
   // Calculate current day - for now use day 1, can be enhanced later with user progress tracking
-  const currentDay = 8; // Temporarily set to 8 for preview
+  const currentDay = 1; // Temporarily set to 1 for preview
 
   // Group daily content by phases
   const phaseGroups = useMemo(() => {
