@@ -51,7 +51,7 @@ const MethodsSection = () => {
         {/* Como funciona */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
-            Como funciona a jornada de <span className="text-accent">21 dias</span>
+            Como funciona a jornada de <span className="text-accent">14 dias</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Cada dia tem conteúdo específico: áudios de hipnose, vídeos educativos e exercícios práticos

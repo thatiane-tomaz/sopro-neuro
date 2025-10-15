@@ -38,14 +38,14 @@ const HeroSection = () => {
 
           {/* Subtitle - como funciona */}
           <p className="text-xl md:text-2xl text-white/95 mb-10 max-w-3xl mx-auto leading-relaxed font-light">
-            Em 21 dias, com neurociência e hipnose, você entende seu corpo e mente de uma forma totalmente nova
+            Em 14 dias, com neurociência e hipnose, você entende seu corpo e mente de uma forma totalmente nova
           </p>
 
           {/* Trust badges */}
           <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-12">
             <div className="flex items-center bg-white/15 backdrop-blur-sm rounded-lg px-5 py-3 border border-white/20">
               <Clock className="w-5 h-5 text-white mr-2" />
-              <span className="text-white font-medium">21 dias guiados</span>
+              <span className="text-white font-medium">14 dias guiados</span>
             </div>
             <div className="flex items-center bg-white/15 backdrop-blur-sm rounded-lg px-5 py-3 border border-white/20">
               <CheckCircle2 className="w-5 h-5 text-white mr-2" />
@@ -61,7 +61,7 @@ const HeroSection = () => {
           <div className="flex flex-col items-center gap-6">
             <Link to="/login" className="w-full max-w-md">
               <Button variant="hero" size="lg" className="w-full group text-lg py-6">
-                Começar minha jornada de 21 dias
+                Começar minha jornada de 14 dias
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>

@@ -13,12 +13,11 @@ interface Story {
 const stories: Story[] = [
   {
     id: 1,
-    title: "3 Fases de 7 Dias",
-    description: "Uma jornada completa de 21 dias dividida em:",
+    title: "2 Fases de 7 Dias",
+    description: "Uma jornada completa de 14 dias dividida em:",
     highlights: [
       { icon: "brain", text: "Fase 1: Quebrando crenças para entender que você não está perdendo nada ao parar de fumar" },
-      { icon: "wind", text: "Fase 2: Técnicas respiratórias para atravessar a abstinência com calma e foco" },
-      { icon: "heart", text: "Fase 3: Reforçando hábitos saudáveis que sustentam a decisão de parar de fumar" }
+      { icon: "wind", text: "Fase 2: Técnicas respiratórias para atravessar a abstinência com calma e foco" }
     ]
   },
   {

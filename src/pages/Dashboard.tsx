@@ -204,7 +204,7 @@ const Dashboard = () => {
             >
               <div className="flex items-center justify-between gap-4">
                 <p className="text-sm text-muted-foreground flex-1">
-                  Entenda como funciona sua jornada de 21 dias
+                  Entenda como funciona sua jornada de 14 dias
                 </p>
                 
                 <Button 
@@ -439,7 +439,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-center md:justify-start gap-2 mb-3">
                     <Crown className="h-6 w-6 text-accent" />
                     <h3 className="text-2xl font-bold text-foreground">
-                      Desbloqueie os 21 Dias Completos
+                      Desbloqueie os 14 Dias Completos
                     </h3>
                   </div>
                   <p className="text-base text-muted-foreground mb-2">
@@ -449,7 +449,7 @@ const Dashboard = () => {
                     Desbloqueie a jornada completa para parar de fumar de vez.
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    ✓ 21 dias de conteúdo exclusivo • ✓ Vídeos + Hipnoses • ✓ Suporte completo
+                    ✓ 14 dias de conteúdo exclusivo • ✓ Vídeos + Hipnoses • ✓ Suporte completo
                   </p>
                 </div>
                 
