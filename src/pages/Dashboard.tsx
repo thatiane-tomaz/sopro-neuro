@@ -60,6 +60,7 @@ const Dashboard = () => {
     contentType: 'video' | 'hypnosis';
   } | null>(null);
   const [showStartHere, setShowStartHere] = useState(false);
+  const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
   const { toast } = useToast();
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
@@ -252,7 +253,6 @@ const Dashboard = () => {
           {phaseGroups.map((phase) => {
             const isPhase1 = phase.phase_number === 1;
             const isPhase1Completed = currentDay >= 8 && isPhase1;
-            const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
             
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border border-border shadow-lg transition-all duration-300 ${
