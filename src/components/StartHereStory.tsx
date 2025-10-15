@@ -68,7 +68,8 @@ const stories: Story[] = [
     highlights: [
       { icon: "repeat", text: "A repetição de conceitos é importante para criar novas conexões cerebrais" },
       { icon: "headphones", text: "Durante a hipnose use fones de ouvido" },
-      { icon: "armchair", text: "Sente-se ou deite-se em um lugar sem interrupções" }
+      { icon: "armchair", text: "Sente-se ou deite-se em um lugar sem interrupções" },
+      { icon: "clock", text: "Cada card é desbloqueado 6 horas depois que você finalizou o do dia anterior (assistiu 98% do vídeo e hipnose)" }
     ]
   }
 ];
@@ -168,6 +169,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                       {highlight.icon === 'apple' && <Sparkles className="w-6 h-6 text-white" />}
                       {highlight.icon === 'repeat' && <div className="text-2xl">🔄</div>}
                       {highlight.icon === 'armchair' && <div className="text-2xl">🛋️</div>}
+                      {highlight.icon === 'clock' && <div className="text-2xl">⏰</div>}
                     </div>
                     <p className="text-white/95 text-base leading-relaxed flex-1">
                       {highlight.text}

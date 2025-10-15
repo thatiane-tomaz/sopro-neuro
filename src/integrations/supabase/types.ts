@@ -89,6 +89,39 @@ export type Database = {
         }
         Relationships: []
       }
+      journey_tracking: {
+        Row: {
+          created_at: string
+          finished_at: string | null
+          id: string
+          interaction_type: string
+          progress_percentage: number | null
+          started_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          interaction_type: string
+          progress_percentage?: number | null
+          started_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          interaction_type?: string
+          progress_percentage?: number | null
+          started_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       onboarding_responses: {
         Row: {
           age: string | null
@@ -327,11 +360,19 @@ export type Database = {
           user_id: string
         }
       }
+      get_day_completion_time: {
+        Args: { p_day: number; p_user_id: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_day_completed: {
+        Args: { p_day: number; p_user_id: string }
         Returns: boolean
       }
     }

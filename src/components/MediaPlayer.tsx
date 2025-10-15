@@ -8,23 +8,51 @@ interface MediaPlayerProps {
   description?: string;
   fileUrl?: string;
   contentType: 'video' | 'hypnosis';
+  interactionType?: string; // e.g., 'video_dia_1', 'hipnose_apoio_relax'
   onClose: () => void;
+  onProgress?: (percentage: number) => void;
+  onComplete?: () => void;
 }
 
-const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: MediaPlayerProps) => {
+const MediaPlayer = ({ 
+  title, 
+  description, 
+  fileUrl, 
+  contentType, 
+  interactionType,
+  onClose,
+  onProgress,
+  onComplete 
+}: MediaPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
 
-  console.log('MediaPlayer opened with:', { title, fileUrl, contentType });
+  console.log('MediaPlayer opened with:', { title, fileUrl, contentType, interactionType });
 
   useEffect(() => {
     const media = mediaRef.current;
     if (!media) return;
 
-    const updateTime = () => setCurrentTime(media.currentTime);
+    const updateTime = () => {
+      setCurrentTime(media.currentTime);
+      
+      // Calculate and report progress
+      if (media.duration > 0) {
+        const percentage = Math.floor((media.currentTime / media.duration) * 100);
+        if (onProgress) {
+          onProgress(percentage);
+        }
+        
+        // Check if 98% complete
+        if (percentage >= 98 && onComplete) {
+          onComplete();
+        }
+      }
+    };
+    
     const updateDuration = () => setDuration(media.duration);
     const handleError = (e: Event) => {
       console.error('Media error:', e);
@@ -37,10 +65,16 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
     const handleCanPlay = () => {
       console.log('Media can play');
     };
+    const handleEnded = () => {
+      setIsPlaying(false);
+      if (onComplete) {
+        onComplete();
+      }
+    };
 
     media.addEventListener('timeupdate', updateTime);
     media.addEventListener('loadedmetadata', updateDuration);
-    media.addEventListener('ended', () => setIsPlaying(false));
+    media.addEventListener('ended', handleEnded);
     media.addEventListener('error', handleError);
     media.addEventListener('loadstart', handleLoadStart);
     media.addEventListener('canplay', handleCanPlay);
@@ -48,12 +82,12 @@ const MediaPlayer = ({ title, description, fileUrl, contentType, onClose }: Medi
     return () => {
       media.removeEventListener('timeupdate', updateTime);
       media.removeEventListener('loadedmetadata', updateDuration);
-      media.removeEventListener('ended', () => setIsPlaying(false));
+      media.removeEventListener('ended', handleEnded);
       media.removeEventListener('error', handleError);
       media.removeEventListener('loadstart', handleLoadStart);
       media.removeEventListener('canplay', handleCanPlay);
     };
-  }, [fileUrl]);
+  }, [fileUrl, onProgress, onComplete]);
 
   const handlePlayPause = () => {
     const media = mediaRef.current;

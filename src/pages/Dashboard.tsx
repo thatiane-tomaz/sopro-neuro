@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { useJourneyTracking } from '@/hooks/useJourneyTracking';
 import { useToast } from '@/hooks/use-toast';
 import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
@@ -60,7 +61,15 @@ const dayImages = [
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { profile, loading: profileLoading } = useUserProfile();
+  const { profile, loading: profileLoading, hasAccessToDay, upgradeRequired } = useUserProfile();
+  const { 
+    getCurrentDay, 
+    isDayCompleted, 
+    getTimeUntilNextUnlock,
+    startTracking,
+    updateProgress,
+    isLoading: trackingLoading 
+  } = useJourneyTracking();
   const { data: phases, isLoading: phasesLoading } = usePhases();
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
@@ -68,15 +77,20 @@ const Dashboard = () => {
     title: string;
     fileUrl: string;
     contentType: 'video' | 'hypnosis';
+    day?: number;
+    interactionType?: string;
   } | null>(null);
+  const [currentTrackingId, setCurrentTrackingId] = useState<string | null>(null);
   const [showStartHere, setShowStartHere] = useState(false);
   const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
   const { toast } = useToast();
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile });
 
-  // Calculate current day - for now use day 1, can be enhanced later with user progress tracking
-  const currentDay = 8; // Changed to 8 for preview
+  // Calculate current day based on user progress  
+  const currentDay = getCurrentDay();
+  
+  console.log('Current day from tracking:', currentDay);
 
   // Group daily content by phases
   const phaseGroups = useMemo(() => {
@@ -102,14 +116,60 @@ const Dashboard = () => {
     return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${fileName}`;
   };
 
-  const getDayStatus = (day: number): 'completed' | 'current' | 'locked' => {
-    if (day < currentDay) return 'completed';
+  const getDayStatus = (day: number): 'completed' | 'current' | 'locked' | 'subscription_locked' => {
+    // Check subscription access first
+    if (!hasAccessToDay(day)) return 'subscription_locked';
+    
+    // Then check progress-based locking
+    if (isDayCompleted(day)) return 'completed';
     if (day === currentDay) return 'current';
+    if (day < currentDay) return 'completed';
+    
     return 'locked';
   };
 
-  if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading) {
-    console.log('Loading state:', { authLoading, profileLoading });
+  const handleMediaOpen = (day: number, type: 'video' | 'hypnosis') => {
+    const interactionType = `${type === 'video' ? 'video' : 'hipnose'}_dia_${day}`;
+    
+    setSelectedMedia({
+      title: `${dailyContent?.find(d => d.day_number === day)?.title} - ${type === 'video' ? 'Vídeo' : 'Hipnose'}`,
+      fileUrl: getMediaUrl(day, type),
+      contentType: type,
+      day,
+      interactionType
+    });
+
+    // Start tracking
+    startTracking({ interactionType });
+  };
+
+  const handleMediaProgress = (percentage: number) => {
+    if (currentTrackingId) {
+      updateProgress({
+        trackingId: currentTrackingId,
+        progressPercentage: percentage,
+        finished: percentage >= 98
+      });
+    }
+  };
+
+  const handleMediaComplete = () => {
+    if (currentTrackingId) {
+      updateProgress({
+        trackingId: currentTrackingId,
+        progressPercentage: 100,
+        finished: true
+      });
+      
+      toast({
+        title: "Progresso salvo!",
+        description: "Seu progresso foi registrado com sucesso."
+      });
+    }
+  };
+
+  if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading) {
+    console.log('Loading state:', { authLoading, profileLoading, trackingLoading });
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary">
         <div className="text-center">
@@ -149,16 +209,14 @@ const Dashboard = () => {
                     Premium
                   </Badge>
                 )}
-                {currentDay > 1 && (
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => setShowStartHere(true)}
-                    title="Informações"
-                  >
-                    <Info className="h-4 w-4" />
-                  </Button>
-                )}
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => setShowStartHere(true)}
+                  title="Informações"
+                >
+                  <Info className="h-4 w-4" />
+                </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
@@ -192,12 +250,18 @@ const Dashboard = () => {
                 <div className="border-t mb-3" />
                 <div className="flex items-center gap-2 bg-accent/5 rounded-lg px-3 py-2 border border-accent/20">
                   <Badge variant="secondary" className="text-xs whitespace-nowrap">
-                    Acesso Gratuito - 2 Dias
+                    Período Gratuito - 2 Dias
                   </Badge>
                   <Button 
                     variant="outline" 
                     size="sm"
                     className="text-xs h-7 gap-1 border-accent text-accent hover:bg-accent hover:text-white ml-auto"
+                    onClick={() => {
+                      toast({
+                        title: "Upgrade Premium",
+                        description: "Acesse todos os 14 dias da jornada!"
+                      });
+                    }}
                   >
                     <Crown className="w-3 h-3" />
                     Upgrade
@@ -221,7 +285,7 @@ const Dashboard = () => {
 
           <TabsContent value="daily" className="mt-0">{/* Daily Tasks Tab */}
 
-        {currentDay < 8 && (
+        {currentDay === 1 && (
           <div className="mb-8">
             <div 
               className="relative overflow-hidden rounded-xl border-2 border-primary shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4"
@@ -317,7 +381,8 @@ const Dashboard = () => {
                     {phase.days.map((dayContent) => {
                       const day = dayContent.day_number;
                       const status = getDayStatus(day);
-                      const isLocked = status === 'locked';
+                      const isLocked = status === 'locked' || status === 'subscription_locked';
+                      const needsUpgrade = status === 'subscription_locked';
                       const isCompleted = status === 'completed';
                       const isCurrent = status === 'current';
 
@@ -342,9 +407,15 @@ const Dashboard = () => {
                                 <div className="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center">
                                   <div className="text-center">
                                     <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-2">
-                                      <Lock className="h-6 w-6 text-muted-foreground" />
+                                      {needsUpgrade ? (
+                                        <Crown className="h-6 w-6 text-accent" />
+                                      ) : (
+                                        <Lock className="h-6 w-6 text-muted-foreground" />
+                                      )}
                                     </div>
-                                    <p className="text-sm text-muted-foreground">Bloqueado</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {needsUpgrade ? 'Premium' : 'Bloqueado'}
+                                    </p>
                                   </div>
                                 </div>
                               )}
@@ -367,11 +438,7 @@ const Dashboard = () => {
                                       ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200' 
                                       : ''
                                   }`}
-                                  onClick={() => !isLocked && setSelectedMedia({ 
-                                    title: `${dayContent.title} - Vídeo`,
-                                    fileUrl: getMediaUrl(day, 'video'), 
-                                    contentType: 'video' 
-                                  })}
+                                  onClick={() => !isLocked && handleMediaOpen(day, 'video')}
                                   disabled={isLocked}
                                 >
                                   <PlayCircle className="h-4 w-4 mr-2" />
@@ -393,11 +460,7 @@ const Dashboard = () => {
                                       ? 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200' 
                                       : ''
                                   }`}
-                                  onClick={() => !isLocked && setSelectedMedia({ 
-                                    title: `${dayContent.title} - Hipnose`,
-                                    fileUrl: getMediaUrl(day, 'hypnosis'), 
-                                    contentType: 'hypnosis' 
-                                  })}
+                                  onClick={() => !isLocked && handleMediaOpen(day, 'hypnosis')}
                                   disabled={isLocked}
                                 >
                                   <Headphones className="h-4 w-4 mr-2" />
@@ -441,10 +504,10 @@ const Dashboard = () => {
                     </h3>
                   </div>
                   <p className="text-base text-muted-foreground mb-2">
-                    Você tem acesso gratuito a 2 dias.
+                    Você está no período gratuito com acesso a 2 dias.
                   </p>
                   <p className="text-base text-muted-foreground mb-2">
-                    Desbloqueie a jornada completa para parar de fumar de vez.
+                    Faça upgrade e desbloqueie a jornada completa para parar de fumar de vez.
                   </p>
                   <p className="text-sm text-muted-foreground">
                     ✓ 14 dias de conteúdo exclusivo • ✓ Vídeos + Hipnoses • ✓ Suporte completo
@@ -454,6 +517,12 @@ const Dashboard = () => {
                 <Button 
                   size="lg"
                   className="bg-accent hover:bg-accent/90 text-white shadow-lg flex-shrink-0 text-base px-8 py-6"
+                  onClick={() => {
+                    toast({
+                      title: "Upgrade Premium",
+                      description: "Complete sua jornada de 14 dias!"
+                    });
+                  }}
                 >
                   <Crown className="h-5 w-5 mr-2" />
                   Seja Premium Agora
@@ -625,7 +694,10 @@ const Dashboard = () => {
           title={selectedMedia.title}
           fileUrl={selectedMedia.fileUrl}
           contentType={selectedMedia.contentType}
+          interactionType={selectedMedia.interactionType}
           onClose={() => setSelectedMedia(null)}
+          onProgress={handleMediaProgress}
+          onComplete={handleMediaComplete}
         />
       )}
 
