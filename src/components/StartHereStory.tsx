@@ -41,14 +41,14 @@ const stories: Story[] = [
   },
   {
     id: 4,
-    title: "Fase 3: Hábitos Saudáveis",
-    description: "Esta fase reforça hábitos que sustentam sua nova vida:",
+    title: "Hipnoses de Apoio",
+    description: "Disponíveis após completar a Fase 1, estas hipnoses te ajudam a:",
     highlights: [
-      { icon: "apple", text: "Melhorar a alimentação" },
-      { icon: "users", text: "Aproveitar momentos com outras pessoas" },
-      { icon: "activity", text: "Praticar exercícios físicos" },
-      { icon: "check", text: "Encontrar novas formas de se divertir" }
-    ]
+      { icon: "brain", text: "Reforçar as novas crenças sobre o cigarro" },
+      { icon: "heart", text: "Manter a calma e o relaxamento" },
+      { icon: "check", text: "Lidar com gatilhos específicos do dia a dia" }
+    ],
+    footer: "Use sempre que sentir necessidade de reforço"
   },
   {
     id: 5,
