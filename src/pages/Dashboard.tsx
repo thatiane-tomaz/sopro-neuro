@@ -6,9 +6,10 @@ import { useToast } from '@/hooks/use-toast';
 import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -204,16 +205,21 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Welcome Message */}
-        <div className="mb-8">
-          {dailyContent && dailyContent[currentDay - 1] && (
-            <h2 className="text-2xl md:text-3xl font-bold text-primary">
-              {dailyContent[currentDay - 1].welcome_title || 'Continue a sua jornada!'}
-            </h2>
-          )}
-        </div>
+        {/* Tabs Navigation */}
+        <Tabs defaultValue="daily" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="daily" className="flex items-center gap-2">
+              <CalendarDays className="h-4 w-4" />
+              Tarefa do Dia
+            </TabsTrigger>
+            <TabsTrigger value="support" className="flex items-center gap-2">
+              <Headphones className="h-4 w-4" />
+              Hipnoses de Apoio
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Start Here Section - Only Day 1 */}
+          <TabsContent value="daily" className="mt-0">{/* Daily Tasks Tab */}
+
         {currentDay < 8 && (
           <div className="mb-8">
             <div 
@@ -238,33 +244,6 @@ const Dashboard = () => {
         )}
 
 
-        {/* Trigger Hypnosis Section - Shows from Day 8 onwards */}
-        {currentDay >= 8 && (
-          <div className="mb-8">
-            <div 
-              className="rounded-xl bg-card/50 backdrop-blur-sm border border-border p-4 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
-              onClick={() => navigate('/triggers')}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
-                    <Headphones className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
-                    Hipnoses de Apoio
-                  </h3>
-                </div>
-                <Button 
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-primary"
-                >
-                  Acessar →
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
@@ -482,6 +461,19 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+
+        </TabsContent>
+
+          <TabsContent value="support" className="mt-0">
+            {/* Support Hypnosis Tab */}
+            <div className="rounded-xl bg-card/50 backdrop-blur-sm border border-border p-6 shadow-lg">
+              <h2 className="text-xl font-bold text-foreground mb-4">Hipnoses de Apoio</h2>
+              <p className="text-muted-foreground">
+                Conteúdo de hipnoses de apoio disponível em breve.
+              </p>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Media Player */}
