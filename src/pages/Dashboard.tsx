@@ -279,7 +279,7 @@ const Dashboard = () => {
               </div>
             </div>
             
-            {profile?.subscription_status === 'free' && (
+            {!isAdmin && profile?.subscription_status === 'free' && (
               <>
                 <div className="border-t mb-3" />
                 <div className="flex items-center gap-2 bg-accent/5 rounded-lg px-3 py-2 border border-accent/20">
@@ -532,7 +532,7 @@ const Dashboard = () => {
         </div>
 
         {/* Premium Upgrade CTA - Bottom */}
-        {profile?.subscription_status === 'free' && (
+        {!isAdmin && profile?.subscription_status === 'free' && (
           <div className="mt-12 mb-8">
             <div 
               className="relative overflow-hidden rounded-2xl border-2 border-accent shadow-2xl shadow-accent/30 cursor-pointer hover:shadow-accent/40 transition-all duration-300 bg-gradient-to-br from-accent/10 via-primary/5 to-accent/5 p-8"
