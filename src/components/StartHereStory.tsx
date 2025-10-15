@@ -165,9 +165,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                       {highlight.icon === 'video' && <Play className="w-6 h-6 text-white" />}
                       {highlight.icon === 'headphones' && <Sparkles className="w-6 h-6 text-white" />}
                       {highlight.icon === 'check' && <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-sm">✓</div>}
-                      {highlight.icon === 'apple' && <div className="text-2xl">🍎</div>}
-                      {highlight.icon === 'users' && <div className="text-2xl">👥</div>}
-                      {highlight.icon === 'activity' && <div className="text-2xl">💪</div>}
+                      {highlight.icon === 'apple' && <Sparkles className="w-6 h-6 text-white" />}
                       {highlight.icon === 'repeat' && <div className="text-2xl">🔄</div>}
                       {highlight.icon === 'armchair' && <div className="text-2xl">🛋️</div>}
                     </div>
