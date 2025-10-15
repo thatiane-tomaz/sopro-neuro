@@ -233,7 +233,7 @@ const Dashboard = () => {
                     <Headphones className="h-5 w-5 text-purple-600" />
                   </div>
                   <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
-                    Hipnoses para Gatilhos
+                    Hipnoses de Apoio
                   </h3>
                 </div>
                 <Button 
