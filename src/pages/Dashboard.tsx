@@ -423,13 +423,15 @@ const Dashboard = () => {
                   className="w-full"
                 >
                   <CarouselContent className="-ml-2 md:-ml-4">
-                    {phase.days.map((dayContent) => {
+                    {phase.days.map((dayContent, index) => {
                       const day = dayContent.day_number;
                       const status = getDayStatus(day);
                       const isLocked = status === 'locked' || status === 'subscription_locked';
                       const needsUpgrade = status === 'subscription_locked';
                       const isCompleted = status === 'completed';
                       const isCurrent = status === 'current';
+                      const isFirstInPhase = index === 0;
+                      const isLastInPhase = index === phase.days.length - 1;
 
                       return (
                         <CarouselItem key={day} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
@@ -544,8 +546,12 @@ const Dashboard = () => {
                       );
                     })}
                   </CarouselContent>
-                  <CarouselPrevious className="-left-4 md:-left-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
-                  <CarouselNext className="-right-4 md:-right-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
+                  {phase.days.length > 1 && (
+                    <>
+                      <CarouselPrevious className="-left-4 md:-left-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
+                      <CarouselNext className="-right-4 md:-right-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
+                    </>
+                  )}
                 </Carousel>
                 )}
               </div>
