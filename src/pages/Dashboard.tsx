@@ -252,14 +252,19 @@ const Dashboard = () => {
           {phaseGroups.map((phase) => {
             const isPhase1 = phase.phase_number === 1;
             const isPhase1Completed = currentDay >= 8 && isPhase1;
+            const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
             
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border border-border shadow-lg transition-all duration-300 ${
                 isPhase1Completed ? 'p-4' : 'p-4 md:p-6'
               }`}>
                 <div 
-                  className={`mb-4 ${isPhase1Completed ? 'cursor-pointer' : ''}`}
-                  onClick={() => isPhase1Completed && setSelectedMedia(null)}
+                  className={`mb-4 ${isPhase1Completed ? 'cursor-pointer hover:bg-accent/10 rounded-lg p-2 -m-2 transition-colors' : ''}`}
+                  onClick={() => {
+                    if (isPhase1Completed) {
+                      setIsPhase1Expanded(!isPhase1Expanded);
+                    }
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
@@ -281,11 +286,28 @@ const Dashboard = () => {
                           {phase.subtitle}
                         </p>
                       )}
+                      {isPhase1Completed && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Clique para {isPhase1Expanded ? 'minimizar' : 'reassistir os vídeos'}
+                        </p>
+                      )}
                     </div>
+                    {isPhase1Completed && (
+                      <div className={`transition-transform duration-300 ${isPhase1Expanded ? 'rotate-180' : ''}`}>
+                        <svg 
+                          className="w-6 h-6 text-primary" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {!isPhase1Completed && (
+                {(!isPhase1Completed || isPhase1Expanded) && (
 
                 <Carousel 
                   opts={{ 
