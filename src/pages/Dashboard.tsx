@@ -488,11 +488,11 @@ const Dashboard = () => {
                                   }}
                                   disabled={isLocked && !isAdmin}
                                 >
-                                  <PlayCircle className="h-4 w-4 mr-2" />
-                                  <span className="text-sm">
+                                  <PlayCircle className="h-3.5 w-3.5 mr-1.5" />
+                                  <span className="text-xs">
                                     Vídeo
                                     {dayContent.video_minutes && (
-                                      <span className="text-xs opacity-70 ml-1">
+                                      <span className="text-[10px] opacity-70 ml-1">
                                         {dayContent.video_minutes}min
                                       </span>
                                     )}
