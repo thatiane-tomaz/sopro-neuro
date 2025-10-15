@@ -388,12 +388,14 @@ const Dashboard = () => {
                       }`}>
                         {phase.title}
                       </h2>
-                      <p className={`text-sm md:text-base ${isPhase1Completed ? 'text-muted-foreground/80' : 'text-muted-foreground'}`}>
-                        {phase.subtitle}
-                      </p>
-                      {isPhase1Completed && (
+                      {(!isPhase1Completed || isPhase1Expanded) && (
+                        <p className={`text-sm md:text-base ${isPhase1Completed ? 'text-muted-foreground/80' : 'text-muted-foreground'}`}>
+                          {phase.subtitle}
+                        </p>
+                      )}
+                      {isPhase1Completed && isPhase1Expanded && (
                         <p className="text-sm text-muted-foreground mt-1">
-                          Clique para {isPhase1Expanded ? 'minimizar' : 'reassistir os vídeos'}
+                          Clique para minimizar
                         </p>
                       )}
                     </div>
