@@ -5,10 +5,12 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 import { useToast } from '@/hooks/use-toast';
 import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
+import { useTriggersContent } from '@/hooks/useTriggersContent';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
@@ -61,6 +63,7 @@ const Dashboard = () => {
   const { profile, loading: profileLoading } = useUserProfile();
   const { data: phases, isLoading: phasesLoading } = usePhases();
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
+  const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
     fileUrl: string;
@@ -105,7 +108,7 @@ const Dashboard = () => {
     return 'locked';
   };
 
-  if (authLoading || profileLoading || phasesLoading || contentLoading) {
+  if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading) {
     console.log('Loading state:', { authLoading, profileLoading });
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary">
@@ -464,12 +467,95 @@ const Dashboard = () => {
 
           <TabsContent value="support" className="mt-0">
             {/* Support Hypnosis Tab */}
-            <div className="rounded-xl bg-card/50 backdrop-blur-sm border border-border p-6 shadow-lg">
-              <h2 className="text-xl font-bold text-foreground mb-4">Hipnoses de Apoio</h2>
-              <p className="text-muted-foreground">
-                Conteúdo de hipnoses de apoio disponível em breve.
-              </p>
+            <div className="mb-6">
+              <Card className="bg-card/50 backdrop-blur-sm border-border p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
+                    <Headphones className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-foreground mb-1">Como usar</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Estas hipnoses podem ser usadas em momentos de desejo intenso ou antes de alguma situação que pode ser um gatilho
+                    </p>
+                  </div>
+                </div>
+              </Card>
             </div>
+
+            {/* Triggers Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              {triggers?.map((trigger) => (
+                <Card
+                  key={trigger.id}
+                  className="overflow-hidden border-border bg-accent/30 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group"
+                >
+                  <div className="p-5">
+                    <div className="flex items-start gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                        <Headphones className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
+                          {trigger.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {trigger.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4">
+                      {trigger.duration_minutes && (
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {trigger.duration_minutes} min
+                        </span>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="ml-auto text-primary hover:text-primary hover:bg-primary/10"
+                        onClick={() =>
+                          setSelectedMedia({
+                            title: trigger.title,
+                            fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/${trigger.file_name}`,
+                            contentType: 'hypnosis',
+                          })
+                        }
+                      >
+                        <Play className="h-4 w-4 mr-2" />
+                        Ouvir
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+
+            {/* Tips Section */}
+            <Card className="bg-primary/5 border-primary/20 p-6">
+              <h3 className="text-xl font-bold text-foreground mb-4">
+                💡 Dicas para melhor resultado
+              </h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span>Use fones de ouvido para melhor imersão</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span>Encontre um local tranquilo onde não será interrompido</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span>Ouça quantas vezes precisar durante o dia</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span>Identifique seus gatilhos principais e tenha os áudios sempre disponíveis</span>
+                </li>
+              </ul>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
