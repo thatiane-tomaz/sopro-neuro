@@ -130,12 +130,23 @@ const Dashboard = () => {
         <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b mb-6">
           <div className="px-4 py-3">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <img src={soproLogo} alt="Sopro" className="h-8" />
+              <img src={soproLogo} alt="Sopro" className="h-8" />
+              
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-between">
                 {profile?.subscription_status === 'free' && (
-                  <Badge variant="secondary" className="text-xs whitespace-nowrap">
-                    Acesso Gratuito - 2 Dias
-                  </Badge>
+                  <div className="flex items-center gap-2 bg-accent/5 rounded-lg px-3 py-1.5 border border-accent/20">
+                    <Badge variant="secondary" className="text-xs whitespace-nowrap">
+                      Acesso Gratuito - 2 Dias
+                    </Badge>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="text-xs h-7 gap-1 border-accent text-accent hover:bg-accent hover:text-white"
+                    >
+                      <Crown className="w-3 h-3" />
+                      Upgrade
+                    </Button>
+                  </div>
                 )}
                 {profile?.subscription_status === 'premium' && (
                   <Badge className="text-xs bg-accent whitespace-nowrap">
@@ -143,18 +154,7 @@ const Dashboard = () => {
                     Premium
                   </Badge>
                 )}
-              </div>
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-                {profile?.subscription_status === 'free' && (
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="text-xs h-7 gap-1 border-accent text-accent hover:bg-accent hover:text-white"
-                  >
-                    <Crown className="w-3 h-3" />
-                    Upgrade
-                  </Button>
-                )}
+                
                 <div className="flex items-center gap-2">
                   {currentDay > 1 && (
                     <Button 
