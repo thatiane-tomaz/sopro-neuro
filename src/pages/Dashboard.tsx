@@ -467,90 +467,155 @@ const Dashboard = () => {
 
           <TabsContent value="support" className="mt-0">
             {/* Support Hypnosis Tab */}
-            <div className="mb-6">
-              <Card className="bg-card/50 backdrop-blur-sm border-border p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                    <Headphones className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1">Como usar</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Estas hipnoses podem ser usadas em momentos de desejo intenso ou antes de alguma situação que pode ser um gatilho
-                    </p>
-                  </div>
+            <div className="space-y-6">
+              {/* Seção 1 - Sempre disponível */}
+              <div>
+                <div className="mb-4">
+                  <h3 className="text-lg font-bold text-foreground mb-2">Hipnoses Iniciais</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Disponíveis desde o primeiro dia para te apoiar
+                  </p>
                 </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {triggers?.slice(0, 3).map((trigger) => (
+                    <Card
+                      key={trigger.id}
+                      className="overflow-hidden border-border bg-accent/30 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                      onClick={() =>
+                        setSelectedMedia({
+                          title: trigger.title,
+                          fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/${trigger.file_name}`,
+                          contentType: 'hypnosis',
+                        })
+                      }
+                    >
+                      <div className="p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                            <Headphones className="h-4 w-4 text-primary" />
+                          </div>
+                          <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                            {trigger.title}
+                          </h3>
+                        </div>
+                        
+                        <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+                          {trigger.description}
+                        </p>
+
+                        <div className="flex items-center justify-between">
+                          {trigger.duration_minutes && (
+                            <span className="text-xs font-medium text-muted-foreground">
+                              {trigger.duration_minutes} min
+                            </span>
+                          )}
+                          <div className="flex items-center text-xs text-primary ml-auto">
+                            <Play className="h-3 w-3 mr-1" />
+                            Ouvir
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Seção 2 - Pós último cigarro */}
+              <div>
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-lg font-bold text-foreground">Pós Último Cigarro</h3>
+                    {currentDay < 8 && (
+                      <Badge variant="secondary" className="text-xs">
+                        <Lock className="w-3 h-3 mr-1" />
+                        Em breve
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Hipnoses especiais para o momento após parar completamente
+                  </p>
+                </div>
+                
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ${currentDay < 8 ? 'opacity-50' : ''}`}>
+                  {triggers?.slice(3).map((trigger) => (
+                    <Card
+                      key={trigger.id}
+                      className={`overflow-hidden border-border bg-accent/30 backdrop-blur-sm transition-all duration-300 group ${
+                        currentDay >= 8 ? 'hover:shadow-lg cursor-pointer' : 'cursor-not-allowed'
+                      }`}
+                      onClick={() => {
+                        if (currentDay >= 8) {
+                          setSelectedMedia({
+                            title: trigger.title,
+                            fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/${trigger.file_name}`,
+                            contentType: 'hypnosis',
+                          });
+                        }
+                      }}
+                    >
+                      <div className="p-4 relative">
+                        {currentDay < 8 && (
+                          <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] flex items-center justify-center z-10">
+                            <Lock className="h-6 w-6 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                            <Headphones className="h-4 w-4 text-primary" />
+                          </div>
+                          <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                            {trigger.title}
+                          </h3>
+                        </div>
+                        
+                        <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+                          {trigger.description}
+                        </p>
+
+                        <div className="flex items-center justify-between">
+                          {trigger.duration_minutes && (
+                            <span className="text-xs font-medium text-muted-foreground">
+                              {trigger.duration_minutes} min
+                            </span>
+                          )}
+                          <div className="flex items-center text-xs text-primary ml-auto">
+                            <Play className="h-3 w-3 mr-1" />
+                            Ouvir
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tips Section */}
+              <Card className="bg-primary/5 border-primary/20 p-6">
+                <h3 className="text-xl font-bold text-foreground mb-4">
+                  💡 Dicas para melhor resultado
+                </h3>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span>Use fones de ouvido para melhor imersão</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span>Encontre um local tranquilo onde não será interrompido</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span>Ouça quantas vezes precisar durante o dia</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span>Identifique seus gatilhos principais e tenha os áudios sempre disponíveis</span>
+                  </li>
+                </ul>
               </Card>
             </div>
-
-            {/* Triggers Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
-              {triggers?.map((trigger) => (
-                <Card
-                  key={trigger.id}
-                  className="overflow-hidden border-border bg-accent/30 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
-                  onClick={() =>
-                    setSelectedMedia({
-                      title: trigger.title,
-                      fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/${trigger.file_name}`,
-                      contentType: 'hypnosis',
-                    })
-                  }
-                >
-                  <div className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                        <Headphones className="h-4 w-4 text-primary" />
-                      </div>
-                      <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                        {trigger.title}
-                      </h3>
-                    </div>
-                    
-                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
-                      {trigger.description}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                      {trigger.duration_minutes && (
-                        <span className="text-xs font-medium text-muted-foreground">
-                          {trigger.duration_minutes} min
-                        </span>
-                      )}
-                      <div className="flex items-center text-xs text-primary ml-auto">
-                        <Play className="h-3 w-3 mr-1" />
-                        Ouvir
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-
-            {/* Tips Section */}
-            <Card className="bg-primary/5 border-primary/20 p-6">
-              <h3 className="text-xl font-bold text-foreground mb-4">
-                💡 Dicas para melhor resultado
-              </h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span>Use fones de ouvido para melhor imersão</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span>Encontre um local tranquilo onde não será interrompido</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span>Ouça quantas vezes precisar durante o dia</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span>Identifique seus gatilhos principais e tenha os áudios sempre disponíveis</span>
-                </li>
-              </ul>
-            </Card>
           </TabsContent>
         </Tabs>
       </div>
