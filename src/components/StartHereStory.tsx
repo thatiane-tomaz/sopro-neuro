@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, ChevronLeft, ChevronRight, Play, Brain, Wind, Heart, Sparkles } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Play, Brain, Wind, Heart, Sparkles, Headphones } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Story {
@@ -163,7 +163,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                       {highlight.icon === 'wind' && <Wind className="w-6 h-6 text-white" />}
                       {highlight.icon === 'heart' && <Heart className="w-6 h-6 text-white" />}
                       {highlight.icon === 'video' && <Play className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'headphones' && <Sparkles className="w-6 h-6 text-white" />}
+                      {highlight.icon === 'headphones' && <Headphones className="w-6 h-6 text-white" />}
                       {highlight.icon === 'check' && <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-sm">✓</div>}
                       {highlight.icon === 'apple' && <Sparkles className="w-6 h-6 text-white" />}
                       {highlight.icon === 'repeat' && <div className="text-2xl">🔄</div>}
