@@ -49,7 +49,7 @@ const stories: Story[] = [
       { icon: "check", text: "Lidar com gatilhos específicos do dia a dia" },
       { icon: "apple", text: "Criar hábitos saudáveis para substituir o cigarro" }
     ],
-    footer: "Use sempre que sentir necessidade de reforço"
+    footer: "Use sempre que sentir necessidade"
   },
   {
     id: 5,
