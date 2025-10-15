@@ -407,7 +407,7 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                {(!isPhase1Completed || isPhase1Expanded) && (
+                {(!isPhase1Completed || (isPhase1Completed && isPhase1Expanded)) && (
 
                 <Carousel 
                   opts={{ 
