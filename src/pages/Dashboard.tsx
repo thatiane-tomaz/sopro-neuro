@@ -470,7 +470,7 @@ const Dashboard = () => {
                               <p className="text-xs font-semibold text-primary mb-1">
                                 Dia {day}
                               </p>
-                              <h3 className="text-base font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent mb-3 leading-tight">
+                              <h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 via-accent to-primary bg-clip-text text-transparent mb-3 leading-tight">
                                 {dayContent.title}
                               </h3>
                               
