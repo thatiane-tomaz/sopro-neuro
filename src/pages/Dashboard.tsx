@@ -208,13 +208,11 @@ const Dashboard = () => {
         {/* Tabs Navigation */}
         <Tabs defaultValue="daily" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="daily" className="flex items-center gap-2">
-              <CalendarDays className="h-4 w-4" />
-              Tarefa do Dia
+            <TabsTrigger value="daily">
+              <CalendarDays className="h-5 w-5" />
             </TabsTrigger>
-            <TabsTrigger value="support" className="flex items-center gap-2">
-              <Headphones className="h-4 w-4" />
-              Hipnoses de Apoio
+            <TabsTrigger value="support">
+              <Headphones className="h-5 w-5" />
             </TabsTrigger>
           </TabsList>
 
