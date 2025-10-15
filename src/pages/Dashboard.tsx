@@ -348,9 +348,14 @@ const Dashboard = () => {
         <div className="space-y-8">
           {phaseGroups.map((phase) => {
             const isPhase1 = phase.phase_number === 1;
-            // Phase 1 is only completed if user actually completed all 7 days
+            // Phase 1 is completed if:
+            // - Admin simulating day 8+ (phase 1 has 7 days)
+            // - OR user actually completed day 7
             const phase1LastDay = 7;
-            const isPhase1Completed = isPhase1 && isDayCompleted(phase1LastDay);
+            const isPhase1Completed = isPhase1 && (
+              (isAdmin && currentDay >= 8) || 
+              isDayCompleted(phase1LastDay)
+            );
             
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border border-border shadow-lg transition-all duration-300 ${
