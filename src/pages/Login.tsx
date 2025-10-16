@@ -8,13 +8,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
-  const [signupData, setSignupData] = useState({ name: "", email: "", password: "" });
+  const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const { user, signIn, signUp, signInWithGoogle } = useAuth();
+  const { toast } = useToast();
 
   // Check if user has completed onboarding
   useEffect(() => {
@@ -61,6 +63,16 @@ const Login = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (signupData.password !== signupData.confirmPassword) {
+      toast({
+        title: "Erro",
+        description: "As senhas não coincidem",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsLoading(true);
     
     const { error } = await signUp(signupData.email, signupData.password, signupData.name);
@@ -202,7 +214,7 @@ const Login = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="register-password">Senha</Label>
+                    <Label htmlFor="register-password">Criar Senha</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input 
@@ -212,6 +224,21 @@ const Login = () => {
                         className="pl-10"
                         value={signupData.password}
                         onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
+                        required 
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirm-password">Repetir Senha</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        id="confirm-password" 
+                        type="password" 
+                        placeholder="••••••••" 
+                        className="pl-10"
+                        value={signupData.confirmPassword}
+                        onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                         required 
                       />
                     </div>
