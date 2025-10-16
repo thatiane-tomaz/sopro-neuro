@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import soproLogo from "@/assets/sopro-logo.png";
+import { loginSchema, signupSchema } from "@/lib/validations";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +51,19 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate input
+    const validation = loginSchema.safeParse(loginData);
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast({
+        title: "Erro de validação",
+        description: firstError.message,
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsLoading(true);
     
     const { error } = await signIn(loginData.email, loginData.password);
@@ -64,10 +78,13 @@ const Login = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (signupData.password !== signupData.confirmPassword) {
+    // Validate input
+    const validation = signupSchema.safeParse(signupData);
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
       toast({
-        title: "Erro",
-        description: "As senhas não coincidem",
+        title: "Erro de validação",
+        description: firstError.message,
         variant: "destructive"
       });
       return;
@@ -220,7 +237,7 @@ const Login = () => {
                       <Input 
                         id="register-password" 
                         type="password" 
-                        placeholder="••••••••" 
+                        placeholder="Mínimo 12 caracteres com maiúscula, minúscula, número e especial" 
                         className="pl-10"
                         value={signupData.password}
                         onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}

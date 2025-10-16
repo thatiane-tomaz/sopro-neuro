@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, CheckCircle } from "lucide-react";
 import { OnboardingData } from "@/pages/Onboarding";
+import { onboardingQuestion4Schema } from "@/lib/validations";
+import { useToast } from "@/hooks/use-toast";
 
 interface Question4Props {
   data: OnboardingData;
@@ -14,6 +16,8 @@ interface Question4Props {
 }
 
 const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
+  const { toast } = useToast();
+
   const reasons = [
     { id: "estresse-ansiedade", label: "Para aliviar estresse ou ansiedade" },
     { id: "relaxar-pausa", label: "Para relaxar em momentos de pausa" },
@@ -30,6 +34,25 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
       : currentReasons.filter(id => id !== reasonId);
     
     updateData({ smokingReasons: updatedReasons });
+  };
+
+  const handleFinish = () => {
+    // Validate before finishing
+    const validation = onboardingQuestion4Schema.safeParse({
+      smokingReasons: data.smokingReasons,
+    });
+
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast({
+        title: "Erro de validação",
+        description: firstError.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    onFinish();
   };
 
   const canProceed = data.smokingReasons && data.smokingReasons.length > 0;
@@ -87,7 +110,7 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
                 Voltar
               </Button>
               <Button 
-                onClick={onFinish} 
+                onClick={handleFinish} 
                 disabled={!canProceed}
                 className="flex-1 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
               >

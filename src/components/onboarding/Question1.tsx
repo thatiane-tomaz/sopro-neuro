@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { OnboardingData } from "@/pages/Onboarding";
+import { onboardingQuestion1Schema } from "@/lib/validations";
+import { useToast } from "@/hooks/use-toast";
 
 interface Question1Props {
   data: OnboardingData;
@@ -13,12 +15,34 @@ interface Question1Props {
 }
 
 const Question1 = ({ data, updateData, onNext }: Question1Props) => {
+  const { toast } = useToast();
+
   const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateData({ age: e.target.value });
   };
 
   const handleGenderSelection = (value: string) => {
     updateData({ gender: value });
+  };
+
+  const handleNext = () => {
+    // Validate before proceeding
+    const validation = onboardingQuestion1Schema.safeParse({
+      age: data.age,
+      gender: data.gender,
+    });
+
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast({
+        title: "Erro de validação",
+        description: firstError.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    onNext();
   };
 
   const canProceed = data.age !== "" && data.gender !== "";
@@ -50,13 +74,11 @@ const Question1 = ({ data, updateData, onNext }: Question1Props) => {
                 </Label>
                 <Input
                   id="age"
-                  type="number"
+                  type="text"
                   value={data.age}
                   onChange={handleAgeChange}
-                  placeholder="Digite sua idade"
+                  placeholder="Digite sua idade (18-120)"
                   className="mt-1"
-                  min="1"
-                  max="120"
                 />
               </div>
               
@@ -67,26 +89,26 @@ const Question1 = ({ data, updateData, onNext }: Question1Props) => {
                 <RadioGroup value={data.gender} onValueChange={handleGenderSelection} className="mt-2">
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                      <RadioGroupItem value="mulher" id="mulher" />
-                      <Label htmlFor="mulher" className="flex-1 cursor-pointer">
+                      <RadioGroupItem value="woman" id="woman" />
+                      <Label htmlFor="woman" className="flex-1 cursor-pointer">
                         Mulher
                       </Label>
                     </div>
                     <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                      <RadioGroupItem value="homem" id="homem" />
-                      <Label htmlFor="homem" className="flex-1 cursor-pointer">
+                      <RadioGroupItem value="man" id="man" />
+                      <Label htmlFor="man" className="flex-1 cursor-pointer">
                         Homem
                       </Label>
                     </div>
                     <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                      <RadioGroupItem value="nao-binarie" id="nao-binarie" />
-                      <Label htmlFor="nao-binarie" className="flex-1 cursor-pointer">
+                      <RadioGroupItem value="non-binary" id="non-binary" />
+                      <Label htmlFor="non-binary" className="flex-1 cursor-pointer">
                         Não-binárie
                       </Label>
                     </div>
                     <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                      <RadioGroupItem value="prefiro-nao-responder" id="prefiro-nao-responder" />
-                      <Label htmlFor="prefiro-nao-responder" className="flex-1 cursor-pointer">
+                      <RadioGroupItem value="prefer-not-to-say" id="prefer-not-to-say" />
+                      <Label htmlFor="prefer-not-to-say" className="flex-1 cursor-pointer">
                         Prefiro não responder
                       </Label>
                     </div>
@@ -96,7 +118,7 @@ const Question1 = ({ data, updateData, onNext }: Question1Props) => {
             </div>
 
             <Button 
-              onClick={onNext} 
+              onClick={handleNext} 
               disabled={!canProceed}
               className="w-full rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
             >

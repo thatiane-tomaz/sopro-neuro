@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft } from "lucide-react";
 import { OnboardingData } from "@/pages/Onboarding";
+import { onboardingQuestion2Schema } from "@/lib/validations";
+import { useToast } from "@/hooks/use-toast";
 
 interface Question2Props {
   data: OnboardingData;
@@ -14,8 +16,29 @@ interface Question2Props {
 }
 
 const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
+  const { toast } = useToast();
+
   const handleSelection = (value: string) => {
     updateData({ smokingFrequency: value });
+  };
+
+  const handleNext = () => {
+    // Validate before proceeding
+    const validation = onboardingQuestion2Schema.safeParse({
+      smokingFrequency: data.smokingFrequency,
+    });
+
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast({
+        title: "Erro de validação",
+        description: firstError.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    onNext();
   };
 
   const canProceed = data.smokingFrequency !== "";
@@ -43,33 +66,27 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
             <RadioGroup value={data.smokingFrequency} onValueChange={handleSelection}>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="mais-de-5-dia" id="mais-de-5-dia" />
-                  <Label htmlFor="mais-de-5-dia" className="flex-1 cursor-pointer">
+                  <RadioGroupItem value="daily" id="daily" />
+                  <Label htmlFor="daily" className="flex-1 cursor-pointer">
                     Mais de 5 vezes por dia
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="menos-de-5-dia" id="menos-de-5-dia" />
-                  <Label htmlFor="menos-de-5-dia" className="flex-1 cursor-pointer">
+                  <RadioGroupItem value="weekly" id="weekly" />
+                  <Label htmlFor="weekly" className="flex-1 cursor-pointer">
                     Menos de 5 vezes por dia
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="menos-de-5-semana" id="menos-de-5-semana" />
-                  <Label htmlFor="menos-de-5-semana" className="flex-1 cursor-pointer">
+                  <RadioGroupItem value="occasionally" id="occasionally" />
+                  <Label htmlFor="occasionally" className="flex-1 cursor-pointer">
                     Menos de 5 vezes por semana
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="raramente" id="raramente" />
-                  <Label htmlFor="raramente" className="flex-1 cursor-pointer">
+                  <RadioGroupItem value="rarely" id="rarely" />
+                  <Label htmlFor="rarely" className="flex-1 cursor-pointer">
                     Raramente
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="abstinencia" id="abstinencia" />
-                  <Label htmlFor="abstinencia" className="flex-1 cursor-pointer">
-                    Estou em abstinência no momento
                   </Label>
                 </div>
               </div>
@@ -85,7 +102,7 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
                 Voltar
               </Button>
               <Button 
-                onClick={onNext} 
+                onClick={handleNext} 
                 disabled={!canProceed}
                 className="flex-1 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
               >

@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft } from "lucide-react";
 import { OnboardingData } from "@/pages/Onboarding";
+import { onboardingQuestion3Schema } from "@/lib/validations";
+import { useToast } from "@/hooks/use-toast";
 
 interface Question3Props {
   data: OnboardingData;
@@ -14,6 +16,8 @@ interface Question3Props {
 }
 
 const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
+  const { toast } = useToast();
+
   const smokingTypes = [
     { id: "cigarro-industrializado", label: "Cigarro industrializado" },
     { id: "tabaco-enrolado", label: "Tabaco enrolado" },
@@ -30,6 +34,25 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
       : currentTypes.filter(id => id !== typeId);
     
     updateData({ smokingTypes: updatedTypes });
+  };
+
+  const handleNext = () => {
+    // Validate before proceeding
+    const validation = onboardingQuestion3Schema.safeParse({
+      smokingTypes: data.smokingTypes,
+    });
+
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast({
+        title: "Erro de validação",
+        description: firstError.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    onNext();
   };
 
   const canProceed = data.smokingTypes && data.smokingTypes.length > 0;
@@ -87,7 +110,7 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
                 Voltar
               </Button>
               <Button 
-                onClick={onNext} 
+                onClick={handleNext} 
                 disabled={!canProceed}
                 className="flex-1 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
               >

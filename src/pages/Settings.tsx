@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { passwordChangeSchema, emailChangeSchema, displayNameUpdateSchema } from "@/lib/validations";
 
 const Settings = () => {
   const { user, signOut, updatePassword, updateEmail } = useAuth();
@@ -37,19 +38,13 @@ const Settings = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
+    // Validate input
+    const validation = passwordChangeSchema.safeParse(passwordData);
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
       toast({
-        title: "Erro",
-        description: "As senhas não coincidem",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (passwordData.newPassword.length < 6) {
-      toast({
-        title: "Erro",
-        description: "A senha deve ter no mínimo 6 caracteres",
+        title: "Erro de validação",
+        description: firstError.message,
         variant: "destructive"
       });
       return;
@@ -63,6 +58,19 @@ const Settings = () => {
 
   const handleEmailChange = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate input
+    const validation = emailChangeSchema.safeParse(emailData);
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast({
+        title: "Erro de validação",
+        description: firstError.message,
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsLoading(true);
     await updateEmail(emailData.newEmail);
     setEmailData({ newEmail: "" });
@@ -71,6 +79,19 @@ const Settings = () => {
 
   const handleDisplayNameChange = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate input
+    const validation = displayNameUpdateSchema.safeParse(displayNameData);
+    if (!validation.success) {
+      const firstError = validation.error.errors[0];
+      toast({
+        title: "Erro de validação",
+        description: firstError.message,
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     const { error } = await supabase
@@ -153,7 +174,7 @@ const Settings = () => {
                           <Input
                             id="newPassword"
                             type="password"
-                            placeholder="••••••••"
+                            placeholder="Mínimo 12 caracteres com maiúscula, minúscula, número e especial"
                             className="pl-10"
                             value={passwordData.newPassword}
                             onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
