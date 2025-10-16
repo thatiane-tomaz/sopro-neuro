@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, Lock, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const Login = () => {
@@ -15,9 +16,34 @@ const Login = () => {
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "" });
   const { user, signIn, signUp, signInWithGoogle } = useAuth();
 
-  // Redirect if already logged in
+  // Check if user has completed onboarding
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      if (!user) return;
+
+      const { data: onboardingData } = await supabase
+        .from('onboarding_responses')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (onboardingData) {
+        // User completed onboarding, go to dashboard
+        window.location.href = "/dashboard";
+      } else {
+        // User needs to complete onboarding
+        window.location.href = "/onboarding";
+      }
+    };
+
+    checkOnboarding();
+  }, [user]);
+
+  // Show loading while checking
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+      <div className="text-white">Carregando...</div>
+    </div>;
   }
 
   const handleLogin = async (e: React.FormEvent) => {
