@@ -14,7 +14,7 @@ const Landing = () => {
   }, [navigate]);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-primary via-primary-dark to-accent flex items-center justify-center relative overflow-hidden">
+    <main className="min-h-screen bg-gradient-hero flex items-center justify-center relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-20 left-20 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" />

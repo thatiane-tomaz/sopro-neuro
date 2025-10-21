@@ -48,7 +48,7 @@ All colors MUST be HSL.
 
     /* Gradients sutis */
     --gradient-primary: linear-gradient(135deg, hsl(210 40% 45%), hsl(215 15% 88%));
-    --gradient-hero: linear-gradient(135deg, hsl(210 50% 40%), hsl(240 30% 50%), hsl(270 20% 65%));
+    --gradient-hero: linear-gradient(135deg, hsl(210 45% 55%), hsl(240 35% 65%), hsl(270 25% 75%));
     --gradient-wellness: linear-gradient(180deg, hsl(210 30% 75%), hsl(215 20% 94%));
     --gradient-transformation: linear-gradient(45deg, hsl(270 20% 65%), hsl(270 15% 80%));
 
