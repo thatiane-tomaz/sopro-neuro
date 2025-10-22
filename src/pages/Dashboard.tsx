@@ -371,10 +371,37 @@ const Dashboard = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className={`text-sm font-semibold mb-1 ${isPhase1Completed ? 'text-muted-foreground' : 'text-primary'}`}>
+                      <div className="flex items-center gap-3">
+                        <p className={`text-sm font-semibold ${isPhase1Completed ? 'text-muted-foreground' : 'text-primary'}`}>
                           Fase {phase.phase_number}
                         </p>
+                        
+                        {/* Progress Indicators */}
+                        <div className="flex items-center gap-2">
+                          {/* Dots */}
+                          <div className="flex gap-1">
+                            {phase.days.map((day, idx) => {
+                              const isCompleted = isDayCompleted(day.day_number);
+                              return (
+                                <div
+                                  key={day.id}
+                                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                                    isCompleted 
+                                      ? 'bg-primary scale-110' 
+                                      : 'bg-muted-foreground/20'
+                                  }`}
+                                  title={`Dia ${day.day_number}${isCompleted ? ' - Concluído' : ''}`}
+                                />
+                              );
+                            })}
+                          </div>
+                          
+                          {/* Count */}
+                          <span className={`text-xs font-medium ${isPhase1Completed ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
+                            {phase.days.filter(day => isDayCompleted(day.day_number)).length}/{phase.days.length}
+                          </span>
+                        </div>
+                        
                         {isPhase1Completed && (
                           <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
                             Concluído
