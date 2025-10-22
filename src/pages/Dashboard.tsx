@@ -381,7 +381,8 @@ const Dashboard = () => {
                           {/* Dots */}
                           <div className="flex gap-1">
                             {phase.days.map((day, idx) => {
-                              const isCompleted = isDayCompleted(day.day_number);
+                              // A day is completed if it's before the current day OR if isDayCompleted returns true
+                              const isCompleted = day.day_number < currentDay || isDayCompleted(day.day_number);
                               return (
                                 <div
                                   key={day.id}
@@ -398,7 +399,7 @@ const Dashboard = () => {
                           
                           {/* Count */}
                           <span className={`text-xs font-medium ${isPhase1Completed ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
-                            {phase.days.filter(day => isDayCompleted(day.day_number)).length}/{phase.days.length}
+                            {phase.days.filter(day => day.day_number < currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length}
                           </span>
                         </div>
                         
