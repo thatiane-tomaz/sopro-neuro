@@ -309,11 +309,11 @@ const Login = () => {
         <div className="text-center text-white/60 text-sm">
           <p>Ao continuar, você concorda com nossos</p>
           <p>
-            <a href="#" className="text-accent hover:text-accent-light transition-smooth">
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-light transition-smooth">
               Termos de Uso
             </a>
             {" e "}
-            <a href="#" className="text-accent hover:text-accent-light transition-smooth">
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-light transition-smooth">
               Política de Privacidade
             </a>
           </p>
