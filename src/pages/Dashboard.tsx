@@ -521,36 +521,39 @@ const Dashboard = () => {
                               </h3>
                               
                               <div className="flex gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className={`flex-1 justify-center ${
-                                    !isLocked 
-                                      ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200' 
-                                      : ''
-                                  }`}
-                                  onClick={() => {
-                                    if (!isLocked || isAdmin) {
-                                      handleMediaOpen(day, 'video');
-                                    }
-                                  }}
-                                  disabled={isLocked && !isAdmin}
-                                >
-                                  <PlayCircle className="h-3.5 w-3.5 mr-1.5" />
-                                  <span className="text-xs">
-                                    Vídeo
-                                    {dayContent.video_minutes && (
-                                      <span className="text-[10px] opacity-70 ml-1">
-                                        {dayContent.video_minutes}min
-                                      </span>
-                                    )}
-                                  </span>
-                                </Button>
+                                {/* Show video button only if NOT Phase 2 */}
+                                {phase.phase_number !== 2 && (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className={`flex-1 justify-center ${
+                                      !isLocked 
+                                        ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200' 
+                                        : ''
+                                    }`}
+                                    onClick={() => {
+                                      if (!isLocked || isAdmin) {
+                                        handleMediaOpen(day, 'video');
+                                      }
+                                    }}
+                                    disabled={isLocked && !isAdmin}
+                                  >
+                                    <PlayCircle className="h-3.5 w-3.5 mr-1.5" />
+                                    <span className="text-xs">
+                                      Vídeo
+                                      {dayContent.video_minutes && (
+                                        <span className="text-[10px] opacity-70 ml-1">
+                                          {dayContent.video_minutes}min
+                                        </span>
+                                      )}
+                                    </span>
+                                  </Button>
+                                )}
                                 
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className={`flex-1 justify-center ${
+                                  className={`${phase.phase_number === 2 ? 'w-full' : 'flex-1'} justify-center ${
                                     !isLocked 
                                       ? 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200' 
                                       : ''
