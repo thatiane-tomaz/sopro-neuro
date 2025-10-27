@@ -30,7 +30,7 @@ const Terms = () => {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">2. Descrição do Serviço</h2>
             <p className="mb-4">
-              O Sopro é um programa digital de 21 dias baseado em neurociência e hipnose clínica 
+              O Sopro é um programa digital de 14 dias baseado em neurociência e hipnose clínica 
               para auxiliar pessoas que desejam parar de fumar. O serviço inclui:
             </p>
             <ul className="list-disc pl-6 mb-4 space-y-2">
@@ -60,11 +60,15 @@ const Terms = () => {
             </p>
             <ul className="list-disc pl-6 mb-4 space-y-2">
               <li><strong>Plano Gratuito:</strong> Acesso aos primeiros 2 dias do programa</li>
-              <li><strong>Plano Premium:</strong> Acesso completo aos 21 dias do programa</li>
+              <li><strong>Plano Premium:</strong> Acesso completo aos 14 dias do programa</li>
             </ul>
             <p className="mb-4">
-              Os valores e formas de pagamento são apresentados claramente no momento da contratação. 
-              O cancelamento pode ser realizado a qualquer momento através das configurações da conta.
+              O Plano Premium é cobrado mensalmente. Você paga para usar o serviço e pode cancelar 
+              a qualquer momento através das configurações da conta. Em caso de cancelamento, 
+              você terá direito a continuar com a inscrição ativa até o final do mês pago.
+            </p>
+            <p className="mb-4">
+              Os valores e formas de pagamento são apresentados claramente no momento da contratação.
             </p>
           </section>
 
@@ -136,7 +140,7 @@ const Terms = () => {
             <p className="mb-4">
               Para questões sobre estes Termos de Uso, entre em contato:
             </p>
-            <p className="mb-2">Email: contato@sopro.app</p>
+            <p className="mb-2">Email: sopro@gmail.com</p>
           </section>
         </article>
       </div>

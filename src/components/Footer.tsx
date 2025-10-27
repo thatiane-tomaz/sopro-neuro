@@ -25,7 +25,7 @@ const Footer = () => {
               Política de Privacidade
             </Link>
             <a 
-              href="mailto:contato@sopro.app" 
+              href="mailto:sopro@gmail.com" 
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               Contato
