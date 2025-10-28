@@ -383,15 +383,18 @@ const Dashboard = () => {
                             {phase.days.map((day, idx) => {
                               // A day is completed if it's before the current day OR if isDayCompleted returns true
                               const isCompleted = day.day_number < currentDay || isDayCompleted(day.day_number);
+                              const isCurrent = day.day_number === currentDay;
                               return (
                                 <div
                                   key={day.id}
                                   className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                                     isCompleted 
                                       ? 'bg-primary scale-110' 
+                                      : isCurrent
+                                      ? 'bg-purple-500 scale-110'
                                       : 'bg-muted-foreground/20'
                                   }`}
-                                  title={`Dia ${day.day_number}${isCompleted ? ' - Concluído' : ''}`}
+                                  title={`Dia ${day.day_number}${isCompleted ? ' - Concluído' : isCurrent ? ' - Atual' : ''}`}
                                 />
                               );
                             })}
@@ -399,7 +402,7 @@ const Dashboard = () => {
                           
                           {/* Count */}
                           <span className={`text-xs font-medium ${isPhase1Completed ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
-                            {phase.days.filter(day => day.day_number < currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length}
+                            {phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length}
                           </span>
                         </div>
                         
