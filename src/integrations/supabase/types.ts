@@ -359,6 +359,12 @@ export type Database = {
           updated_at: string
           user_id: string
         }
+        SetofOptions: {
+          from: "*"
+          to: "subscriptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       get_day_completion_time: {
         Args: { p_day: number; p_user_id: string }
