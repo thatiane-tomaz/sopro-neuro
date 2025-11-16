@@ -42,11 +42,11 @@ const Landing = () => {
 
           {/* Headline */}
           <h1 className="text-4xl md:text-6xl font-bold text-navy mb-6 max-w-4xl mx-auto">
-            Liberte-se do Cigarro com o Poder da Hipnose
+            Parar de fumar não precisa ser difícil. O Sopro mostra o caminho.
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Um método científico de 21 dias que combina hipnose e neurociência para te ajudar a parar de fumar definitivamente
+            Um método científico de 14 dias que combina hipnose e neurociência para te ajudar a parar de fumar definitivamente
           </p>
 
           {/* Download buttons */}
@@ -69,15 +69,6 @@ const Landing = () => {
             </Button>
           </div>
 
-          {/* Social proof */}
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-accent text-accent" />
-              ))}
-            </div>
-            <span className="font-medium">Avaliado 5 estrelas por usuários</span>
-          </div>
         </div>
       </section>
 
@@ -88,35 +79,59 @@ const Landing = () => {
             Como Funciona
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Brain className="w-8 h-8 text-white" />
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+              {/* Fase 1 */}
+              <div className="flex-1 text-center relative">
+                <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Brain className="w-10 h-10 text-white" />
+                </div>
+                <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-border/50">
+                  <h3 className="text-lg font-bold text-navy mb-2">Fase 1</h3>
+                  <h4 className="text-base font-semibold text-navy mb-3">Quebre Crenças</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Assista vídeos científicos que revelam a verdade sobre o cigarro e reforce com hipnoses diárias
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-navy mb-3">1. Comece sua Jornada</h3>
-              <p className="text-muted-foreground">
-                Baixe o app e complete um breve questionário para personalizar sua experiência
-              </p>
-            </div>
 
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Headphones className="w-8 h-8 text-white" />
+              {/* Arrow */}
+              <div className="hidden md:block text-navy/30">
+                <TrendingUp className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold text-navy mb-3">2. Sessões Diárias</h3>
-              <p className="text-muted-foreground">
-                Escute áudios de hipnose guiada e assista vídeos educativos todos os dias
-              </p>
-            </div>
 
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-8 h-8 text-white" />
+              {/* Fase 2 */}
+              <div className="flex-1 text-center relative">
+                <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Star className="w-10 h-10 text-white" />
+                </div>
+                <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-border/50">
+                  <h3 className="text-lg font-bold text-navy mb-2">Fase 2</h3>
+                  <h4 className="text-base font-semibold text-navy mb-3">Último Cigarro</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Fume seu último cigarro já mais leve e decidido de que será mais feliz sem ele
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-navy mb-3">3. Transformação</h3>
-              <p className="text-muted-foreground">
-                Em 21 dias, reprograme sua mente e liberte-se do vício do cigarro
-              </p>
+
+              {/* Arrow */}
+              <div className="hidden md:block text-navy/30">
+                <TrendingUp className="w-8 h-8" />
+              </div>
+
+              {/* Fase 3 */}
+              <div className="flex-1 text-center relative">
+                <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Headphones className="w-10 h-10 text-white" />
+                </div>
+                <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-border/50">
+                  <h3 className="text-lg font-bold text-navy mb-2">Fase 3</h3>
+                  <h4 className="text-base font-semibold text-navy mb-3">Liberdade Total</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Passe pela abstinência com hipnoses que te ajudam a ser mais leve durante todo o processo
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
