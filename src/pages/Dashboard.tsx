@@ -509,12 +509,12 @@ const Dashboard = () => {
 
                             <div className={`p-5 ${isLocked ? 'pointer-events-none' : ''}`}>
                               <div className="flex items-center gap-2 mb-2">
-                                <h3 className="text-lg font-bold text-purple-900 dark:text-purple-100 leading-tight tracking-tight flex-1">
-                                  {dayContent.title}
-                                </h3>
                                 <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-bold flex-shrink-0">
                                   {day}
                                 </span>
+                                <h3 className="text-lg font-bold text-purple-900 dark:text-purple-100 leading-tight tracking-tight flex-1">
+                                  {dayContent.title}
+                                </h3>
                                 {isCompleted && (
                                   <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs flex-shrink-0">
                                     Concluído
