@@ -10,7 +10,7 @@ import { useDailyContent } from '@/hooks/useDailyContent';
 import { useTriggersContent } from '@/hooks/useTriggersContent';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
 import { supabase } from '@/integrations/supabase/client';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -372,7 +372,8 @@ const Dashboard = () => {
             {/* Savings Display */}
             {calculateSavings !== null && (
               <div className="bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-lg p-4 border border-accent/10">
-                <p className="text-sm text-foreground/80 text-center">
+                <p className="text-sm text-foreground/80 text-center flex items-center justify-center gap-2">
+                  <Coins className="w-4 h-4 text-accent" />
                   Você já economizou cerca de <span className="font-semibold text-accent">R${calculateSavings}</span>
                 </p>
               </div>
