@@ -41,18 +41,13 @@ const Landing = () => {
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl md:text-6xl font-bold text-navy mb-6 max-w-4xl mx-auto">
-            Parar de fumar pode ser muito mais simples.<br />
-            Descubra seu novo caminho com o Sopro.
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto">
+            <span className="text-navy">Parar de fumar pode ser mais leve.</span><br />
+            <span className="text-[hsl(270,20%,65%)]">Sopro te mostra o caminho.</span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Um método científico de 14 dias que combina <span className="text-[hsl(270,20%,65%)] font-semibold">neurociência e hipnose</span> para te ajudar a parar de fumar definitivamente
-          </p>
-
-          {/* Pricing info */}
-          <p className="text-base md:text-lg text-navy font-medium mb-6">
-            Apenas <span className="text-[hsl(270,20%,65%)] font-bold">R$59</span>
           </p>
 
           {/* Download buttons */}
