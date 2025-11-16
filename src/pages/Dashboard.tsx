@@ -375,7 +375,7 @@ const Dashboard = () => {
             {/* Welcome Title */}
             {dailyContent.find(d => d.day_number === currentDay)?.welcome_title && (
               <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-lg p-4 border border-primary/10">
-                <p className="text-sm text-foreground/80 text-center leading-relaxed">
+                <p className="text-sm text-foreground/80 text-center leading-relaxed whitespace-pre-line">
                   {dailyContent.find(d => d.day_number === currentDay)?.welcome_title}
                 </p>
               </div>
