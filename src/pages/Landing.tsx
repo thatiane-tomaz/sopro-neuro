@@ -22,13 +22,17 @@ const Landing = () => {
         {/* Background gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/40 to-background/80 z-10" />
         
-        {/* Background image with ocean waves */}
+        {/* Background video with ocean waves */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src={oceanWaves} 
-            alt="Ondas suaves do mar" 
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
             className="w-full h-full object-cover"
-          />
+          >
+            <source src="/videos/ocean-waves-calm.mp4" type="video/mp4" />
+          </video>
         </div>
 
         <div className="relative z-20 container mx-auto px-4 py-20 text-center">
