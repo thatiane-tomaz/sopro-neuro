@@ -684,7 +684,7 @@ const Dashboard = () => {
               <div>
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-lg font-bold text-foreground">Apoio para ex fumantes</h3>
+                    <h3 className="text-lg font-bold text-foreground">Controle dos Gatilhos</h3>
                     {currentDay < 8 && (
                       <Badge variant="secondary" className="text-xs">
                         <Lock className="w-3 h-3 mr-1" />
@@ -693,7 +693,7 @@ const Dashboard = () => {
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Hipnoses especiais para o momento após parar completamente
+                    Hipnoses rápidas para estabilizar mente e corpo após parar de fumar
                   </p>
                 </div>
                 
