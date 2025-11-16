@@ -575,7 +575,7 @@ const Dashboard = () => {
                                 <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-bold flex-shrink-0">
                                   {day}
                                 </span>
-                                <h3 className="text-base font-bold text-purple-900 dark:text-purple-100 leading-tight tracking-tight flex-1">
+                                <h3 className="text-base font-bold text-navy dark:text-primary-light leading-tight tracking-tight flex-1">
                                   {dayContent.title}
                                 </h3>
                                 {isCompleted && (
