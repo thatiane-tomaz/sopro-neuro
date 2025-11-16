@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Sopro Design System - Blue & Purple Wellness
-Colors: Azul como base, Rosa/Roxo como acentos
+/* Sopro Design System - Blue Energy & Vibrant Accents
+Colors: Azul vibrante como base, Azul claro/Ciano como acentos
 All colors MUST be HSL.
 */
 
@@ -18,21 +18,21 @@ All colors MUST be HSL.
     --popover: 210 40% 98%;
     --popover-foreground: 215 25% 27%;
 
-    /* Azul suave como cor primária */
-    --primary: 210 40% 45%;
-    --primary-foreground: 0 0% 98%;
-    --primary-light: 210 35% 65%;
-    --primary-glow: 210 30% 75%;
+    /* Azul vibrante como cor primária */
+    --primary: 210 85% 48%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 210 80% 60%;
+    --primary-glow: 200 70% 65%;
 
     /* Azul acinzentado como secundária */
     --secondary: 215 15% 88%;
     --secondary-foreground: 215 25% 27%;
     --secondary-light: 215 20% 94%;
 
-    /* Roxo suave como accent */
-    --accent: 270 20% 65%;
-    --accent-foreground: 215 25% 27%;
-    --accent-light: 270 15% 80%;
+    /* Ciano/Azul claro como accent */
+    --accent: 195 75% 55%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 195 65% 70%;
 
     --muted: 210 15% 95%;
     --muted-foreground: 215 15% 50%;
@@ -46,16 +46,16 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
-    /* Gradients sutis */
-    --gradient-primary: linear-gradient(135deg, hsl(210 40% 45%), hsl(215 15% 88%));
-    --gradient-hero: linear-gradient(135deg, hsl(210 40% 70%), hsl(240 30% 75%), hsl(270 20% 80%));
-    --gradient-wellness: linear-gradient(180deg, hsl(210 30% 75%), hsl(215 20% 94%));
-    --gradient-transformation: linear-gradient(45deg, hsl(270 20% 65%), hsl(270 15% 80%));
+    /* Gradients vibrantes */
+    --gradient-primary: linear-gradient(135deg, hsl(210 85% 48%), hsl(200 70% 65%));
+    --gradient-hero: linear-gradient(135deg, hsl(210 80% 60%), hsl(200 75% 65%), hsl(195 75% 55%));
+    --gradient-wellness: linear-gradient(180deg, hsl(200 70% 65%), hsl(195 65% 70%));
+    --gradient-transformation: linear-gradient(45deg, hsl(195 75% 55%), hsl(195 65% 70%));
 
-    /* Shadows suaves */
-    --shadow-primary: 0 4px 20px -8px hsl(210 40% 45% / 0.15);
-    --shadow-wellness: 0 3px 15px -5px hsl(210 35% 65% / 0.2);
-    --shadow-glow: 0 0 30px hsl(270 20% 65% / 0.15);
+    /* Shadows com azul vibrante */
+    --shadow-primary: 0 4px 20px -8px hsl(210 85% 48% / 0.25);
+    --shadow-wellness: 0 3px 15px -5px hsl(200 70% 65% / 0.3);
+    --shadow-glow: 0 0 30px hsl(195 75% 55% / 0.25);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
