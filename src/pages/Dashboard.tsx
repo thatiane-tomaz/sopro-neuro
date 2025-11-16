@@ -112,7 +112,11 @@ const Dashboard = () => {
     const dailyCost = weeklyCostNum / 7;
     const totalSaved = Math.ceil(dailyCost * daysInPhase2);
     
-    return totalSaved;
+    return {
+      current: totalSaved,
+      sixMonths: Math.ceil(weeklyCostNum * 26),
+      oneYear: Math.ceil(weeklyCostNum * 52)
+    };
   }, [onboardingData, currentDay]);
 
   // Group daily content by phases
@@ -379,11 +383,25 @@ const Dashboard = () => {
             
             {/* Savings Display */}
             {calculateSavings !== null && (
-              <div className="bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-lg p-4 border border-accent/10">
-                <p className="text-sm text-foreground/80 text-center flex items-center justify-center gap-2">
-                  <Coins className="w-4 h-4 text-accent" />
-                  Você já economizou cerca de <span className="font-semibold text-accent">R${calculateSavings}</span>
-                </p>
+              <div className="space-y-3">
+                <div className="bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-lg p-4 border border-accent/10">
+                  <p className="text-sm text-foreground/80 text-center flex items-center justify-center gap-2">
+                    <Coins className="w-4 h-4 text-accent" />
+                    Você já economizou cerca de <span className="font-semibold text-accent">R${calculateSavings.current}</span>
+                  </p>
+                </div>
+                
+                {/* Savings Projection */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-card rounded-lg p-3 border border-border/50">
+                    <p className="text-xs text-muted-foreground mb-1">Em 6 meses</p>
+                    <p className="text-lg font-semibold text-primary">R${calculateSavings.sixMonths}</p>
+                  </div>
+                  <div className="bg-card rounded-lg p-3 border border-border/50">
+                    <p className="text-xs text-muted-foreground mb-1">Em 1 ano</p>
+                    <p className="text-lg font-semibold text-primary">R${calculateSavings.oneYear}</p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
