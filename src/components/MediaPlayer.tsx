@@ -119,23 +119,14 @@ const MediaPlayer = ({
         </CardHeader>
         <CardContent className="space-y-4">
           {contentType === 'hypnosis' && (
-            <>
-              <div className="relative w-full aspect-video rounded-lg overflow-hidden">
-                <img 
-                  src={hypnosisImage} 
-                  alt="Homem relaxando com fones de ouvido" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="bg-muted/50 p-3 rounded-lg border border-border/50">
-                <p className="text-sm font-medium text-foreground mb-2">Dicas:</p>
-                <ul className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
-                  <li>Utilize fones de ouvido</li>
-                  <li>Deite-se ou sente-se em um local em que possa soltar seu corpo e cabeça completamente</li>
-                  <li>Escolha um local silencioso em que não será interrompido</li>
-                </ul>
-              </div>
-            </>
+            <div className="bg-muted/50 p-3 rounded-lg border border-border/50">
+              <p className="text-sm font-medium text-foreground mb-2">Dicas:</p>
+              <ul className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
+                <li>Utilize fones de ouvido</li>
+                <li>Deite-se ou sente-se em um local em que possa soltar seu corpo e cabeça completamente</li>
+                <li>Escolha um local silencioso em que não será interrompido</li>
+              </ul>
+            </div>
           )}
           {description && (
             <p className="text-sm text-muted-foreground">{description}</p>
@@ -172,11 +163,10 @@ const MediaPlayer = ({
                 Seu navegador não suporta vídeo HTML5.
               </video>
             ) : (
-              <div className="p-8">
+              <div className="relative">
                 <audio
                   ref={mediaRef as React.RefObject<HTMLAudioElement>}
-                  className="w-full"
-                  controls
+                  className="hidden"
                   crossOrigin="anonymous"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
@@ -189,35 +179,35 @@ const MediaPlayer = ({
                   {fileUrl && <source src={fileUrl} type="audio/mpeg" />}
                   Seu navegador não suporta áudio HTML5.
                 </audio>
-                <div className="mt-4 text-center">
-                  <div className="w-16 h-16 mx-auto rounded-full bg-accent flex items-center justify-center mb-4">
-                    <Volume2 className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {duration > 0 && (
-                      <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
-                    )}
+                <div className="relative aspect-video w-full">
+                  <img 
+                    src={hypnosisImage} 
+                    alt="Homem relaxando com fones de ouvido" 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                    <Button 
+                      onClick={handlePlayPause} 
+                      size="lg"
+                      className="rounded-full w-16 h-16 shadow-lg hover:scale-110 transition-transform"
+                    >
+                      {isPlaying ? (
+                        <Pause className="h-8 w-8" />
+                      ) : (
+                        <Play className="h-8 w-8" />
+                      )}
+                    </Button>
                   </div>
                 </div>
+                {duration > 0 && (
+                  <div className="p-4 text-center text-sm text-muted-foreground">
+                    <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
-          <div className="flex justify-center space-x-4">
-            <Button onClick={handlePlayPause} className="px-8">
-              {isPlaying ? (
-                <>
-                  <Pause className="h-4 w-4 mr-2" />
-                  Pausar
-                </>
-              ) : (
-                <>
-                  <Play className="h-4 w-4 mr-2" />
-                  {contentType === 'video' ? 'Assistir' : 'Ouvir'}
-                </>
-              )}
-            </Button>
-          </div>
 
         </CardContent>
       </Card>
