@@ -42,30 +42,36 @@ const Landing = () => {
 
           {/* Headline */}
           <h1 className="text-4xl md:text-6xl font-bold text-navy mb-6 max-w-4xl mx-auto">
-            Parar de fumar não precisa ser difícil. O Sopro mostra o caminho.
+            Parar de fumar pode ser muito mais simples.<br />
+            Descubra seu novo caminho com o Sopro.
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Um método científico de 14 dias que combina hipnose e neurociência para te ajudar a parar de fumar definitivamente
+            Um método científico de 14 dias que combina <span className="text-[hsl(270,20%,65%)] font-semibold">neurociência e hipnose</span> para te ajudar a parar de fumar definitivamente
+          </p>
+
+          {/* Pricing info */}
+          <p className="text-base md:text-lg text-navy font-medium mb-6">
+            Teste gratuitamente e continue por apenas <span className="text-[hsl(270,20%,65%)] font-bold">R$59</span>
           </p>
 
           {/* Download buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-row gap-3 justify-center items-center mb-12">
             <Button 
-              size="lg" 
+              size="default" 
               onClick={handleAppStore}
-              className="bg-navy hover:bg-navy/90 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all"
+              className="bg-navy hover:bg-navy/90 text-white shadow-lg hover:shadow-xl transition-all"
             >
-              <Apple className="mr-2 h-6 w-6" />
-              Baixar na App Store
+              <Apple className="mr-2 h-5 w-5" />
+              App Store
             </Button>
             <Button 
-              size="lg" 
+              size="default" 
               onClick={handlePlayStore}
-              className="bg-navy hover:bg-navy/90 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all"
+              className="bg-navy hover:bg-navy/90 text-white shadow-lg hover:shadow-xl transition-all"
             >
-              <PlayCircle className="mr-2 h-6 w-6" />
-              Baixar no Google Play
+              <PlayCircle className="mr-2 h-5 w-5" />
+              Google Play
             </Button>
           </div>
 
