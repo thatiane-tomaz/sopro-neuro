@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Apple, PlayCircle, Star, Brain, Sparkles, TrendingUp } from "lucide-react";
+import { Apple, PlayCircle, Star, Brain, Heart, TrendingUp } from "lucide-react";
 import soproLogo from "@/assets/sopro-logo.png";
 import heroImage from "@/assets/hero-sopro.jpg";
 import oceanWaves from "@/assets/ocean-waves-bg.jpg";
@@ -77,9 +77,18 @@ const Landing = () => {
       {/* How it Works */}
       <section className="py-20 bg-card/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-navy text-center mb-16">
-            Como Funciona
+          <h2 className="text-3xl md:text-4xl font-bold text-navy text-center mb-4">
+            Com Sopro o caminho será guiado, mais simples e leve
           </h2>
+          
+          <div className="flex gap-3 justify-center mb-16">
+            <Button variant="outline" className="rounded-full">
+              Neurociência
+            </Button>
+            <Button variant="outline" className="rounded-full">
+              Hipnoterapia
+            </Button>
+          </div>
 
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
@@ -89,8 +98,8 @@ const Landing = () => {
                   <Brain className="w-10 h-10 text-white" />
                 </div>
                 <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-border/50">
-                  <h3 className="text-lg font-bold text-navy mb-2">7 dias</h3>
-                  <h4 className="text-base font-semibold text-navy mb-3">Quebre Crenças</h4>
+                  <h3 className="text-lg font-bold text-navy mb-1">Quebre Crenças</h3>
+                  <p className="text-xs text-muted-foreground/70 mb-3">7 dias</p>
                   <p className="text-sm text-muted-foreground">
                     Assista vídeos científicos que revelam a verdade sobre o cigarro e reforce com hipnoses diárias
                   </p>
@@ -108,7 +117,7 @@ const Landing = () => {
                   <Star className="w-10 h-10 text-white" />
                 </div>
                 <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-border/50">
-                  <h4 className="text-base font-semibold text-navy mb-3">Último Cigarro</h4>
+                  <h3 className="text-lg font-bold text-navy mb-3">Último Cigarro</h3>
                   <p className="text-sm text-muted-foreground">
                     Fume seu último cigarro já mais leve e decidido de que será mais feliz sem ele
                   </p>
@@ -123,11 +132,11 @@ const Landing = () => {
               {/* Terceira etapa */}
               <div className="flex-1 text-center relative">
                 <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Sparkles className="w-10 h-10 text-white" />
+                  <Heart className="w-10 h-10 text-white" />
                 </div>
                 <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-border/50">
-                  <h3 className="text-lg font-bold text-navy mb-2">7 dias</h3>
-                  <h4 className="text-base font-semibold text-navy mb-3">Liberdade Total</h4>
+                  <h3 className="text-lg font-bold text-navy mb-1">Liberdade Total</h3>
+                  <p className="text-xs text-muted-foreground/70 mb-3">7 dias</p>
                   <p className="text-sm text-muted-foreground">
                     Passe pela abstinência com hipnoses que te ajudam a ser mais leve durante todo o processo
                   </p>
