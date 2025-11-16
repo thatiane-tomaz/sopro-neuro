@@ -147,42 +147,52 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Benefits */}
+      {/* Hypnotherapy Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-navy text-center mb-16">
-            Por Que Escolher o Sopro?
+          <h2 className="text-3xl md:text-4xl font-bold text-navy text-center mb-4">
+            Hipnoterapia - o jeito mais leve de reprogramar seus hábitos.
           </h2>
+          
+          <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto">
+            Um estado de foco relaxado onde seu cérebro aprende novos caminhos com muito mais facilidade.
+          </p>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-navy mb-3">✨ Método Científico</h3>
+          <div className="max-w-3xl mx-auto space-y-4 mb-12">
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-4 shadow-md">
               <p className="text-muted-foreground">
-                Baseado em técnicas comprovadas de hipnose e neurociência
+                <span className="font-bold text-navy">Reduz fissura e ansiedade</span> de forma natural.
               </p>
             </div>
 
-            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-navy mb-3">🎯 Personalizado</h3>
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-4 shadow-md">
               <p className="text-muted-foreground">
-                Conteúdo adaptado ao seu perfil e necessidades específicas
+                Enfraquece gatilhos automáticos como café, estresse e rotina.
               </p>
             </div>
 
-            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-navy mb-3">📱 Prático</h3>
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-4 shadow-md">
               <p className="text-muted-foreground">
-                Sessões curtas que cabem na sua rotina diária
+                <span className="font-bold text-navy">Aumenta o autocontrole</span> sem exigir força de vontade.
               </p>
             </div>
 
-            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-2xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-navy mb-3">💰 Economia Garantida</h3>
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-4 shadow-md">
               <p className="text-muted-foreground">
-                Acompanhe quanto você está economizando sem gastar com cigarros
+                <span className="font-bold text-navy">Instala uma nova identidade</span>, mais livre e estável.
+              </p>
+            </div>
+
+            <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-4 shadow-md">
+              <p className="text-muted-foreground">
+                <span className="font-bold text-navy">Facilita o processo de parar de fumar</span>, com leveza.
               </p>
             </div>
           </div>
+
+          <p className="text-xl font-semibold text-navy text-center">
+            Com a hipnoterapia do Sopro, você não luta — você transforma.
+          </p>
         </div>
       </section>
 
