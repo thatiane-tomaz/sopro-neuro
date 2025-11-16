@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Apple, PlayCircle, Star, Brain, Headphones, TrendingUp } from "lucide-react";
+import { Apple, PlayCircle, Star, Brain, Sparkles, TrendingUp } from "lucide-react";
 import soproLogo from "@/assets/sopro-logo.png";
 import heroImage from "@/assets/hero-sopro.jpg";
 import oceanWaves from "@/assets/ocean-waves-bg.jpg";
@@ -83,13 +83,13 @@ const Landing = () => {
 
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              {/* Fase 1 */}
+              {/* Primeira etapa */}
               <div className="flex-1 text-center relative">
                 <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Brain className="w-10 h-10 text-white" />
                 </div>
                 <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-border/50">
-                  <h3 className="text-lg font-bold text-navy mb-2">Fase 1</h3>
+                  <h3 className="text-lg font-bold text-navy mb-2">7 dias</h3>
                   <h4 className="text-base font-semibold text-navy mb-3">Quebre Crenças</h4>
                   <p className="text-sm text-muted-foreground">
                     Assista vídeos científicos que revelam a verdade sobre o cigarro e reforce com hipnoses diárias
@@ -102,13 +102,12 @@ const Landing = () => {
                 <TrendingUp className="w-8 h-8" />
               </div>
 
-              {/* Fase 2 */}
+              {/* Segunda etapa */}
               <div className="flex-1 text-center relative">
                 <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <Star className="w-10 h-10 text-white" />
                 </div>
                 <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-border/50">
-                  <h3 className="text-lg font-bold text-navy mb-2">Fase 2</h3>
                   <h4 className="text-base font-semibold text-navy mb-3">Último Cigarro</h4>
                   <p className="text-sm text-muted-foreground">
                     Fume seu último cigarro já mais leve e decidido de que será mais feliz sem ele
@@ -121,13 +120,13 @@ const Landing = () => {
                 <TrendingUp className="w-8 h-8" />
               </div>
 
-              {/* Fase 3 */}
+              {/* Terceira etapa */}
               <div className="flex-1 text-center relative">
                 <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Headphones className="w-10 h-10 text-white" />
+                  <Sparkles className="w-10 h-10 text-white" />
                 </div>
                 <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-md border border-border/50">
-                  <h3 className="text-lg font-bold text-navy mb-2">Fase 3</h3>
+                  <h3 className="text-lg font-bold text-navy mb-2">7 dias</h3>
                   <h4 className="text-base font-semibold text-navy mb-3">Liberdade Total</h4>
                   <p className="text-sm text-muted-foreground">
                     Passe pela abstinência com hipnoses que te ajudam a ser mais leve durante todo o processo
