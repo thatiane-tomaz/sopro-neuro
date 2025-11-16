@@ -373,7 +373,7 @@ const Dashboard = () => {
             {calculateSavings !== null && (
               <div className="bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-lg p-4 border border-accent/10">
                 <p className="text-sm text-foreground/80 text-center">
-                  Você já economizou aproximadamente <span className="font-semibold text-accent">R${calculateSavings}</span>
+                  Você já economizou cerca de <span className="font-semibold text-accent">R${calculateSavings}</span>
                 </p>
               </div>
             )}
