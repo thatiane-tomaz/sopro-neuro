@@ -636,12 +636,6 @@ const Dashboard = () => {
             <div className="space-y-6">
               {/* Seção 1 - Sempre disponível */}
               <div>
-                <div className="mb-3">
-                  <p className="text-sm text-muted-foreground">
-                    Apoio para quando precisar
-                  </p>
-                </div>
-                
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {triggers?.filter(t => t.section === 'initial').map((trigger) => (
                     <Card
@@ -690,7 +684,7 @@ const Dashboard = () => {
               <div>
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-lg font-bold text-foreground">Pós Último Cigarro</h3>
+                    <h3 className="text-lg font-bold text-foreground">Apoio para ex fumantes</h3>
                     {currentDay < 8 && (
                       <Badge variant="secondary" className="text-xs">
                         <Lock className="w-3 h-3 mr-1" />
