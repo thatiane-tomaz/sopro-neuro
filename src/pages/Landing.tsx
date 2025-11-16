@@ -29,7 +29,15 @@ const Landing = () => {
             loop 
             muted 
             playsInline
+            preload="auto"
+            disablePictureInPicture
             className="w-full h-full object-cover"
+            onLoadedData={(e) => {
+              const video = e.target as HTMLVideoElement;
+              video.play().catch(() => {
+                console.log('Autoplay prevented, video will start when user interacts');
+              });
+            }}
           >
             <source src="/videos/ocean-waves-calm.mp4" type="video/mp4" />
           </video>
