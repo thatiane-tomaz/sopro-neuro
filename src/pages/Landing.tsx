@@ -52,7 +52,7 @@ const Landing = () => {
 
           {/* Pricing info */}
           <p className="text-base md:text-lg text-navy font-medium mb-6">
-            Teste gratuitamente e continue por apenas <span className="text-[hsl(270,20%,65%)] font-bold">R$59</span>
+            Apenas <span className="text-[hsl(270,20%,65%)] font-bold">R$59</span>
           </p>
 
           {/* Download buttons */}
