@@ -49,10 +49,10 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 2 de 4</span>
-            <span>50%</span>
+            <span>Pergunta 2 de 5</span>
+            <span>40%</span>
           </div>
-          <Progress value={50} className="h-2" />
+          <Progress value={40} className="h-2" />
         </div>
 
         {/* Question Card */}
@@ -66,9 +66,15 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
             <RadioGroup value={data.smokingFrequency} onValueChange={handleSelection}>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
+                  <RadioGroupItem value="more-than-10" id="more-than-10" />
+                  <Label htmlFor="more-than-10" className="flex-1 cursor-pointer">
+                    Mais de 10 vezes por dia
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
                   <RadioGroupItem value="daily" id="daily" />
                   <Label htmlFor="daily" className="flex-1 cursor-pointer">
-                    Mais de 5 vezes por dia
+                    Entre 5 e 10 vezes por dia
                   </Label>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
