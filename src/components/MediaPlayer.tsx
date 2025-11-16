@@ -117,6 +117,16 @@ const MediaPlayer = ({
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
+          {contentType === 'hypnosis' && (
+            <div className="bg-muted/50 p-3 rounded-lg border border-border/50">
+              <p className="text-sm font-medium text-foreground mb-2">Dicas:</p>
+              <ul className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
+                <li>Utilize fones de ouvido</li>
+                <li>Deite-se ou sente-se em um local em que possa soltar seu corpo e cabeça completamente</li>
+                <li>Escolha um local silencioso em que não será interrompido</li>
+              </ul>
+            </div>
+          )}
           {description && (
             <p className="text-sm text-muted-foreground">{description}</p>
           )}
