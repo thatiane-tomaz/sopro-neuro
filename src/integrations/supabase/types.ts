@@ -132,6 +132,7 @@ export type Database = {
           smoking_reasons: string[] | null
           smoking_types: string[] | null
           user_id: string
+          weekly_cost: string | null
         }
         Insert: {
           age?: string | null
@@ -142,6 +143,7 @@ export type Database = {
           smoking_reasons?: string[] | null
           smoking_types?: string[] | null
           user_id: string
+          weekly_cost?: string | null
         }
         Update: {
           age?: string | null
@@ -152,6 +154,7 @@ export type Database = {
           smoking_reasons?: string[] | null
           smoking_types?: string[] | null
           user_id?: string
+          weekly_cost?: string | null
         }
         Relationships: []
       }
