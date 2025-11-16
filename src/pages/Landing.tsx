@@ -43,12 +43,12 @@ const Landing = () => {
 
           {/* Headline */}
           <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto">
-            <span className="text-white">Parar de fumar pode ser mais leve.</span><br />
-            <span className="text-white/90">Sopro te mostra o caminho.</span>
+            <span className="text-white drop-shadow-lg">Parar de fumar pode ser mais leve.</span><br />
+            <span className="text-cyan-300 drop-shadow-lg">Sopro te mostra o caminho.</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-            Um método científico de 14 dias que combina <span className="text-white font-semibold">neurociência e hipnose</span> para te ajudar a parar de fumar definitivamente
+          <p className="text-lg md:text-xl text-blue-100 mb-8 max-w-2xl mx-auto drop-shadow-md">
+            Um método científico de 14 dias que combina <span className="text-cyan-200 font-semibold">neurociência e hipnose</span> para te ajudar a parar de fumar definitivamente
           </p>
 
           {/* Download buttons */}
