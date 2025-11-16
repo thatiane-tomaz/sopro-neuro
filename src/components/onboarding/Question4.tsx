@@ -11,11 +11,11 @@ import { useToast } from "@/hooks/use-toast";
 interface Question4Props {
   data: OnboardingData;
   updateData: (data: Partial<OnboardingData>) => void;
-  onFinish: () => void;
+  onNext: () => void;
   onPrev: () => void;
 }
 
-const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
+const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
   const { toast } = useToast();
 
   const reasons = [
@@ -36,8 +36,8 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
     updateData({ smokingReasons: updatedReasons });
   };
 
-  const handleFinish = () => {
-    // Validate before finishing
+  const handleNext = () => {
+    // Validate before proceeding
     const validation = onboardingQuestion4Schema.safeParse({
       smokingReasons: data.smokingReasons,
     });
@@ -52,7 +52,7 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
       return;
     }
 
-    onFinish();
+    onNext();
   };
 
   const canProceed = data.smokingReasons && data.smokingReasons.length > 0;
@@ -63,10 +63,10 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 4 de 4</span>
-            <span>100%</span>
+            <span>Pergunta 4 de 5</span>
+            <span>80%</span>
           </div>
-          <Progress value={100} className="h-2" />
+          <Progress value={80} className="h-2" />
         </div>
 
         {/* Question Card */}
@@ -110,12 +110,11 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
                 Voltar
               </Button>
               <Button 
-                onClick={handleFinish} 
+                onClick={handleNext} 
                 disabled={!canProceed}
                 className="flex-1 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
               >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Finalizar
+                Próximo
               </Button>
             </div>
           </CardContent>
