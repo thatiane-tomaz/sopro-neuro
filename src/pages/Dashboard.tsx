@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
 import { useTriggersContent } from '@/hooks/useTriggersContent';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
 import { supabase } from '@/integrations/supabase/client';
 import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -75,6 +76,7 @@ const Dashboard = () => {
   const { data: phases, isLoading: phasesLoading } = usePhases();
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
+  const { data: onboardingData } = useOnboardingData();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
     fileUrl: string;
@@ -98,6 +100,19 @@ const Dashboard = () => {
     : actualDay;
   
   console.log('Current day from tracking:', { actualDay, currentDay, isFree: profile?.subscription_status === 'free', isAdmin, adminSimulatedDay });
+
+  // Calculate savings for phase 2+ (from day 8+)
+  const calculateSavings = useMemo(() => {
+    if (!onboardingData?.weekly_cost || currentDay < 8) return null;
+    
+    // Days in phase 2: currentDay - 7 (since phase 2 starts on day 8)
+    const daysInPhase2 = currentDay - 7;
+    const weeklyCostNum = parseFloat(onboardingData.weekly_cost.replace(',', '.'));
+    const dailyCost = weeklyCostNum / 7;
+    const totalSaved = Math.ceil(dailyCost * daysInPhase2);
+    
+    return totalSaved;
+  }, [onboardingData, currentDay]);
 
   // Group daily content by phases
   const phaseGroups = useMemo(() => {
@@ -339,6 +354,29 @@ const Dashboard = () => {
                 </Button>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Motivational Message for Day 8+ */}
+        {currentDay >= 8 && dailyContent && (
+          <div className="mb-6 space-y-4">
+            {/* Welcome Title */}
+            {dailyContent.find(d => d.day_number === currentDay)?.welcome_title && (
+              <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-lg p-4 border border-primary/10">
+                <p className="text-sm text-foreground/80 text-center leading-relaxed">
+                  {dailyContent.find(d => d.day_number === currentDay)?.welcome_title}
+                </p>
+              </div>
+            )}
+            
+            {/* Savings Display */}
+            {calculateSavings !== null && (
+              <div className="bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-lg p-4 border border-accent/10">
+                <p className="text-sm text-foreground/80 text-center">
+                  Você já economizou aproximadamente <span className="font-semibold text-accent">R${calculateSavings}</span>
+                </p>
+              </div>
+            )}
           </div>
         )}
 
