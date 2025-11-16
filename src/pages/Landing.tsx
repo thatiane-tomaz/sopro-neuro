@@ -241,7 +241,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="py-8 bg-card/30 border-t border-border">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2024 Sopro. Todos os direitos reservados.</p>
+          <p>© 2025 Sopro. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>
