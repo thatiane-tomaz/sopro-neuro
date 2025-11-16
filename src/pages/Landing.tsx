@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Apple, PlayCircle, Star, Brain, Headphones, TrendingUp } from "lucide-react";
 import soproLogo from "@/assets/sopro-logo.png";
@@ -5,6 +6,17 @@ import heroImage from "@/assets/hero-sopro.jpg";
 import oceanWaves from "@/assets/ocean-waves-bg.jpg";
 
 const Landing = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.play().catch((error) => {
+        console.log('Video autoplay failed:', error);
+      });
+    }
+  }, []);
+
   const handleAppStore = () => {
     // TODO: Replace with actual App Store URL when published
     window.open("https://apps.apple.com", "_blank");
@@ -25,21 +37,16 @@ const Landing = () => {
         {/* Background video with ocean waves */}
         <div className="absolute inset-0 z-0">
           <video 
+            ref={videoRef}
             autoPlay 
             loop 
             muted 
             playsInline
             preload="auto"
-            disablePictureInPicture
             className="w-full h-full object-cover"
-            onLoadedData={(e) => {
-              const video = e.target as HTMLVideoElement;
-              video.play().catch(() => {
-                console.log('Autoplay prevented, video will start when user interacts');
-              });
-            }}
           >
             <source src="/videos/ocean-waves-calm.mp4" type="video/mp4" />
+            Seu navegador não suporta vídeos HTML5.
           </video>
         </div>
 
