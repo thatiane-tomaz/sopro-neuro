@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Apple, PlayCircle, Star, Brain, Headphones, TrendingUp } from "lucide-react";
 import soproLogo from "@/assets/sopro-logo.png";
 import heroImage from "@/assets/hero-sopro.jpg";
+import oceanWaves from "@/assets/ocean-waves-bg.jpg";
 
 const Landing = () => {
   const handleAppStore = () => {
@@ -18,19 +19,19 @@ const Landing = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-hero opacity-40" />
+        {/* Background gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/40 to-background/80 z-10" />
         
-        {/* Background image */}
-        <div className="absolute inset-0 opacity-20">
+        {/* Background image with ocean waves */}
+        <div className="absolute inset-0 z-0">
           <img 
-            src={heroImage} 
-            alt="Wellness background" 
+            src={oceanWaves} 
+            alt="Ondas suaves do mar" 
             className="w-full h-full object-cover"
           />
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 py-20 text-center">
+        <div className="relative z-20 container mx-auto px-4 py-20 text-center">
           {/* Logo */}
           <div className="mb-8 flex justify-center">
             <img 
