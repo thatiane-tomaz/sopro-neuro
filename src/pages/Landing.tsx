@@ -171,13 +171,13 @@ const Landing = () => {
 
             <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-4 shadow-md">
               <p className="text-muted-foreground">
-                Enfraquece gatilhos automáticos como café, estresse e rotina.
+                <span className="font-bold text-navy">Enfraquece gatilhos automáticos</span> como café, estresse e rotina.
               </p>
             </div>
 
             <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-4 shadow-md">
               <p className="text-muted-foreground">
-                <span className="font-bold text-navy">Aumenta o autocontrole</span> sem exigir força de vontade.
+                <span className="font-bold text-navy">Aumenta o autocontrole</span> diminuindo a luta interna.
               </p>
             </div>
 
