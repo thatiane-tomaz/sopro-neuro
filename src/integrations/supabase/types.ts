@@ -190,6 +190,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          onesignal_player_id: string | null
           subscription_status: string | null
           updated_at: string
           user_id: string
@@ -198,6 +199,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          onesignal_player_id?: string | null
           subscription_status?: string | null
           updated_at?: string
           user_id: string
@@ -206,6 +208,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          onesignal_player_id?: string | null
           subscription_status?: string | null
           updated_at?: string
           user_id?: string
