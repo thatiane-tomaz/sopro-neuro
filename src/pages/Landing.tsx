@@ -1,4 +1,3 @@
-import { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Apple, PlayCircle, Star, Brain, Headphones, TrendingUp } from "lucide-react";
 import soproLogo from "@/assets/sopro-logo.png";
@@ -6,17 +5,6 @@ import heroImage from "@/assets/hero-sopro.jpg";
 import oceanWaves from "@/assets/ocean-waves-bg.jpg";
 
 const Landing = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      video.play().catch((error) => {
-        console.log('Video autoplay failed:', error);
-      });
-    }
-  }, []);
-
   const handleAppStore = () => {
     // TODO: Replace with actual App Store URL when published
     window.open("https://apps.apple.com", "_blank");
@@ -34,20 +22,13 @@ const Landing = () => {
         {/* Background gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/40 to-background/80 z-10" />
         
-        {/* Background video with ocean waves */}
+        {/* Background image with ocean waves */}
         <div className="absolute inset-0 z-0">
-          <video 
-            ref={videoRef}
-            autoPlay 
-            loop 
-            muted 
-            playsInline
-            preload="auto"
+          <img 
+            src={oceanWaves} 
+            alt="Ondas suaves do mar" 
             className="w-full h-full object-cover"
-          >
-            <source src="https://videos.pexels.com/video-files/3571264/3571264-hd_1920_1080_30fps.mp4" type="video/mp4" />
-            Seu navegador não suporta vídeos HTML5.
-          </video>
+          />
         </div>
 
         <div className="relative z-20 container mx-auto px-4 py-20 text-center">
