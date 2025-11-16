@@ -150,12 +150,16 @@ const Landing = () => {
       {/* Hypnotherapy Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-navy text-center mb-4">
-            Hipnoterapia - o jeito mais leve de reprogramar seus hábitos.
+          <h2 className="text-3xl md:text-4xl font-bold text-navy text-center mb-2">
+            Hipnoterapia
           </h2>
           
+          <p className="text-xl font-semibold text-navy text-center mb-6">
+            O jeito mais leve de reprogramar seus hábitos.
+          </p>
+          
           <p className="text-lg text-muted-foreground text-center mb-12 max-w-3xl mx-auto">
-            Um estado de foco relaxado onde seu cérebro aprende novos caminhos com muito mais facilidade.
+            Um estado de foco e relaxamento profundo, onde seu cérebro aprende novos caminhos com muito mais facilidade.
           </p>
 
           <div className="max-w-3xl mx-auto space-y-4 mb-12">
