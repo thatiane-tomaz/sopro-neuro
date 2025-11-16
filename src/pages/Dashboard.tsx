@@ -585,7 +585,7 @@ const Dashboard = () => {
                                 )}
                               </div>
                               
-                              <div className="flex gap-2">
+                              <div className={`flex gap-2 ${phase.phase_number === 2 ? 'justify-center' : ''}`}>
                                 {/* Show video button only if NOT Phase 2 */}
                                 {phase.phase_number !== 2 && (
                                   <Button
@@ -618,7 +618,7 @@ const Dashboard = () => {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className={`${phase.phase_number === 2 ? 'w-full' : 'flex-1'} justify-center ${
+                                  className={`${phase.phase_number === 2 ? 'w-auto px-6' : 'flex-1'} justify-center ${
                                     !isLocked 
                                       ? 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200' 
                                       : ''
