@@ -20,7 +20,7 @@ const Landing = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/60 via-navy/40 to-background/80 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-navy/70 via-navy/50 to-background z-10" />
         
         {/* Background image with ocean waves */}
         <div className="absolute inset-0 z-0">
@@ -43,12 +43,12 @@ const Landing = () => {
 
           {/* Headline */}
           <h1 className="text-4xl md:text-6xl font-bold mb-6 max-w-4xl mx-auto">
-            <span className="text-navy">Parar de fumar pode ser mais leve.</span><br />
-            <span className="text-[hsl(250,35%,55%)]">Sopro te mostra o caminho.</span>
+            <span className="text-white">Parar de fumar pode ser mais leve.</span><br />
+            <span className="text-white/90">Sopro te mostra o caminho.</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Um método científico de 14 dias que combina <span className="text-[hsl(250,35%,55%)] font-semibold">neurociência e hipnose</span> para te ajudar a parar de fumar definitivamente
+          <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+            Um método científico de 14 dias que combina <span className="text-white font-semibold">neurociência e hipnose</span> para te ajudar a parar de fumar definitivamente
           </p>
 
           {/* Download buttons */}
