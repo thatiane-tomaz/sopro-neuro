@@ -45,7 +45,7 @@ const Landing = () => {
             preload="auto"
             className="w-full h-full object-cover"
           >
-            <source src="/videos/ocean-waves-calm.mp4" type="video/mp4" />
+            <source src="https://videos.pexels.com/video-files/3571264/3571264-hd_1920_1080_30fps.mp4" type="video/mp4" />
             Seu navegador não suporta vídeos HTML5.
           </video>
         </div>
