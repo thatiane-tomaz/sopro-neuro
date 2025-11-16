@@ -375,7 +375,7 @@ const Dashboard = () => {
             {/* Welcome Title */}
             {dailyContent.find(d => d.day_number === currentDay)?.welcome_title && (
               <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-lg p-4 border border-primary/10">
-                <p className="text-sm text-foreground/80 text-center leading-relaxed whitespace-pre-line">
+                <p className="text-sm text-navy font-medium text-center leading-relaxed whitespace-pre-line">
                   {dailyContent.find(d => d.day_number === currentDay)?.welcome_title}
                 </p>
               </div>
@@ -384,20 +384,20 @@ const Dashboard = () => {
             {/* Savings Display */}
             {calculateSavings !== null && (
               <div className="bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-lg p-4 border border-accent/10">
-                <p className="text-sm text-foreground/80 text-center flex items-center justify-center gap-2">
-                  <Coins className="w-4 h-4 text-accent" />
-                  Você já economizou cerca de <span className="font-semibold text-accent">R${calculateSavings.current}</span>
+                <p className="text-sm text-navy/70 text-center flex items-center justify-center gap-2">
+                  <Coins className="w-4 h-4 text-navy" />
+                  Você já economizou cerca de <span className="font-semibold text-navy text-base">R${calculateSavings.current}</span>
                 </p>
                 
                 {/* Savings Projection */}
                 <div className="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-border/30">
                   <div className="text-center">
-                    <p className="text-xs text-muted-foreground">Em 6 meses</p>
-                    <p className="text-sm font-semibold text-foreground/70">R${calculateSavings.sixMonths}</p>
+                    <p className="text-xs text-navy/60">Em 6 meses</p>
+                    <p className="text-sm font-semibold text-navy">R${calculateSavings.sixMonths}</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-xs text-muted-foreground">Em 1 ano</p>
-                    <p className="text-sm font-semibold text-foreground/70">R${calculateSavings.oneYear}</p>
+                    <p className="text-xs text-navy/60">Em 1 ano</p>
+                    <p className="text-sm font-semibold text-navy">R${calculateSavings.oneYear}</p>
                   </div>
                 </div>
               </div>

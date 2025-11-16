@@ -37,6 +37,10 @@ All colors MUST be HSL.
     --muted: 210 15% 95%;
     --muted-foreground: 215 15% 50%;
 
+    /* Azul marinho para destaques */
+    --navy: 215 35% 25%;
+    --navy-foreground: 0 0% 98%;
+
     --destructive: 0 50% 50%;
     --destructive-foreground: 210 40% 98%;
 
