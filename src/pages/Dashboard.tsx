@@ -683,7 +683,7 @@ const Dashboard = () => {
               <div>
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-lg font-bold text-foreground">Controle dos Gatilhos</h3>
+                    <h3 className="text-lg font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">Controle dos Gatilhos</h3>
                     {currentDay < 8 && (
                       <Badge variant="secondary" className="text-xs">
                         <Lock className="w-3 h-3 mr-1" />
