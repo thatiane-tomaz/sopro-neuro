@@ -10,6 +10,7 @@ import { useDailyContent } from '@/hooks/useDailyContent';
 import { useTriggersContent } from '@/hooks/useTriggersContent';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
 import { supabase } from '@/integrations/supabase/client';
+import { initializePushNotifications } from '@/services/pushNotifications';
 import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -216,6 +217,13 @@ const Dashboard = () => {
       });
     }
   };
+
+  // Initialize push notifications on mount
+  useEffect(() => {
+    if (user) {
+      initializePushNotifications().catch(console.error);
+    }
+  }, [user]);
 
   if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
     console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });
