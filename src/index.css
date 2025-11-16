@@ -37,8 +37,8 @@ All colors MUST be HSL.
     --muted: 210 15% 95%;
     --muted-foreground: 215 15% 50%;
 
-    /* Azul para destaques - tom similar às bolinhas */
-    --navy: 210 45% 50%;
+    /* Azul para destaques */
+    --navy: 210 40% 45%;
     --navy-foreground: 0 0% 98%;
 
     --destructive: 0 50% 50%;
