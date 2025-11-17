@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import Landing from "./Landing";
 
 const Index = () => {
   const [isFirstVisit, setIsFirstVisit] = useState<boolean | null>(null);
@@ -60,8 +59,8 @@ const Index = () => {
     return <Navigate to="/onboarding" replace />;
   }
 
-  // Not authenticated -> show landing page
-  return <Landing />;
+  // Not authenticated -> redirect to login
+  return <Navigate to="/login" replace />;
 };
 
 export default Index;
