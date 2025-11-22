@@ -42,8 +42,8 @@ const stories: Story[] = [
   },
   {
     id: 3,
-    title: "Fase 2: Técnicas Respiratórias",
-    description: "Você irá aprender técnicas respiratórias de relaxamento que te ajudam a:",
+    title: "Fase 2: Respire Livre",
+    description: "Você irá aprender técnicas que te ajudam a:",
     highlights: [
       { icon: "check", text: "Dissolver a ansiedade" },
       { icon: "check", text: "Reencontrar equilíbrio durante os sintomas de abstinência" }
