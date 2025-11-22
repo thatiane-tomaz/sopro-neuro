@@ -20,7 +20,7 @@ export const useFeedback = (userId: string | undefined) => {
       if (!userId) return [];
       
       const { data, error } = await supabase
-        .from("sopro_feedback")
+        .from("feedback_responses")
         .select("*")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
@@ -36,7 +36,7 @@ export const useFeedback = (userId: string | undefined) => {
       if (!userId) throw new Error("User not authenticated");
 
       const { error } = await supabase
-        .from("sopro_feedback")
+        .from("feedback_responses")
         .insert({
           user_id: userId,
           ...feedback,
