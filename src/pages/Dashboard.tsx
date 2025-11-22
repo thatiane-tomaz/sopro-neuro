@@ -694,7 +694,7 @@ const Dashboard = () => {
 
         {/* Feedback Section - Show for preview or specific days */}
         <div className="mt-8">
-          <FeedbackSection currentDay={currentDay} showAllForPreview={isAdmin} />
+          <FeedbackSection currentDay={currentDay} showAllForPreview={isAdmin} isDayCompleted={isDayCompleted} />
         </div>
 
         </TabsContent>
