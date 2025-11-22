@@ -63,14 +63,14 @@ const stories: Story[] = [
   },
   {
     id: 5,
-    title: "Por Que Parar de Uma Vez?",
+    title: "Parar de uma vez é mais eficaz",
     description: "Parar de fumar de uma vez aumenta suas chances de sucesso:",
     highlights: [
-      { icon: "check", text: "Diminui o tempo total que você sentirá os sintomas de abstinência" },
       { icon: "check", text: "Evita passar por múltiplos ciclos de abstinência que acontecem ao reduzir gradualmente" },
+      { icon: "check", text: "Diminui o tempo total que você sentirá os sintomas de abstinência" },
+      { icon: "check", text: "Evita que você aumente o quanto fuma sem perceber" },
       { icon: "check", text: "Remove completamente o cigarro da sua rotina desde o início" }
-    ],
-    footer: "O método científico comprova: parar de uma vez é mais eficaz"
+    ]
   },
   {
     id: 6,
