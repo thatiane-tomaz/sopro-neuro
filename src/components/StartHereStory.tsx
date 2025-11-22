@@ -79,7 +79,7 @@ const stories: Story[] = [
       { icon: "repeat", text: "A repetição de conceitos é importante para criar novas conexões cerebrais" },
       { icon: "headphones", text: "Durante a hipnose use fones de ouvido" },
       { icon: "armchair", text: "Sente-se ou deite-se em um lugar sem interrupções" },
-      { icon: "clock", text: "Cada card é desbloqueado 6 horas depois que você finalizou o do dia anterior (assistiu 98% do vídeo e hipnose)" }
+      { icon: "clock", text: "Cada dia é desbloqueado 6h depois de finalizar o dia anterior" }
     ]
   }
 ];
