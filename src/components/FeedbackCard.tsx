@@ -40,7 +40,6 @@ export const FeedbackCard = ({ question, userId }: FeedbackCardProps) => {
   return (
     <Card className="border-primary/20 bg-card/50 backdrop-blur">
       <CardHeader>
-        <CardTitle className="text-lg">Dia {question.day}</CardTitle>
         <CardDescription className="text-base">{question.question}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
