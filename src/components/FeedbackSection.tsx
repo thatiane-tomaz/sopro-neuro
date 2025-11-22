@@ -5,9 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 interface FeedbackSectionProps {
   currentDay: number;
   showAllForPreview?: boolean;
+  isDayCompleted: (day: number) => boolean;
 }
 
-export const FeedbackSection = ({ currentDay, showAllForPreview = false }: FeedbackSectionProps) => {
+export const FeedbackSection = ({ currentDay, showAllForPreview = false, isDayCompleted }: FeedbackSectionProps) => {
   const { session } = useAuth();
 
   if (!session?.user?.id) return null;
@@ -24,10 +25,13 @@ export const FeedbackSection = ({ currentDay, showAllForPreview = false }: Feedb
     );
   }
 
-  // Para usuários normais, mostrar apenas a pergunta do dia atual
+  // Para usuários normais, mostrar apenas a pergunta do dia atual E apenas se o dia foi completado
   const todaysQuestion = feedbackQuestions.find((q) => q.day === currentDay);
 
   if (!todaysQuestion) return null;
+
+  // Só mostra o feedback se o dia atual foi completado
+  if (!isDayCompleted(currentDay)) return null;
 
   return (
     <div className="space-y-4">
