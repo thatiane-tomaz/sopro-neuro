@@ -94,7 +94,7 @@ const Dashboard = () => {
 
   // Calculate current day based on user progress
   // Admins can see simulated day (change this value to test different days)
-  const adminSimulatedDay = 10; // Change this to test different days
+  const adminSimulatedDay = 1; // Change this to test different days
   const actualDay = isAdmin ? adminSimulatedDay : getCurrentDay();
   const currentDay: number = (!isAdmin && profile?.subscription_status === 'free') 
     ? Math.min(actualDay, 2) 
