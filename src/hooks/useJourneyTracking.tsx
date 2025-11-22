@@ -136,19 +136,21 @@ export const useJourneyTracking = () => {
     return times[0];
   };
 
-  // Calculate current day to do (next incomplete day)
+  // Calculate current day based on what user has already seen (last completed day)
   const getCurrentDay = (): number => {
     if (!trackingData) return 1;
     
-    // Find the first incomplete day
+    // Find the highest completed day
+    let lastCompletedDay = 0;
     for (let day = 1; day <= 21; day++) {
-      if (!isDayCompleted(day)) {
-        return day;
+      if (isDayCompleted(day)) {
+        lastCompletedDay = day;
       }
     }
     
-    // All days completed
-    return 21;
+    // If no day is completed yet, user is on day 1
+    // Otherwise, show the last completed day
+    return lastCompletedDay || 1;
   };
 
   // Get time until next day unlocks
