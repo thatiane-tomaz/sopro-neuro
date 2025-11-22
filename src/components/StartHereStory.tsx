@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, ChevronLeft, ChevronRight, Play, Brain, Wind, Heart, Sparkles, Headphones, Check } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Play, Brain, Wind, Heart, Sparkles, Headphones, Check, RefreshCw, Armchair, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Story {
@@ -196,9 +196,9 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                           {highlight.icon === 'headphones' && <Headphones className="w-6 h-6 text-white" />}
                           {highlight.icon === 'check' && <Check className="w-6 h-6 text-white" />}
                           {highlight.icon === 'apple' && <Sparkles className="w-6 h-6 text-white" />}
-                          {highlight.icon === 'repeat' && <div className="text-2xl">🔄</div>}
-                          {highlight.icon === 'armchair' && <div className="text-2xl">🛋️</div>}
-                          {highlight.icon === 'clock' && <div className="text-2xl">⏰</div>}
+                          {highlight.icon === 'repeat' && <RefreshCw className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'armchair' && <Armchair className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'clock' && <Clock className="w-6 h-6 text-white" />}
                         </div>
                         <h3 className="text-white font-bold text-lg flex-1">
                           {title}
