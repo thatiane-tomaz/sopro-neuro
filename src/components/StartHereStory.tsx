@@ -74,7 +74,7 @@ const stories: Story[] = [
   },
   {
     id: 6,
-    title: "Pronto para Começar?",
+    title: "Vamos começar?",
     highlights: [
       { icon: "repeat", text: "A repetição de conceitos é importante para criar novas conexões cerebrais" },
       { icon: "headphones", text: "Durante a hipnose use fones de ouvido" },
