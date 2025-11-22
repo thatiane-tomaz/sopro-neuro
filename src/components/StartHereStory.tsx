@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { X, ChevronLeft, ChevronRight, Play, Brain, Wind, Heart, Sparkles, Headphones } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Play, Brain, Wind, Heart, Sparkles, Headphones, CigaretteOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Story {
   id: number;
   title: string;
-  highlights?: { icon: string; text: string }[];
+  highlights?: { icon: string; text: string; isPhase?: boolean }[];
   description?: string;
   footer?: string;
+  showCigaretteBreak?: boolean;
 }
 
 const stories: Story[] = [
@@ -16,27 +17,26 @@ const stories: Story[] = [
     title: "2 Fases de 7 Dias",
     description: "Uma jornada completa de 14 dias dividida em:",
     highlights: [
-      { icon: "brain", text: "Fase 1: Quebrando crenças para entender que você não está perdendo nada ao parar de fumar" },
-      { icon: "wind", text: "Fase 2: Técnicas respiratórias para atravessar a abstinência com calma e foco" }
-    ]
+      { icon: "brain", text: "Fase 1: Despertar Interior", isPhase: true },
+      { icon: "wind", text: "Fase 2: Transformação Profunda", isPhase: true }
+    ],
+    showCigaretteBreak: true
   },
   {
     id: 2,
-    title: "Fase 1: Quebrando Crenças",
-    description: "Em cada dia você irá trabalhar uma crença:",
+    title: "Fase 1: Despertar Interior",
+    description: "Você vai dissolver as crenças que te fazem sentir que está perdendo algo.",
     highlights: [
-      { icon: "video", text: "1 vídeo explicativo com neurociência, biologia e psicologia" },
-      { icon: "headphones", text: "1 hipnose reforçando esses conceitos" }
-    ],
-    footer: "Ao final desta fase, você fumará seu último cigarro já mais confiante de que não está perdendo nada"
+      { icon: "video", text: "Nessa fase, você entende — de forma leve e racional — que o cigarro nunca ofereceu bem-estar real." }
+    ]
   },
   {
     id: 3,
-    title: "Fase 2: Técnicas Respiratórias",
-    description: "Você irá aprender técnicas respiratórias de relaxamento que te ajudam a:",
+    title: "Fase 2: Transformação Profunda",
+    description: "Aqui, você vai treinar o corpo a voltar ao seu ritmo natural, diminuir a ansiedade em minutos e criar uma nova sensação de controle.",
     highlights: [
-      { icon: "check", text: "Dissolver a ansiedade" },
-      { icon: "check", text: "Reencontrar equilíbrio durante os sintomas de abstinência" }
+      { icon: "video", text: "1 vídeo explicativo com neurociência, biologia e psicologia" },
+      { icon: "headphones", text: "1 hipnose reforçando esses conceitos" }
     ]
   },
   {
@@ -146,7 +146,13 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
         <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center overflow-y-auto">
           <div className="animate-fade-in max-w-lg w-full">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-              {stories[currentStory].title}
+              {currentStory === 0 ? (
+                <>
+                  2 Fases de <span className="bg-white/20 px-2 rounded">14 dias</span>
+                </>
+              ) : (
+                stories[currentStory].title
+              )}
             </h2>
             
             {stories[currentStory].description && (
@@ -158,22 +164,41 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
             {stories[currentStory].highlights && (
               <div className="space-y-4 text-left">
                 {stories[currentStory].highlights.map((highlight, index) => (
-                  <div key={index} className="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                    <div className="flex-shrink-0 w-6 h-6 mt-0.5">
-                      {highlight.icon === 'brain' && <Brain className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'wind' && <Wind className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'heart' && <Heart className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'video' && <Play className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'headphones' && <Headphones className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'check' && <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-sm">✓</div>}
-                      {highlight.icon === 'apple' && <Sparkles className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'repeat' && <div className="text-2xl">🔄</div>}
-                      {highlight.icon === 'armchair' && <div className="text-2xl">🛋️</div>}
-                      {highlight.icon === 'clock' && <div className="text-2xl">⏰</div>}
+                  <div key={index}>
+                    <div className="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                      <div className="flex-shrink-0 w-6 h-6 mt-0.5">
+                        {highlight.icon === 'brain' && <Brain className="w-6 h-6 text-white" />}
+                        {highlight.icon === 'wind' && <Wind className="w-6 h-6 text-white" />}
+                        {highlight.icon === 'heart' && <Heart className="w-6 h-6 text-white" />}
+                        {highlight.icon === 'video' && <Play className="w-6 h-6 text-white" />}
+                        {highlight.icon === 'headphones' && <Headphones className="w-6 h-6 text-white" />}
+                        {highlight.icon === 'check' && <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-sm">✓</div>}
+                        {highlight.icon === 'apple' && <Sparkles className="w-6 h-6 text-white" />}
+                        {highlight.icon === 'repeat' && <div className="text-2xl">🔄</div>}
+                        {highlight.icon === 'armchair' && <div className="text-2xl">🛋️</div>}
+                        {highlight.icon === 'clock' && <div className="text-2xl">⏰</div>}
+                      </div>
+                      <div className="flex-1">
+                        {highlight.isPhase && (
+                          <div className="font-semibold text-white mb-1 bg-white/10 px-2 py-1 rounded inline-block">
+                            {highlight.text}
+                          </div>
+                        )}
+                        {!highlight.isPhase && (
+                          <p className="text-white/95 text-base leading-relaxed">
+                            {highlight.text}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <p className="text-white/95 text-base leading-relaxed flex-1">
-                      {highlight.text}
-                    </p>
+                    
+                    {/* Cigarro quebrado entre as fases */}
+                    {currentStory === 0 && index === 0 && (
+                      <div className="flex items-center justify-center gap-2 my-4 text-white/80">
+                        <CigaretteOff className="w-6 h-6" />
+                        <span className="text-sm font-medium">Fume o último cigarro</span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
