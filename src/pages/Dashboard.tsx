@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import MediaPlayer from '@/components/MediaPlayer';
 import StartHereStory from '@/components/StartHereStory';
+import { FeedbackSection } from '@/components/FeedbackSection';
 import {
   Carousel,
   CarouselContent,
@@ -690,6 +691,11 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+
+        {/* Feedback Section - Show for preview or specific days */}
+        <div className="mt-8">
+          <FeedbackSection currentDay={currentDay} showAllForPreview={isAdmin} />
+        </div>
 
         </TabsContent>
 

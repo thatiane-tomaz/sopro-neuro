@@ -215,6 +215,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sopro_feedback: {
+        Row: {
+          comment: string | null
+          created_at: string
+          day_number: number
+          id: string
+          question_type: string
+          rating: number | null
+          response: string | null
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          day_number: number
+          id?: string
+          question_type: string
+          rating?: number | null
+          response?: string | null
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          day_number?: number
+          id?: string
+          question_type?: string
+          rating?: number | null
+          response?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancellation_notes: string | null
