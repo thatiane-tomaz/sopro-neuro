@@ -16,8 +16,18 @@ const stories: Story[] = [
     title: "2 Fases de 7 Dias",
     description: "Uma jornada completa de 14 dias dividida em:",
     highlights: [
-      { icon: "brain", text: "Fase 1: Quebrando crenças para entender que você não está perdendo nada ao parar de fumar" },
-      { icon: "wind", text: "Fase 2: Técnicas respiratórias para atravessar a abstinência com calma e foco" }
+      { 
+        icon: "brain", 
+        text: "Desapegue do Cigarro\n\nVocê vai dissolver as crenças que te fazem sentir que está perdendo algo. Nessa fase, você entende — de forma leve e racional — que o cigarro nunca ofereceu bem-estar real."
+      },
+      { 
+        icon: "cigarette-broken", 
+        text: "Fume o último cigarro"
+      },
+      { 
+        icon: "wind", 
+        text: "Respire Livre\n\nAqui, você vai treinar o corpo a voltar ao seu ritmo natural, diminuir a ansiedade em minutos e criar uma nova sensação de controle."
+      }
     ]
   },
   {
@@ -157,25 +167,51 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
             {stories[currentStory].highlights && (
               <div className="space-y-4 text-left">
-                {stories[currentStory].highlights.map((highlight, index) => (
-                  <div key={index} className="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                    <div className="flex-shrink-0 w-6 h-6 mt-0.5">
-                      {highlight.icon === 'brain' && <Brain className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'wind' && <Wind className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'heart' && <Heart className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'video' && <Play className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'headphones' && <Headphones className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'check' && <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-sm">✓</div>}
-                      {highlight.icon === 'apple' && <Sparkles className="w-6 h-6 text-white" />}
-                      {highlight.icon === 'repeat' && <div className="text-2xl">🔄</div>}
-                      {highlight.icon === 'armchair' && <div className="text-2xl">🛋️</div>}
-                      {highlight.icon === 'clock' && <div className="text-2xl">⏰</div>}
+                {stories[currentStory].highlights.map((highlight, index) => {
+                  // Special case for cigarette broken - render without card
+                  if (highlight.icon === 'cigarette-broken') {
+                    return (
+                      <div key={index} className="flex flex-col items-center gap-2 py-4">
+                        <div className="text-4xl">🚬❌</div>
+                        <p className="text-white font-semibold text-lg">
+                          {highlight.text}
+                        </p>
+                      </div>
+                    );
+                  }
+                  
+                  // Extract title and description from text (separated by \n\n)
+                  const parts = highlight.text.split('\n\n');
+                  const title = parts[0];
+                  const description = parts[1];
+                  
+                  return (
+                    <div key={index} className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="flex-shrink-0 w-6 h-6 mt-0.5">
+                          {highlight.icon === 'brain' && <Brain className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'wind' && <Wind className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'heart' && <Heart className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'video' && <Play className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'headphones' && <Headphones className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'check' && <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white text-sm">✓</div>}
+                          {highlight.icon === 'apple' && <Sparkles className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'repeat' && <div className="text-2xl">🔄</div>}
+                          {highlight.icon === 'armchair' && <div className="text-2xl">🛋️</div>}
+                          {highlight.icon === 'clock' && <div className="text-2xl">⏰</div>}
+                        </div>
+                        <h3 className="text-white font-bold text-lg flex-1">
+                          {title}
+                        </h3>
+                      </div>
+                      {description && (
+                        <p className="text-white/90 text-base leading-relaxed ml-9">
+                          {description}
+                        </p>
+                      )}
                     </div>
-                    <p className="text-white/95 text-base leading-relaxed flex-1">
-                      {highlight.text}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
