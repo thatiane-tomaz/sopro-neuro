@@ -136,27 +136,19 @@ export const useJourneyTracking = () => {
     return times[0];
   };
 
-  // Calculate current unlocked day
+  // Calculate current day to do (next incomplete day)
   const getCurrentDay = (): number => {
     if (!trackingData) return 1;
     
-    // Find the highest completed day
-    for (let day = 21; day >= 1; day--) {
-      if (isDayCompleted(day)) {
-        const completionTime = getDayCompletionTime(day);
-        if (completionTime) {
-          const hoursSinceCompletion = (Date.now() - completionTime.getTime()) / (1000 * 60 * 60);
-          
-          // If 6 hours have passed, unlock next day
-          if (hoursSinceCompletion >= 6) {
-            return Math.min(day + 1, 21);
-          }
-        }
+    // Find the first incomplete day
+    for (let day = 1; day <= 21; day++) {
+      if (!isDayCompleted(day)) {
         return day;
       }
     }
     
-    return 1; // Default to day 1
+    // All days completed
+    return 21;
   };
 
   // Get time until next day unlocks
