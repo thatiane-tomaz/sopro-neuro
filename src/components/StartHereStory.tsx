@@ -35,8 +35,8 @@ const stories: Story[] = [
     title: "Transformando Crenças",
     description: "Em cada dia você irá trabalhar uma crença:",
     highlights: [
-      { icon: "video", text: "vídeo\n\nexplica, de forma rápida e científica, por que o cigarro não traz benefícios reais." },
-      { icon: "headphones", text: "hipnose\n\nreforça essa compreensão e ajuda a reduzir a sensação de \"perda\"." }
+      { icon: "video", text: "Vídeo\n\nExplica, de forma rápida e científica, por que o cigarro não traz benefícios reais." },
+      { icon: "headphones", text: "Hipnose\n\nReforça essa compreensão e ajuda a reduzir a sensação de \"perda\"." }
     ],
     footer: "Ao final desta fase, você fumará seu último cigarro já mais confiante de que não está perdendo nada"
   },
