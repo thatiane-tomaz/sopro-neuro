@@ -18,10 +18,10 @@ const stories: Story[] = [
     highlights: [
       { 
         icon: "brain", 
-        text: "Desapegue do Cigarro\n\nVocê vai dissolver as crenças que te fazem sentir que está perdendo algo. Nessa fase, você entende — de forma leve e racional — que o cigarro nunca ofereceu bem-estar real."
+        text: "Transformando Crenças\n\nVocê vai dissolver as crenças que te fazem sentir que está perdendo algo. Nessa fase, você entende — de forma leve e racional — que o cigarro nunca ofereceu bem-estar real."
       },
       { 
-        icon: "cigarette-broken", 
+        icon: "sparkles-special", 
         text: "Fume o último cigarro"
       },
       { 
@@ -168,11 +168,11 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
             {stories[currentStory].highlights && (
               <div className="space-y-4 text-left">
                 {stories[currentStory].highlights.map((highlight, index) => {
-                  // Special case for cigarette broken - render without card
-                  if (highlight.icon === 'cigarette-broken') {
+                  // Special case for sparkles-special - render without card
+                  if (highlight.icon === 'sparkles-special') {
                     return (
                       <div key={index} className="flex flex-col items-center gap-2 py-4">
-                        <div className="text-4xl">🚬❌</div>
+                        <Sparkles className="w-10 h-10 text-white" />
                         <p className="text-white font-semibold text-lg">
                           {highlight.text}
                         </p>
