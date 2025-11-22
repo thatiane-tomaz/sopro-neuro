@@ -32,11 +32,11 @@ const stories: Story[] = [
   },
   {
     id: 2,
-    title: "Fase 1: Quebrando Crenças",
+    title: "Transformando Crenças",
     description: "Em cada dia você irá trabalhar uma crença:",
     highlights: [
-      { icon: "video", text: "1 vídeo explicativo com neurociência, biologia e psicologia" },
-      { icon: "headphones", text: "1 hipnose reforçando esses conceitos" }
+      { icon: "video", text: "vídeo\n\nexplica, de forma rápida e científica, por que o cigarro não traz benefícios reais." },
+      { icon: "headphones", text: "hipnose\n\nreforça essa compreensão e ajuda a reduzir a sensação de \"perda\"." }
     ],
     footer: "Ao final desta fase, você fumará seu último cigarro já mais confiante de que não está perdendo nada"
   },
