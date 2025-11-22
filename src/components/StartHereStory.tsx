@@ -51,7 +51,7 @@ const stories: Story[] = [
   },
   {
     id: 4,
-    title: "Hipnoses de Apoio & Hábitos",
+    title: "Hipnoses de Apoio",
     description: "Disponíveis após completar a Fase 1, estas hipnoses te ajudam a:",
     highlights: [
       { icon: "brain", text: "Reforçar as novas crenças sobre o cigarro" },
