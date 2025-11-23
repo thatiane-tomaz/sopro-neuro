@@ -9,9 +9,10 @@ import { usePhases } from '@/hooks/usePhases';
 import { useDailyContent } from '@/hooks/useDailyContent';
 import { useTriggersContent } from '@/hooks/useTriggersContent';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { initializePushNotifications } from '@/services/pushNotifications';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -80,6 +81,7 @@ const Dashboard = () => {
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
   const { data: onboardingData } = useOnboardingData();
+  const { isPremium, openCustomerPortal } = useSubscription();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
     fileUrl: string;
@@ -295,6 +297,12 @@ const Dashboard = () => {
                       <User className="h-4 w-4 mr-2" />
                       Conta
                     </DropdownMenuItem>
+                    {isPremium && (
+                      <DropdownMenuItem onClick={openCustomerPortal}>
+                        <CreditCard className="h-4 w-4 mr-2" />
+                        Gerenciar Assinatura
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={() => navigate('/settings')}>
                       <Shield className="h-4 w-4 mr-2" />
                       Segurança
