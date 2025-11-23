@@ -311,42 +311,6 @@ export type Database = {
         }
         Relationships: []
       }
-      support_content: {
-        Row: {
-          created_at: string
-          description: string | null
-          display_order: number
-          duration_minutes: number | null
-          file_name: string
-          id: string
-          is_active: boolean
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          display_order?: number
-          duration_minutes?: number | null
-          file_name: string
-          id?: string
-          is_active?: boolean
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          display_order?: number
-          duration_minutes?: number | null
-          file_name?: string
-          id?: string
-          is_active?: boolean
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       triggers_content: {
         Row: {
           created_at: string

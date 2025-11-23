@@ -9,6 +9,9 @@ export interface TriggerContent {
   duration_minutes: number | null;
   display_order: number;
   section: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export const useTriggersContent = () => {
