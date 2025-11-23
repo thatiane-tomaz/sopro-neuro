@@ -46,10 +46,19 @@ const Terms = () => {
             <p className="mb-4 font-semibold text-amber-600 dark:text-amber-500">
               O Sopro NÃO substitui tratamento médico, psicológico ou psiquiátrico.
             </p>
+            <p className="mb-4 font-semibold text-amber-600 dark:text-amber-500">
+              O aplicativo NÃO GARANTE CURA ou resultados definitivos. O Sopro é uma ferramenta 
+              de apoio que pode auxiliar no processo de parar de fumar quando utilizado de acordo 
+              com as orientações fornecidas.
+            </p>
             <p className="mb-4">
-              Nosso programa é uma ferramenta de apoio comportamental. Se você possui condições 
-              médicas, está em tratamento ou toma medicamentos, consulte seu médico antes de 
-              iniciar o programa.
+              Nosso programa é uma ferramenta de apoio comportamental baseada em técnicas de neurociência 
+              e hipnose clínica. Os resultados variam de pessoa para pessoa e dependem do comprometimento 
+              individual com o processo.
+            </p>
+            <p className="mb-4">
+              Se você possui condições médicas, está em tratamento ou toma medicamentos, consulte seu 
+              médico antes de iniciar o programa.
             </p>
           </section>
 
@@ -99,13 +108,23 @@ const Terms = () => {
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">7. Limitação de Responsabilidade</h2>
+            <p className="mb-4 font-semibold text-amber-600 dark:text-amber-500">
+              O Sopro não garante cura, resultados específicos ou que você conseguirá parar de fumar. 
+              O aplicativo é uma ferramenta de apoio que pode auxiliar no processo quando seguido 
+              corretamente.
+            </p>
             <p className="mb-4">
-              O Sopro não garante resultados específicos. Os resultados podem variar de pessoa 
-              para pessoa. Não nos responsabilizamos por:
+              Os resultados podem variar significativamente de pessoa para pessoa, dependendo de 
+              diversos fatores individuais incluindo comprometimento, histórico de tabagismo, 
+              condições de saúde e circunstâncias pessoais.
+            </p>
+            <p className="mb-4">
+              Não nos responsabilizamos por:
             </p>
             <ul className="list-disc pl-6 mb-4 space-y-2">
-              <li>Resultados individuais do programa</li>
+              <li>Resultados individuais do programa ou falta de resultados</li>
               <li>Decisões tomadas com base no conteúdo</li>
+              <li>Recaídas ou dificuldades no processo de cessação do tabagismo</li>
               <li>Interrupções temporárias do serviço</li>
               <li>Problemas técnicos ou de conectividade</li>
             </ul>
