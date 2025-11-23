@@ -39,6 +39,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               .then(({ error }) => {
                 if (error) console.error('Error tracking app session:', error);
               });
+
+            // Check subscription status after sign in
+            supabase.functions.invoke('check-subscription')
+              .catch((error) => console.error('Error checking subscription:', error));
           }, 0);
         }
       }

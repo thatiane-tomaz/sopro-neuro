@@ -2,3 +2,9 @@ project_id = "kpewsvpufzkyejchncta"
 
 [functions.send-inactive-user-notifications]
 verify_jwt = false
+
+[functions.create-checkout]
+
+[functions.check-subscription]
+
+[functions.customer-portal]
