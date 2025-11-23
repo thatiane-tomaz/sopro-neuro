@@ -44,6 +44,7 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
+      locale: "pt-BR",
       success_url: `${req.headers.get("origin")}/dashboard?checkout=success`,
       cancel_url: `${req.headers.get("origin")}/dashboard?checkout=cancel`,
     });
