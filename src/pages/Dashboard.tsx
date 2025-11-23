@@ -25,6 +25,7 @@ import {
 import MediaPlayer from '@/components/MediaPlayer';
 import StartHereStory from '@/components/StartHereStory';
 import { FeedbackSection } from '@/components/FeedbackSection';
+import { SubscriptionButton } from '@/components/upgrade/SubscriptionButton';
 import {
   Carousel,
   CarouselContent,
@@ -314,20 +315,9 @@ const Dashboard = () => {
                   <Badge variant="secondary" className="text-xs whitespace-nowrap">
                     Período Gratuito - 2 Dias
                   </Badge>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="text-xs h-7 gap-1 border-accent text-accent hover:bg-accent hover:text-white ml-auto"
-                    onClick={() => {
-                      toast({
-                        title: "Upgrade Premium",
-                        description: "Acesse todos os 14 dias da jornada!"
-                      });
-                    }}
-                  >
-                    <Crown className="w-3 h-3" />
-                    Upgrade
-                  </Button>
+                  <div className="ml-auto">
+                    <SubscriptionButton />
+                  </div>
                 </div>
               </>
             )}

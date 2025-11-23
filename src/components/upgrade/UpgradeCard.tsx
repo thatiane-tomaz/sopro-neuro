@@ -1,14 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Crown, Lock, Sparkles } from "lucide-react";
+import { Crown, Lock } from "lucide-react";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { SubscriptionButton } from "./SubscriptionButton";
 
-interface UpgradeCardProps {
-  onUpgrade: () => void;
-}
-
-const UpgradeCard = ({ onUpgrade }: UpgradeCardProps) => {
+const UpgradeCard = () => {
   return (
     <Card className="border-accent/20 bg-gradient-to-br from-accent/5 to-accent/10">
       <CardHeader className="text-center">
@@ -27,14 +22,7 @@ const UpgradeCard = ({ onUpgrade }: UpgradeCardProps) => {
           <p className="text-sm text-muted-foreground">✓ Explicações sobre neurociência do vício</p>
           <p className="text-sm text-muted-foreground">✓ Técnicas práticas para lidar com abstinência e gatilhos</p>
         </div>
-        <Button 
-          onClick={onUpgrade} 
-          className="w-full" 
-          variant="default"
-        >
-          <Crown className="w-4 h-4 mr-2" />
-          Fazer Upgrade Agora
-        </Button>
+        <SubscriptionButton size="lg" />
       </CardContent>
     </Card>
   );
@@ -50,11 +38,6 @@ interface ContentAccessWrapperProps {
 export const ContentAccessWrapper = ({ day, children, contentType, contentId }: ContentAccessWrapperProps) => {
   const { hasAccessToDay, upgradeRequired } = useUserProfile();
 
-  const handleUpgrade = () => {
-    // TODO: Implementar redirecionamento para página de pagamento
-    console.log('Redirecionando para upgrade...');
-  };
-
   if (upgradeRequired(day)) {
     return (
       <Card className="relative overflow-hidden">
@@ -67,10 +50,7 @@ export const ContentAccessWrapper = ({ day, children, contentType, contentId }: 
                 Faça upgrade para acessar este conteúdo
               </p>
             </div>
-            <Button onClick={handleUpgrade} size="sm">
-              <Crown className="w-4 h-4 mr-2" />
-              Fazer Upgrade
-            </Button>
+            <SubscriptionButton />
           </div>
         </div>
         <div className="opacity-30">
