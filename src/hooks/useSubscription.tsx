@@ -42,6 +42,32 @@ export const useSubscription = () => {
     return () => clearInterval(interval);
   }, [checkSubscription]);
 
+  const verifyPayment = async (sessionId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-payment', {
+        body: { session_id: sessionId }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.success) {
+        await checkSubscription();
+        toast({
+          title: "Pagamento confirmado!",
+          description: "Você agora tem acesso premium por 30 dias",
+        });
+      }
+      return data;
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao verificar pagamento",
+        variant: "destructive"
+      });
+    }
+  };
+
   const createCheckout = async () => {
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout');
@@ -80,12 +106,18 @@ export const useSubscription = () => {
     }
   };
 
+  const daysRemaining = subscriptionData?.subscription_end 
+    ? Math.ceil((new Date(subscriptionData.subscription_end).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+
   return {
     subscriptionData,
     loading,
     isPremium: subscriptionData?.subscribed || false,
+    daysRemaining,
     checkSubscription,
     createCheckout,
-    openCustomerPortal
+    openCustomerPortal,
+    verifyPayment
   };
 };
