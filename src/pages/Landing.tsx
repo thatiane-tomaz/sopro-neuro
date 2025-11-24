@@ -27,7 +27,7 @@ const Landing = () => {
           <img 
             src={oceanWaves} 
             alt="Ondas suaves do mar" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-60 contrast-75"
           />
         </div>
 
