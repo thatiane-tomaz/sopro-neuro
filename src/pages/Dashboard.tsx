@@ -81,7 +81,7 @@ const Dashboard = () => {
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
   const { data: onboardingData } = useOnboardingData();
-  const { isPremium, openCustomerPortal } = useSubscription();
+  const { isPremium, openCustomerPortal, verifyPayment, daysRemaining } = useSubscription();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
     fileUrl: string;
@@ -226,12 +226,23 @@ const Dashboard = () => {
     }
   };
 
-  // Initialize push notifications on mount
+  // Initialize push notifications and check for payment success
   useEffect(() => {
     if (user) {
       initializePushNotifications().catch(console.error);
+      
+      // Check if returning from successful checkout
+      const urlParams = new URLSearchParams(window.location.search);
+      const checkoutStatus = urlParams.get('checkout');
+      const sessionId = urlParams.get('session_id');
+      
+      if (checkoutStatus === 'success' && sessionId && verifyPayment) {
+        verifyPayment(sessionId);
+        // Clean up URL
+        window.history.replaceState({}, '', '/dashboard');
+      }
     }
-  }, [user]);
+  }, [user, verifyPayment]);
 
   if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
     console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });
@@ -268,10 +279,10 @@ const Dashboard = () => {
               <img src={soproLogo} alt="Sopro" className="h-8" />
               
               <div className="flex items-center gap-2">
-                {profile?.subscription_status === 'premium' && (
+                {isPremium && (
                   <Badge className="text-xs bg-accent whitespace-nowrap">
                     <Crown className="w-3 h-3 mr-1" />
-                    Premium
+                    {daysRemaining > 0 ? `${daysRemaining} dias` : 'Premium'}
                   </Badge>
                 )}
                 <Button 
@@ -297,10 +308,10 @@ const Dashboard = () => {
                       <User className="h-4 w-4 mr-2" />
                       Conta
                     </DropdownMenuItem>
-                    {isPremium && (
-                      <DropdownMenuItem onClick={openCustomerPortal}>
-                        <CreditCard className="h-4 w-4 mr-2" />
-                        Gerenciar Assinatura
+                    {!isPremium && (
+                      <DropdownMenuItem onClick={() => navigate('/settings')}>
+                        <Crown className="h-4 w-4 mr-2" />
+                        Renovar Acesso
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem onClick={() => navigate('/settings')}>
@@ -316,13 +327,28 @@ const Dashboard = () => {
               </div>
             </div>
             
-            {profile?.subscription_status === 'free' && currentDay <= 2 && (
+            {!isPremium && (
               <>
                 <div className="border-t mb-3" />
-                <div className="flex items-center gap-2 bg-accent/5 rounded-lg px-3 py-2 border border-accent/20">
-                  <Badge variant="secondary" className="text-xs whitespace-nowrap">
-                    Período Gratuito - 2 Dias
+                <div className="flex items-center gap-2 bg-amber-500/10 rounded-lg px-3 py-2 border border-amber-500/30">
+                  <Badge variant="secondary" className="text-xs whitespace-nowrap bg-amber-500/20 text-amber-900 dark:text-amber-100">
+                    {currentDay <= 2 ? 'Período Gratuito - 2 Dias' : 'Acesso Expirado'}
                   </Badge>
+                  <div className="ml-auto">
+                    <SubscriptionButton />
+                  </div>
+                </div>
+              </>
+            )}
+            
+            {isPremium && daysRemaining <= 7 && (
+              <>
+                <div className="border-t mb-3" />
+                <div className="flex items-center gap-2 bg-accent/10 rounded-lg px-3 py-2 border border-accent/30">
+                  <Sparkles className="h-4 w-4 text-accent" />
+                  <span className="text-xs text-muted-foreground">
+                    Seu acesso expira em {daysRemaining} {daysRemaining === 1 ? 'dia' : 'dias'}
+                  </span>
                   <div className="ml-auto">
                     <SubscriptionButton />
                   </div>

@@ -8,3 +8,5 @@ verify_jwt = false
 [functions.check-subscription]
 
 [functions.customer-portal]
+
+[functions.verify-payment]

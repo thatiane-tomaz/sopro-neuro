@@ -43,50 +43,59 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2024-11-20.acacia" as any });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    
-    if (customers.data.length === 0) {
-      logStep("No customer found, updating unsubscribed state");
-      
-      // Update profile to free status
-      await supabaseClient
-        .from('profiles')
-        .update({ subscription_status: 'free' })
-        .eq('user_id', user.id);
-      
-      return new Response(JSON.stringify({ subscribed: false, product_id: null }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
+    // Check subscription in database
+    const { data: subData, error: subError } = await supabaseClient
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (subError && subError.code !== 'PGRST116') {
+      logStep("Error fetching subscription", { error: subError });
+      throw subError;
     }
 
-    const customerId = customers.data[0].id;
-    logStep("Found Stripe customer", { customerId });
-
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: "active",
-      limit: 1,
-    });
-    const hasActiveSub = subscriptions.data.length > 0;
-    let productId = null;
+    const now = new Date();
+    let hasActiveSub = false;
     let subscriptionEnd = null;
 
-    if (hasActiveSub) {
-      const subscription = subscriptions.data[0];
-      subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
-      logStep("Active subscription found", { subscriptionId: subscription.id, endDate: subscriptionEnd });
-      productId = subscription.items.data[0].price.product as string;
-      logStep("Determined subscription tier", { productId });
-      
-      // Update profile to premium status
-      await supabaseClient
-        .from('profiles')
-        .update({ subscription_status: 'premium' })
-        .eq('user_id', user.id);
+    if (subData && subData.expires_at) {
+      const expiresAt = new Date(subData.expires_at);
+      hasActiveSub = expiresAt > now && subData.status === 'premium';
+      subscriptionEnd = subData.expires_at;
+      logStep("Subscription found", { 
+        expiresAt: subData.expires_at, 
+        isActive: hasActiveSub,
+        status: subData.status
+      });
+
+      // Update profile if status changed
+      if (!hasActiveSub && subData.status === 'premium') {
+        logStep("Subscription expired, updating profile");
+        await supabaseClient
+          .from('profiles')
+          .update({ subscription_status: 'free' })
+          .eq('user_id', user.id);
+
+        await supabaseClient
+          .from('subscriptions')
+          .update({ 
+            status: 'expired',
+            previous_status: 'premium'
+          })
+          .eq('user_id', user.id)
+          .eq('id', subData.id);
+      } else if (hasActiveSub) {
+        // Ensure profile is premium if sub is active
+        await supabaseClient
+          .from('profiles')
+          .update({ subscription_status: 'premium' })
+          .eq('user_id', user.id);
+      }
     } else {
-      logStep("No active subscription found");
+      logStep("No subscription found or no expiration date");
       
       // Update profile to free status
       await supabaseClient
@@ -97,7 +106,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({
       subscribed: hasActiveSub,
-      product_id: productId,
+      product_id: hasActiveSub ? '30_days_access' : null,
       subscription_end: subscriptionEnd
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
