@@ -37,7 +37,7 @@ const Landing = () => {
             <img 
               src={soproLogo} 
               alt="Sopro" 
-              className="w-32 h-32 md:w-40 md:h-40 object-contain animate-float drop-shadow-lg saturate-150 brightness-110"
+              className="w-40 h-40 md:w-48 md:h-48 object-contain animate-float drop-shadow-lg saturate-200 brightness-110"
             />
           </div>
 
