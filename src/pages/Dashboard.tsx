@@ -716,6 +716,14 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* Informação sobre duração do acesso */}
+        <div className="mt-8 mb-6">
+          <div className="bg-muted/30 rounded-lg px-4 py-3 border border-border/50">
+            <p className="text-xs text-center text-muted-foreground">
+              💎 O acesso premium é válido por <span className="font-semibold text-foreground">30 dias</span> a partir da compra
+            </p>
+          </div>
+        </div>
 
         </TabsContent>
 
