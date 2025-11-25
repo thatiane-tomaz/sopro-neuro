@@ -276,7 +276,7 @@ const Dashboard = () => {
         <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b mb-6">
           <div className="px-4 py-3">
             <div className="flex items-center justify-between mb-3">
-              <img src={soproLogo} alt="Sopro" className="h-8" />
+              <img src={soproLogo} alt="Sopro" className="h-8 w-auto object-contain" />
               
               <div className="flex items-center gap-2">
                 {isPremium && (
