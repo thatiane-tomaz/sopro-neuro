@@ -28,7 +28,7 @@ const HeroSection = () => {
         <div className="animate-fade-in">
           {/* Logo/Brand */}
           <div className="flex items-center justify-center mb-8">
-            <img src={soproLogo} alt="Sopro" className="h-16 md:h-20 animate-float" />
+            <img src={soproLogo} alt="Sopro" className="h-16 md:h-20 w-auto object-contain animate-float" />
           </div>
 
           {/* Main headline - foco no problema e solução */}
