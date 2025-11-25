@@ -330,8 +330,8 @@ const Dashboard = () => {
             {!isPremium && (
               <>
                 <div className="border-t mb-3" />
-                <div className="flex items-center gap-2 bg-amber-500/10 rounded-lg px-3 py-2 border border-amber-500/30">
-                  <Badge variant="secondary" className="text-xs whitespace-nowrap bg-amber-500/20 text-amber-900 dark:text-amber-100">
+                <div className="flex items-center gap-2 bg-purple-500/10 rounded-lg px-3 py-2 border border-purple-500/30">
+                  <Badge variant="secondary" className="text-xs whitespace-nowrap bg-purple-500/20 text-purple-900 dark:text-purple-100">
                     {currentDay <= 2 ? 'Período Gratuito - 2 Dias' : 'Acesso Expirado'}
                   </Badge>
                   <div className="ml-auto">
@@ -716,10 +716,6 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Feedback Section - Show for preview or specific days */}
-        <div className="mt-8">
-          <FeedbackSection currentDay={currentDay} showAllForPreview={isAdmin} isDayCompleted={isDayCompleted} />
-        </div>
 
         </TabsContent>
 
