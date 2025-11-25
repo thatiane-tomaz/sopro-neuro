@@ -1,18 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Apple, PlayCircle, Star, Brain, Heart, TrendingUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import soproLogo from "@/assets/sopro-logo.png";
 import heroImage from "@/assets/hero-sopro.jpg";
 import oceanWaves from "@/assets/ocean-waves-bg.jpg";
 
 const Landing = () => {
+  const navigate = useNavigate();
+
   const handleAppStore = () => {
-    // TODO: Replace with actual App Store URL when published
-    window.open("https://apps.apple.com", "_blank");
+    // Direciona para página de instalação PWA (iOS)
+    navigate("/install");
   };
 
   const handlePlayStore = () => {
     // TODO: Replace with actual Play Store URL when published
-    window.open("https://play.google.com", "_blank");
+    window.open("https://play.google.com/store/apps", "_blank");
   };
 
   return (
