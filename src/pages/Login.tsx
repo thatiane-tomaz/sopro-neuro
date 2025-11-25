@@ -103,7 +103,7 @@ const Login = () => {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <div className="flex items-center justify-center mb-4">
-            <img src={soproLogo} alt="Sopro" className="h-12" />
+            <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
           </div>
           <p className="text-white/80">Entre na sua jornada de transformação</p>
         </div>
