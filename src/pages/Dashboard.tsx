@@ -685,7 +685,7 @@ const Dashboard = () => {
         {profile?.subscription_status === 'free' && currentDay <= 2 && (
           <div className="mt-12 mb-8">
             <div className="relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-sm p-4">
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center justify-between gap-4 mb-3">
                 <div className="flex items-center gap-2">
                   <Crown className="h-5 w-5 text-accent" />
                   <div>
@@ -693,7 +693,7 @@ const Dashboard = () => {
                       Desbloqueie os 14 Dias Completos
                     </h3>
                     <p className="text-xs text-muted-foreground/70">
-                      Complete sua jornada para parar de fumar de vez
+                      Terá acesso por 30 dias para parar de fumar com mais facilidade
                     </p>
                   </div>
                 </div>
@@ -712,18 +712,15 @@ const Dashboard = () => {
                   Upgrade
                 </Button>
               </div>
+              
+              <div className="border-t pt-3">
+                <p className="text-xs text-center text-muted-foreground">
+                  O acesso premium é válido por <span className="font-semibold text-foreground">30 dias</span> a partir da compra
+                </p>
+              </div>
             </div>
           </div>
         )}
-
-        {/* Informação sobre duração do acesso */}
-        <div className="mt-8 mb-6">
-          <div className="bg-muted/30 rounded-lg px-4 py-3 border border-border/50">
-            <p className="text-xs text-center text-muted-foreground">
-              💎 O acesso premium é válido por <span className="font-semibold text-foreground">30 dias</span> a partir da compra
-            </p>
-          </div>
-        </div>
 
         </TabsContent>
 
