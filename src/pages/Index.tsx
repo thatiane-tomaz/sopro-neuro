@@ -16,7 +16,9 @@ const Index = () => {
       const isNative = Capacitor.isNativePlatform();
       const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
                     (window.navigator as any).standalone === true;
-      setIsInstalledApp(isNative || isPWA);
+      const installed = isNative || isPWA;
+      console.log('Is installed app?', { isNative, isPWA, installed });
+      setIsInstalledApp(installed);
     };
 
     checkIfInstalledApp();
