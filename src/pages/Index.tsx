@@ -2,33 +2,15 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Capacitor } from "@capacitor/core";
 
 const Index = () => {
-  const [isFirstVisit, setIsFirstVisit] = useState<boolean | null>(null);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState<boolean | null>(null);
-  const [isInstalledApp, setIsInstalledApp] = useState<boolean | null>(null);
   const { user, loading } = useAuth();
-
-  useEffect(() => {
-    // Check if app is installed (PWA or native)
-    const checkIfInstalledApp = () => {
-      const isNative = Capacitor.isNativePlatform();
-      const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
-                    (window.navigator as any).standalone === true;
-      const installed = isNative || isPWA;
-      console.log('Is installed app?', { isNative, isPWA, installed });
-      setIsInstalledApp(installed);
-    };
-
-    checkIfInstalledApp();
-  }, []);
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
       if (!user) {
         setHasCompletedOnboarding(false);
-        setIsFirstVisit(false);
         return;
       }
 
@@ -41,11 +23,9 @@ const Index = () => {
           .single();
 
         setHasCompletedOnboarding(!!existingResponse && !error);
-        setIsFirstVisit(false);
       } catch (error) {
         console.error('Error checking onboarding:', error);
         setHasCompletedOnboarding(false);
-        setIsFirstVisit(false);
       }
     };
 
@@ -54,7 +34,7 @@ const Index = () => {
     }
   }, [user, loading]);
 
-  if (loading || isFirstVisit === null || hasCompletedOnboarding === null || isInstalledApp === null) {
+  if (loading || hasCompletedOnboarding === null) {
     return null; // Loading state
   }
 
@@ -68,12 +48,7 @@ const Index = () => {
     return <Navigate to="/onboarding" replace />;
   }
 
-  // Not authenticated but app is installed -> login
-  if (!user && isInstalledApp) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // Not authenticated and web browser -> landing page
+  // Not authenticated -> landing page
   return <Navigate to="/landing" replace />;
 };
 
