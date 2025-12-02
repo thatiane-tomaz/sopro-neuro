@@ -2,18 +2,10 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Capacitor } from "@capacitor/core";
 
 const Index = () => {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState<boolean | null>(null);
-  const [isInstalledApp, setIsInstalledApp] = useState<boolean | null>(null);
   const { user, loading } = useAuth();
-
-  useEffect(() => {
-    // Apenas app nativo (Capacitor) é considerado "instalado"
-    // PWA e navegador web vão para landing page
-    setIsInstalledApp(Capacitor.isNativePlatform());
-  }, []);
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
@@ -42,7 +34,7 @@ const Index = () => {
     }
   }, [user, loading]);
 
-  if (loading || hasCompletedOnboarding === null || isInstalledApp === null) {
+  if (loading || hasCompletedOnboarding === null) {
     return null; // Loading state
   }
 
@@ -56,13 +48,8 @@ const Index = () => {
     return <Navigate to="/onboarding" replace />;
   }
 
-  // Not authenticated + app installed (PWA/native) -> login
-  if (!user && isInstalledApp) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // Not authenticated + web browser -> landing page
-  return <Navigate to="/landing" replace />;
+  // Not authenticated -> login
+  return <Navigate to="/login" replace />;
 };
 
 export default Index;
