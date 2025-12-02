@@ -10,16 +10,9 @@ const Index = () => {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    // Native app (Capacitor) sempre é instalado
-    if (Capacitor.isNativePlatform()) {
-      setIsInstalledApp(true);
-      return;
-    }
-    
-    // PWA instalado
-    const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
-                  (window.navigator as any).standalone === true;
-    setIsInstalledApp(isPWA);
+    // Apenas app nativo (Capacitor) é considerado "instalado"
+    // PWA e navegador web vão para landing page
+    setIsInstalledApp(Capacitor.isNativePlatform());
   }, []);
 
   useEffect(() => {
