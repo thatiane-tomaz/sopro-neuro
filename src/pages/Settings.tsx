@@ -254,10 +254,24 @@ const Settings = () => {
 
                     <div className="border-t pt-6">
                       <h3 className="text-lg font-semibold mb-4 text-destructive">Zona de perigo</h3>
-                      <Button variant="destructive" onClick={handleSignOut}>
-                        <LogOut className="w-4 h-4 mr-2" />
-                        Sair da conta
-                      </Button>
+                      <div className="space-y-4">
+                        <Button variant="destructive" onClick={handleSignOut}>
+                          <LogOut className="w-4 h-4 mr-2" />
+                          Sair da conta
+                        </Button>
+                        
+                        <div className="pt-4 border-t border-destructive/20">
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Para solicitar a exclusão da sua conta e todos os seus dados, entre em contato conosco:
+                          </p>
+                          <a 
+                            href="mailto:contato@soproneuro.com.br?subject=Solicitação de exclusão de conta&body=Olá, gostaria de solicitar a exclusão da minha conta e de todos os meus dados pessoais.%0A%0AEmail da conta: " 
+                            className="inline-flex items-center text-destructive hover:text-destructive/80 underline text-sm font-medium transition-colors"
+                          >
+                            Solicitar exclusão de conta e dados
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </TabsContent>
