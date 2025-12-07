@@ -327,8 +327,7 @@ const Dashboard = () => {
               </div>
             </div>
             
-            {/* TEMPORARILY HIDDEN FOR SCREENSHOT
-            {!isPremium && (
+{!isPremium && (
               <>
                 <div className="border-t mb-3" />
                 <div className="flex items-center gap-2 bg-purple-500/10 rounded-lg px-3 py-2 border border-purple-500/30">
@@ -341,7 +340,6 @@ const Dashboard = () => {
                 </div>
               </>
             )}
-            */}
             
             {isPremium && daysRemaining <= 7 && (
               <>
