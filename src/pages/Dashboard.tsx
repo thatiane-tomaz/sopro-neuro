@@ -500,7 +500,7 @@ const Dashboard = () => {
                           </Badge>
                         )}
                       </div>
-                      <h2 className={`font-montserrat text-xl md:text-2xl font-bold ${
+                      <h2 className={`text-xl md:text-2xl font-bold ${
                         isPhase1Completed 
                           ? 'text-muted-foreground' 
                           : 'bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent'
