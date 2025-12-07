@@ -618,7 +618,7 @@ const Dashboard = () => {
                                     size="sm"
                                     className={`flex-1 justify-center ${
                                       !isLocked 
-                                        ? 'bg-primary/10 hover:bg-primary/20 text-primary border-primary/30' 
+                                        ? 'bg-teal-100 hover:bg-teal-200 text-teal-700 border-teal-300' 
                                         : ''
                                     }`}
                                     onClick={() => {
