@@ -600,7 +600,7 @@ const Dashboard = () => {
                                 <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-bold flex-shrink-0">
                                   {day}
                                 </span>
-                                <h3 className="font-inter text-base font-semibold text-navy dark:text-primary-light leading-tight tracking-tight flex-1">
+                                <h3 className="text-base font-semibold text-navy dark:text-primary-light leading-tight tracking-tight flex-1">
                                   {dayContent.title}
                                 </h3>
                                 {isCompleted && (
@@ -616,11 +616,11 @@ const Dashboard = () => {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                    className={`flex-1 justify-center ${
-                                      !isLocked 
-                                        ? 'bg-primary/10 hover:bg-primary/20 text-primary border-primary/30' 
-                                        : ''
-                                    }`}
+                                  className={`flex-1 justify-center ${
+                                    !isLocked 
+                                      ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200' 
+                                      : ''
+                                  }`}
                                     onClick={() => {
                                       if (!isLocked || isAdmin) {
                                         handleMediaOpen(day, 'video');
