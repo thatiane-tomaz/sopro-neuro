@@ -327,6 +327,7 @@ const Dashboard = () => {
               </div>
             </div>
             
+            {/* TEMPORARILY HIDDEN FOR SCREENSHOT
             {!isPremium && (
               <>
                 <div className="border-t mb-3" />
@@ -340,6 +341,7 @@ const Dashboard = () => {
                 </div>
               </>
             )}
+            */}
             
             {isPremium && daysRemaining <= 7 && (
               <>
