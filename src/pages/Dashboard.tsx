@@ -566,7 +566,7 @@ const Dashboard = () => {
                           >
                             <div className="relative aspect-video overflow-hidden">
                               <img 
-                                src={dayImages[day - 1]} 
+                                src={`${dayImages[day - 1]}?v=2`} 
                                 alt={dayContent.title}
                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                               />
