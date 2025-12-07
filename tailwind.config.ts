@@ -21,6 +21,7 @@ export default {
 		fontFamily: {
 				'playfair': ['Poppins', 'sans-serif'],
 				'inter': ['Inter', 'sans-serif'],
+				'montserrat': ['Montserrat', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
