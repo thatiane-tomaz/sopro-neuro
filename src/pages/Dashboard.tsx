@@ -837,30 +837,6 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Tips Section */}
-              <Card className="bg-primary/5 border-primary/20 p-6">
-                <h3 className="text-xl font-bold text-foreground mb-4">
-                  💡 Dicas para melhor resultado
-                </h3>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">•</span>
-                    <span>Use fones de ouvido para melhor imersão</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">•</span>
-                    <span>Encontre um local tranquilo onde não será interrompido</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">•</span>
-                    <span>Ouça quantas vezes precisar durante o dia</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">•</span>
-                    <span>Identifique seus gatilhos principais e tenha os áudios sempre disponíveis</span>
-                  </li>
-                </ul>
-              </Card>
             </div>
           </TabsContent>
         </Tabs>
