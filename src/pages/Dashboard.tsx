@@ -600,7 +600,7 @@ const Dashboard = () => {
                                 <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-bold flex-shrink-0">
                                   {day}
                                 </span>
-                                <h3 className="font-montserrat text-base font-bold text-navy dark:text-primary-light leading-tight tracking-tight flex-1">
+                                <h3 className="font-inter text-base font-semibold text-navy dark:text-primary-light leading-tight tracking-tight flex-1">
                                   {dayContent.title}
                                 </h3>
                                 {isCompleted && (
@@ -689,7 +689,7 @@ const Dashboard = () => {
                 <div className="flex items-center gap-2">
                   <Crown className="h-5 w-5 text-accent" />
                   <div>
-                    <h3 className="font-montserrat text-sm font-bold text-muted-foreground">
+                    <h3 className="text-sm font-semibold text-muted-foreground">
                       Desbloqueie os 14 Dias Completos
                     </h3>
                     <p className="text-xs text-muted-foreground/70">
@@ -741,7 +741,7 @@ const Dashboard = () => {
                           <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
                             <Headphones className="h-3.5 w-3.5 text-primary" />
                           </div>
-                          <h3 className="font-montserrat text-xs font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                          <h3 className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                             {trigger.title}
                           </h3>
                         </div>
@@ -811,7 +811,7 @@ const Dashboard = () => {
                           <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
                             <Headphones className="h-3.5 w-3.5 text-primary" />
                           </div>
-                          <h3 className="font-montserrat text-xs font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                          <h3 className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                             {trigger.title}
                           </h3>
                         </div>
