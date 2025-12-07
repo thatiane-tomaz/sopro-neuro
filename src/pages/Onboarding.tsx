@@ -45,7 +45,7 @@ const Onboarding = () => {
           .from('onboarding_responses')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (existingResponse && !error) {
           // User already completed onboarding, redirect to dashboard
