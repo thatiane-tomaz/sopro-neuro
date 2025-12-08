@@ -12,11 +12,12 @@ interface SubscriptionData {
 export const useSubscription = () => {
   const [subscriptionData, setSubscriptionData] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const { toast } = useToast();
 
   const checkSubscription = useCallback(async () => {
-    if (!user) {
+    // Only call if we have both user and a valid session
+    if (!user || !session?.access_token) {
       setLoading(false);
       return;
     }
@@ -32,7 +33,7 @@ export const useSubscription = () => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, session]);
 
   useEffect(() => {
     checkSubscription();
