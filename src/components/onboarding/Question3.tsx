@@ -15,23 +15,23 @@ interface Question3Props {
   onPrev: () => void;
 }
 
+const smokingTypes = [
+  "Cigarro industrializado",
+  "Tabaco enrolado",
+  "Cigarro de palha",
+  "Vape / Pod eletrônico",
+  "Charuto / narguilé",
+  "Outro",
+];
+
 const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
   const { toast } = useToast();
 
-  const smokingTypes = [
-    { id: "cigarro-industrializado", label: "Cigarro industrializado" },
-    { id: "tabaco-enrolado", label: "Tabaco enrolado" },
-    { id: "cigarro-palha", label: "Cigarro de palha" },
-    { id: "vape-pod", label: "Vape / Pod eletrônico" },
-    { id: "charuto-nargile", label: "Charuto / narguilé" },
-    { id: "outro", label: "Outro" }
-  ];
-
-  const handleTypeToggle = (typeId: string, checked: boolean) => {
+  const handleTypeToggle = (type: string, checked: boolean) => {
     const currentTypes = data.smokingTypes || [];
     const updatedTypes = checked
-      ? [...currentTypes, typeId]
-      : currentTypes.filter(id => id !== typeId);
+      ? [...currentTypes, type]
+      : currentTypes.filter(t => t !== type);
     
     updateData({ smokingTypes: updatedTypes });
   };
@@ -81,20 +81,21 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid gap-4">
-              {smokingTypes.map((type) => (
+              {smokingTypes.map((type, index) => (
                 <div 
-                  key={type.id}
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors"
+                  key={index}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
+                  onClick={() => handleTypeToggle(type, !data.smokingTypes?.includes(type))}
                 >
                   <Checkbox
-                    id={type.id}
-                    checked={data.smokingTypes?.includes(type.id) || false}
+                    id={`smoking-type-${index}`}
+                    checked={data.smokingTypes?.includes(type) || false}
                     onCheckedChange={(checked) => 
-                      handleTypeToggle(type.id, checked as boolean)
+                      handleTypeToggle(type, checked as boolean)
                     }
                   />
-                  <Label htmlFor={type.id} className="flex-1 cursor-pointer">
-                    {type.label}
+                  <Label htmlFor={`smoking-type-${index}`} className="flex-1 cursor-pointer">
+                    {type}
                   </Label>
                 </div>
               ))}

@@ -16,11 +16,11 @@ interface Question2Props {
 }
 
 const frequencyOptions = [
-  { value: "more-than-10", label: "Mais de 10 vezes por dia" },
-  { value: "5-to-10", label: "Entre 5 e 10 vezes por dia" },
-  { value: "less-than-5-daily", label: "Menos de 5 vezes por dia" },
-  { value: "less-than-5-weekly", label: "Menos de 5 vezes por semana" },
-  { value: "rarely", label: "Raramente" },
+  "Mais de 10 vezes por dia",
+  "Entre 5 e 10 vezes por dia",
+  "Menos de 5 vezes por dia",
+  "Menos de 5 vezes por semana",
+  "Raramente",
 ];
 
 const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
@@ -78,19 +78,19 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
             >
               {frequencyOptions.map((option, index) => (
                 <div 
-                  key={option.value}
+                  key={index}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
-                  onClick={() => handleSelection(option.value)}
+                  onClick={() => handleSelection(option)}
                 >
                   <RadioGroupItem 
-                    value={option.value} 
+                    value={option} 
                     id={`frequency-option-${index}`} 
                   />
                   <Label 
                     htmlFor={`frequency-option-${index}`} 
                     className="flex-1 cursor-pointer"
                   >
-                    {option.label}
+                    {option}
                   </Label>
                 </div>
               ))}
