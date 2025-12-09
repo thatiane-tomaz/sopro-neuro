@@ -14,6 +14,13 @@ interface Question1Props {
   onNext: () => void;
 }
 
+const genderOptions = [
+  { id: "woman", label: "Mulher" },
+  { id: "man", label: "Homem" },
+  { id: "non-binary", label: "Não-binárie" },
+  { id: "prefer-not-to-say", label: "Prefiro não responder" },
+];
+
 const Question1 = ({ data, updateData, onNext }: Question1Props) => {
   const { toast } = useToast();
 
@@ -21,8 +28,8 @@ const Question1 = ({ data, updateData, onNext }: Question1Props) => {
     updateData({ age: e.target.value });
   };
 
-  const handleGenderSelection = (value: string) => {
-    updateData({ gender: value });
+  const handleGenderSelection = (label: string) => {
+    updateData({ gender: label });
   };
 
   const handleNext = () => {
@@ -86,33 +93,23 @@ const Question1 = ({ data, updateData, onNext }: Question1Props) => {
                 <Label className="text-sm font-medium">
                   Como você se identifica em relação ao gênero?
                 </Label>
-                <RadioGroup value={data.gender} onValueChange={handleGenderSelection} className="mt-2">
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                      <RadioGroupItem value="woman" id="woman" />
-                      <Label htmlFor="woman" className="flex-1 cursor-pointer">
-                        Mulher
+                <RadioGroup 
+                  value={data.gender} 
+                  onValueChange={handleGenderSelection} 
+                  className="mt-2 space-y-3"
+                >
+                  {genderOptions.map((option, index) => (
+                    <div 
+                      key={option.id}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
+                      onClick={() => handleGenderSelection(option.label)}
+                    >
+                      <RadioGroupItem value={option.label} id={`gender-option-${index}`} />
+                      <Label htmlFor={`gender-option-${index}`} className="flex-1 cursor-pointer">
+                        {option.label}
                       </Label>
                     </div>
-                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                      <RadioGroupItem value="man" id="man" />
-                      <Label htmlFor="man" className="flex-1 cursor-pointer">
-                        Homem
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                      <RadioGroupItem value="non-binary" id="non-binary" />
-                      <Label htmlFor="non-binary" className="flex-1 cursor-pointer">
-                        Não-binárie
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                      <RadioGroupItem value="prefer-not-to-say" id="prefer-not-to-say" />
-                      <Label htmlFor="prefer-not-to-say" className="flex-1 cursor-pointer">
-                        Prefiro não responder
-                      </Label>
-                    </div>
-                  </div>
+                  ))}
                 </RadioGroup>
               </div>
             </div>

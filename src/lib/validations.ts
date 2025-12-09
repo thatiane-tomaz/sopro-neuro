@@ -34,21 +34,21 @@ export const ageSchema = z
     return age >= 18 && age <= 120;
   }, "Idade deve estar entre 18 e 120 anos");
 
-// Gender validation
-export const genderSchema = z.enum(
-  ["woman", "man", "non-binary", "prefer-not-to-say"],
-  { errorMap: () => ({ message: "Selecione uma opção válida" }) }
-);
+// Gender validation - accepts the actual labels
+export const genderSchema = z
+  .string()
+  .trim()
+  .min(1, "Selecione uma opção válida");
 
-// Smoking frequency validation
-export const smokingFrequencySchema = z.enum(
-  ["daily", "weekly", "occasionally", "rarely"],
-  { errorMap: () => ({ message: "Selecione uma frequência válida" }) }
-);
+// Smoking frequency validation - accepts the actual labels
+export const smokingFrequencySchema = z
+  .string()
+  .trim()
+  .min(1, "Selecione uma frequência válida");
 
 // Smoking types validation
 export const smokingTypesSchema = z
-  .array(z.string().trim().max(50, "Tipo de tabagismo inválido"))
+  .array(z.string().trim().max(100, "Tipo de tabagismo inválido"))
   .min(1, "Selecione pelo menos um tipo")
   .max(10, "Máximo de 10 tipos permitidos");
 

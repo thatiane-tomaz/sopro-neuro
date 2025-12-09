@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, CheckCircle } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { OnboardingData } from "@/pages/Onboarding";
 import { onboardingQuestion4Schema } from "@/lib/validations";
 import { useToast } from "@/hooks/use-toast";
@@ -15,23 +15,23 @@ interface Question4Props {
   onPrev: () => void;
 }
 
+const reasons = [
+  "Para aliviar estresse ou ansiedade",
+  "Para relaxar em momentos de pausa",
+  "Por hábito automático, sem perceber",
+  "Para socializar (com amigos, colegas, família)",
+  "Para se sentir mais concentrado(a)",
+  "Por prazer (sabor/sensação)",
+];
+
 const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
   const { toast } = useToast();
 
-  const reasons = [
-    { id: "estresse-ansiedade", label: "Para aliviar estresse ou ansiedade" },
-    { id: "relaxar-pausa", label: "Para relaxar em momentos de pausa" },
-    { id: "habito-automatico", label: "Por hábito automático, sem perceber" },
-    { id: "socializar", label: "Para socializar (com amigos, colegas, família)" },
-    { id: "concentracao", label: "Para se sentir mais concentrado(a)" },
-    { id: "prazer", label: "Por prazer (sabor/sensação)" }
-  ];
-
-  const handleReasonToggle = (reasonId: string, checked: boolean) => {
+  const handleReasonToggle = (reason: string, checked: boolean) => {
     const currentReasons = data.smokingReasons || [];
     const updatedReasons = checked
-      ? [...currentReasons, reasonId]
-      : currentReasons.filter(id => id !== reasonId);
+      ? [...currentReasons, reason]
+      : currentReasons.filter(r => r !== reason);
     
     updateData({ smokingReasons: updatedReasons });
   };
@@ -81,20 +81,21 @@ const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid gap-4">
-              {reasons.map((reason) => (
+              {reasons.map((reason, index) => (
                 <div 
-                  key={reason.id}
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors"
+                  key={index}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
+                  onClick={() => handleReasonToggle(reason, !data.smokingReasons?.includes(reason))}
                 >
                   <Checkbox
-                    id={reason.id}
-                    checked={data.smokingReasons?.includes(reason.id) || false}
+                    id={`reason-${index}`}
+                    checked={data.smokingReasons?.includes(reason) || false}
                     onCheckedChange={(checked) => 
-                      handleReasonToggle(reason.id, checked as boolean)
+                      handleReasonToggle(reason, checked as boolean)
                     }
                   />
-                  <Label htmlFor={reason.id} className="flex-1 cursor-pointer">
-                    {reason.label}
+                  <Label htmlFor={`reason-${index}`} className="flex-1 cursor-pointer">
+                    {reason}
                   </Label>
                 </div>
               ))}
