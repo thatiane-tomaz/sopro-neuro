@@ -15,8 +15,8 @@ interface Question1Props {
 }
 
 const genderOptions = [
-  { id: "woman", label: "Mulher" },
-  { id: "man", label: "Homem" },
+  { id: "feminine", label: "Feminino" },
+  { id: "masculine", label: "Masculino" },
   { id: "non-binary", label: "Não-binárie" },
   { id: "prefer-not-to-say", label: "Prefiro não responder" },
 ];
