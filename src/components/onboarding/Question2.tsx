@@ -15,6 +15,14 @@ interface Question2Props {
   onPrev: () => void;
 }
 
+const frequencyOptions = [
+  { value: "more-than-10", label: "Mais de 10 vezes por dia" },
+  { value: "5-to-10", label: "Entre 5 e 10 vezes por dia" },
+  { value: "less-than-5-daily", label: "Menos de 5 vezes por dia" },
+  { value: "less-than-5-weekly", label: "Menos de 5 vezes por semana" },
+  { value: "rarely", label: "Raramente" },
+];
+
 const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
   const { toast } = useToast();
 
@@ -63,39 +71,29 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <RadioGroup value={data.smokingFrequency} onValueChange={handleSelection}>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="more-than-10" id="more-than-10" />
-                  <Label htmlFor="more-than-10" className="flex-1 cursor-pointer">
-                    Mais de 10 vezes por dia
+            <RadioGroup 
+              value={data.smokingFrequency} 
+              onValueChange={handleSelection}
+              className="space-y-4"
+            >
+              {frequencyOptions.map((option, index) => (
+                <div 
+                  key={option.value}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
+                  onClick={() => handleSelection(option.value)}
+                >
+                  <RadioGroupItem 
+                    value={option.value} 
+                    id={`frequency-option-${index}`} 
+                  />
+                  <Label 
+                    htmlFor={`frequency-option-${index}`} 
+                    className="flex-1 cursor-pointer"
+                  >
+                    {option.label}
                   </Label>
                 </div>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="daily" id="daily" />
-                  <Label htmlFor="daily" className="flex-1 cursor-pointer">
-                    Entre 5 e 10 vezes por dia
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="weekly" id="weekly" />
-                  <Label htmlFor="weekly" className="flex-1 cursor-pointer">
-                    Menos de 5 vezes por dia
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="occasionally" id="occasionally" />
-                  <Label htmlFor="occasionally" className="flex-1 cursor-pointer">
-                    Menos de 5 vezes por semana
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors">
-                  <RadioGroupItem value="rarely" id="rarely" />
-                  <Label htmlFor="rarely" className="flex-1 cursor-pointer">
-                    Raramente
-                  </Label>
-                </div>
-              </div>
+              ))}
             </RadioGroup>
 
             <div className="flex gap-3">
