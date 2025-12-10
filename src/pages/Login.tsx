@@ -69,7 +69,7 @@ const Login = () => {
   // Show loading while checking
   if (user) {
     return <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-      <div className="text-white">Carregando...</div>
+      <div className="text-gray-700">Carregando...</div>
     </div>;
   }
 
@@ -166,7 +166,7 @@ const Login = () => {
             <div className="flex items-center justify-center mb-4">
               <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
             </div>
-            <p className="text-white/80">Recuperar senha</p>
+            <p className="text-gray-600">Recuperar senha</p>
           </div>
 
           <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
@@ -219,7 +219,7 @@ const Login = () => {
           <div className="flex items-center justify-center mb-4">
             <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
           </div>
-          <p className="text-white/80">Entre na sua jornada de transformação</p>
+          <p className="text-gray-600">Entre na sua jornada de transformação</p>
         </div>
 
         <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
@@ -351,13 +351,13 @@ const Login = () => {
         </Card>
 
         <div className="text-center text-sm">
-          <p className="text-white font-medium mb-1">Ao continuar, você concorda com nossos</p>
+          <p className="text-gray-600 font-medium mb-1">Ao continuar, você concorda com nossos</p>
           <p>
-            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-accent transition-smooth underline">
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-gray-700 font-semibold hover:text-primary transition-smooth underline">
               Termos de Uso
             </a>
             {" e "}
-            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-accent transition-smooth underline">
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-gray-700 font-semibold hover:text-primary transition-smooth underline">
               Política de Privacidade
             </a>
           </p>
