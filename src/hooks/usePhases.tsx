@@ -14,13 +14,21 @@ export const usePhases = () => {
   return useQuery({
     queryKey: ['phases'],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from('phases')
-        .select('*')
-        .order('phase_number', { ascending: true });
+      try {
+        const { data, error } = await (supabase as any)
+          .from('phases')
+          .select('*')
+          .order('phase_number', { ascending: true });
 
-      if (error) throw error;
-      return (data || []) as Phase[];
+        if (error) {
+          console.error('Error fetching phases:', error);
+          return [];
+        }
+        return (data || []) as Phase[];
+      } catch (error) {
+        console.error('Error in phases query:', error);
+        return [];
+      }
     },
   });
 };

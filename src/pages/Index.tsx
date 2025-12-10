@@ -8,9 +8,11 @@ const Index = () => {
   const { user, loading } = useAuth();
 
   useEffect(() => {
+    let isMounted = true;
+    
     const checkOnboardingStatus = async () => {
       if (!user) {
-        setHasCompletedOnboarding(false);
+        if (isMounted) setHasCompletedOnboarding(false);
         return;
       }
 
@@ -20,18 +22,24 @@ const Index = () => {
           .from('onboarding_responses')
           .select('id')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
-        setHasCompletedOnboarding(!!existingResponse && !error);
+        if (isMounted) {
+          setHasCompletedOnboarding(!!existingResponse && !error);
+        }
       } catch (error) {
         console.error('Error checking onboarding:', error);
-        setHasCompletedOnboarding(false);
+        if (isMounted) setHasCompletedOnboarding(false);
       }
     };
 
     if (!loading) {
       checkOnboardingStatus();
     }
+    
+    return () => {
+      isMounted = false;
+    };
   }, [user, loading]);
 
   if (loading || hasCompletedOnboarding === null) {

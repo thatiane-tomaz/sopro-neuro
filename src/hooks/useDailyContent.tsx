@@ -16,13 +16,21 @@ export const useDailyContent = () => {
   return useQuery({
     queryKey: ['daily_content'],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from('daily_content')
-        .select('*')
-        .order('day_number', { ascending: true });
+      try {
+        const { data, error } = await (supabase as any)
+          .from('daily_content')
+          .select('*')
+          .order('day_number', { ascending: true });
 
-      if (error) throw error;
-      return (data || []) as DailyContent[];
+        if (error) {
+          console.error('Error fetching daily content:', error);
+          return [];
+        }
+        return (data || []) as DailyContent[];
+      } catch (error) {
+        console.error('Error in daily content query:', error);
+        return [];
+      }
     },
   });
 };

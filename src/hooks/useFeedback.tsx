@@ -19,14 +19,22 @@ export const useFeedback = (userId: string | undefined) => {
     queryFn: async () => {
       if (!userId) return [];
       
-      const { data, error } = await supabase
-        .from("feedback_responses")
-        .select("*")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from("feedback_responses")
+          .select("*")
+          .eq("user_id", userId)
+          .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      return data || [];
+        if (error) {
+          console.error('Error fetching feedback:', error);
+          return [];
+        }
+        return data || [];
+      } catch (error) {
+        console.error('Error in feedback query:', error);
+        return [];
+      }
     },
     enabled: !!userId,
   });
