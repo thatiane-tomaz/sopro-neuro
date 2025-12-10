@@ -247,7 +247,7 @@ const Dashboard = () => {
         const checkoutStatus = urlParams.get('checkout');
         const sessionId = urlParams.get('session_id');
         
-        if (checkoutStatus === 'success' && sessionId && verifyPayment) {
+        if (checkoutStatus === 'success' && sessionId) {
           await verifyPayment(sessionId);
           // Clean up URL
           window.history.replaceState({}, '', '/dashboard');
@@ -262,7 +262,8 @@ const Dashboard = () => {
     return () => {
       isMounted = false;
     };
-  }, [user, verifyPayment]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
     console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });

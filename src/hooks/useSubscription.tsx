@@ -63,7 +63,7 @@ export const useSubscription = () => {
     };
   }, [checkSubscription]);
 
-  const verifyPayment = async (sessionId: string) => {
+  const verifyPayment = useCallback(async (sessionId: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('verify-payment', {
         body: { session_id: sessionId }
@@ -87,9 +87,9 @@ export const useSubscription = () => {
         variant: "destructive"
       });
     }
-  };
+  }, [checkSubscription, toast]);
 
-  const createCheckout = async () => {
+  const createCheckout = useCallback(async () => {
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout');
       
@@ -106,9 +106,9 @@ export const useSubscription = () => {
         variant: "destructive"
       });
     }
-  };
+  }, [toast]);
 
-  const openCustomerPortal = async () => {
+  const openCustomerPortal = useCallback(async () => {
     try {
       const { data, error } = await supabase.functions.invoke('customer-portal');
       
@@ -125,7 +125,7 @@ export const useSubscription = () => {
         variant: "destructive"
       });
     }
-  };
+  }, [toast]);
 
   const daysRemaining = subscriptionData?.subscription_end 
     ? Math.ceil((new Date(subscriptionData.subscription_end).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
