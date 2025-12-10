@@ -226,22 +226,42 @@ const Dashboard = () => {
     }
   };
 
-  // Initialize push notifications and check for payment success
   useEffect(() => {
-    if (user) {
-      initializePushNotifications().catch(console.error);
+    if (!user) return;
+    
+    let isMounted = true;
+
+    const initApp = async () => {
+      try {
+        // Initialize push notifications safely
+        await initializePushNotifications();
+      } catch (error) {
+        console.error('Error initializing push notifications:', error);
+      }
+      
+      if (!isMounted) return;
       
       // Check if returning from successful checkout
-      const urlParams = new URLSearchParams(window.location.search);
-      const checkoutStatus = urlParams.get('checkout');
-      const sessionId = urlParams.get('session_id');
-      
-      if (checkoutStatus === 'success' && sessionId && verifyPayment) {
-        verifyPayment(sessionId);
-        // Clean up URL
-        window.history.replaceState({}, '', '/dashboard');
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const checkoutStatus = urlParams.get('checkout');
+        const sessionId = urlParams.get('session_id');
+        
+        if (checkoutStatus === 'success' && sessionId && verifyPayment) {
+          await verifyPayment(sessionId);
+          // Clean up URL
+          window.history.replaceState({}, '', '/dashboard');
+        }
+      } catch (error) {
+        console.error('Error verifying payment:', error);
       }
-    }
+    };
+
+    initApp();
+
+    return () => {
+      isMounted = false;
+    };
   }, [user, verifyPayment]);
 
   if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
