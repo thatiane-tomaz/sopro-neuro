@@ -1,8 +1,27 @@
-import { PushNotifications } from '@capacitor/push-notifications';
 import { supabase } from '@/integrations/supabase/client';
-import { Capacitor } from '@capacitor/core';
 
 let isInitialized = false;
+
+// Dynamically import Capacitor only when needed
+const getCapacitor = async () => {
+  try {
+    const { Capacitor } = await import('@capacitor/core');
+    return Capacitor;
+  } catch (error) {
+    console.log('Capacitor not available');
+    return null;
+  }
+};
+
+const getPushNotifications = async () => {
+  try {
+    const { PushNotifications } = await import('@capacitor/push-notifications');
+    return PushNotifications;
+  } catch (error) {
+    console.log('Push notifications plugin not available');
+    return null;
+  }
+};
 
 export const initializePushNotifications = async () => {
   // Evitar inicialização duplicada
@@ -11,13 +30,22 @@ export const initializePushNotifications = async () => {
     return;
   }
 
-  // Apenas funciona em plataformas nativas
-  if (!Capacitor.isNativePlatform()) {
-    console.log('Push notifications só funcionam em apps nativos');
-    return;
-  }
-
   try {
+    const Capacitor = await getCapacitor();
+    
+    // Check if Capacitor is available and we're on native platform
+    if (!Capacitor || !Capacitor.isNativePlatform()) {
+      console.log('Push notifications só funcionam em apps nativos');
+      return;
+    }
+
+    const PushNotifications = await getPushNotifications();
+    
+    if (!PushNotifications) {
+      console.log('Plugin de push notifications não disponível');
+      return;
+    }
+
     // Remover todos os listeners existentes antes de adicionar novos
     await PushNotifications.removeAllListeners();
 
@@ -74,6 +102,7 @@ export const initializePushNotifications = async () => {
 
   } catch (error) {
     console.error('Erro ao inicializar push notifications:', error);
-    // Não propagar o erro para não quebrar o app
+    // Resetar flag para permitir nova tentativa
+    isInitialized = false;
   }
 };
