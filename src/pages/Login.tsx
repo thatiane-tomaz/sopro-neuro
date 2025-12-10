@@ -16,6 +16,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
   const { user, signIn, signUp } = useAuth();
   const { toast } = useToast();
 
@@ -119,6 +121,96 @@ const Login = () => {
     setIsLoading(false);
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!forgotEmail.trim()) {
+      toast({
+        title: "Email necessário",
+        description: "Por favor, informe seu email",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: `${window.location.origin}/login`,
+    });
+    
+    if (error) {
+      toast({
+        title: "Erro",
+        description: error.message,
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Email enviado",
+        description: "Verifique sua caixa de entrada para redefinir sua senha"
+      });
+      setShowForgotPassword(false);
+      setForgotEmail("");
+    }
+    
+    setIsLoading(false);
+  };
+
+  // Forgot password modal
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-6">
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-4">
+              <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
+            </div>
+            <p className="text-white/80">Recuperar senha</p>
+          </div>
+
+          <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
+            <CardHeader className="text-center">
+              <CardTitle>Esqueceu sua senha?</CardTitle>
+              <CardDescription>
+                Digite seu email e enviaremos um link para redefinir sua senha
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="forgot-email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input 
+                      id="forgot-email" 
+                      type="email" 
+                      placeholder="seu@email.com" 
+                      className="pl-10"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      required 
+                    />
+                  </div>
+                </div>
+                <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90 text-white shadow-lg" disabled={isLoading}>
+                  {isLoading ? "Enviando..." : "Enviar link de recuperação"}
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  className="w-full" 
+                  onClick={() => setShowForgotPassword(false)}
+                >
+                  Voltar ao login
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
@@ -171,6 +263,15 @@ const Login = () => {
                         required 
                       />
                     </div>
+                  </div>
+                  <div className="text-right">
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotPassword(true)}
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Esqueceu sua senha?
+                    </button>
                   </div>
                   <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90 text-white shadow-lg" disabled={isLoading}>
                     {isLoading ? "Entrando..." : "Entrar"}
