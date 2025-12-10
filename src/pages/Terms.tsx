@@ -69,12 +69,12 @@ const Terms = () => {
             </p>
             <ul className="list-disc pl-6 mb-4 space-y-2">
               <li><strong>Plano Gratuito:</strong> Acesso aos primeiros 2 dias do programa</li>
-              <li><strong>Plano Premium:</strong> Acesso completo aos 14 dias do programa</li>
+              <li><strong>Plano Premium:</strong> Acesso completo aos 14 dias do programa por 30 dias</li>
             </ul>
             <p className="mb-4">
-              O Plano Premium é cobrado mensalmente. Você paga para usar o serviço e pode cancelar 
-              a qualquer momento através das configurações da conta. Em caso de cancelamento, 
-              você terá direito a continuar com a inscrição ativa até o final do mês pago.
+              O Plano Premium é uma compra única que concede acesso por 30 dias. Não há cobrança 
+              recorrente ou renovação automática. Após o término dos 30 dias, caso deseje continuar 
+              utilizando o serviço, você deverá realizar um novo pagamento.
             </p>
             <p className="mb-4">
               Os valores e formas de pagamento são apresentados claramente no momento da contratação.
@@ -139,10 +139,12 @@ const Terms = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">9. Cancelamento e Encerramento</h2>
+            <h2 className="text-2xl font-semibold mb-4">9. Expiração do Acesso e Encerramento</h2>
             <p className="mb-4">
-              Você pode cancelar sua assinatura a qualquer momento. Nós podemos suspender ou 
-              encerrar sua conta em caso de violação destes termos.
+              O acesso Premium expira automaticamente após 30 dias da compra. Não há renovação 
+              automática nem cobranças recorrentes. Para continuar usando o serviço após a expiração, 
+              é necessário realizar uma nova compra. Nós podemos suspender ou encerrar sua conta 
+              em caso de violação destes termos.
             </p>
           </section>
 
