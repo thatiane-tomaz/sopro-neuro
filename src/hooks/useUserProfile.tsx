@@ -36,14 +36,6 @@ export const useUserProfile = () => {
 
         if (error) {
           console.error('Error fetching profile:', error);
-          // Don't show toast for common errors to avoid spam
-          if (error.code !== 'PGRST116') {
-            toast({
-              title: "Erro",
-              description: "Erro ao carregar perfil do usuário",
-              variant: "destructive"
-            });
-          }
         } else {
           setProfile(data as UserProfile | null);
         }
@@ -59,7 +51,8 @@ export const useUserProfile = () => {
     return () => {
       isMounted = false;
     };
-  }, [user, toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const hasAccessToDay = (day: number): boolean => {
     if (!profile) return false;

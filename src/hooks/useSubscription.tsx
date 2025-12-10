@@ -87,7 +87,8 @@ export const useSubscription = () => {
         variant: "destructive"
       });
     }
-  }, [checkSubscription, toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkSubscription]);
 
   const createCheckout = useCallback(async () => {
     try {
@@ -106,7 +107,8 @@ export const useSubscription = () => {
         variant: "destructive"
       });
     }
-  }, [toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const openCustomerPortal = useCallback(async () => {
     try {
@@ -125,7 +127,8 @@ export const useSubscription = () => {
         variant: "destructive"
       });
     }
-  }, [toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const daysRemaining = subscriptionData?.subscription_end 
     ? Math.ceil((new Date(subscriptionData.subscription_end).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
