@@ -15,7 +15,24 @@ import DeleteAccount from "./pages/DeleteAccount";
 import NotFound from "./pages/NotFound";
 import Install from "./pages/Install";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (garbage collection)
+      refetchOnWindowFocus: false,
+      // Prevent throwing errors that crash the app
+      throwOnError: false,
+    },
+    mutations: {
+      retry: 1,
+      // Prevent throwing errors that crash the app
+      throwOnError: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

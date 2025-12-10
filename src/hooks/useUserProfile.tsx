@@ -17,34 +17,48 @@ export const useUserProfile = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
+    let isMounted = true;
 
     const fetchProfile = async () => {
+      if (!user) {
+        if (isMounted) setLoading(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
-        if (error) throw error;
-        setProfile(data as UserProfile);
+        if (!isMounted) return;
+
+        if (error) {
+          console.error('Error fetching profile:', error);
+          // Don't show toast for common errors to avoid spam
+          if (error.code !== 'PGRST116') {
+            toast({
+              title: "Erro",
+              description: "Erro ao carregar perfil do usuário",
+              variant: "destructive"
+            });
+          }
+        } else {
+          setProfile(data as UserProfile | null);
+        }
       } catch (error) {
         console.error('Error fetching profile:', error);
-        toast({
-          title: "Erro",
-          description: "Erro ao carregar perfil do usuário",
-          variant: "destructive"
-        });
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchProfile();
+
+    return () => {
+      isMounted = false;
+    };
   }, [user, toast]);
 
   const hasAccessToDay = (day: number): boolean => {
