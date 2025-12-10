@@ -23,39 +23,66 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { toast } = useToast();
 
   useEffect(() => {
+    let isMounted = true;
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        if (!isMounted) return;
+        
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
 
         // Track app sessions when user signs in
         if (event === 'SIGNED_IN' && session?.user) {
-          setTimeout(() => {
-            supabase
-              .from('app_sessions')
-              .insert({ user_id: session.user.id })
-              .then(({ error }) => {
+          // Use requestAnimationFrame to defer non-critical operations
+          requestAnimationFrame(() => {
+            if (!isMounted) return;
+            
+            // Track app session - wrapped in async IIFE for proper error handling
+            (async () => {
+              try {
+                const { error } = await supabase
+                  .from('app_sessions')
+                  .insert({ user_id: session.user.id });
                 if (error) console.error('Error tracking app session:', error);
-              });
+              } catch (e) {
+                console.error('Error tracking app session:', e);
+              }
+            })();
 
             // Check subscription status after sign in
-            supabase.functions.invoke('check-subscription')
-              .catch((error) => console.error('Error checking subscription:', error));
-          }, 0);
+            (async () => {
+              try {
+                await supabase.functions.invoke('check-subscription');
+              } catch (e) {
+                console.error('Error checking subscription:', e);
+              }
+            })();
+          });
         }
       }
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    (async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!isMounted) return;
+        setSession(session);
+        setUser(session?.user ?? null);
+      } catch (error) {
+        console.error('Error getting session:', error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    })();
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, displayName?: string) => {

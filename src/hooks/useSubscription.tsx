@@ -25,22 +25,42 @@ export const useSubscription = () => {
     try {
       const { data, error } = await supabase.functions.invoke('check-subscription');
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error checking subscription:', error);
+        // Don't throw, just log - subscription check failure shouldn't crash the app
+        return;
+      }
       
       setSubscriptionData(data);
     } catch (error) {
       console.error('Error checking subscription:', error);
+      // Silently fail - subscription check is not critical
     } finally {
       setLoading(false);
     }
   }, [user, session]);
 
   useEffect(() => {
-    checkSubscription();
+    let isMounted = true;
+    
+    const doCheck = async () => {
+      if (!isMounted) return;
+      await checkSubscription();
+    };
+    
+    doCheck();
     
     // Auto-refresh every minute
-    const interval = setInterval(checkSubscription, 60000);
-    return () => clearInterval(interval);
+    const interval = setInterval(() => {
+      if (isMounted) {
+        checkSubscription();
+      }
+    }, 60000);
+    
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, [checkSubscription]);
 
   const verifyPayment = async (sessionId: string) => {
