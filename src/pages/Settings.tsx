@@ -94,25 +94,34 @@ const Settings = () => {
     
     setIsLoading(true);
 
-    const { error } = await supabase
-      .from('profiles')
-      .update({ display_name: displayNameData.displayName })
-      .eq('user_id', user.id);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ display_name: displayNameData.displayName })
+        .eq('user_id', user.id);
 
-    if (error) {
+      if (error) {
+        toast({
+          title: "Erro",
+          description: error.message,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Sucesso",
+          description: "Nome atualizado com sucesso"
+        });
+      }
+    } catch (error) {
+      console.error('Error updating display name:', error);
       toast({
         title: "Erro",
-        description: error.message,
+        description: "Erro ao atualizar nome. Tente novamente.",
         variant: "destructive"
       });
-    } else {
-      toast({
-        title: "Sucesso",
-        description: "Nome atualizado com sucesso"
-      });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const handleSignOut = async () => {
