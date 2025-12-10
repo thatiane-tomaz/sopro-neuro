@@ -1,10 +1,8 @@
 import { useAuth } from './useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from './use-toast';
 
 export const useContentTracking = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
 
   const trackContentView = async (contentType: 'video' | 'hypnosis', contentIdentifier: string) => {
     if (!user) return;
@@ -18,16 +16,15 @@ export const useContentTracking = () => {
           content_identifier: contentIdentifier
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error tracking content view:', error);
+        return; // Silently fail - não crashar o app por erro de tracking
+      }
 
       console.log(`Tracked ${contentType} view: ${contentIdentifier}`);
     } catch (error) {
       console.error('Error tracking content view:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao rastrear visualização do conteúdo",
-        variant: "destructive"
-      });
+      // Silently fail - tracking não deve crashar o app
     }
   };
 

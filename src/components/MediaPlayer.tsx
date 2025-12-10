@@ -90,16 +90,22 @@ const MediaPlayer = ({
     };
   }, [fileUrl, onProgress, onComplete]);
 
-  const handlePlayPause = () => {
+  const handlePlayPause = async () => {
     const media = mediaRef.current;
     if (!media) return;
 
-    if (isPlaying) {
-      media.pause();
-    } else {
-      media.play();
+    try {
+      if (isPlaying) {
+        media.pause();
+        setIsPlaying(false);
+      } else {
+        await media.play();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.error('Error playing media:', error);
+      setError('Erro ao reproduzir mídia. Tente novamente.');
     }
-    setIsPlaying(!isPlaying);
   };
 
   const formatTime = (time: number) => {
