@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signUp = async (email: string, password: string, displayName?: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -100,11 +100,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     if (error) {
+      // Handle specific error for user already exists
+      if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+        toast({
+          title: "Email já cadastrado",
+          description: "Este email já possui uma conta. Por favor, faça login.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Erro no cadastro",
+          description: error.message,
+          variant: "destructive"
+        });
+      }
+    } else if (data.user && !data.session) {
+      // User exists but email not confirmed (Supabase returns user without session in this case)
       toast({
-        title: "Erro no cadastro",
-        description: error.message,
+        title: "Email já cadastrado",
+        description: "Este email já possui uma conta. Por favor, faça login ou verifique seu email.",
         variant: "destructive"
       });
+      return { error: new Error("User already exists") };
     } else {
       toast({
         title: "Cadastro realizado",
