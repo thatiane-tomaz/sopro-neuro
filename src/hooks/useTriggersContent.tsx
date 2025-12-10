@@ -18,14 +18,22 @@ export const useTriggersContent = () => {
   return useQuery({
     queryKey: ['triggers-content'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('triggers_content')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order');
+      try {
+        const { data, error } = await supabase
+          .from('triggers_content')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order');
 
-      if (error) throw error;
-      return data as TriggerContent[];
+        if (error) {
+          console.error('Error fetching triggers content:', error);
+          return [];
+        }
+        return (data || []) as TriggerContent[];
+      } catch (error) {
+        console.error('Error in triggers content query:', error);
+        return [];
+      }
     },
   });
 };

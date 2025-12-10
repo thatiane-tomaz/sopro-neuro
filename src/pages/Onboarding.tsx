@@ -34,9 +34,11 @@ const Onboarding = () => {
 
   // Check if user already completed onboarding
   useEffect(() => {
+    let isMounted = true;
+    
     const checkOnboardingStatus = async () => {
       if (!user) {
-        setCheckingOnboarding(false);
+        if (isMounted) setCheckingOnboarding(false);
         return;
       }
 
@@ -47,20 +49,27 @@ const Onboarding = () => {
           .eq('user_id', user.id)
           .maybeSingle();
 
+        if (!isMounted) return;
+
         if (existingResponse && !error) {
           // User already completed onboarding, redirect to dashboard
           window.location.href = "/dashboard";
+        } else {
+          setCheckingOnboarding(false);
         }
       } catch (error) {
         console.error('Error checking onboarding:', error);
-      } finally {
-        setCheckingOnboarding(false);
+        if (isMounted) setCheckingOnboarding(false);
       }
     };
 
     if (!loading) {
       checkOnboardingStatus();
     }
+    
+    return () => {
+      isMounted = false;
+    };
   }, [user, loading]);
 
   // Redirect to login if not authenticated

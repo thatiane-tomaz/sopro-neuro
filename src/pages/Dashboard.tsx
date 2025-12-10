@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useJourneyTracking } from '@/hooks/useJourneyTracking';
@@ -278,8 +278,7 @@ const Dashboard = () => {
 
   if (!user) {
     console.log('No user, redirecting to login');
-    navigate('/login');
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
   console.log('Rendering dashboard content');

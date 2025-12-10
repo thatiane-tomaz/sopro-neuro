@@ -24,14 +24,22 @@ export const useJourneyTracking = () => {
     queryFn: async () => {
       if (!user) return [];
       
-      const { data, error } = await supabase
-        .from('journey_tracking')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from('journey_tracking')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      return data as JourneyTrack[];
+        if (error) {
+          console.error('Error fetching journey tracking:', error);
+          return [];
+        }
+        return (data || []) as JourneyTrack[];
+      } catch (error) {
+        console.error('Error in journey tracking query:', error);
+        return [];
+      }
     },
     enabled: !!user,
   });
@@ -39,24 +47,38 @@ export const useJourneyTracking = () => {
   // Start tracking an interaction
   const startTracking = useMutation({
     mutationFn: async ({ interactionType }: { interactionType: string }) => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) {
+        console.error('User not authenticated for tracking');
+        return null;
+      }
 
-      const { data, error } = await supabase
-        .from('journey_tracking')
-        .insert({
-          user_id: user.id,
-          interaction_type: interactionType,
-          started_at: new Date().toISOString(),
-          progress_percentage: 0,
-        })
-        .select()
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from('journey_tracking')
+          .insert({
+            user_id: user.id,
+            interaction_type: interactionType,
+            started_at: new Date().toISOString(),
+            progress_percentage: 0,
+          })
+          .select()
+          .maybeSingle();
 
-      if (error) throw error;
-      return data;
+        if (error) {
+          console.error('Error starting tracking:', error);
+          return null;
+        }
+        return data;
+      } catch (error) {
+        console.error('Error in startTracking:', error);
+        return null;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['journey-tracking'] });
+    },
+    onError: (error) => {
+      console.error('Mutation error in startTracking:', error);
     },
   });
 
@@ -71,26 +93,42 @@ export const useJourneyTracking = () => {
       progressPercentage: number;
       finished: boolean;
     }) => {
-      const updateData: any = {
-        progress_percentage: progressPercentage,
-      };
-
-      if (finished) {
-        updateData.finished_at = new Date().toISOString();
+      if (!trackingId) {
+        console.error('No trackingId provided');
+        return null;
       }
 
-      const { data, error } = await supabase
-        .from('journey_tracking')
-        .update(updateData)
-        .eq('id', trackingId)
-        .select()
-        .single();
+      try {
+        const updateData: any = {
+          progress_percentage: progressPercentage,
+        };
 
-      if (error) throw error;
-      return data;
+        if (finished) {
+          updateData.finished_at = new Date().toISOString();
+        }
+
+        const { data, error } = await supabase
+          .from('journey_tracking')
+          .update(updateData)
+          .eq('id', trackingId)
+          .select()
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error updating progress:', error);
+          return null;
+        }
+        return data;
+      } catch (error) {
+        console.error('Error in updateProgress:', error);
+        return null;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['journey-tracking'] });
+    },
+    onError: (error) => {
+      console.error('Mutation error in updateProgress:', error);
     },
   });
 

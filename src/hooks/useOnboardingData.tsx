@@ -20,16 +20,24 @@ export const useOnboardingData = () => {
   return useQuery({
     queryKey: ['onboarding_response', user?.id],
     queryFn: async () => {
-      if (!user) throw new Error('User not authenticated');
+      if (!user) return null;
       
-      const { data, error } = await supabase
-        .from('onboarding_responses')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      try {
+        const { data, error } = await supabase
+          .from('onboarding_responses')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
 
-      if (error) throw error;
-      return data as OnboardingResponse | null;
+        if (error) {
+          console.error('Error fetching onboarding data:', error);
+          return null;
+        }
+        return data as OnboardingResponse | null;
+      } catch (error) {
+        console.error('Error in onboarding data query:', error);
+        return null;
+      }
     },
     enabled: !!user,
   });

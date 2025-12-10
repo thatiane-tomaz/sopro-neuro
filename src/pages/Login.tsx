@@ -21,25 +21,47 @@ const Login = () => {
 
   // Check if user has completed onboarding
   useEffect(() => {
+    let isMounted = true;
+    
     const checkOnboarding = async () => {
       if (!user) return;
 
-      const { data: onboardingData } = await supabase
-        .from('onboarding_responses')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      try {
+        const { data: onboardingData, error } = await supabase
+          .from('onboarding_responses')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
 
-      if (onboardingData) {
-        // User completed onboarding, go to dashboard
-        window.location.href = "/dashboard";
-      } else {
-        // User needs to complete onboarding
-        window.location.href = "/onboarding";
+        if (!isMounted) return;
+
+        if (error) {
+          console.error('Error checking onboarding:', error);
+          // On error, still try to go to onboarding
+          window.location.href = "/onboarding";
+          return;
+        }
+
+        if (onboardingData) {
+          // User completed onboarding, go to dashboard
+          window.location.href = "/dashboard";
+        } else {
+          // User needs to complete onboarding
+          window.location.href = "/onboarding";
+        }
+      } catch (error) {
+        console.error('Error in checkOnboarding:', error);
+        if (isMounted) {
+          window.location.href = "/onboarding";
+        }
       }
     };
 
     checkOnboarding();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
 
   // Show loading while checking

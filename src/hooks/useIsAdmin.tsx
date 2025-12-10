@@ -8,10 +8,14 @@ export const useIsAdmin = () => {
   const { user } = useAuth();
 
   useEffect(() => {
+    let isMounted = true;
+    
     const checkAdminRole = async () => {
       if (!user) {
-        setIsAdmin(false);
-        setLoading(false);
+        if (isMounted) {
+          setIsAdmin(false);
+          setLoading(false);
+        }
         return;
       }
 
@@ -23,6 +27,8 @@ export const useIsAdmin = () => {
           .eq('role', 'admin')
           .maybeSingle();
 
+        if (!isMounted) return;
+
         if (error) {
           console.error('Error checking admin role:', error);
           setIsAdmin(false);
@@ -31,13 +37,17 @@ export const useIsAdmin = () => {
         }
       } catch (error) {
         console.error('Error in checkAdminRole:', error);
-        setIsAdmin(false);
+        if (isMounted) setIsAdmin(false);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     checkAdminRole();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
 
   return { isAdmin, loading };
