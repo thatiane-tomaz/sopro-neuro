@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 interface Story {
   id: number;
   title: string;
+  phase?: string;
   highlights?: { icon: string; text: string; phase?: string }[];
   description?: string;
   footer?: string;
@@ -34,13 +35,14 @@ const stories: Story[] = [
   },
   {
     id: 2,
+    phase: "Fase 1",
     title: "Transformando Crenças",
-    description: "Em cada dia você irá trabalhar uma crença:",
+    description: "Em cada dia você terá:",
     highlights: [
-      { icon: "video", text: "Vídeo\n\nExplica, de forma rápida e científica, por que o cigarro não traz benefícios reais." },
-      { icon: "headphones", text: "Hipnose\n\nReforça essa compreensão e ajuda a reduzir a sensação de \"perda\"." }
+      { icon: "number-1", text: "Vídeo\n\nExplica, de forma rápida e científica, por que o cigarro não traz benefícios reais." },
+      { icon: "number-2", text: "Hipnose\n\nReforça essa compreensão e ajuda a reduzir a sensação de \"perda\"." }
     ],
-    footer: "Ao final desta fase, você fumará seu último cigarro já mais confiante de que não está perdendo nada"
+    footer: "Ao final desta fase, você fumará seu último cigarro já **mais confiante** de que **não está perdendo nada**"
   },
   {
     id: 3,
@@ -147,6 +149,15 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
       <div className="relative w-full max-w-md h-full md:h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
         <div className="absolute inset-0 flex flex-col items-center p-6 pt-12 pb-24 text-center overflow-y-auto">
           <div className="animate-fade-in max-w-lg w-full">
+            {/* Story-level phase badge */}
+            {stories[currentStory].phase && (
+              <div className="flex justify-center mb-3">
+                <span className="bg-white/20 text-white text-sm font-semibold px-4 py-1 rounded-full">
+                  {stories[currentStory].phase}
+                </span>
+              </div>
+            )}
+            
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
               {stories[currentStory].title}
             </h2>
@@ -200,6 +211,8 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                           {highlight.icon === 'repeat' && <RefreshCw className="w-6 h-6 text-white" />}
                           {highlight.icon === 'armchair' && <Armchair className="w-6 h-6 text-white" />}
                           {highlight.icon === 'clock' && <Clock className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'number-1' && <span className="w-6 h-6 bg-white/30 rounded-full flex items-center justify-center text-white font-bold text-sm">1</span>}
+                          {highlight.icon === 'number-2' && <span className="w-6 h-6 bg-white/30 rounded-full flex items-center justify-center text-white font-bold text-sm">2</span>}
                         </div>
                         <h3 className="text-white font-bold text-lg flex-1">
                           {title}
@@ -221,9 +234,11 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
             )}
 
             {stories[currentStory].footer && (
-              <p className="text-lg text-white font-semibold mt-6 bg-white/20 rounded-full px-6 py-2 inline-block">
-                {stories[currentStory].footer}
-              </p>
+              <div className="mt-6 border-l-4 border-white/50 pl-4 py-2 text-left">
+                <p className="text-base text-white/90 italic leading-relaxed">
+                  {renderBoldText(stories[currentStory].footer)}
+                </p>
+              </div>
             )}
 
             {/* Start button on last story */}
