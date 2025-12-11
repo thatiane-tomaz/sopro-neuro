@@ -165,7 +165,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                     return (
                       <div key={index} className="flex flex-col items-center gap-2 py-4">
                         <Sparkles className="w-10 h-10 text-white" />
-                        <p className="text-white font-semibold text-lg">
+                        <p className="text-white font-semibold text-lg text-center">
                           {highlight.text}
                         </p>
                       </div>
