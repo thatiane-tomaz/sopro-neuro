@@ -293,7 +293,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         {/* Header */}
-        <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 border-b mb-6">
+        <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 shadow-sm mb-6 rounded-b-xl">
           <div className="px-4 py-3">
             <div className="flex items-center justify-between mb-3">
               <img src={soproLogo} alt="Sopro" className="h-8 w-auto object-contain" />
@@ -349,8 +349,8 @@ const Dashboard = () => {
             
 {!isPremium && (
               <>
-                <div className="border-t mb-3" />
-                <div className="flex items-center gap-2 bg-purple-500/10 rounded-lg px-3 py-2 border border-purple-500/30">
+                <div className="mb-3" />
+                <div className="flex items-center gap-2 bg-purple-500/10 rounded-lg px-3 py-2 shadow-sm">
                   <Badge variant="secondary" className="text-xs whitespace-nowrap bg-purple-500/20 text-purple-900 dark:text-purple-100">
                     {currentDay <= 2 ? 'Período Gratuito - 2 Dias' : 'Acesso Expirado'}
                   </Badge>
@@ -363,8 +363,8 @@ const Dashboard = () => {
             
             {isPremium && daysRemaining <= 7 && (
               <>
-                <div className="border-t mb-3" />
-                <div className="flex items-center gap-2 bg-accent/10 rounded-lg px-3 py-2 border border-accent/30">
+                <div className="mb-3" />
+                <div className="flex items-center gap-2 bg-accent/10 rounded-lg px-3 py-2 shadow-sm">
                   <Sparkles className="h-4 w-4 text-accent" />
                   <span className="text-xs text-muted-foreground">
                     Seu acesso expira em {daysRemaining} {daysRemaining === 1 ? 'dia' : 'dias'}
@@ -394,7 +394,7 @@ const Dashboard = () => {
         {currentDay === 1 && (
           <div className="mb-8">
             <div 
-              className="relative overflow-hidden rounded-xl border-2 border-primary shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4"
+              className="relative overflow-hidden rounded-xl shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4"
               onClick={() => setShowStartHere(true)}
             >
               <div className="flex items-center justify-between gap-4">
@@ -419,7 +419,7 @@ const Dashboard = () => {
           <div className="mb-6 space-y-4">
             {/* Welcome Title */}
             {dailyContent.find(d => d.day_number === currentDay)?.welcome_title && (
-              <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-lg p-4 border border-primary/10">
+              <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-lg p-4 shadow-sm">
                 <p className="text-sm text-navy font-medium text-center leading-relaxed whitespace-pre-line">
                   {dailyContent.find(d => d.day_number === currentDay)?.welcome_title}
                 </p>
@@ -428,14 +428,14 @@ const Dashboard = () => {
             
             {/* Savings Display */}
             {calculateSavings !== null && (
-              <div className="bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-lg p-4 border border-accent/10">
+              <div className="bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-lg p-4 shadow-sm">
                 <p className="text-sm text-navy/70 text-center flex items-center justify-center gap-2">
                   <Coins className="w-4 h-4 text-navy" />
                   Você já economizou cerca de <span className="font-semibold text-navy text-base">R${calculateSavings.current}</span>
                 </p>
                 
                 {/* Savings Projection */}
-                <div className="flex items-center justify-center gap-4 mt-3 pt-3 border-t border-border/30">
+                <div className="flex items-center justify-center gap-4 mt-3 pt-3">
                   <div className="text-center">
                     <p className="text-xs text-navy/60">Em 6 meses</p>
                     <p className="text-sm font-semibold text-navy">R${calculateSavings.sixMonths}</p>
@@ -466,7 +466,7 @@ const Dashboard = () => {
             );
             
             return (
-              <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border border-border shadow-lg transition-all duration-300 ${
+              <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg transition-all duration-300 ${
                 isPhase1Completed ? 'p-4 opacity-70' : 'p-4 md:p-6'
               }`}>
                 <div 
@@ -576,12 +576,12 @@ const Dashboard = () => {
                       return (
                         <CarouselItem key={day} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                           <div 
-                            className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 ${
+                            className={`group relative overflow-hidden rounded-2xl border-0 transition-all duration-300 ${
                               isLocked 
-                                ? 'opacity-50 cursor-not-allowed border-border/50 bg-card/30' 
+                                ? 'opacity-50 cursor-not-allowed bg-card/30 shadow-sm' 
                                 : isCurrent
-                                  ? 'border-accent/40 shadow-lg shadow-accent/10 cursor-pointer hover:shadow-xl hover:shadow-accent/20 hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-primary/5'
-                                  : 'border-border/50 opacity-70 cursor-pointer hover:opacity-100 hover:-translate-y-0.5 bg-card/50 backdrop-blur-sm'
+                                  ? 'shadow-xl shadow-accent/20 cursor-pointer hover:shadow-2xl hover:shadow-accent/30 hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-primary/5'
+                                  : 'shadow-md opacity-70 cursor-pointer hover:opacity-100 hover:-translate-y-0.5 hover:shadow-lg bg-card/50 backdrop-blur-sm'
                             }`}
                           >
                             <div className="relative aspect-video overflow-hidden">
@@ -704,7 +704,7 @@ const Dashboard = () => {
         {/* Premium Upgrade CTA - Bottom */}
         {profile?.subscription_status === 'free' && currentDay <= 2 && (
           <div className="mt-12 mb-8">
-            <div className="relative overflow-hidden rounded-xl border bg-card/50 backdrop-blur-sm p-4">
+            <div className="relative overflow-hidden rounded-xl shadow-lg bg-card/50 backdrop-blur-sm p-4">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <Crown className="h-5 w-5 text-accent" />
@@ -747,7 +747,7 @@ const Dashboard = () => {
                   {triggers?.filter(t => t.section === 'initial').map((trigger) => (
                     <Card
                       key={trigger.id}
-                      className="overflow-hidden border-border bg-accent/30 backdrop-blur-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                      className="overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 group cursor-pointer"
                       onClick={() =>
                         setSelectedMedia({
                           title: trigger.title,
@@ -808,7 +808,7 @@ const Dashboard = () => {
                   {triggers?.filter(t => t.section === 'post_cigarette').map((trigger) => (
                     <Card
                       key={trigger.id}
-                      className={`overflow-hidden border-border bg-accent/30 backdrop-blur-sm transition-all duration-300 group ${
+                      className={`overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md transition-all duration-300 group ${
                         currentDay >= 8 ? 'hover:shadow-lg cursor-pointer' : 'cursor-not-allowed'
                       }`}
                       onClick={() => {
