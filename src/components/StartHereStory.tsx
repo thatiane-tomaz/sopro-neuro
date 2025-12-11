@@ -19,11 +19,11 @@ const stories: Story[] = [
       { 
         icon: "brain", 
         phase: "Fase 1",
-        text: "Transformando Crenças\n\n• Dissolve **crenças** que te prendem ao cigarro\n• Entenda que o cigarro **nunca ofereceu bem-estar** real\n• Preparação **leve e racional**"
+        text: "Transformando Crenças\n\n• Dissolva **crenças** que te prendem ao cigarro\n• Entenda que o cigarro **nunca ofereceu bem-estar** real"
       },
       { 
         icon: "sparkles-special", 
-        text: "Fume o último cigarro"
+        text: "Após a primeira fase, faça o ritual do último cigarro"
       },
       { 
         icon: "wind", 
