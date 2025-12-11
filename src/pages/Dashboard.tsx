@@ -83,7 +83,7 @@ const Dashboard = () => {
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
   const { data: onboardingData } = useOnboardingData();
-  const { isPremium, openCustomerPortal, verifyPayment, daysRemaining } = useSubscription();
+  const { isPremium, openCustomerPortal, verifyPayment, daysRemaining, createCheckout } = useSubscription();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
     fileUrl: string;
@@ -350,15 +350,11 @@ const Dashboard = () => {
                       Conta
                     </DropdownMenuItem>
                     {!isPremium && (
-                      <DropdownMenuItem onClick={() => navigate('/settings')}>
+                      <DropdownMenuItem onClick={createCheckout}>
                         <Crown className="h-4 w-4 mr-2" />
                         Renovar Acesso
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem onClick={() => navigate('/settings')}>
-                      <Shield className="h-4 w-4 mr-2" />
-                      Segurança
-                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="h-4 w-4 mr-2" />
                       Sair
