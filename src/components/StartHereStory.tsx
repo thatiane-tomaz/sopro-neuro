@@ -23,7 +23,7 @@ const stories: Story[] = [
       },
       { 
         icon: "sparkles-special", 
-        text: "Após a primeira fase, faça o ritual do último cigarro"
+        text: "Após a Fase 1, faça o ritual do último cigarro"
       },
       { 
         icon: "wind", 
