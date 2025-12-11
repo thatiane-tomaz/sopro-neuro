@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 interface Story {
   id: number;
   title: string;
-  highlights?: { icon: string; text: string }[];
+  highlights?: { icon: string; text: string; phase?: string }[];
   description?: string;
   footer?: string;
 }
@@ -18,7 +18,8 @@ const stories: Story[] = [
     highlights: [
       { 
         icon: "brain", 
-        text: "Transformando Crenças\n\nVocê vai dissolver as crenças que te fazem sentir que está perdendo algo. Nessa fase, você entende — de forma leve e racional — que o cigarro nunca ofereceu bem-estar real."
+        phase: "Fase 1",
+        text: "Transformando Crenças\n\n• Dissolve **crenças** que te prendem ao cigarro\n• Entenda que o cigarro **nunca ofereceu bem-estar** real\n• Preparação **leve e racional**"
       },
       { 
         icon: "sparkles-special", 
@@ -26,7 +27,8 @@ const stories: Story[] = [
       },
       { 
         icon: "wind", 
-        text: "Respire Livre\n\nAqui, você vai treinar o corpo a voltar ao seu ritmo natural, diminuir a ansiedade em minutos e criar uma nova sensação de controle."
+        phase: "Fase 2",
+        text: "Respire Livre\n\n• Treine o corpo a voltar ao **ritmo natural**\n• Diminua a **ansiedade** em minutos\n• Crie nova sensação de **controle**"
       }
     ]
   },
@@ -88,6 +90,17 @@ interface StartHereStoryProps {
   onClose: () => void;
 }
 
+// Helper function to render text with **bold** markers
+const renderBoldText = (text: string) => {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={index} className="font-bold">{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+};
+
 const StartHereStory = ({ onClose }: StartHereStoryProps) => {
   const [currentStory, setCurrentStory] = useState(0);
 
@@ -132,28 +145,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
       {/* Story content */}
       <div className="relative w-full max-w-md h-full md:h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
-        {/* Navigation arrows */}
-        {currentStory > 0 && (
-          <button
-            onClick={prevStory}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-gray-400 hover:text-gray-300 transition-colors"
-            aria-label="Anterior"
-          >
-            <ChevronLeft className="h-10 w-10" />
-          </button>
-        )}
-        
-        {currentStory < stories.length - 1 && (
-          <button
-            onClick={nextStory}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-gray-400 hover:text-gray-300 transition-colors"
-            aria-label="Próximo"
-          >
-            <ChevronRight className="h-10 w-10" />
-          </button>
-        )}
-        
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center overflow-y-auto">
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 pb-24 text-center overflow-y-auto">
           <div className="animate-fade-in max-w-lg w-full">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
               {stories[currentStory].title}
@@ -187,6 +179,15 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   
                   return (
                     <div key={index} className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                      {/* Phase badge */}
+                      {highlight.phase && (
+                        <div className="flex justify-center mb-2">
+                          <span className="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                            {highlight.phase}
+                          </span>
+                        </div>
+                      )}
+                      
                       <div className="flex items-start gap-3 mb-2">
                         <div className="flex-shrink-0 w-6 h-6 mt-0.5">
                           {highlight.icon === 'brain' && <Brain className="w-6 h-6 text-white" />}
@@ -205,9 +206,13 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                         </h3>
                       </div>
                       {description && (
-                        <p className="text-white/90 text-base leading-relaxed ml-9">
-                          {description}
-                        </p>
+                        <div className="text-white/90 text-base leading-relaxed ml-9">
+                          {description.split('\n').map((line, i) => (
+                            <p key={i} className="mb-1">
+                              {renderBoldText(line)}
+                            </p>
+                          ))}
+                        </div>
                       )}
                     </div>
                   );
@@ -236,6 +241,30 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
               </Button>
             )}
           </div>
+        </div>
+
+        {/* Navigation arrows at bottom */}
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-8 z-10">
+          <button
+            onClick={prevStory}
+            disabled={currentStory === 0}
+            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+              currentStory === 0 
+                ? 'bg-white/10 text-white/30 cursor-not-allowed' 
+                : 'bg-white/20 text-white hover:bg-white/30'
+            }`}
+            aria-label="Anterior"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          
+          <button
+            onClick={nextStory}
+            className="w-12 h-12 rounded-full bg-white/30 text-white hover:bg-white/40 flex items-center justify-center transition-all"
+            aria-label="Próximo"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
         </div>
       </div>
     </div>
