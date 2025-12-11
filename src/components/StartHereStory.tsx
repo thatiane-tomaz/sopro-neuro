@@ -40,7 +40,7 @@ const stories: Story[] = [
     description: "Em cada dia você terá:",
     highlights: [
       { icon: "number-1", text: "Vídeo\n\nExplica, de forma rápida e científica, por que o cigarro não traz benefícios reais." },
-      { icon: "number-2", text: "Hipnose\n\nReforça essa compreensão e ajuda a reduzir a sensação de \"perda\"." }
+      { icon: "number-1", text: "Hipnose\n\nReforça essa compreensão e ajuda a reduzir a sensação de \"perda\"." }
     ],
     footer: "Ao final desta fase, você fumará seu último cigarro já **mais confiante** de que **não está perdendo nada**"
   },
@@ -234,8 +234,8 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
             )}
 
             {stories[currentStory].footer && (
-              <div className="mt-6 border-l-4 border-white/50 pl-4 py-2 text-left">
-                <p className="text-base text-white/90 italic leading-relaxed">
+              <div className="mt-6 bg-white/15 backdrop-blur-sm rounded-lg p-4 text-center">
+                <p className="text-lg text-white font-medium leading-relaxed">
                   {renderBoldText(stories[currentStory].footer)}
                 </p>
               </div>
