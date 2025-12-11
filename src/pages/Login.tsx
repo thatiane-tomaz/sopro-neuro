@@ -3,7 +3,6 @@ import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -160,7 +159,7 @@ const Login = () => {
     setIsLoading(false);
   };
 
-  // Forgot password modal
+  // Forgot password view
   if (showForgotPassword) {
     return (
       <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
@@ -169,47 +168,40 @@ const Login = () => {
             <div className="flex items-center justify-center mb-4">
               <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
             </div>
-            <p className="text-gray-600">Recuperar senha</p>
+            <p className="text-white/90 text-lg font-medium">Recuperar senha</p>
+            <p className="text-white/70 text-sm mt-2">
+              Digite seu email e enviaremos um link para redefinir sua senha
+            </p>
           </div>
 
-          <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
-            <CardHeader className="text-center">
-              <CardTitle>Esqueceu sua senha?</CardTitle>
-              <CardDescription>
-                Digite seu email e enviaremos um link para redefinir sua senha
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleForgotPassword} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="forgot-email">Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      id="forgot-email" 
-                      type="email" 
-                      placeholder="seu@email.com" 
-                      className="pl-10"
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
-                      required 
-                    />
-                  </div>
-                </div>
-                <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90 text-white shadow-lg" disabled={isLoading}>
-                  {isLoading ? "Enviando..." : "Enviar link de recuperação"}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  className="w-full" 
-                  onClick={() => setShowForgotPassword(false)}
-                >
-                  Voltar ao login
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="forgot-email" className="text-white/90">Email</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input 
+                  id="forgot-email" 
+                  type="email" 
+                  placeholder="seu@email.com" 
+                  className="pl-10"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  required 
+                />
+              </div>
+            </div>
+            <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
+              {isLoading ? "Enviando..." : "Enviar link de recuperação"}
+            </Button>
+            <Button 
+              type="button" 
+              variant="ghost" 
+              className="w-full text-white/80 hover:text-white hover:bg-white/10" 
+              onClick={() => setShowForgotPassword(false)}
+            >
+              Voltar ao login
+            </Button>
+          </form>
         </div>
       </div>
     );
@@ -222,166 +214,160 @@ const Login = () => {
           <div className="flex items-center justify-center mb-4">
             <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
           </div>
-          <p className="text-gray-600">Entre na sua jornada de transformação</p>
+          <p className="text-white/90">Entre na sua jornada de transformação</p>
         </div>
 
-        <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
-          <CardHeader className="text-center">
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login">Entrar</TabsTrigger>
-                <TabsTrigger value="register">Cadastrar</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        id="email" 
-                        type="email" 
-                        placeholder="seu@email.com" 
-                        className="pl-10"
-                        value={loginData.email}
-                        onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                        required 
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Senha</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        id="password" 
-                        type={showLoginPassword ? "text" : "password"} 
-                        placeholder="••••••" 
-                        className="pl-10 pr-10"
-                        value={loginData.password}
-                        onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                        required 
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowLoginPassword(!showLoginPassword)}
-                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
-                      >
-                        {showLoginPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <button
-                      type="button"
-                      onClick={() => setShowForgotPassword(true)}
-                      className="text-sm text-primary hover:underline"
-                    >
-                      Esqueceu sua senha?
-                    </button>
-                  </div>
-                  <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90 text-white shadow-lg" disabled={isLoading}>
-                    {isLoading ? "Entrando..." : "Entrar"}
-                  </Button>
-                </form>
-              </TabsContent>
-              
-              <TabsContent value="register">
-                <form onSubmit={handleSignup} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Nome completo</Label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        id="name" 
-                        type="text" 
-                        placeholder="Seu nome" 
-                        className="pl-10"
-                        value={signupData.name}
-                        onChange={(e) => setSignupData(prev => ({ ...prev, name: e.target.value }))}
-                        required 
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="register-email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        id="register-email" 
-                        type="email" 
-                        placeholder="seu@email.com" 
-                        className="pl-10"
-                        value={signupData.email}
-                        onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
-                        required 
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="register-password">Criar Senha</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        id="register-password" 
-                        type={showSignupPassword ? "text" : "password"} 
-                        placeholder="6 caracteres com letras e números" 
-                        className="pl-10 pr-10"
-                        value={signupData.password}
-                        onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
-                        required 
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowSignupPassword(!showSignupPassword)}
-                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
-                      >
-                        {showSignupPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Repetir Senha</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                        id="confirm-password" 
-                        type={showConfirmPassword ? "text" : "password"} 
-                        placeholder="••••••" 
-                        className="pl-10 pr-10"
-                        value={signupData.confirmPassword}
-                        onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                        required 
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90 text-white shadow-lg" disabled={isLoading}>
-                    {isLoading ? "Criando conta..." : "Criar conta"}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="login" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6 bg-white/20 border-0">
+            <TabsTrigger value="login" className="text-white data-[state=active]:bg-white data-[state=active]:text-primary">Entrar</TabsTrigger>
+            <TabsTrigger value="register" className="text-white data-[state=active]:bg-white data-[state=active]:text-primary">Cadastrar</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="login">
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-white/90">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    placeholder="seu@email.com" 
+                    className="pl-10"
+                    value={loginData.email}
+                    onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
+                    required 
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-white/90">Senha</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input 
+                    id="password" 
+                    type={showLoginPassword ? "text" : "password"} 
+                    placeholder="••••••" 
+                    className="pl-10 pr-10"
+                    value={loginData.password}
+                    onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
+                    required 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  >
+                    {showLoginPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  className="text-sm text-white/80 hover:text-white hover:underline"
+                >
+                  Esqueceu sua senha?
+                </button>
+              </div>
+              <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
+                {isLoading ? "Entrando..." : "Entrar"}
+              </Button>
+            </form>
+          </TabsContent>
+          
+          <TabsContent value="register">
+            <form onSubmit={handleSignup} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-white/90">Nome completo</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input 
+                    id="name" 
+                    type="text" 
+                    placeholder="Seu nome" 
+                    className="pl-10"
+                    value={signupData.name}
+                    onChange={(e) => setSignupData(prev => ({ ...prev, name: e.target.value }))}
+                    required 
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="register-email" className="text-white/90">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input 
+                    id="register-email" 
+                    type="email" 
+                    placeholder="seu@email.com" 
+                    className="pl-10"
+                    value={signupData.email}
+                    onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
+                    required 
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="register-password" className="text-white/90">Criar Senha</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input 
+                    id="register-password" 
+                    type={showSignupPassword ? "text" : "password"} 
+                    placeholder="6 caracteres com letras e números" 
+                    className="pl-10 pr-10"
+                    value={signupData.password}
+                    onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
+                    required 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSignupPassword(!showSignupPassword)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  >
+                    {showSignupPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password" className="text-white/90">Repetir Senha</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input 
+                    id="confirm-password" 
+                    type={showConfirmPassword ? "text" : "password"} 
+                    placeholder="••••••" 
+                    className="pl-10 pr-10"
+                    value={signupData.confirmPassword}
+                    onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    required 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
+                {isLoading ? "Criando conta..." : "Criar conta"}
+              </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
 
         <div className="text-center text-sm">
-          <p className="text-gray-600 font-medium mb-1">Ao continuar, você concorda com nossos</p>
+          <p className="text-white/70 font-medium mb-1">Ao continuar, você concorda com nossos</p>
           <p>
-            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-gray-700 font-semibold hover:text-primary transition-smooth underline">
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:underline">
               Termos de Uso
             </a>
             {" e "}
-            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-gray-700 font-semibold hover:text-primary transition-smooth underline">
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:underline">
               Política de Privacidade
             </a>
           </p>
