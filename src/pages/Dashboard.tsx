@@ -104,8 +104,7 @@ const Dashboard = () => {
       if (msRemaining && msRemaining > 0) {
         const hours = Math.floor(msRemaining / (1000 * 60 * 60));
         const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((msRemaining % (1000 * 60)) / 1000);
-        setCountdownTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+        setCountdownTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
       } else {
         setCountdownTime(null);
       }
