@@ -145,9 +145,9 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
       {/* Story content */}
       <div className="relative w-full max-w-md h-full md:h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 pb-24 text-center overflow-y-auto">
+        <div className="absolute inset-0 flex flex-col items-center p-6 pt-12 pb-24 text-center overflow-y-auto">
           <div className="animate-fade-in max-w-lg w-full">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
               {stories[currentStory].title}
             </h2>
             
@@ -181,7 +181,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                     <div key={index} className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
                       {/* Phase badge */}
                       {highlight.phase && (
-                        <div className="flex justify-center mb-2">
+                        <div className="mb-2">
                           <span className="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">
                             {highlight.phase}
                           </span>
