@@ -72,6 +72,8 @@ const Dashboard = () => {
   const { 
     getCurrentDay, 
     isDayCompleted, 
+    getDayProgress,
+    getDayCompletionTime,
     getTimeUntilNextUnlock,
     startTracking,
     updateProgress,
@@ -92,7 +94,27 @@ const Dashboard = () => {
   const [currentTrackingId, setCurrentTrackingId] = useState<string | null>(null);
   const [showStartHere, setShowStartHere] = useState(false);
   const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
+  const [countdownTime, setCountdownTime] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Countdown timer effect
+  useEffect(() => {
+    const updateCountdown = () => {
+      const msRemaining = getTimeUntilNextUnlock();
+      if (msRemaining && msRemaining > 0) {
+        const hours = Math.floor(msRemaining / (1000 * 60 * 60));
+        const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((msRemaining % (1000 * 60)) / 1000);
+        setCountdownTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+      } else {
+        setCountdownTime(null);
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [getTimeUntilNextUnlock]);
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile, isAdmin });
 
@@ -682,6 +704,45 @@ const Dashboard = () => {
                                   </span>
                                 </Button>
                               </div>
+                              
+                              {/* Progress Message for Current Day */}
+                              {isCurrent && !isLocked && (() => {
+                                const videoProgress = getDayProgress(day, 'video');
+                                const hypnosisProgress = getDayProgress(day, 'hypnosis');
+                                const videoCompleted = videoProgress.completed;
+                                const hypnosisCompleted = hypnosisProgress.completed;
+                                const hasStarted = videoProgress.started || hypnosisProgress.started;
+                                const bothCompleted = videoCompleted && hypnosisCompleted;
+                                
+                                // For Phase 2, only hypnosis is required
+                                const isPhase2 = phase.phase_number === 2;
+                                const allRequired = isPhase2 ? hypnosisCompleted : bothCompleted;
+                                
+                                if (allRequired && countdownTime) {
+                                  return (
+                                    <div className="mt-3 text-center">
+                                      <p className="text-xs text-primary font-medium">
+                                        Próximo dia em {countdownTime}
+                                      </p>
+                                    </div>
+                                  );
+                                }
+                                
+                                if (hasStarted && !allRequired) {
+                                  return (
+                                    <div className="mt-3 text-center">
+                                      <p className="text-xs text-muted-foreground">
+                                        {isPhase2 
+                                          ? "Finalize a hipnose para desbloquear o próximo dia"
+                                          : "Finalize o vídeo e a hipnose para desbloquear o próximo dia"
+                                        }
+                                      </p>
+                                    </div>
+                                  );
+                                }
+                                
+                                return null;
+                              })()}
                             </div>
                           </div>
                         </CarouselItem>

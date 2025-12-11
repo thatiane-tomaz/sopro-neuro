@@ -132,6 +132,22 @@ export const useJourneyTracking = () => {
     },
   });
 
+  // Get progress for a specific day and type
+  const getDayProgress = (day: number, type: 'video' | 'hypnosis'): { started: boolean; completed: boolean; percentage: number } => {
+    if (!trackingData) return { started: false, completed: false, percentage: 0 };
+    
+    const interactionType = type === 'video' ? `video_dia_${day}` : `hipnose_dia_${day}`;
+    const track = trackingData.find(t => t.interaction_type === interactionType);
+    
+    if (!track) return { started: false, completed: false, percentage: 0 };
+    
+    return {
+      started: true,
+      completed: track.progress_percentage >= 99 && track.finished_at !== null,
+      percentage: track.progress_percentage,
+    };
+  };
+
   // Check if a day is completed (both video and hypnosis at 98%+)
   const isDayCompleted = (day: number): boolean => {
     if (!trackingData) return false;
@@ -213,6 +229,7 @@ export const useJourneyTracking = () => {
     startTracking: startTracking.mutate,
     updateProgress: updateProgress.mutate,
     isDayCompleted,
+    getDayProgress,
     getDayCompletionTime,
     getCurrentDay,
     getTimeUntilNextUnlock,
