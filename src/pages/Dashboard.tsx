@@ -834,15 +834,12 @@ const Dashboard = () => {
               {/* Seção 2 - Pós último cigarro */}
               <div>
                 <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="text-lg font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">Controle dos Gatilhos</h3>
-                    {currentDay < 8 && (
-                      <Badge variant="secondary" className="text-xs">
-                        <Lock className="w-3 h-3 mr-1" />
-                        Em breve
-                      </Badge>
-                    )}
-                  </div>
+                  {currentDay < 8 && (
+                    <p className="text-sm font-semibold text-accent mb-2">
+                      Ficará disponível após finalizar a Fase 1
+                    </p>
+                  )}
+                  <h3 className="text-lg font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-2">Controle dos Gatilhos</h3>
                   <p className="text-sm text-muted-foreground">
                     Hipnoses rápidas para estabilizar mente e corpo após parar de fumar
                   </p>
