@@ -718,19 +718,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 
-                <Button 
-                  size="sm"
-                  className="bg-accent hover:bg-accent/90 text-white flex-shrink-0"
-                  onClick={() => {
-                    toast({
-                      title: "Upgrade Premium",
-                      description: "Complete sua jornada de 14 dias!"
-                    });
-                  }}
-                >
-                  <Crown className="h-4 w-4 mr-2" />
-                  Upgrade
-                </Button>
+                <SubscriptionButton size="sm" />
               </div>
             </div>
           </div>
