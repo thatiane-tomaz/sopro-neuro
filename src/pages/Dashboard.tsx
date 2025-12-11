@@ -728,8 +728,8 @@ const Dashboard = () => {
                                     <div className="mt-3 text-center">
                                       <p className="text-xs text-muted-foreground">
                                         {isPhase2 
-                                          ? "Finalize a hipnose para desbloquear o próximo dia"
-                                          : "Finalize o vídeo e a hipnose para desbloquear o próximo dia"
+                                          ? "Finalize a hipnose para avançar"
+                                          : "Finalize vídeo e hipnose para avançar"
                                         }
                                       </p>
                                     </div>
