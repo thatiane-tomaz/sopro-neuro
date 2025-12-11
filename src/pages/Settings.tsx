@@ -5,15 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Lock, Mail, User, LogOut } from "lucide-react";
+import { ArrowLeft, Lock, Mail } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { passwordChangeSchema, emailChangeSchema, displayNameUpdateSchema } from "@/lib/validations";
+import { passwordChangeSchema, emailChangeSchema } from "@/lib/validations";
 
 const Settings = () => {
-  const { user, signOut, updatePassword, updateEmail } = useAuth();
+  const { user, updatePassword, updateEmail } = useAuth();
   const { profile } = useUserProfile();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -25,10 +24,6 @@ const Settings = () => {
   
   const [emailData, setEmailData] = useState({
     newEmail: ""
-  });
-  
-  const [displayNameData, setDisplayNameData] = useState({
-    displayName: profile?.display_name || ""
   });
 
   if (!user) {
@@ -77,56 +72,6 @@ const Settings = () => {
     setIsLoading(false);
   };
 
-  const handleDisplayNameChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate input
-    const validation = displayNameUpdateSchema.safeParse(displayNameData);
-    if (!validation.success) {
-      const firstError = validation.error.errors[0];
-      toast({
-        title: "Erro de validação",
-        description: firstError.message,
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    setIsLoading(true);
-
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ display_name: displayNameData.displayName })
-        .eq('user_id', user.id);
-
-      if (error) {
-        toast({
-          title: "Erro",
-          description: error.message,
-          variant: "destructive"
-        });
-      } else {
-        toast({
-          title: "Sucesso",
-          description: "Nome atualizado com sucesso"
-        });
-      }
-    } catch (error) {
-      console.error('Error updating display name:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao atualizar nome. Tente novamente.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
 
   return (
     <div className="min-h-screen bg-gradient-hero">
@@ -143,34 +88,11 @@ const Settings = () => {
               <CardDescription>Gerencie suas informações pessoais e segurança</CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="profile" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-6">
-                  <TabsTrigger value="profile">Perfil</TabsTrigger>
+              <Tabs defaultValue="security" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
                   <TabsTrigger value="security">Segurança</TabsTrigger>
                   <TabsTrigger value="account">Conta</TabsTrigger>
                 </TabsList>
-
-                <TabsContent value="profile">
-                  <form onSubmit={handleDisplayNameChange} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="displayName">Nome de exibição</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="displayName"
-                          type="text"
-                          placeholder="Seu nome"
-                          className="pl-10"
-                          value={displayNameData.displayName}
-                          onChange={(e) => setDisplayNameData({ displayName: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                    <Button type="submit" disabled={isLoading}>
-                      {isLoading ? "Salvando..." : "Salvar alterações"}
-                    </Button>
-                  </form>
-                </TabsContent>
 
                 <TabsContent value="security">
                   <div className="space-y-6">
@@ -183,7 +105,7 @@ const Settings = () => {
                           <Input
                             id="newPassword"
                             type="password"
-                            placeholder="Mínimo 12 caracteres com maiúscula, minúscula, número e especial"
+                            placeholder="Mínimo 6 caracteres com letra e número"
                             className="pl-10"
                             value={passwordData.newPassword}
                             onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
@@ -258,28 +180,6 @@ const Settings = () => {
                         <p><strong>Email:</strong> {user.email}</p>
                         <p><strong>ID do usuário:</strong> {user.id}</p>
                         <p><strong>Assinatura:</strong> {profile?.subscription_status === 'premium' ? 'Premium' : 'Gratuita'}</p>
-                      </div>
-                    </div>
-
-                    <div className="border-t pt-6">
-                      <h3 className="text-lg font-semibold mb-4 text-destructive">Zona de perigo</h3>
-                      <div className="space-y-4">
-                        <Button variant="destructive" onClick={handleSignOut}>
-                          <LogOut className="w-4 h-4 mr-2" />
-                          Sair da conta
-                        </Button>
-                        
-                        <div className="pt-4 border-t border-destructive/20">
-                          <p className="text-sm text-muted-foreground mb-3">
-                            Para solicitar a exclusão da sua conta e todos os seus dados, entre em contato conosco:
-                          </p>
-                          <a 
-                            href="mailto:contato@soproneuro.com.br?subject=Solicitação de exclusão de conta&body=Olá, gostaria de solicitar a exclusão da minha conta e de todos os meus dados pessoais.%0A%0AEmail da conta: " 
-                            className="inline-flex items-center text-destructive hover:text-destructive/80 underline text-sm font-medium transition-colors"
-                          >
-                            Solicitar exclusão de conta e dados
-                          </a>
-                        </div>
                       </div>
                     </div>
                   </div>
