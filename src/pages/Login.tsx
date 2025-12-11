@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Lock, User } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -18,6 +18,9 @@ const Login = () => {
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { user, signIn, signUp } = useAuth();
   const { toast } = useToast();
 
@@ -255,13 +258,20 @@ const Login = () => {
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input 
                         id="password" 
-                        type="password" 
-                        placeholder="••••••••" 
-                        className="pl-10"
+                        type={showLoginPassword ? "text" : "password"} 
+                        placeholder="••••••" 
+                        className="pl-10 pr-10"
                         value={loginData.password}
                         onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                         required 
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
+                      >
+                        {showLoginPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
                     </div>
                   </div>
                   <div className="text-right">
@@ -317,13 +327,20 @@ const Login = () => {
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input 
                         id="register-password" 
-                        type="password" 
-                        placeholder="Mínimo 12 caracteres com maiúscula, minúscula, número e especial" 
-                        className="pl-10"
+                        type={showSignupPassword ? "text" : "password"} 
+                        placeholder="6 caracteres com letras e números" 
+                        className="pl-10 pr-10"
                         value={signupData.password}
                         onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
                         required 
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowSignupPassword(!showSignupPassword)}
+                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
+                      >
+                        {showSignupPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -332,13 +349,20 @@ const Login = () => {
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input 
                         id="confirm-password" 
-                        type="password" 
-                        placeholder="••••••••" 
-                        className="pl-10"
+                        type={showConfirmPassword ? "text" : "password"} 
+                        placeholder="••••••" 
+                        className="pl-10 pr-10"
                         value={signupData.confirmPassword}
                         onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                         required 
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
                     </div>
                   </div>
                   <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90 text-white shadow-lg" disabled={isLoading}>
