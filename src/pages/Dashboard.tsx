@@ -480,9 +480,9 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
-                        <p className={`text-sm font-semibold ${isPhase1Completed ? 'text-muted-foreground' : 'text-primary'}`}>
+                        <span className={`text-sm font-semibold px-3 py-1 rounded-full ${isPhase1Completed ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary'}`}>
                           Fase {phase.phase_number}
-                        </p>
+                        </span>
                         
                         {/* Progress Indicators */}
                         <div className="flex items-center gap-2">
@@ -510,7 +510,7 @@ const Dashboard = () => {
                           
                           {/* Count */}
                           <span className={`text-xs font-medium ${isPhase1Completed ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
-                            {phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length}
+                            {phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length} dias
                           </span>
                         </div>
                         
