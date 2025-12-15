@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, ChevronLeft, ChevronRight, Play, Brain, Wind, Heart, Sparkles, Headphones, Check, RefreshCw, Armchair, Clock } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Play, Brain, Wind, Heart, Sparkles, Headphones, Check, RefreshCw, Armchair, Clock, PlayCircle, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Story {
@@ -78,12 +78,14 @@ const stories: Story[] = [
   },
   {
     id: 6,
-    title: "Vamos começar?",
+    title: "Dicas importantes",
     highlights: [
-      { icon: "repeat", text: "A repetição de conceitos é importante para criar novas conexões cerebrais" },
+      { icon: "play-circle", text: "Em cada dia, assista ao vídeo e, logo em seguida, escute a hipnose" },
+      { icon: "calendar", text: "Faça o conteúdo diariamente ou, no máximo, a cada 2 dias" },
       { icon: "headphones", text: "Durante a hipnose use fones de ouvido" },
+      { icon: "clock", text: "O conteúdo de cada dia é liberado 6h após concluir o dia anterior" },
       { icon: "armchair", text: "Sente-se ou deite-se em um lugar sem interrupções onde possa se soltar completamente" },
-      { icon: "clock", text: "O conteúdo de cada dia é liberado 6h após concluir o dia anterior" }
+      { icon: "repeat", text: "A repetição de conceitos é importante para criar novas conexões cerebrais" }
     ]
   }
 ];
@@ -213,6 +215,8 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                           {highlight.icon === 'repeat' && <RefreshCw className="w-6 h-6 text-white" />}
                           {highlight.icon === 'armchair' && <Armchair className="w-6 h-6 text-white" />}
                           {highlight.icon === 'clock' && <Clock className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'play-circle' && <PlayCircle className="w-6 h-6 text-white" />}
+                          {highlight.icon === 'calendar' && <Calendar className="w-6 h-6 text-white" />}
                           {highlight.icon === 'number-1' && <span className="w-6 h-6 bg-white/30 rounded-full flex items-center justify-center text-white font-bold text-sm">1</span>}
                           {highlight.icon === 'number-2' && <span className="w-6 h-6 bg-white/30 rounded-full flex items-center justify-center text-white font-bold text-sm">2</span>}
                         </div>
