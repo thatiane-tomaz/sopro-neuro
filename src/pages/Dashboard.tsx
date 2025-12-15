@@ -841,7 +841,7 @@ const Dashboard = () => {
                   )}
                   <h3 className="text-lg font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-2">Controle dos Gatilhos</h3>
                   <p className="text-sm text-muted-foreground">
-                    Hipnoses rápidas para estabilizar mente e corpo após parar de fumar
+                    Hipnoses rápidas para estabilizar a mente e o corpo após parar de fumar
                   </p>
                 </div>
                 
