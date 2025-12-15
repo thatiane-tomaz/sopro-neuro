@@ -24,7 +24,7 @@ const stories: Story[] = [
       },
       { 
         icon: "sparkles-special", 
-        text: "Após a Fase 1, faça o ritual do último cigarro"
+        text: "Após a Fase 1\nfaça o ritual do último cigarro"
       },
       { 
         icon: "wind", 
@@ -178,9 +178,11 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                     return (
                       <div key={index} className="flex flex-col items-center gap-2 py-4">
                         <Sparkles className="w-10 h-10 text-white" />
-                        <p className="text-white font-semibold text-lg text-center">
-                          {highlight.text}
-                        </p>
+                        <div className="text-white font-semibold text-lg text-center">
+                          {highlight.text.split('\n').map((line, i) => (
+                            <p key={i}>{line}</p>
+                          ))}
+                        </div>
                       </div>
                     );
                   }
