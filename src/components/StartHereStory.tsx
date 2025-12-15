@@ -83,7 +83,7 @@ const stories: Story[] = [
       { icon: "repeat", text: "A repetição de conceitos é importante para criar novas conexões cerebrais" },
       { icon: "headphones", text: "Durante a hipnose use fones de ouvido" },
       { icon: "armchair", text: "Sente-se ou deite-se em um lugar sem interrupções onde possa se soltar completamente" },
-      { icon: "clock", text: "Cada dia é desbloqueado 6h depois de finalizar o dia anterior" }
+      { icon: "clock", text: "O conteúdo de cada dia é liberado 6h após concluir o dia anterior" }
     ]
   }
 ];
@@ -253,7 +253,6 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                 className="mt-8 bg-white text-primary hover:bg-white/90 font-semibold px-8 py-6 text-lg"
                 size="lg"
               >
-                <Play className="h-5 w-5 mr-2" />
                 Vamos Começar
               </Button>
             )}
