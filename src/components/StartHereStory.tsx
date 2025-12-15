@@ -46,11 +46,13 @@ const stories: Story[] = [
   },
   {
     id: 3,
-    title: "Fase 2: Respire Livre",
-    description: "Você irá aprender técnicas que te ajudam a:",
+    phase: "Fase 2",
+    title: "Respire Livre",
+    description: "Escute hipnoses diárias que te ajudam a:",
     highlights: [
+      { icon: "check", text: "Reencontrar equilíbrio durante os sintomas de abstinência" },
       { icon: "check", text: "Dissolver a ansiedade" },
-      { icon: "check", text: "Reencontrar equilíbrio durante os sintomas de abstinência" }
+      { icon: "check", text: "Fortalecer sua nova vida como ex-fumante" }
     ]
   },
   {
