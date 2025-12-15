@@ -39,7 +39,7 @@ const stories: Story[] = [
     title: "Transformando Crenças",
     description: "Em cada dia você terá:",
     highlights: [
-      { icon: "number-1", text: "Vídeo\n\nExplica, de forma rápida e científica, fumar não traz benefícios reais." },
+      { icon: "number-1", text: "Vídeo\n\nExplica, de forma rápida e científica, que fumar não traz benefícios reais." },
       { icon: "number-1", text: "Hipnose\n\nConsolida no subconsciente a nova forma de ver o cigarro." }
     ],
     footer: "Ao final desta fase, você fumará seu último cigarro **mais confiante** de que **será mais feliz**"
