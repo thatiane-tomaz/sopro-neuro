@@ -168,15 +168,15 @@ const Login = () => {
             <div className="flex items-center justify-center mb-4">
               <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
             </div>
-            <p className="text-slate-200 text-lg font-medium">Recuperar senha</p>
-            <p className="text-slate-300 text-sm mt-2">
+            <p className="text-slate-700 text-lg font-medium">Recuperar senha</p>
+            <p className="text-slate-600 text-sm mt-2">
               Digite seu email e enviaremos um link para redefinir sua senha
             </p>
           </div>
 
           <form onSubmit={handleForgotPassword} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="forgot-email" className="text-slate-200">Email</Label>
+              <Label htmlFor="forgot-email" className="text-slate-700">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input 
@@ -196,7 +196,7 @@ const Login = () => {
             <Button 
               type="button" 
               variant="ghost" 
-              className="w-full text-slate-200 hover:text-slate-100 hover:bg-white/10" 
+              className="w-full text-slate-700 hover:text-slate-800 hover:bg-white/10" 
               onClick={() => setShowForgotPassword(false)}
             >
               Voltar ao login
@@ -214,19 +214,19 @@ const Login = () => {
           <div className="flex items-center justify-center mb-4">
             <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
           </div>
-          <p className="text-slate-200">Entre na sua jornada de transformação</p>
+          <p className="text-slate-700">Entre na sua jornada de transformação</p>
         </div>
 
         <Tabs defaultValue="login" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6 bg-white/20 border-0">
-            <TabsTrigger value="login" className="text-slate-200 data-[state=active]:bg-white data-[state=active]:text-primary">Entrar</TabsTrigger>
-            <TabsTrigger value="register" className="text-slate-200 data-[state=active]:bg-white data-[state=active]:text-primary">Cadastrar</TabsTrigger>
+            <TabsTrigger value="login" className="text-slate-700 data-[state=active]:bg-white data-[state=active]:text-primary">Entrar</TabsTrigger>
+            <TabsTrigger value="register" className="text-slate-700 data-[state=active]:bg-white data-[state=active]:text-primary">Cadastrar</TabsTrigger>
           </TabsList>
           
           <TabsContent value="login">
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-slate-200">Email</Label>
+                <Label htmlFor="email" className="text-slate-700">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
@@ -241,7 +241,7 @@ const Login = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-slate-200">Senha</Label>
+                <Label htmlFor="password" className="text-slate-700">Senha</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
@@ -266,7 +266,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(true)}
-                  className="text-sm text-slate-200 hover:text-slate-100 hover:underline"
+                  className="text-sm text-slate-700 hover:text-slate-800 hover:underline"
                 >
                   Esqueceu sua senha?
                 </button>
@@ -280,7 +280,7 @@ const Login = () => {
           <TabsContent value="register">
             <form onSubmit={handleSignup} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-slate-200">Nome completo</Label>
+                <Label htmlFor="name" className="text-slate-700">Nome completo</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
@@ -295,7 +295,7 @@ const Login = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-email" className="text-slate-200">Email</Label>
+                <Label htmlFor="register-email" className="text-slate-700">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
@@ -310,7 +310,7 @@ const Login = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="register-password" className="text-slate-200">Criar Senha</Label>
+                <Label htmlFor="register-password" className="text-slate-700">Criar Senha</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
@@ -332,7 +332,7 @@ const Login = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirm-password" className="text-slate-200">Repetir Senha</Label>
+                <Label htmlFor="confirm-password" className="text-slate-700">Repetir Senha</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
@@ -361,13 +361,13 @@ const Login = () => {
         </Tabs>
 
         <div className="text-center text-sm">
-          <p className="text-slate-300 font-medium mb-1">Ao continuar, você concorda com nossos</p>
+          <p className="text-slate-600 font-medium mb-1">Ao continuar, você concorda com nossos</p>
           <p>
-            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-slate-200 font-semibold hover:underline">
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-slate-700 font-semibold hover:underline">
               Termos de Uso
             </a>
             {" e "}
-            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-slate-200 font-semibold hover:underline">
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-slate-700 font-semibold hover:underline">
               Política de Privacidade
             </a>
           </p>
