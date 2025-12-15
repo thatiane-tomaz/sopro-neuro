@@ -729,7 +729,7 @@ const Dashboard = () => {
                                       <p className="text-xs text-muted-foreground">
                                         {isPhase2 
                                           ? "Finalize a hipnose para avançar"
-                                          : "Finalize vídeo e hipnose para avançar"
+                                          : "Finalize o vídeo e a hipnose para avançar"
                                         }
                                       </p>
                                     </div>
