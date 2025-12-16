@@ -79,8 +79,7 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
               {frequencyOptions.map((option, index) => (
                 <div 
                   key={index}
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
-                  onClick={() => handleSelection(option)}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors"
                 >
                   <RadioGroupItem 
                     value={option} 
