@@ -16,10 +16,8 @@ const Login = () => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [showResendConfirmation, setShowResendConfirmation] = useState(false);
   const [showLoginResendLink, setShowLoginResendLink] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
-  const [resendEmail, setResendEmail] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -98,7 +96,6 @@ const Login = () => {
     const result = await signIn(loginData.email, loginData.password);
     
     if (result.needsEmailConfirmation) {
-      setResendEmail(loginData.email);
       setShowLoginResendLink(true);
     }
     
@@ -124,11 +121,8 @@ const Login = () => {
     
     const result = await signUp(signupData.email, signupData.password, signupData.name);
     
-    // If user exists but might need confirmation, offer to resend
-    if (result.userExists) {
-      setResendEmail(signupData.email);
-      setShowResendConfirmation(true);
-    }
+    // If user exists but might need confirmation, show toast (they can use the resend link)
+    // Toast is already shown by the signUp function
     
     setIsLoading(false);
   };
@@ -169,80 +163,34 @@ const Login = () => {
     setIsLoading(false);
   };
 
-  const handleResendConfirmation = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!resendEmail.trim()) {
+  const handleResendFromLogin = async () => {
+    if (!loginData.email.trim()) {
       toast({
         title: "Email necessário",
-        description: "Por favor, informe seu email",
+        description: "Por favor, preencha o campo de email",
         variant: "destructive"
       });
       return;
     }
-    
     setIsLoading(true);
-    
-    const { error } = await resendConfirmationEmail(resendEmail);
-    
-    if (!error) {
-      setShowResendConfirmation(false);
-      setResendEmail("");
-    }
-    
+    await resendConfirmationEmail(loginData.email);
     setIsLoading(false);
   };
 
-  // Resend confirmation view
-  if (showResendConfirmation) {
-    return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
-        <div className="w-full max-w-md space-y-6">
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-4">
-              <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
-            </div>
-            <p className="text-slate-500 text-lg font-medium">Reenviar email de confirmação de cadastro</p>
-            <p className="text-slate-400 text-sm mt-2">
-              Seu email ainda não foi confirmado. Clique abaixo para reenviar o email de confirmação.
-            </p>
-          </div>
+  const handleResendFromSignup = async () => {
+    if (!signupData.email.trim()) {
+      toast({
+        title: "Email necessário",
+        description: "Por favor, preencha o campo de email",
+        variant: "destructive"
+      });
+      return;
+    }
+    setIsLoading(true);
+    await resendConfirmationEmail(signupData.email);
+    setIsLoading(false);
+  };
 
-          <form onSubmit={handleResendConfirmation} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="resend-email" className="text-slate-500">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input 
-                  id="resend-email" 
-                  type="email" 
-                  placeholder="seu@email.com" 
-                  className="pl-10"
-                  value={resendEmail}
-                  onChange={(e) => setResendEmail(e.target.value)}
-                  required 
-                />
-              </div>
-            </div>
-            <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
-              {isLoading ? "Enviando..." : "Reenviar email de confirmação"}
-            </Button>
-            <Button 
-              type="button" 
-              variant="ghost" 
-              className="w-full text-slate-500 hover:text-slate-600 hover:bg-white/10" 
-              onClick={() => {
-                setShowResendConfirmation(false);
-                setResendEmail("");
-              }}
-            >
-              Voltar ao login
-            </Button>
-          </form>
-        </div>
-      </div>
-    );
-  }
   if (showForgotPassword) {
     return (
       <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
@@ -349,7 +297,7 @@ const Login = () => {
                 <div className="text-center">
                   <button
                     type="button"
-                    onClick={() => setShowResendConfirmation(true)}
+                    onClick={handleResendFromLogin}
                     className="text-sm text-slate-500 hover:text-slate-600 hover:underline"
                   >
                     Reenviar email de confirmação de cadastro
@@ -453,10 +401,7 @@ const Login = () => {
               <div className="text-center">
                 <button
                   type="button"
-                  onClick={() => {
-                    setResendEmail(signupData.email);
-                    setShowResendConfirmation(true);
-                  }}
+                  onClick={handleResendFromSignup}
                   className="text-sm text-slate-500 hover:text-slate-600 hover:underline"
                 >
                   Reenviar email de confirmação de cadastro
