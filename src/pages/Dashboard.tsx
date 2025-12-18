@@ -381,9 +381,9 @@ const Dashboard = () => {
             {isPremium && daysRemaining <= 7 && (
               <>
                 <div className="mb-3" />
-                <div className="flex items-center gap-2 bg-accent/10 rounded-lg px-3 py-2 shadow-sm">
-                  <Sparkles className="h-4 w-4 text-accent" />
-                  <span className="text-xs text-muted-foreground">
+                <div className="flex items-center gap-2 bg-sky-100 dark:bg-sky-900/30 rounded-lg px-3 py-2 shadow-sm">
+                  <Sparkles className="h-4 w-4 text-sky-600 dark:text-sky-400" />
+                  <span className="text-xs text-sky-700 dark:text-sky-300">
                     Seu acesso expira em {daysRemaining} {daysRemaining === 1 ? 'dia' : 'dias'}
                   </span>
                   <div className="ml-auto">
