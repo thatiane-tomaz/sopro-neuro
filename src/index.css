@@ -41,8 +41,8 @@ All colors MUST be HSL.
     --navy: 200 45% 40%;
     --navy-foreground: 0 0% 98%;
 
-    --destructive: 0 50% 50%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 5 40% 55%;
+    --destructive-foreground: 0 0% 98%;
 
     --border: 210 12% 88%;
     --input: 210 12% 88%;
