@@ -222,6 +222,7 @@ export type Database = {
         Row: {
           created_at: string
           display_name: string | null
+          email: string | null
           id: string
           onesignal_player_id: string | null
           subscription_status: string | null
@@ -231,6 +232,7 @@ export type Database = {
         Insert: {
           created_at?: string
           display_name?: string | null
+          email?: string | null
           id?: string
           onesignal_player_id?: string | null
           subscription_status?: string | null
@@ -240,6 +242,7 @@ export type Database = {
         Update: {
           created_at?: string
           display_name?: string | null
+          email?: string | null
           id?: string
           onesignal_player_id?: string | null
           subscription_status?: string | null
