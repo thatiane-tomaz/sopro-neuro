@@ -7,11 +7,12 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, displayName?: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<{ error: any; needsEmailConfirmation?: boolean; userExists?: boolean }>;
+  signIn: (email: string, password: string) => Promise<{ error: any; needsEmailConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   updatePassword: (newPassword: string) => Promise<{ error: any }>;
   updateEmail: (newEmail: string) => Promise<{ error: any }>;
+  resendConfirmationEmail: (email: string) => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -104,9 +105,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (error.message.includes('already registered') || error.message.includes('User already registered')) {
         toast({
           title: "Email já cadastrado",
-          description: "Este email já possui uma conta. Por favor, faça login.",
+          description: "Este email já possui uma conta. Faça login ou reenvie a confirmação.",
           variant: "destructive"
         });
+        return { error, userExists: true };
       } else {
         toast({
           title: "Erro no cadastro",
@@ -115,17 +117,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
       }
     } else if (data.user && !data.session) {
-      // User exists but email not confirmed (Supabase returns user without session in this case)
+      // User created but needs email confirmation
       toast({
-        title: "Email já cadastrado",
-        description: "Este email já possui uma conta. Por favor, faça login ou verifique seu email.",
-        variant: "destructive"
+        title: "Quase lá!",
+        description: "Enviamos um email de confirmação. Verifique sua caixa de entrada."
       });
-      return { error: new Error("User already exists") };
-    } else {
+      return { error: null, needsEmailConfirmation: true };
+    } else if (data.session) {
+      // User created and confirmed (auto-confirm is enabled)
       toast({
         title: "Cadastro realizado",
-        description: "Verifique seu email para confirmar a conta"
+        description: "Bem-vindo!"
       });
     }
 
@@ -139,10 +141,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     if (error) {
+      // Check for email not confirmed error
+      if (error.message.includes('Email not confirmed') || error.message.includes('email not confirmed')) {
+        toast({
+          title: "Email não confirmado",
+          description: "Verifique sua caixa de entrada e confirme seu email para fazer login.",
+          variant: "destructive"
+        });
+        return { error, needsEmailConfirmation: true };
+      }
+      
+      // Check for invalid credentials
+      if (error.message.includes('Invalid login credentials')) {
+        toast({
+          title: "Erro no login",
+          description: "Email ou senha incorretos. Verifique seus dados e tente novamente.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Erro no login",
+          description: error.message,
+          variant: "destructive"
+        });
+      }
+    }
+
+    return { error };
+  };
+
+  const resendConfirmationEmail = async (email: string) => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`
+      }
+    });
+
+    if (error) {
       toast({
-        title: "Erro no login",
+        title: "Erro ao reenviar",
         description: error.message,
         variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Email reenviado",
+        description: "Verifique sua caixa de entrada para confirmar sua conta"
       });
     }
 
@@ -212,7 +258,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       signIn,
       signOut,
       updatePassword,
-      updateEmail
+      updateEmail,
+      resendConfirmationEmail
     }}>
       {children}
     </AuthContext.Provider>
