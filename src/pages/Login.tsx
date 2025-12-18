@@ -17,6 +17,7 @@ const Login = () => {
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showResendConfirmation, setShowResendConfirmation] = useState(false);
+  const [showLoginResendLink, setShowLoginResendLink] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [resendEmail, setResendEmail] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -98,7 +99,7 @@ const Login = () => {
     
     if (result.needsEmailConfirmation) {
       setResendEmail(loginData.email);
-      setShowResendConfirmation(true);
+      setShowLoginResendLink(true);
     }
     
     setIsLoading(false);
@@ -201,7 +202,7 @@ const Login = () => {
             <div className="flex items-center justify-center mb-4">
               <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
             </div>
-            <p className="text-slate-500 text-lg font-medium">Confirmar email</p>
+            <p className="text-slate-500 text-lg font-medium">Reenviar email de confirmação de cadastro</p>
             <p className="text-slate-400 text-sm mt-2">
               Seu email ainda não foi confirmado. Clique abaixo para reenviar o email de confirmação.
             </p>
@@ -344,21 +345,22 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-              <div className="flex justify-between text-sm">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setResendEmail(loginData.email);
-                    setShowResendConfirmation(true);
-                  }}
-                  className="text-slate-500 hover:text-slate-600 hover:underline"
-                >
-                  Reenviar confirmação
-                </button>
+              {showLoginResendLink && (
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowResendConfirmation(true)}
+                    className="text-sm text-slate-500 hover:text-slate-600 hover:underline"
+                  >
+                    Reenviar email de confirmação de cadastro
+                  </button>
+                </div>
+              )}
+              <div className="text-right">
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(true)}
-                  className="text-slate-500 hover:text-slate-600 hover:underline"
+                  className="text-sm text-slate-500 hover:text-slate-600 hover:underline"
                 >
                   Esqueceu a senha?
                 </button>
@@ -448,6 +450,18 @@ const Login = () => {
               <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
                 {isLoading ? "Criando conta..." : "Criar conta"}
               </Button>
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setResendEmail(signupData.email);
+                    setShowResendConfirmation(true);
+                  }}
+                  className="text-sm text-slate-500 hover:text-slate-600 hover:underline"
+                >
+                  Reenviar email de confirmação de cadastro
+                </button>
+              </div>
             </form>
           </TabsContent>
         </Tabs>
