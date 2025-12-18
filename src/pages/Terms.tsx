@@ -57,6 +57,12 @@ const Terms = () => {
               individual com o processo.
             </p>
             <p className="mb-4">
+              Frases utilizadas no programa como "fume o último cigarro" e "Você já é um ex-fumante" 
+              são recursos linguísticos importantes para assimilação dos conceitos e aumento da confiança 
+              durante o processo. Essas expressões NÃO constituem promessas de resultado, mas sim 
+              técnicas de reforço positivo comumente utilizadas em programas de mudança comportamental.
+            </p>
+            <p className="mb-4">
               Se você possui condições médicas, está em tratamento ou toma medicamentos, consulte seu 
               médico antes de iniciar o programa.
             </p>
