@@ -206,15 +206,21 @@ const MediaPlayer = ({
           )}
           
           {/* Media Player */}
-          <div className="rounded-2xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5">
+          <div 
+            className="rounded-2xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5"
+            onContextMenu={(e) => e.preventDefault()}
+          >
             {contentType === 'video' ? (
               <video
                 ref={mediaRef as React.RefObject<HTMLVideoElement>}
                 className="w-full h-auto max-h-96"
                 controls
+                controlsList="nodownload noplaybackrate"
+                disablePictureInPicture
                 crossOrigin="anonymous"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
+                onContextMenu={(e) => e.preventDefault()}
                 onError={(e) => {
                   console.error('Video error details:', e.currentTarget.error);
                   setError(`Erro no vídeo: ${e.currentTarget.error?.message || 'Falha ao carregar'}`);
@@ -225,13 +231,15 @@ const MediaPlayer = ({
                 Seu navegador não suporta vídeo HTML5.
               </video>
             ) : (
-              <div className="relative">
+              <div className="relative" onContextMenu={(e) => e.preventDefault()}>
                 <audio
                   ref={mediaRef as React.RefObject<HTMLAudioElement>}
                   className="hidden"
+                  controlsList="nodownload noplaybackrate"
                   crossOrigin="anonymous"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
+                  onContextMenu={(e) => e.preventDefault()}
                   onError={(e) => {
                     console.error('Audio error details:', e.currentTarget.error);
                     setError(`Erro no áudio: ${e.currentTarget.error?.message || 'Falha ao carregar'}`);
@@ -243,11 +251,12 @@ const MediaPlayer = ({
                 </audio>
                 
                 {/* Audio Player Visual */}
-                <div className="relative aspect-video w-full">
+                <div className="relative aspect-video w-full" onContextMenu={(e) => e.preventDefault()}>
                   <img 
                     src={hypnosisImage} 
                     alt="Homem relaxando com fones de ouvido" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover select-none pointer-events-none"
+                    draggable={false}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-navy/20 to-transparent" />
                   
