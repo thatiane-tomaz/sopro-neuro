@@ -55,23 +55,21 @@ export const useUserProfile = () => {
   }, [user]);
 
   const hasAccessToDay = (day: number): boolean => {
-    if (!profile) return false;
+    // TEMPORARY: All days unlocked for testing
+    return true;
     
-    // Premium users have access to all days
-    if (profile.subscription_status === 'premium') return true;
-    
-    // Free users only have access to days 1 and 2
-    return day <= 2;
+    // if (!profile) return false;
+    // if (profile.subscription_status === 'premium') return true;
+    // return day <= 2;
   };
 
   const upgradeRequired = (day: number): boolean => {
-    if (!profile) return false;
+    // TEMPORARY: No upgrade required for testing
+    return false;
     
-    // Premium users never need upgrade
-    if (profile.subscription_status === 'premium') return false;
-    
-    // Free users need upgrade for days beyond 2
-    return day > 2;
+    // if (!profile) return false;
+    // if (profile.subscription_status === 'premium') return false;
+    // return day > 2;
   };
 
   return {
