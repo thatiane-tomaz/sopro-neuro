@@ -207,7 +207,7 @@ const Dashboard = () => {
     const interactionType = `${type === 'video' ? 'video' : 'hipnose'}_dia_${day}`;
     
     setSelectedMedia({
-      title: `${dailyContent?.find(d => d.day_number === day)?.title} - ${type === 'video' ? 'Vídeo' : 'Hipnose'}`,
+      title: dailyContent?.find(d => d.day_number === day)?.title || `Dia ${day}`,
       fileUrl: getMediaUrl(day, type),
       contentType: type,
       day,
