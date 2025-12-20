@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Play, Pause, X, Volume2 } from 'lucide-react';
+import { Play, Pause, X, Headphones, Volume2 } from 'lucide-react';
 import hypnosisImage from '@/assets/hypnosis-relaxed-man.jpg';
 
 interface MediaPlayerProps {
@@ -9,7 +8,7 @@ interface MediaPlayerProps {
   description?: string;
   fileUrl?: string;
   contentType: 'video' | 'hypnosis';
-  interactionType?: string; // e.g., 'video_dia_1', 'hipnose_apoio_relax'
+  interactionType?: string;
   onClose: () => void;
   onProgress?: (percentage: number) => void;
   onComplete?: () => void;
@@ -40,14 +39,12 @@ const MediaPlayer = ({
     const updateTime = () => {
       setCurrentTime(media.currentTime);
       
-      // Calculate and report progress
       if (media.duration > 0) {
         const percentage = Math.floor((media.currentTime / media.duration) * 100);
         if (onProgress) {
           onProgress(percentage);
         }
         
-        // Check if 98% complete
         if (percentage >= 98 && onComplete) {
           onComplete();
         }
@@ -114,43 +111,86 @@ const MediaPlayer = ({
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg">{title}</CardTitle>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </CardHeader>
-        <CardContent className="space-y-4">
+    <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="w-full max-w-2xl bg-gradient-to-br from-background via-background to-primary/5 rounded-3xl shadow-2xl shadow-primary/20 overflow-hidden border border-primary/10">
+        {/* Header */}
+        <div className="relative px-6 py-4 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-accent/5">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+              contentType === 'video' 
+                ? 'bg-sky-100 dark:bg-sky-900/30' 
+                : 'bg-purple-100 dark:bg-purple-900/30'
+            }`}>
+              {contentType === 'video' ? (
+                <Play className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+              ) : (
+                <Headphones className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              )}
+            </div>
+            <div className="flex-1">
+              <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+              <p className="text-xs text-muted-foreground">
+                {contentType === 'video' ? 'Vídeo' : 'Hipnose'}
+              </p>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={onClose}
+              className="rounded-full hover:bg-primary/10 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-4">
+          {/* Tips for hypnosis */}
           {contentType === 'hypnosis' && (
-            <div className="bg-muted/50 p-3 rounded-lg border border-border/50">
-              <p className="text-sm font-medium text-foreground mb-2">Dicas:</p>
-              <ul className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
-                <li>Utilize fones de ouvido</li>
-                <li>Deite-se ou sente-se em um local em que possa soltar seu corpo e cabeça completamente</li>
-                <li>Escolha um local silencioso em que não será interrompido</li>
+            <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-2xl border border-purple-200/50 dark:border-purple-800/30">
+              <p className="text-sm font-medium text-purple-700 dark:text-purple-300 mb-2 flex items-center gap-2">
+                <Volume2 className="h-4 w-4" />
+                Dicas para melhor experiência
+              </p>
+              <ul className="text-sm text-purple-600/80 dark:text-purple-400/80 space-y-1.5">
+                <li className="flex items-start gap-2">
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 text-purple-700 dark:text-purple-300 text-xs font-medium flex-shrink-0">1</span>
+                  Utilize fones de ouvido
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 text-purple-700 dark:text-purple-300 text-xs font-medium flex-shrink-0">2</span>
+                  Deite-se ou sente-se confortavelmente
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 text-purple-700 dark:text-purple-300 text-xs font-medium flex-shrink-0">3</span>
+                  Escolha um local silencioso
+                </li>
               </ul>
             </div>
           )}
+
           {description && (
             <p className="text-sm text-muted-foreground">{description}</p>
           )}
           
           {error && (
-            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-              <p className="text-sm text-destructive">{error}</p>
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/30 rounded-2xl p-4">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
             </div>
           )}
 
           {!fileUrl && (
-            <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
-              <p className="text-sm text-warning">Arquivo não encontrado no storage</p>
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 dark:border-amber-800/30 rounded-2xl p-4">
+              <p className="text-sm text-amber-600 dark:text-amber-400">Arquivo não encontrado no storage</p>
             </div>
           )}
           
-          <div className="bg-muted rounded-lg overflow-hidden">
+          {/* Media Player */}
+          <div className="rounded-2xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5">
             {contentType === 'video' ? (
               <video
                 ref={mediaRef as React.RefObject<HTMLVideoElement>}
@@ -185,38 +225,60 @@ const MediaPlayer = ({
                   {fileUrl && <source src={fileUrl} type="audio/mpeg" />}
                   Seu navegador não suporta áudio HTML5.
                 </audio>
+                
+                {/* Audio Player Visual */}
                 <div className="relative aspect-video w-full">
                   <img 
                     src={hypnosisImage} 
                     alt="Homem relaxando com fones de ouvido" 
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-navy/20 to-transparent" />
+                  
+                  {/* Play Button */}
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <Button 
                       onClick={handlePlayPause} 
                       size="lg"
-                      className="rounded-full w-16 h-16 shadow-lg hover:scale-110 transition-transform"
+                      className={`rounded-full w-20 h-20 shadow-2xl transition-all duration-300 ${
+                        isPlaying 
+                          ? 'bg-purple-600 hover:bg-purple-700 scale-90' 
+                          : 'bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 hover:scale-110'
+                      }`}
                     >
                       {isPlaying ? (
-                        <Pause className="h-8 w-8" />
+                        <Pause className="h-10 w-10 text-white" />
                       ) : (
-                        <Play className="h-8 w-8" />
+                        <Play className="h-10 w-10 text-white ml-1" />
                       )}
                     </Button>
                   </div>
                 </div>
+
+                {/* Progress Bar */}
                 {duration > 0 && (
-                  <div className="p-4 text-center text-sm text-muted-foreground">
-                    <span>{formatTime(currentTime)} / {formatTime(duration)}</span>
+                  <div className="p-4 bg-gradient-to-r from-purple-50 dark:from-purple-900/20 to-background">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-medium text-muted-foreground w-12 text-right">
+                        {formatTime(currentTime)}
+                      </span>
+                      <div className="flex-1 h-2 bg-purple-100 dark:bg-purple-900/30 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transition-all duration-300"
+                          style={{ width: `${progressPercentage}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-medium text-muted-foreground w-12">
+                        {formatTime(duration)}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
             )}
           </div>
-
-
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
