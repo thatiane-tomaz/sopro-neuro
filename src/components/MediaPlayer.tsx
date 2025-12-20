@@ -36,6 +36,13 @@ const MediaPlayer = ({
     const media = mediaRef.current;
     if (!media) return;
 
+    // Force playback rate to 1x and prevent changes
+    const enforcePlaybackRate = () => {
+      if (media.playbackRate !== 1) {
+        media.playbackRate = 1;
+      }
+    };
+
     const updateTime = () => {
       setCurrentTime(media.currentTime);
       
@@ -59,9 +66,13 @@ const MediaPlayer = ({
     const handleLoadStart = () => {
       console.log('Media load started for:', fileUrl);
       setError(null);
+      // Ensure playback rate is 1x on load
+      media.playbackRate = 1;
     };
     const handleCanPlay = () => {
       console.log('Media can play');
+      // Ensure playback rate is 1x when ready
+      media.playbackRate = 1;
     };
     const handleEnded = () => {
       setIsPlaying(false);
@@ -76,6 +87,10 @@ const MediaPlayer = ({
     media.addEventListener('error', handleError);
     media.addEventListener('loadstart', handleLoadStart);
     media.addEventListener('canplay', handleCanPlay);
+    media.addEventListener('ratechange', enforcePlaybackRate);
+
+    // Initial enforcement
+    media.playbackRate = 1;
 
     return () => {
       media.removeEventListener('timeupdate', updateTime);
@@ -84,6 +99,7 @@ const MediaPlayer = ({
       media.removeEventListener('error', handleError);
       media.removeEventListener('loadstart', handleLoadStart);
       media.removeEventListener('canplay', handleCanPlay);
+      media.removeEventListener('ratechange', enforcePlaybackRate);
     };
   }, [fileUrl, onProgress, onComplete]);
 
