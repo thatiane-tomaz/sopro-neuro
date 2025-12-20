@@ -17,7 +17,7 @@ export const useDailyContent = () => {
     queryKey: ['daily_content'],
     queryFn: async () => {
       try {
-        const { data, error } = await (supabase as any)
+        const { data, error } = await supabase
           .from('daily_content')
           .select('*')
           .order('day_number', { ascending: true });
@@ -26,11 +26,14 @@ export const useDailyContent = () => {
           console.error('Error fetching daily content:', error);
           return [];
         }
+        console.log('Daily content fetched:', data);
         return (data || []) as DailyContent[];
       } catch (error) {
         console.error('Error in daily content query:', error);
         return [];
       }
     },
+    staleTime: 0, // Always fetch fresh data
+    refetchOnWindowFocus: true,
   });
 };
