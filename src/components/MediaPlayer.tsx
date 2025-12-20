@@ -122,12 +122,12 @@ const MediaPlayer = ({
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
               contentType === 'video' 
                 ? 'bg-sky-100 dark:bg-sky-900/30' 
-                : 'bg-purple-100 dark:bg-purple-900/30'
+                : 'bg-blue-100 dark:bg-blue-900/30'
             }`}>
               {contentType === 'video' ? (
                 <Play className="h-5 w-5 text-sky-600 dark:text-sky-400" />
               ) : (
-                <Headphones className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                <Headphones className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               )}
             </div>
             <div className="flex-1">
@@ -151,22 +151,22 @@ const MediaPlayer = ({
         <div className="p-6 space-y-4">
           {/* Tips for hypnosis */}
           {contentType === 'hypnosis' && (
-            <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-2xl border border-purple-200/50 dark:border-purple-800/30">
-              <p className="text-sm font-medium text-purple-700 dark:text-purple-300 mb-2 flex items-center gap-2">
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl border border-blue-200/50 dark:border-blue-800/30">
+              <p className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 flex items-center gap-2">
                 <Volume2 className="h-4 w-4" />
                 Dicas para melhor experiência
               </p>
-              <ul className="text-sm text-purple-600/80 dark:text-purple-400/80 space-y-1.5">
+              <ul className="text-sm text-blue-600/80 dark:text-blue-400/80 space-y-1.5">
                 <li className="flex items-start gap-2">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 text-purple-700 dark:text-purple-300 text-xs font-medium flex-shrink-0">1</span>
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-200 dark:bg-blue-800 text-blue-700 dark:text-blue-300 text-xs font-medium flex-shrink-0">1</span>
                   Utilize fones de ouvido
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 text-purple-700 dark:text-purple-300 text-xs font-medium flex-shrink-0">2</span>
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-200 dark:bg-blue-800 text-blue-700 dark:text-blue-300 text-xs font-medium flex-shrink-0">2</span>
                   Deite-se ou sente-se confortavelmente
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 text-purple-700 dark:text-purple-300 text-xs font-medium flex-shrink-0">3</span>
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-200 dark:bg-blue-800 text-blue-700 dark:text-blue-300 text-xs font-medium flex-shrink-0">3</span>
                   Escolha um local silencioso
                 </li>
               </ul>
@@ -242,8 +242,8 @@ const MediaPlayer = ({
                       size="lg"
                       className={`rounded-full w-20 h-20 shadow-2xl transition-all duration-300 ${
                         isPlaying 
-                          ? 'bg-purple-600 hover:bg-purple-700 scale-90' 
-                          : 'bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 hover:scale-110'
+                          ? 'bg-blue-600 hover:bg-blue-700 scale-90' 
+                          : 'bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 hover:scale-110'
                       }`}
                     >
                       {isPlaying ? (
@@ -257,14 +257,14 @@ const MediaPlayer = ({
 
                 {/* Progress Bar */}
                 {duration > 0 && (
-                  <div className="p-4 bg-gradient-to-r from-purple-50 dark:from-purple-900/20 to-background">
+                  <div className="p-4 bg-gradient-to-r from-blue-50 dark:from-blue-900/20 to-background">
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-medium text-muted-foreground w-12 text-right">
                         {formatTime(currentTime)}
                       </span>
-                      <div className="flex-1 h-2 bg-purple-100 dark:bg-purple-900/30 rounded-full overflow-hidden">
+                      <div className="flex-1 h-2 bg-blue-100 dark:bg-blue-900/30 rounded-full overflow-hidden">
                         <div 
-                          className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transition-all duration-300"
+                          className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300"
                           style={{ width: `${progressPercentage}%` }}
                         />
                       </div>
