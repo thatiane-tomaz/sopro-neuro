@@ -118,14 +118,10 @@ const Dashboard = () => {
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile, isAdmin });
 
   // Calculate current day based on user progress
-  // Admins can see simulated day (change this value to test different days)
-  const adminSimulatedDay = 1; // Change this to test different days
-  const actualDay = isAdmin ? adminSimulatedDay : getCurrentDay();
-  const currentDay: number = (!isAdmin && profile?.subscription_status === 'free') 
-    ? Math.min(actualDay, 2) 
-    : actualDay;
+  // TEMPORARY: Force day 21 for testing all videos
+  const currentDay: number = 21;
   
-  console.log('Current day from tracking:', { actualDay, currentDay, isFree: profile?.subscription_status === 'free', isAdmin, adminSimulatedDay });
+  console.log('TESTING MODE: All days unlocked, currentDay forced to 21');
 
   // Calculate savings for phase 2+ (from day 8+)
   const calculateSavings = useMemo(() => {
