@@ -21,8 +21,24 @@ const Login = () => {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { user, signIn, signUp, resendConfirmationEmail } = useAuth();
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const { user, signIn, signUp, resendConfirmationEmail, updatePassword } = useAuth();
   const { toast } = useToast();
+
+  // Listen for PASSWORD_RECOVERY event
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setShowResetPassword(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Check if user has completed onboarding
   useEffect(() => {
@@ -69,12 +85,48 @@ const Login = () => {
     };
   }, [user]);
 
-  // Show loading while checking
-  if (user) {
+  // Don't redirect if showing reset password form
+  if (user && !showResetPassword) {
     return <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
       <div className="text-gray-700">Carregando...</div>
     </div>;
   }
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (newPassword !== confirmNewPassword) {
+      toast({
+        title: "Senhas não conferem",
+        description: "A nova senha e a confirmação devem ser iguais",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast({
+        title: "Senha muito curta",
+        description: "A senha deve ter pelo menos 6 caracteres",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    const { error } = await updatePassword(newPassword);
+    
+    if (!error) {
+      setShowResetPassword(false);
+      setNewPassword("");
+      setConfirmNewPassword("");
+      // Redirect to dashboard after successful password reset
+      window.location.href = "/dashboard";
+    }
+    
+    setIsLoading(false);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,6 +242,75 @@ const Login = () => {
     await resendConfirmationEmail(signupData.email);
     setIsLoading(false);
   };
+
+  // Show reset password form when user clicks the recovery link
+  if (showResetPassword) {
+    return (
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-6">
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-4">
+              <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
+            </div>
+            <p className="text-slate-500 text-lg font-medium">Redefinir senha</p>
+            <p className="text-slate-400 text-sm mt-2">
+              Digite sua nova senha abaixo
+            </p>
+          </div>
+
+          <form onSubmit={handleResetPassword} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="new-password" className="text-slate-500">Nova senha</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input 
+                  id="new-password" 
+                  type={showNewPassword ? "text" : "password"} 
+                  placeholder="Mínimo 6 caracteres" 
+                  className="pl-10 pr-10"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                >
+                  {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-new-password" className="text-slate-500">Confirmar nova senha</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input 
+                  id="confirm-new-password" 
+                  type={showConfirmNewPassword ? "text" : "password"} 
+                  placeholder="Repita a nova senha" 
+                  className="pl-10 pr-10"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  required 
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+            <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
+              {isLoading ? "Salvando..." : "Salvar nova senha"}
+            </Button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   if (showForgotPassword) {
     return (
