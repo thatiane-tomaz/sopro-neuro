@@ -29,10 +29,20 @@ const Login = () => {
   const { user, signIn, signUp, resendConfirmationEmail, updatePassword } = useAuth();
   const { toast } = useToast();
 
-  // Listen for PASSWORD_RECOVERY event
+  // Detect and handle password recovery flow
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
+    const hash = window.location.hash ?? "";
+    const search = window.location.search ?? "";
+
+    // When coming from the recovery email link, Supabase typically appends `type=recovery`
+    if (hash.includes("type=recovery") || search.includes("type=recovery")) {
+      setShowResetPassword(true);
+    }
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
         setShowResetPassword(true);
       }
     });
@@ -45,7 +55,8 @@ const Login = () => {
     let isMounted = true;
     
     const checkOnboarding = async () => {
-      if (!user) return;
+      // During password recovery we must NOT redirect; user needs to stay here and set a new password.
+      if (!user || showResetPassword) return;
 
       try {
         const { data: onboardingData, error } = await supabase
@@ -79,11 +90,11 @@ const Login = () => {
     };
 
     checkOnboarding();
-    
+
     return () => {
       isMounted = false;
     };
-  }, [user]);
+  }, [user, showResetPassword]);
 
   // Don't redirect if showing reset password form
   if (user && !showResetPassword) {
