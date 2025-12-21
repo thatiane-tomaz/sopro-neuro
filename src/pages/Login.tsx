@@ -193,14 +193,11 @@ const Login = () => {
     
     setIsLoading(true);
     
-    // Use production URL if available, otherwise use current origin
-    const productionUrl = 'https://soproneuro.com.br';
-    const redirectUrl = window.location.hostname.includes('soproneuro.com.br') 
-      ? `${productionUrl}/login`
-      : `${window.location.origin}/login`;
+    // Use the correct app URL for password reset redirect
+    const appUrl = 'https://2814fbf6-4b2c-4db2-bb16-4476746b13fe.lovableproject.com';
     
     const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
-      redirectTo: redirectUrl,
+      redirectTo: `${appUrl}/login`,
     });
     
     if (error) {
