@@ -726,28 +726,6 @@ const Dashboard = () => {
           })}
         </div>
 
-        {/* Premium Upgrade CTA - Bottom */}
-        {profile?.subscription_status === 'free' && currentDay <= 2 && (
-          <div className="mt-12 mb-8">
-            <div className="relative overflow-hidden rounded-xl shadow-lg bg-card/50 backdrop-blur-sm p-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  <Crown className="h-5 w-5 text-accent" />
-                  <div>
-                    <h3 className="text-sm font-semibold text-muted-foreground">
-                      Desbloqueie os 14 Dias Completos
-                    </h3>
-                    <p className="text-xs text-muted-foreground/70">
-                      Acesso por 30 dias para ajudar no processo de parar de fumar.
-                    </p>
-                  </div>
-                </div>
-                
-                <SubscriptionButton size="sm" />
-              </div>
-            </div>
-          </div>
-        )}
 
         </TabsContent>
 
