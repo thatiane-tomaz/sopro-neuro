@@ -15,6 +15,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
+  const [signupError, setSignupError] = useState<string | null>(null);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showLoginResendLink, setShowLoginResendLink] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
@@ -167,11 +168,13 @@ const Login = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSignupError(null);
     
     // Validate input
     const validation = signupSchema.safeParse(signupData);
     if (!validation.success) {
       const firstError = validation.error.errors[0];
+      setSignupError(firstError.message);
       toast({
         title: "Erro de validação",
         description: firstError.message,
@@ -184,8 +187,9 @@ const Login = () => {
     
     const result = await signUp(signupData.email, signupData.password, signupData.name);
     
-    // If user exists but might need confirmation, show toast (they can use the resend link)
-    // Toast is already shown by the signUp function
+    if (result.error) {
+      setSignupError(result.error.message);
+    }
     
     setIsLoading(false);
   };
@@ -456,13 +460,6 @@ const Login = () => {
           
           <TabsContent value="register">
             <form onSubmit={handleSignup} className="space-y-4">
-              {/* Info box for paid users */}
-              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-2">
-                <p className="text-sm text-slate-600 text-center">
-                  <span className="font-semibold">Importante:</span> Use o mesmo email que você utilizou na hora do pagamento.
-                </p>
-              </div>
-
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-slate-500">Nome completo</Label>
                 <div className="relative">
@@ -492,6 +489,9 @@ const Login = () => {
                     required 
                   />
                 </div>
+                <p className="text-xs text-slate-500">
+                  Use o mesmo email que você utilizou na hora do pagamento.
+                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="register-password" className="text-slate-500">Criar Senha</Label>
@@ -550,18 +550,23 @@ const Login = () => {
                 </button>
               </div>
 
-              {/* Link for users who haven't paid yet */}
-              <div className="text-center pt-2 border-t border-slate-200">
-                <p className="text-sm text-slate-500 mb-2">Ainda não adquiriu o programa?</p>
-                <a 
-                  href="https://soproneuro.com.br/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary font-semibold hover:underline"
-                >
-                  Clique aqui para saber mais e adquirir
-                </a>
-              </div>
+              {/* Error message with help link */}
+              {signupError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
+                  <p className="text-sm text-red-600 mb-1">{signupError}</p>
+                  <p className="text-xs text-slate-600">
+                    Verifique se está utilizando o mesmo email do pagamento.{' '}
+                    <a 
+                      href="https://soproneuro.com.br/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-primary font-semibold hover:underline"
+                    >
+                      Ainda não adquiriu? Clique aqui.
+                    </a>
+                  </p>
+                </div>
+              )}
             </form>
           </TabsContent>
         </Tabs>
