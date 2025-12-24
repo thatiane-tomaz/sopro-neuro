@@ -456,6 +456,13 @@ const Login = () => {
           
           <TabsContent value="register">
             <form onSubmit={handleSignup} className="space-y-4">
+              {/* Info box for paid users */}
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-2">
+                <p className="text-sm text-slate-600 text-center">
+                  <span className="font-semibold">Importante:</span> Use o mesmo email que você utilizou na hora do pagamento.
+                </p>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-slate-500">Nome completo</Label>
                 <div className="relative">
@@ -541,6 +548,19 @@ const Login = () => {
                 >
                   Reenviar email de confirmação de cadastro
                 </button>
+              </div>
+
+              {/* Link for users who haven't paid yet */}
+              <div className="text-center pt-2 border-t border-slate-200">
+                <p className="text-sm text-slate-500 mb-2">Ainda não adquiriu o programa?</p>
+                <a 
+                  href="https://soproneuro.com.br/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary font-semibold hover:underline"
+                >
+                  Clique aqui para saber mais e adquirir
+                </a>
               </div>
             </form>
           </TabsContent>
