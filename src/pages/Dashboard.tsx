@@ -318,10 +318,10 @@ const Dashboard = () => {
               <img src={soproLogo} alt="Sopro" className="h-8 w-auto object-contain" />
               
               <div className="flex items-center gap-2">
-                {isPremium && (
+                {isPremium && daysRemaining > 0 && (
                   <Badge className="text-xs bg-accent whitespace-nowrap">
                     <Crown className="w-3 h-3 mr-1" />
-                    {daysRemaining > 0 ? `${daysRemaining} dias` : 'Premium'}
+                    {daysRemaining} dias
                   </Badge>
                 )}
                 <Button 
@@ -361,35 +361,6 @@ const Dashboard = () => {
                 </DropdownMenu>
               </div>
             </div>
-            
-{!isPremium && (
-              <>
-                <div className="mb-3" />
-                <div className="flex items-center gap-2 bg-purple-500/10 rounded-lg px-3 py-2 shadow-sm">
-                  <Badge variant="secondary" className="text-xs whitespace-nowrap bg-purple-500/20 text-purple-900 dark:text-purple-100">
-                    {currentDay <= 2 ? 'Período Gratuito - 2 Dias' : 'Acesso Expirado'}
-                  </Badge>
-                  <div className="ml-auto">
-                    <SubscriptionButton />
-                  </div>
-                </div>
-              </>
-            )}
-            
-            {isPremium && daysRemaining <= 7 && (
-              <>
-                <div className="mb-3" />
-                <div className="flex items-center gap-2 bg-sky-100 dark:bg-sky-900/30 rounded-lg px-3 py-2 shadow-sm">
-                  <Sparkles className="h-4 w-4 text-sky-600 dark:text-sky-400" />
-                  <span className="text-xs text-sky-700 dark:text-sky-300">
-                    Seu acesso expira em {daysRemaining} {daysRemaining === 1 ? 'dia' : 'dias'}
-                  </span>
-                  <div className="ml-auto">
-                    <SubscriptionButton />
-                  </div>
-                </div>
-              </>
-            )}
           </div>
         </header>
 
