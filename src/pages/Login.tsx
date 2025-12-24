@@ -567,6 +567,21 @@ const Login = () => {
                   </p>
                 </div>
               )}
+
+              {/* Link for users who haven't paid yet */}
+              <div className="text-center pt-2 border-t border-slate-200">
+                <p className="text-xs text-slate-500">
+                  Ainda não adquiriu o programa?{' '}
+                  <a 
+                    href="https://soproneuro.com.br/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary font-semibold hover:underline"
+                  >
+                    Clique aqui
+                  </a>
+                </p>
+              </div>
             </form>
           </TabsContent>
         </Tabs>
