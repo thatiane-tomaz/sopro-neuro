@@ -46,8 +46,8 @@ serve(async (req) => {
       mode: "payment",
       locale: "pt-BR",
       payment_method_types: ["card"],
-      success_url: `${req.headers.get("origin")}/dashboard?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/dashboard?checkout=cancel`,
+      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/login`,
       metadata: {
         user_id: user.id,
         access_days: "30"
