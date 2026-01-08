@@ -61,14 +61,43 @@ serve(async (req) => {
       });
     }
 
+    // First check whitelist
+    const { data: whitelistData } = await supabaseClient
+      .from('whitelist_users')
+      .select('*')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (whitelistData) {
+      // Check if whitelist entry has expiration
+      const now = new Date();
+      const whitelistExpired = whitelistData.expires_at ? new Date(whitelistData.expires_at) < now : false;
+      
+      if (!whitelistExpired) {
+        logStep("User found in whitelist", { email, reason: whitelistData.reason });
+        return new Response(JSON.stringify({
+          subscribed: true,
+          has_subscription: true,
+          status: 'whitelist',
+          is_whitelist: true,
+          reason: whitelistData.reason,
+          expires_at: whitelistData.expires_at,
+          has_account: false // Will be updated when user signs up
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        });
+      }
+    }
+
     // Check subscription in database by email
     const { data: subData, error: subError } = await supabaseClient
       .from('subscriptions')
       .select('*')
       .eq('email', email)
-      .single();
+      .maybeSingle();
 
-    if (subError && subError.code !== 'PGRST116') {
+    if (subError) {
       logStep("Error fetching subscription", { error: subError });
       throw subError;
     }
