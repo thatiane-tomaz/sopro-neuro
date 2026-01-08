@@ -253,12 +253,14 @@ export type Database = {
       }
       subscriptions: {
         Row: {
+          amount_paid: number | null
           cancellation_notes: string | null
           cancellation_reason:
             | Database["public"]["Enums"]["cancellation_reason"]
             | null
           cancelled_at: string | null
           created_at: string
+          email: string | null
           expires_at: string | null
           id: string
           plan_type: string
@@ -270,15 +272,17 @@ export type Database = {
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
+          amount_paid?: number | null
           cancellation_notes?: string | null
           cancellation_reason?:
             | Database["public"]["Enums"]["cancellation_reason"]
             | null
           cancelled_at?: string | null
           created_at?: string
+          email?: string | null
           expires_at?: string | null
           id?: string
           plan_type?: string
@@ -290,15 +294,17 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
+          amount_paid?: number | null
           cancellation_notes?: string | null
           cancellation_reason?:
             | Database["public"]["Enums"]["cancellation_reason"]
             | null
           cancelled_at?: string | null
           created_at?: string
+          email?: string | null
           expires_at?: string | null
           id?: string
           plan_type?: string
@@ -310,7 +316,7 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -382,12 +388,14 @@ export type Database = {
       get_current_subscription: {
         Args: { user_uuid: string }
         Returns: {
+          amount_paid: number | null
           cancellation_notes: string | null
           cancellation_reason:
             | Database["public"]["Enums"]["cancellation_reason"]
             | null
           cancelled_at: string | null
           created_at: string
+          email: string | null
           expires_at: string | null
           id: string
           plan_type: string
@@ -399,7 +407,7 @@ export type Database = {
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         SetofOptions: {
           from: "*"
