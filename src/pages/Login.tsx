@@ -16,6 +16,7 @@ const Login = () => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
   const [signupError, setSignupError] = useState<string | null>(null);
+  const [showNeedsSignup, setShowNeedsSignup] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showLoginResendLink, setShowLoginResendLink] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
@@ -161,6 +162,12 @@ const Login = () => {
     
     if (result.needsEmailConfirmation) {
       setShowLoginResendLink(true);
+    }
+    
+    if (result.needsSignup) {
+      setShowNeedsSignup(true);
+      // Pre-fill the email in signup form
+      setSignupData(prev => ({ ...prev, email: loginData.email }));
     }
     
     setIsLoading(false);
@@ -449,6 +456,17 @@ const Login = () => {
                   >
                     Reenviar email de confirmação de cadastro
                   </button>
+                </div>
+              )}
+              {showNeedsSignup && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-center">
+                  <p className="text-sm text-amber-800 font-medium mb-1">
+                    📧 Este email possui assinatura ativa!
+                  </p>
+                  <p className="text-xs text-amber-700">
+                    Mas ainda não tem conta cadastrada. Vá para a aba{' '}
+                    <span className="font-semibold">"Cadastrar"</span> para criar sua conta.
+                  </p>
                 </div>
               )}
               <div className="text-right">
