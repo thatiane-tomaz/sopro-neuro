@@ -83,13 +83,13 @@ const PaymentSuccess = () => {
             )}
             <div className="pt-4 space-y-3">
               <Button 
-                onClick={() => navigate('/login')} 
+                onClick={() => navigate('/install')} 
                 className="w-full bg-primary hover:bg-primary/90"
               >
-                Criar minha conta
+                Instalar o App
               </Button>
               <p className="text-xs text-slate-500">
-                Use o mesmo email do pagamento para criar sua conta
+                Instale o app e crie sua conta com o mesmo email do pagamento
               </p>
             </div>
           </div>
