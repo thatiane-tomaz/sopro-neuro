@@ -61,27 +61,27 @@ serve(async (req) => {
       });
     }
 
-    // First check whitelist
-    const { data: whitelistData } = await supabaseClient
-      .from('whitelist_users')
+    // First check freelist (users who can access without payment)
+    const { data: freelistData } = await supabaseClient
+      .from('freelist_users')
       .select('*')
       .eq('email', email)
       .maybeSingle();
 
-    if (whitelistData) {
-      // Check if whitelist entry has expiration
+    if (freelistData) {
+      // Check if freelist entry has expiration
       const now = new Date();
-      const whitelistExpired = whitelistData.expires_at ? new Date(whitelistData.expires_at) < now : false;
+      const freelistExpired = freelistData.expires_at ? new Date(freelistData.expires_at) < now : false;
       
-      if (!whitelistExpired) {
-        logStep("User found in whitelist", { email, reason: whitelistData.reason });
+      if (!freelistExpired) {
+        logStep("User found in freelist", { email, reason: freelistData.reason });
         return new Response(JSON.stringify({
           subscribed: true,
           has_subscription: true,
-          status: 'whitelist',
-          is_whitelist: true,
-          reason: whitelistData.reason,
-          expires_at: whitelistData.expires_at,
+          status: 'freelist',
+          is_freelist: true,
+          reason: freelistData.reason,
+          expires_at: freelistData.expires_at,
           has_account: false // Will be updated when user signs up
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },

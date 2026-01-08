@@ -122,6 +122,30 @@ export type Database = {
         }
         Relationships: []
       }
+      freelist_users: {
+        Row: {
+          created_at: string
+          email: string
+          expires_at: string | null
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          expires_at?: string | null
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          expires_at?: string | null
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       journey_tracking: {
         Row: {
           created_at: string
@@ -377,30 +401,6 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
-        }
-        Relationships: []
-      }
-      whitelist_users: {
-        Row: {
-          created_at: string
-          email: string
-          expires_at: string | null
-          id: string
-          reason: string | null
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          expires_at?: string | null
-          id?: string
-          reason?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          expires_at?: string | null
-          id?: string
-          reason?: string | null
         }
         Relationships: []
       }
