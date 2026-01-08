@@ -188,7 +188,15 @@ const Login = () => {
     const result = await signUp(signupData.email, signupData.password, signupData.name);
     
     if (result.error) {
-      setSignupError(result.error.message);
+      if (result.noSubscription) {
+        setSignupError("Este email não possui uma assinatura ativa. Adquira o programa primeiro.");
+      } else if (result.subscriptionExpired) {
+        setSignupError("Sua assinatura expirou. Adquira novamente para continuar.");
+      } else if (result.userExists) {
+        setSignupError("Este email já possui uma conta cadastrada. Faça login.");
+      } else {
+        setSignupError(result.error.message);
+      }
     }
     
     setIsLoading(false);

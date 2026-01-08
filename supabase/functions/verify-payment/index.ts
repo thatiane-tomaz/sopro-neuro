@@ -26,82 +26,78 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
-    const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
-    logStep("User authenticated", { userId: user.id });
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
 
     const { session_id } = await req.json();
     if (!session_id) throw new Error("session_id is required");
     logStep("Session ID received", { session_id });
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
-      apiVersion: "2024-11-20.acacia" as any
+    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    
+    // Retrieve checkout session from Stripe
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+    logStep("Stripe session retrieved", { 
+      payment_status: session.payment_status,
+      customer_email: session.customer_details?.email,
+      amount_total: session.amount_total
     });
 
-    const session = await stripe.checkout.sessions.retrieve(session_id);
-    logStep("Session retrieved", { status: session.payment_status });
+    if (session.payment_status === 'paid') {
+      const customerEmail = session.customer_details?.email;
+      if (!customerEmail) throw new Error("Customer email not found in session");
 
-    if (session.payment_status === "paid") {
+      const amountPaid = session.amount_total || 0;
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 30);
       
-      logStep("Payment confirmed, updating profile", { expiresAt: expiresAt.toISOString() });
+      logStep("Payment confirmed, creating/updating subscription", { 
+        email: customerEmail,
+        amount: amountPaid,
+        expires_at: expiresAt.toISOString()
+      });
 
-      const { error: updateError } = await supabaseClient
-        .from('profiles')
-        .update({ 
-          subscription_status: 'premium'
-        })
-        .eq('user_id', user.id);
-
-      if (updateError) {
-        logStep("Error updating profile", { error: updateError });
-        throw updateError;
-      }
-
-      // Update or create subscription record
-      const { error: subError } = await supabaseClient
+      // Upsert subscription by email
+      const { data: subData, error: subError } = await supabaseClient
         .from('subscriptions')
         .upsert({
-          user_id: user.id,
+          email: customerEmail,
           status: 'premium',
-          plan_type: '30_days',
+          plan_type: 'premium',
+          amount_paid: amountPaid,
           expires_at: expiresAt.toISOString(),
-          started_at: new Date().toISOString()
+          started_at: new Date().toISOString(),
+          stripe_customer_id: session.customer as string,
         }, {
-          onConflict: 'user_id'
-        });
+          onConflict: 'email'
+        })
+        .select()
+        .single();
 
       if (subError) {
-        logStep("Error updating subscription", { error: subError });
+        logStep("Error upserting subscription", { error: subError });
         throw subError;
       }
 
-      logStep("Profile and subscription updated successfully");
+      logStep("Subscription created/updated successfully", { subscription_id: subData?.id });
 
       return new Response(JSON.stringify({ 
         success: true,
+        email: customerEmail,
         expires_at: expiresAt.toISOString()
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
-    } else {
-      logStep("Payment not completed", { payment_status: session.payment_status });
-      return new Response(JSON.stringify({ 
-        success: false,
-        payment_status: session.payment_status
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
     }
+
+    return new Response(JSON.stringify({ 
+      success: false, 
+      message: "Payment not completed" 
+    }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in verify-payment", { message: errorMessage });

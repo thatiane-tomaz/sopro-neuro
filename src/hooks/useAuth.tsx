@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, displayName?: string) => Promise<{ error: any; needsEmailConfirmation?: boolean; userExists?: boolean }>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<{ error: any; needsEmailConfirmation?: boolean; userExists?: boolean; noSubscription?: boolean; subscriptionExpired?: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error: any; needsEmailConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   updatePassword: (newPassword: string) => Promise<{ error: any }>;
@@ -89,6 +89,51 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signUp = async (email: string, password: string, displayName?: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
+    // First, check if this email has an active subscription
+    const { data: subData, error: subError } = await supabase.functions.invoke('check-subscription', {
+      body: { email }
+    });
+
+    if (subError) {
+      console.error('Error checking subscription:', subError);
+      toast({
+        title: "Erro ao verificar assinatura",
+        description: "Tente novamente mais tarde",
+        variant: "destructive"
+      });
+      return { error: subError };
+    }
+
+    // Check subscription status
+    if (!subData?.has_subscription) {
+      toast({
+        title: "Assinatura não encontrada",
+        description: "Este email não possui uma assinatura ativa. Adquira o programa primeiro.",
+        variant: "destructive"
+      });
+      return { error: { message: "Assinatura não encontrada para este email" }, noSubscription: true };
+    }
+
+    if (!subData?.subscribed) {
+      toast({
+        title: "Assinatura expirada",
+        description: "Sua assinatura expirou. Adquira novamente para continuar.",
+        variant: "destructive"
+      });
+      return { error: { message: "Assinatura expirada" }, subscriptionExpired: true };
+    }
+
+    // Check if this email already has a user account linked
+    if (subData?.has_account) {
+      toast({
+        title: "Conta já existe",
+        description: "Este email já possui uma conta cadastrada. Faça login.",
+        variant: "destructive"
+      });
+      return { error: { message: "Conta já cadastrada" }, userExists: true };
+    }
+
+    // Proceed with signup
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
