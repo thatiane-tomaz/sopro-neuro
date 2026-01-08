@@ -8,7 +8,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signUp: (email: string, password: string, displayName?: string) => Promise<{ error: any; needsEmailConfirmation?: boolean; userExists?: boolean; noSubscription?: boolean; subscriptionExpired?: boolean }>;
-  signIn: (email: string, password: string) => Promise<{ error: any; needsEmailConfirmation?: boolean }>;
+  signIn: (email: string, password: string) => Promise<{ error: any; needsEmailConfirmation?: boolean; needsSignup?: boolean }>;
   signOut: () => Promise<void>;
   updatePassword: (newPassword: string) => Promise<{ error: any }>;
   updateEmail: (newEmail: string) => Promise<{ error: any }>;
@@ -180,29 +180,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signIn = async (email: string, password: string) => {
+    // First try to sign in
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
 
     if (error) {
-      // Check for email not confirmed error
-      if (error.message.includes('Email not confirmed') || error.message.includes('email not confirmed')) {
+      // Check for invalid credentials - might be because account doesn't exist
+      if (error.message.includes('Invalid login credentials')) {
+        // Check if this email has a subscription but no account
+        const { data: subData } = await supabase.functions.invoke('check-subscription', {
+          body: { email }
+        });
+
+        if (subData?.has_subscription && !subData?.has_account) {
+          toast({
+            title: "Conta não encontrada",
+            description: "Este email possui uma assinatura ativa, mas ainda não tem cadastro. Vá para a aba 'Cadastrar' para criar sua conta.",
+            variant: "destructive"
+          });
+          return { error, needsSignup: true };
+        }
+
+        toast({
+          title: "Erro no login",
+          description: "Email ou senha incorretos. Verifique seus dados e tente novamente.",
+          variant: "destructive"
+        });
+      } else if (error.message.includes('Email not confirmed') || error.message.includes('email not confirmed')) {
         toast({
           title: "Email não confirmado",
           description: "Verifique sua caixa de entrada e confirme seu email para fazer login.",
           variant: "destructive"
         });
         return { error, needsEmailConfirmation: true };
-      }
-      
-      // Check for invalid credentials
-      if (error.message.includes('Invalid login credentials')) {
-        toast({
-          title: "Erro no login",
-          description: "Email ou senha incorretos. Verifique seus dados e tente novamente.",
-          variant: "destructive"
-        });
       } else {
         toast({
           title: "Erro no login",
