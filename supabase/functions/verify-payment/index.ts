@@ -81,6 +81,29 @@ serve(async (req) => {
 
       logStep("Subscription created/updated successfully", { subscription_id: subData?.id });
 
+      // Send welcome email
+      try {
+        const emailResponse = await fetch(
+          `${Deno.env.get("SUPABASE_URL")}/functions/v1/send-welcome-email`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`,
+            },
+            body: JSON.stringify({
+              email: customerEmail,
+              expiresAt: expiresAt.toISOString(),
+            }),
+          }
+        );
+        const emailResult = await emailResponse.json();
+        logStep("Welcome email sent", { result: emailResult });
+      } catch (emailError) {
+        // Don't fail the payment verification if email fails
+        logStep("Error sending welcome email (non-blocking)", { error: emailError });
+      }
+
       return new Response(JSON.stringify({ 
         success: true,
         email: customerEmail,
