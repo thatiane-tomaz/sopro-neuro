@@ -23,6 +23,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import MediaPlayer from '@/components/MediaPlayer';
 import StartHereStory from '@/components/StartHereStory';
 import { FeedbackSection } from '@/components/FeedbackSection';
@@ -83,7 +92,7 @@ const Dashboard = () => {
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
   const { data: onboardingData } = useOnboardingData();
-  const { isPremium, openCustomerPortal, verifyPayment, daysRemaining, createCheckout } = useSubscription();
+  const { isPremium, isExpired, openCustomerPortal, verifyPayment, daysRemaining, createCheckout, loading: subscriptionLoading } = useSubscription();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
     fileUrl: string;
@@ -95,6 +104,7 @@ const Dashboard = () => {
   const [showStartHere, setShowStartHere] = useState(false);
   const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
   const [countdownTime, setCountdownTime] = useState<string | null>(null);
+  const [showExpiredDialog, setShowExpiredDialog] = useState(false);
   const { toast } = useToast();
 
   // Countdown timer effect
@@ -283,6 +293,13 @@ const Dashboard = () => {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  // Show expired dialog when subscription is expired
+  useEffect(() => {
+    if (!subscriptionLoading && isExpired && !isAdmin) {
+      setShowExpiredDialog(true);
+    }
+  }, [isExpired, subscriptionLoading, isAdmin]);
 
   if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
     console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });
@@ -867,6 +884,35 @@ const Dashboard = () => {
       {showStartHere && (
         <StartHereStory onClose={() => setShowStartHere(false)} />
       )}
+
+      {/* Expired Subscription Dialog */}
+      <AlertDialog open={showExpiredDialog} onOpenChange={setShowExpiredDialog}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <div className="flex justify-center mb-4">
+              <Crown className="w-12 h-12 text-accent" />
+            </div>
+            <AlertDialogTitle className="text-center">
+              Sua assinatura expirou
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center">
+              Seu acesso premium expirou. Renove agora para continuar sua jornada de transformação e ter acesso a todo o conteúdo exclusivo.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+            <AlertDialogAction 
+              onClick={() => {
+                setShowExpiredDialog(false);
+                createCheckout();
+              }}
+              className="w-full bg-accent hover:bg-accent/90"
+            >
+              <CreditCard className="w-4 h-4 mr-2" />
+              Renovar Acesso
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

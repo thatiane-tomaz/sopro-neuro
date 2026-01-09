@@ -7,6 +7,9 @@ interface SubscriptionData {
   subscribed: boolean;
   product_id: string | null;
   subscription_end: string | null;
+  status?: string;
+  has_subscription?: boolean;
+  expires_at?: string;
 }
 
 export const useSubscription = () => {
@@ -132,12 +135,20 @@ export const useSubscription = () => {
 
   const daysRemaining = subscriptionData?.subscription_end 
     ? Math.ceil((new Date(subscriptionData.subscription_end).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+    : subscriptionData?.expires_at
+    ? Math.ceil((new Date(subscriptionData.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
     : 0;
+
+  // Check if subscription is expired (had subscription but now inactive)
+  const isExpired = subscriptionData?.has_subscription && 
+    subscriptionData?.status === 'expired' && 
+    !subscriptionData?.subscribed;
 
   return {
     subscriptionData,
     loading,
     isPremium: subscriptionData?.subscribed || false,
+    isExpired,
     daysRemaining,
     checkSubscription,
     createCheckout,
