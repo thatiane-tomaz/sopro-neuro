@@ -147,7 +147,7 @@ serve(async (req) => {
     const emailResponse = await resend.emails.send({
       from: "Sopro <contato@soproneuro.com.br>",
       to: [email],
-      subject: "🎉 Bem-vindo ao Sopro! Sua jornada de transformação começa agora",
+      subject: "🎉 Bem-vindo ao Sopro!",
       html: emailHtml,
     });
 
