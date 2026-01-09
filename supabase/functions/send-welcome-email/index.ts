@@ -56,7 +56,7 @@ serve(async (req) => {
           <!-- Header com Logo -->
           <tr>
             <td style="background: linear-gradient(135deg, #1a365d 0%, #2d4a7c 100%); padding: 40px 30px; text-align: center;">
-              <img src="https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/videos/sopro-logo-white.png" alt="Sopro" style="height: 60px; width: auto;" />
+              <img src="https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/videos/sopro-logo.png" alt="Sopro" style="height: 60px; width: auto;" />
             </td>
           </tr>
           
