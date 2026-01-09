@@ -56,7 +56,7 @@ serve(async (req) => {
           <!-- Header com Logo -->
           <tr>
             <td style="background: linear-gradient(135deg, #1a365d 0%, #2d4a7c 100%); padding: 40px 30px; text-align: center;">
-              <img src="https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/videos/sopro-logo.png" alt="Sopro" style="height: 60px; width: auto;" />
+              <img src="https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/images/sopro-logo.png" alt="Sopro" style="height: 60px; width: auto;" />
             </td>
           </tr>
           
@@ -67,12 +67,8 @@ serve(async (req) => {
                 Bem-vindo à sua jornada de transformação! 🌟
               </h1>
               
-              <p style="color: #4a5568; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
-                Parabéns por dar o primeiro passo! Você está prestes a iniciar uma jornada que irá <strong>transformar a sua vida</strong>. Com o Sopro, você terá acesso a técnicas comprovadas de neurociência e hipnose que vão te ajudar a alcançar seus objetivos.
-              </p>
-              
               <p style="color: #4a5568; font-size: 16px; line-height: 1.8; margin: 0 0 30px 0;">
-                Este é o começo de uma nova fase. Estamos aqui para te acompanhar em cada passo dessa transformação.
+                Parabéns por dar o primeiro passo! Você está prestes a iniciar uma jornada que irá <strong>transformar a sua vida</strong>. Com o Sopro, você terá acesso a técnicas comprovadas de neurociência e hipnose que vão te ajudar a alcançar seus objetivos.
               </p>
               
               <!-- Box de Download -->
