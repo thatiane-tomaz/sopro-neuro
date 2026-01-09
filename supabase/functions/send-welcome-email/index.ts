@@ -68,7 +68,7 @@ serve(async (req) => {
               </h1>
               
               <p style="color: #4a5568; font-size: 16px; line-height: 1.8; margin: 0 0 30px 0;">
-                Parabéns por dar o primeiro passo! Você está prestes a iniciar uma jornada que irá <strong>transformar a sua vida</strong>. Com o Sopro, você terá acesso a técnicas comprovadas de neurociência e hipnose que vão te ajudar a alcançar seus objetivos.
+                Parabéns por dar o primeiro passo! Você está prestes a iniciar uma jornada que irá <strong>transformar a sua vida</strong>. Com o Sopro Neuro, você terá acesso a técnicas comprovadas de neurociência e hipnose que vão te ajudar a alcançar seus objetivos.
               </p>
               
               <!-- Box de Download -->
@@ -79,7 +79,7 @@ serve(async (req) => {
                       📱 Baixe o App
                     </h2>
                     <p style="color: #4a5568; font-size: 14px; line-height: 1.6; margin: 0 0 15px 0;">
-                      Para começar sua jornada, baixe o aplicativo Sopro:
+                      Para começar sua jornada, baixe o aplicativo Sopro Neuro:
                     </p>
                     <table role="presentation" style="border-collapse: collapse;">
                       <tr>
