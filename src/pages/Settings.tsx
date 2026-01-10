@@ -290,6 +290,24 @@ const Settings = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Refund Period Expired Message */}
+                    {isPremium && daysUntilRefundExpires === null && subscriptionData?.started_at && (
+                      <div className="border-t pt-6">
+                        <div className="bg-muted/50 border border-border rounded-lg p-4">
+                          <div className="flex items-start gap-3">
+                            <AlertTriangle className="w-5 h-5 text-muted-foreground mt-0.5" />
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-muted-foreground">Período de Reembolso Expirado</h4>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                O prazo de 7 dias para solicitar reembolso já foi ultrapassado. 
+                                Se você tiver alguma dúvida ou problema, entre em contato conosco pelo email de suporte.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
               </Tabs>
