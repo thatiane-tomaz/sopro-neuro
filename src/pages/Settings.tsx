@@ -1,21 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Lock, Mail } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { ArrowLeft, Lock, Mail, AlertTriangle, RefreshCw } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useSubscription } from "@/hooks/useSubscription";
 import { useToast } from "@/hooks/use-toast";
 import { passwordChangeSchema, emailChangeSchema } from "@/lib/validations";
+import { supabase } from "@/integrations/supabase/client";
+
+const REFUND_REASONS = [
+  { value: "usability", label: "Dificuldade de uso" },
+  { value: "already_quit", label: "Já parei de fumar" },
+  { value: "not_helpful", label: "Acho que não irá me ajudar a parar de fumar" },
+] as const;
 
 const Settings = () => {
   const { user, updatePassword, updateEmail } = useAuth();
   const { profile } = useUserProfile();
+  const { isPremium, subscriptionData, checkSubscription } = useSubscription();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefundLoading, setIsRefundLoading] = useState(false);
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
+  const [refundReason, setRefundReason] = useState("");
+  const [refundAdditionalInfo, setRefundAdditionalInfo] = useState("");
+  const [daysUntilRefundExpires, setDaysUntilRefundExpires] = useState<number | null>(null);
   
   const [passwordData, setPasswordData] = useState({
     newPassword: "",
@@ -25,6 +51,63 @@ const Settings = () => {
   const [emailData, setEmailData] = useState({
     newEmail: ""
   });
+
+  // Calculate days until refund expires
+  useEffect(() => {
+    if (isPremium && subscriptionData?.started_at) {
+      const paymentDate = new Date(subscriptionData.started_at);
+      const now = new Date();
+      const daysSincePayment = Math.floor((now.getTime() - paymentDate.getTime()) / (1000 * 60 * 60 * 24));
+      const remaining = 7 - daysSincePayment;
+      setDaysUntilRefundExpires(remaining > 0 ? remaining : null);
+    } else {
+      setDaysUntilRefundExpires(null);
+    }
+  }, [isPremium, subscriptionData]);
+
+  const handleRefundRequest = async () => {
+    if (!refundReason) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione um motivo para o reembolso",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsRefundLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('request-refund', {
+        body: { 
+          reason: REFUND_REASONS.find(r => r.value === refundReason)?.label || refundReason,
+          additional_info: refundAdditionalInfo 
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast({
+          title: "Reembolso processado!",
+          description: `Seu reembolso de R$ ${data.amount_refunded?.toFixed(2)} foi processado com sucesso.`,
+        });
+        setShowRefundDialog(false);
+        setRefundReason("");
+        setRefundAdditionalInfo("");
+        await checkSubscription();
+      } else {
+        throw new Error(data?.error || "Erro ao processar reembolso");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Erro ao solicitar reembolso",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRefundLoading(false);
+    }
+  };
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -182,6 +265,31 @@ const Settings = () => {
                         <p><strong>Assinatura:</strong> {profile?.subscription_status === 'premium' ? 'Premium' : 'Gratuita'}</p>
                       </div>
                     </div>
+
+                    {/* Refund Section */}
+                    {isPremium && daysUntilRefundExpires !== null && (
+                      <div className="border-t pt-6">
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                          <div className="flex items-start gap-3">
+                            <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-amber-900">Solicitar Reembolso</h4>
+                              <p className="text-sm text-amber-700 mt-1">
+                                Você tem <strong>{daysUntilRefundExpires} {daysUntilRefundExpires === 1 ? 'dia' : 'dias'}</strong> restantes para solicitar reembolso integral.
+                              </p>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="mt-3 border-amber-300 text-amber-900 hover:bg-amber-100"
+                                onClick={() => setShowRefundDialog(true)}
+                              >
+                                Solicitar Reembolso
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
               </Tabs>
@@ -189,6 +297,69 @@ const Settings = () => {
           </Card>
         </div>
       </div>
+
+      {/* Refund Dialog */}
+      <AlertDialog open={showRefundDialog} onOpenChange={setShowRefundDialog}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-600" />
+              Solicitar Reembolso
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Ao solicitar o reembolso, você perderá o acesso ao conteúdo premium imediatamente. Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-3">
+              <Label>Por que você está solicitando o reembolso?</Label>
+              <RadioGroup value={refundReason} onValueChange={setRefundReason}>
+                {REFUND_REASONS.map((reason) => (
+                  <div key={reason.value} className="flex items-center space-x-2">
+                    <RadioGroupItem value={reason.value} id={reason.value} />
+                    <Label htmlFor={reason.value} className="font-normal cursor-pointer">
+                      {reason.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="additionalInfo">
+                Informações adicionais <span className="text-muted-foreground">(opcional)</span>
+              </Label>
+              <Textarea
+                id="additionalInfo"
+                placeholder="Conte-nos mais sobre sua experiência para nos ajudar a melhorar..."
+                value={refundAdditionalInfo}
+                onChange={(e) => setRefundAdditionalInfo(e.target.value)}
+                className="resize-none"
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isRefundLoading}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleRefundRequest}
+              disabled={isRefundLoading || !refundReason}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {isRefundLoading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Processando...
+                </>
+              ) : (
+                "Confirmar Reembolso"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

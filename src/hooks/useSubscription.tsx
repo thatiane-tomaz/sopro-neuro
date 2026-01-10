@@ -10,6 +10,8 @@ interface SubscriptionData {
   status?: string;
   has_subscription?: boolean;
   expires_at?: string;
+  started_at?: string;
+  amount_paid?: number;
 }
 
 export const useSubscription = () => {
