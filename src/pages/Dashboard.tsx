@@ -107,13 +107,14 @@ const Dashboard = () => {
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
   const { toast } = useToast();
 
-  // Countdown timer effect - memoized to prevent unnecessary recalculations
+  // Countdown timer effect - recalculates when tracking data changes
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
     
     const updateCountdown = () => {
       try {
         const msRemaining = getTimeUntilNextUnlock();
+        console.log('Countdown update:', { msRemaining, currentDay: getCurrentDay() });
         if (msRemaining && msRemaining > 0) {
           const hours = Math.floor(msRemaining / (1000 * 60 * 60));
           const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
@@ -127,14 +128,15 @@ const Dashboard = () => {
       }
     };
 
-    updateCountdown();
-    interval = setInterval(updateCountdown, 60000); // Update every minute instead of every second
+    if (!trackingLoading) {
+      updateCountdown();
+      interval = setInterval(updateCountdown, 60000); // Update every minute
+    }
     
     return () => {
       if (interval) clearInterval(interval);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackingLoading]); // Only depend on trackingLoading to prevent excessive re-renders
+  }, [trackingLoading, getTimeUntilNextUnlock, getCurrentDay]);
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile, isAdmin });
 

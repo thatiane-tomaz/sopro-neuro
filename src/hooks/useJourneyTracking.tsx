@@ -158,25 +158,27 @@ export const useJourneyTracking = () => {
     
     if (!track) return { started: false, completed: false, percentage: 0 };
     
+    // Content is completed if finished_at is set (user watched to the end)
     return {
       started: true,
-      completed: track.progress_percentage >= 99 && track.finished_at !== null,
+      completed: track.finished_at !== null,
       percentage: track.progress_percentage,
     };
   };
 
-  // Check if a day is completed (both video and hypnosis at 98%+)
+  // Check if a day is completed (both video and hypnosis finished)
   // For Phase 2 (days 8-14), only hypnosis is required
+  // A content is completed if it has finished_at set (user watched to the end)
   const isDayCompleted = (day: number): boolean => {
     if (!trackingData || !Array.isArray(trackingData)) return false;
     
     // Phase 2 (days 8-14) only requires hypnosis
     const isPhase2 = day >= 8 && day <= 14;
     
+    // Content is completed if finished_at is set (user watched to the end)
     const hypnosisCompleted = trackingData.some(
       track => 
         track.interaction_type === `hipnose_dia_${day}` && 
-        track.progress_percentage >= 98 &&
         track.finished_at !== null
     );
     
@@ -187,7 +189,6 @@ export const useJourneyTracking = () => {
     const videoCompleted = trackingData.some(
       track => 
         track.interaction_type === `video_dia_${day}` && 
-        track.progress_percentage >= 98 &&
         track.finished_at !== null
     );
     
@@ -200,23 +201,32 @@ export const useJourneyTracking = () => {
     
     // Phase 2 (days 8-14) only requires hypnosis
     const isPhase2 = day >= 8 && day <= 14;
-    const requiredCount = isPhase2 ? 1 : 2;
     
-    const completedTracks = trackingData.filter(
+    // Get completed tracks (with finished_at set)
+    const videoTrack = trackingData.find(
       track => 
-        (track.interaction_type === `video_dia_${day}` || 
-         track.interaction_type === `hipnose_dia_${day}`) &&
-        track.progress_percentage >= 98 &&
+        track.interaction_type === `video_dia_${day}` &&
         track.finished_at !== null
     );
     
-    if (completedTracks.length < requiredCount) return null;
+    const hypnosisTrack = trackingData.find(
+      track => 
+        track.interaction_type === `hipnose_dia_${day}` &&
+        track.finished_at !== null
+    );
     
-    const times = completedTracks
-      .map(t => new Date(t.finished_at!))
-      .sort((a, b) => b.getTime() - a.getTime());
+    // For Phase 2, only hypnosis is required
+    if (isPhase2) {
+      return hypnosisTrack ? new Date(hypnosisTrack.finished_at!) : null;
+    }
     
-    return times[0];
+    // For Phase 1, both are required - return the later completion time
+    if (!videoTrack || !hypnosisTrack) return null;
+    
+    const videoTime = new Date(videoTrack.finished_at!);
+    const hypnosisTime = new Date(hypnosisTrack.finished_at!);
+    
+    return videoTime > hypnosisTime ? videoTime : hypnosisTime;
   };
 
   // Calculate current day based on what user has already seen (last completed day)
