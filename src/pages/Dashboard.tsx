@@ -226,7 +226,8 @@ const Dashboard = () => {
     
     // Check if day is time-locked (6h wait after previous day) - BEFORE checking current
     // This ensures that even the "current" day stays locked until the timer expires
-    if (isDayTimeLocked(day) && !isAdmin) {
+    // Note: Admins also see time lock to test user experience
+    if (isDayTimeLocked(day)) {
       return 'time_locked';
     }
     
