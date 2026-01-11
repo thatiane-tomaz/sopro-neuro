@@ -33,7 +33,7 @@ export const useDailyContent = () => {
         return [];
       }
     },
-    staleTime: 0, // Always fetch fresh data
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60 * 1000, // 5 minutes - avoid constant refetching
+    refetchOnWindowFocus: false,
   });
 };

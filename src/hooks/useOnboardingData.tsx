@@ -40,5 +40,7 @@ export const useOnboardingData = () => {
       }
     },
     enabled: !!user,
+    staleTime: 5 * 60 * 1000, // 5 minutes - onboarding data rarely changes
+    refetchOnWindowFocus: false,
   });
 };

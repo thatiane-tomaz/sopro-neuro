@@ -47,26 +47,29 @@ export const useSubscription = () => {
 
   useEffect(() => {
     let isMounted = true;
+    let interval: ReturnType<typeof setInterval> | null = null;
     
     const doCheck = async () => {
-      if (!isMounted) return;
+      if (!isMounted || !user || !session?.access_token) return;
       await checkSubscription();
     };
     
     doCheck();
     
-    // Auto-refresh every minute
-    const interval = setInterval(() => {
-      if (isMounted) {
-        checkSubscription();
-      }
-    }, 60000);
+    // Auto-refresh every minute only if user is authenticated
+    if (user && session?.access_token) {
+      interval = setInterval(() => {
+        if (isMounted && user && session?.access_token) {
+          checkSubscription();
+        }
+      }, 60000);
+    }
     
     return () => {
       isMounted = false;
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
     };
-  }, [checkSubscription]);
+  }, [checkSubscription, user, session]);
 
   const verifyPayment = useCallback(async (sessionId: string) => {
     try {

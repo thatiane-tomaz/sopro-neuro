@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, X, Headphones, Volume2 } from 'lucide-react';
 import hypnosisImage from '@/assets/hypnosis-relaxed-man.jpg';
@@ -28,13 +28,25 @@ const MediaPlayer = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [hasCompleted, setHasCompleted] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
+  
+  // Store callbacks in refs to avoid dependency issues
+  const onProgressRef = useRef(onProgress);
+  const onCompleteRef = useRef(onComplete);
+  
+  useEffect(() => {
+    onProgressRef.current = onProgress;
+    onCompleteRef.current = onComplete;
+  }, [onProgress, onComplete]);
 
   console.log('MediaPlayer opened with:', { title, fileUrl, contentType, interactionType });
 
   useEffect(() => {
     const media = mediaRef.current;
     if (!media) return;
+
+    let isMounted = true;
 
     // Force playback rate to 1x and prevent changes
     const enforcePlaybackRate = () => {
@@ -44,40 +56,54 @@ const MediaPlayer = ({
     };
 
     const updateTime = () => {
+      if (!isMounted) return;
       setCurrentTime(media.currentTime);
       
       if (media.duration > 0) {
         const percentage = Math.floor((media.currentTime / media.duration) * 100);
-        if (onProgress) {
-          onProgress(percentage);
+        if (onProgressRef.current) {
+          onProgressRef.current(percentage);
         }
         
-        if (percentage >= 98 && onComplete) {
-          onComplete();
+        if (percentage >= 98 && !hasCompleted && onCompleteRef.current) {
+          setHasCompleted(true);
+          onCompleteRef.current();
         }
       }
     };
     
-    const updateDuration = () => setDuration(media.duration);
+    const updateDuration = () => {
+      if (isMounted) setDuration(media.duration);
+    };
+    
     const handleError = (e: Event) => {
       console.error('Media error:', e);
-      setError('Erro ao carregar o arquivo. Verifique se o arquivo existe no storage.');
+      if (isMounted) {
+        setError('Erro ao carregar o arquivo. Verifique se o arquivo existe no storage.');
+      }
     };
+    
     const handleLoadStart = () => {
       console.log('Media load started for:', fileUrl);
-      setError(null);
-      // Ensure playback rate is 1x on load
-      media.playbackRate = 1;
+      if (isMounted) {
+        setError(null);
+        // Ensure playback rate is 1x on load
+        media.playbackRate = 1;
+      }
     };
+    
     const handleCanPlay = () => {
       console.log('Media can play');
       // Ensure playback rate is 1x when ready
       media.playbackRate = 1;
     };
+    
     const handleEnded = () => {
+      if (!isMounted) return;
       setIsPlaying(false);
-      if (onComplete) {
-        onComplete();
+      if (!hasCompleted && onCompleteRef.current) {
+        setHasCompleted(true);
+        onCompleteRef.current();
       }
     };
 
@@ -93,6 +119,7 @@ const MediaPlayer = ({
     media.playbackRate = 1;
 
     return () => {
+      isMounted = false;
       media.removeEventListener('timeupdate', updateTime);
       media.removeEventListener('loadedmetadata', updateDuration);
       media.removeEventListener('ended', handleEnded);
@@ -101,7 +128,7 @@ const MediaPlayer = ({
       media.removeEventListener('canplay', handleCanPlay);
       media.removeEventListener('ratechange', enforcePlaybackRate);
     };
-  }, [fileUrl, onProgress, onComplete]);
+  }, [fileUrl, hasCompleted]);
 
   const handlePlayPause = async () => {
     const media = mediaRef.current;

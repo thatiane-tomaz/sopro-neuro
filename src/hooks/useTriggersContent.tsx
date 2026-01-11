@@ -35,5 +35,7 @@ export const useTriggersContent = () => {
         return [];
       }
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes - triggers rarely change
+    refetchOnWindowFocus: false,
   });
 };
