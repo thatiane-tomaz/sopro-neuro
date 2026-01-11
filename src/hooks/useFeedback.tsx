@@ -37,6 +37,8 @@ export const useFeedback = (userId: string | undefined) => {
       }
     },
     enabled: !!userId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
 
   const submitFeedback = useMutation({
