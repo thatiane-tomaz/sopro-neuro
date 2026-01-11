@@ -9,6 +9,7 @@ const Index = () => {
 
   useEffect(() => {
     let isMounted = true;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     
     const checkOnboardingStatus = async () => {
       if (!user) {
@@ -34,11 +35,15 @@ const Index = () => {
     };
 
     if (!loading) {
-      checkOnboardingStatus();
+      // Small delay to prevent race conditions with auth state
+      timeoutId = setTimeout(() => {
+        if (isMounted) checkOnboardingStatus();
+      }, 50);
     }
     
     return () => {
       isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [user, loading]);
 

@@ -54,13 +54,23 @@ const Settings = () => {
 
   // Calculate days until refund expires
   useEffect(() => {
-    if (isPremium && subscriptionData?.started_at) {
-      const paymentDate = new Date(subscriptionData.started_at);
-      const now = new Date();
-      const daysSincePayment = Math.floor((now.getTime() - paymentDate.getTime()) / (1000 * 60 * 60 * 24));
-      const remaining = 7 - daysSincePayment;
-      setDaysUntilRefundExpires(remaining > 0 ? remaining : null);
-    } else {
+    try {
+      if (isPremium && subscriptionData?.started_at) {
+        const paymentDate = new Date(subscriptionData.started_at);
+        // Validate date
+        if (isNaN(paymentDate.getTime())) {
+          setDaysUntilRefundExpires(null);
+          return;
+        }
+        const now = new Date();
+        const daysSincePayment = Math.floor((now.getTime() - paymentDate.getTime()) / (1000 * 60 * 60 * 24));
+        const remaining = 7 - daysSincePayment;
+        setDaysUntilRefundExpires(remaining > 0 ? remaining : null);
+      } else {
+        setDaysUntilRefundExpires(null);
+      }
+    } catch (error) {
+      console.error('Error calculating refund days:', error);
       setDaysUntilRefundExpires(null);
     }
   }, [isPremium, subscriptionData]);

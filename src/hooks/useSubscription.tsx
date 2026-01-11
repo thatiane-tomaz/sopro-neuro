@@ -138,11 +138,26 @@ export const useSubscription = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const daysRemaining = subscriptionData?.subscription_end 
-    ? Math.ceil((new Date(subscriptionData.subscription_end).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-    : subscriptionData?.expires_at
-    ? Math.ceil((new Date(subscriptionData.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-    : 0;
+  // Calculate days remaining with validation
+  const daysRemaining = (() => {
+    try {
+      let endDate: Date | null = null;
+      
+      if (subscriptionData?.subscription_end) {
+        endDate = new Date(subscriptionData.subscription_end);
+      } else if (subscriptionData?.expires_at) {
+        endDate = new Date(subscriptionData.expires_at);
+      }
+      
+      if (!endDate || isNaN(endDate.getTime())) return 0;
+      
+      const days = Math.ceil((endDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+      return Math.max(0, days); // Never return negative days
+    } catch (error) {
+      console.error('Error calculating days remaining:', error);
+      return 0;
+    }
+  })();
 
   // Check if subscription is expired (had subscription but now inactive)
   const isExpired = subscriptionData?.has_subscription && 
