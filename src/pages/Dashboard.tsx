@@ -107,23 +107,34 @@ const Dashboard = () => {
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
   const { toast } = useToast();
 
-  // Countdown timer effect
+  // Countdown timer effect - memoized to prevent unnecessary recalculations
   useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    
     const updateCountdown = () => {
-      const msRemaining = getTimeUntilNextUnlock();
-      if (msRemaining && msRemaining > 0) {
-        const hours = Math.floor(msRemaining / (1000 * 60 * 60));
-        const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        setCountdownTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
-      } else {
+      try {
+        const msRemaining = getTimeUntilNextUnlock();
+        if (msRemaining && msRemaining > 0) {
+          const hours = Math.floor(msRemaining / (1000 * 60 * 60));
+          const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
+          setCountdownTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
+        } else {
+          setCountdownTime(null);
+        }
+      } catch (error) {
+        console.error('Error updating countdown:', error);
         setCountdownTime(null);
       }
     };
 
     updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
-    return () => clearInterval(interval);
-  }, [getTimeUntilNextUnlock]);
+    interval = setInterval(updateCountdown, 60000); // Update every minute instead of every second
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackingLoading]); // Only depend on trackingLoading to prevent excessive re-renders
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile, isAdmin });
 
@@ -200,7 +211,7 @@ const Dashboard = () => {
     return 'locked';
   };
 
-  const handleMediaOpen = (day: number, type: 'video' | 'hypnosis') => {
+  const handleMediaOpen = async (day: number, type: 'video' | 'hypnosis') => {
     // Admins can open all media for testing
     if (!isAdmin) {
       const status = getDayStatus(day);
@@ -218,6 +229,16 @@ const Dashboard = () => {
     
     const interactionType = `${type === 'video' ? 'video' : 'hipnose'}_dia_${day}`;
     
+    try {
+      // Start tracking and get the tracking ID
+      const trackingResult = await startTracking({ interactionType });
+      if (trackingResult?.id) {
+        setCurrentTrackingId(trackingResult.id);
+      }
+    } catch (error) {
+      console.error('Error starting tracking:', error);
+    }
+    
     setSelectedMedia({
       title: dailyContent?.find(d => d.day_number === day)?.title || `Dia ${day}`,
       fileUrl: getMediaUrl(day, type),
@@ -225,9 +246,6 @@ const Dashboard = () => {
       day,
       interactionType
     });
-
-    // Start tracking
-    startTracking({ interactionType });
   };
 
   const handleMediaProgress = (percentage: number) => {
@@ -874,7 +892,10 @@ const Dashboard = () => {
           fileUrl={selectedMedia.fileUrl}
           contentType={selectedMedia.contentType}
           interactionType={selectedMedia.interactionType}
-          onClose={() => setSelectedMedia(null)}
+          onClose={() => {
+            setSelectedMedia(null);
+            setCurrentTrackingId(null); // Clean up tracking ID when closing
+          }}
           onProgress={handleMediaProgress}
           onComplete={handleMediaComplete}
         />

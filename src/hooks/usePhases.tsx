@@ -15,7 +15,7 @@ export const usePhases = () => {
     queryKey: ['phases'],
     queryFn: async () => {
       try {
-        const { data, error } = await (supabase as any)
+        const { data, error } = await supabase
           .from('phases')
           .select('*')
           .order('phase_number', { ascending: true });
@@ -30,5 +30,7 @@ export const usePhases = () => {
         return [];
       }
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes - phases rarely change
+    refetchOnWindowFocus: false,
   });
 };

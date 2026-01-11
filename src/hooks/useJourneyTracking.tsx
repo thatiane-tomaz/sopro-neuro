@@ -46,13 +46,27 @@ export const useJourneyTracking = () => {
 
   // Start tracking an interaction
   const startTracking = useMutation({
-    mutationFn: async ({ interactionType }: { interactionType: string }) => {
+    mutationFn: async ({ interactionType }: { interactionType: string }): Promise<JourneyTrack | null> => {
       if (!user) {
         console.error('User not authenticated for tracking');
         return null;
       }
 
       try {
+        // Check if there's already an existing tracking for this interaction
+        const { data: existing } = await supabase
+          .from('journey_tracking')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('interaction_type', interactionType)
+          .maybeSingle();
+
+        // If already exists and not completed, return the existing one
+        if (existing && !existing.finished_at) {
+          return existing as JourneyTrack;
+        }
+
+        // Create new tracking
         const { data, error } = await supabase
           .from('journey_tracking')
           .insert({
@@ -68,7 +82,7 @@ export const useJourneyTracking = () => {
           console.error('Error starting tracking:', error);
           return null;
         }
-        return data;
+        return data as JourneyTrack | null;
       } catch (error) {
         console.error('Error in startTracking:', error);
         return null;
@@ -226,7 +240,7 @@ export const useJourneyTracking = () => {
   return {
     trackingData,
     isLoading,
-    startTracking: startTracking.mutate,
+    startTracking: startTracking.mutateAsync,
     updateProgress: updateProgress.mutate,
     isDayCompleted,
     getDayProgress,

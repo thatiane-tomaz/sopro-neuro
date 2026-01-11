@@ -55,6 +55,7 @@ const Login = () => {
   // Check if user has completed onboarding
   useEffect(() => {
     let isMounted = true;
+    let navigationTimeout: ReturnType<typeof setTimeout> | null = null;
     
     const checkOnboarding = async () => {
       // During password recovery we must NOT redirect; user needs to stay here and set a new password.
@@ -63,7 +64,7 @@ const Login = () => {
       try {
         const { data: onboardingData, error } = await supabase
           .from('onboarding_responses')
-          .select('*')
+          .select('id')
           .eq('user_id', user.id)
           .maybeSingle();
 
@@ -71,22 +72,30 @@ const Login = () => {
 
         if (error) {
           console.error('Error checking onboarding:', error);
-          // On error, still try to go to onboarding
-          window.location.href = "/onboarding";
+          // On error, still try to go to onboarding with delay
+          navigationTimeout = setTimeout(() => {
+            if (isMounted) window.location.href = "/onboarding";
+          }, 100);
           return;
         }
 
-        if (onboardingData) {
-          // User completed onboarding, go to dashboard
-          window.location.href = "/dashboard";
-        } else {
-          // User needs to complete onboarding
-          window.location.href = "/onboarding";
-        }
+        // Use timeout to avoid race conditions
+        navigationTimeout = setTimeout(() => {
+          if (!isMounted) return;
+          if (onboardingData) {
+            // User completed onboarding, go to dashboard
+            window.location.href = "/dashboard";
+          } else {
+            // User needs to complete onboarding
+            window.location.href = "/onboarding";
+          }
+        }, 100);
       } catch (error) {
         console.error('Error in checkOnboarding:', error);
         if (isMounted) {
-          window.location.href = "/onboarding";
+          navigationTimeout = setTimeout(() => {
+            if (isMounted) window.location.href = "/onboarding";
+          }, 100);
         }
       }
     };
@@ -95,6 +104,7 @@ const Login = () => {
 
     return () => {
       isMounted = false;
+      if (navigationTimeout) clearTimeout(navigationTimeout);
     };
   }, [user, showResetPassword]);
 
