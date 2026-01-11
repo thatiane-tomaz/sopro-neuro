@@ -224,11 +224,13 @@ const Dashboard = () => {
       return 'completed';
     }
     
-    // Check if day is time-locked (6h wait after previous day)
+    // Check if day is time-locked (6h wait after previous day) - BEFORE checking current
+    // This ensures that even the "current" day stays locked until the timer expires
     if (isDayTimeLocked(day) && !isAdmin) {
       return 'time_locked';
     }
     
+    // Now check if this is the current day (only if not time-locked)
     if (day === currentDay) {
       return 'current';
     }
