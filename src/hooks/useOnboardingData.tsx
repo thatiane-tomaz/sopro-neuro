@@ -20,7 +20,7 @@ export const useOnboardingData = () => {
   return useQuery({
     queryKey: ['onboarding_response', user?.id],
     queryFn: async () => {
-      if (!user) return null;
+      if (!user?.id) return null;
       
       try {
         const { data, error } = await supabase
@@ -39,8 +39,10 @@ export const useOnboardingData = () => {
         return null;
       }
     },
-    enabled: !!user,
-    staleTime: 5 * 60 * 1000, // 5 minutes - onboarding data rarely changes
+    enabled: !!user?.id,
+    staleTime: 10 * 60 * 1000, // 10 minutes - onboarding data never changes
+    gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 };

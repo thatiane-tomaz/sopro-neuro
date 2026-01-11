@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     let isMounted = true;
+    let sessionChecked = false;
 
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -33,12 +34,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
+        
+        // Only set loading to false if we've checked the session or received an event
+        if (sessionChecked || event !== 'INITIAL_SESSION') {
+          setLoading(false);
+        }
 
         // Track app sessions when user signs in
         if (event === 'SIGNED_IN' && session?.user) {
-          // Use requestAnimationFrame to defer non-critical operations
-          requestAnimationFrame(() => {
+          // Use setTimeout to defer non-critical operations
+          setTimeout(() => {
             if (!isMounted) return;
             
             // Track app session - wrapped in async IIFE for proper error handling
@@ -53,15 +58,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               }
             })();
 
-            // Check subscription status after sign in
-            (async () => {
-              try {
-                await supabase.functions.invoke('check-subscription');
-              } catch (e) {
-                console.error('Error checking subscription:', e);
-              }
-            })();
-          });
+            // Check subscription status after sign in (non-blocking)
+            supabase.functions.invoke('check-subscription').catch(e => {
+              console.error('Error checking subscription:', e);
+            });
+          }, 100);
         }
       }
     );
@@ -69,13 +70,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // THEN check for existing session
     (async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
         if (!isMounted) return;
+        
+        if (error) {
+          console.error('Error getting session:', error);
+        }
+        
         setSession(session);
         setUser(session?.user ?? null);
       } catch (error) {
         console.error('Error getting session:', error);
       } finally {
+        sessionChecked = true;
         if (isMounted) setLoading(false);
       }
     })();

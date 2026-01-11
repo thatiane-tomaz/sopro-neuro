@@ -1,58 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 
 interface UserProfile {
   id: string;
   user_id: string;
   display_name: string;
   subscription_status: 'free' | 'premium';
+  email?: string;
+  onesignal_player_id?: string;
 }
 
 export const useUserProfile = () => {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  const { toast } = useToast();
 
-  useEffect(() => {
-    let isMounted = true;
+  const { data: profile, isLoading: loading } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async (): Promise<UserProfile | null> => {
+      if (!user?.id) return null;
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-    const fetchProfile = async () => {
-      if (!user) {
-        if (isMounted) setLoading(false);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (!isMounted) return;
-
-        if (error) {
-          console.error('Error fetching profile:', error);
-        } else {
-          setProfile(data as UserProfile | null);
-        }
-      } catch (error) {
+      if (error) {
         console.error('Error fetching profile:', error);
-      } finally {
-        if (isMounted) setLoading(false);
+        return null;
       }
-    };
-
-    fetchProfile();
-
-    return () => {
-      isMounted = false;
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+      
+      return data as UserProfile | null;
+    },
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
 
   const hasAccessToDay = (day: number): boolean => {
     if (!profile) return false;

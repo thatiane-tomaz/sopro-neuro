@@ -152,7 +152,12 @@ const Dashboard = () => {
     
     // Days in phase 2: currentDay - 7 (since phase 2 starts on day 8)
     const daysInPhase2 = currentDay - 7;
-    const weeklyCostNum = parseFloat(onboardingData.weekly_cost.replace(',', '.'));
+    const weeklyCostStr = onboardingData.weekly_cost;
+    const weeklyCostNum = parseFloat(weeklyCostStr.replace(',', '.'));
+    
+    // Validate the number
+    if (isNaN(weeklyCostNum) || weeklyCostNum <= 0) return null;
+    
     const dailyCost = weeklyCostNum / 7;
     const totalSaved = Math.ceil(dailyCost * daysInPhase2);
     
@@ -161,11 +166,11 @@ const Dashboard = () => {
       sixMonths: Math.ceil(weeklyCostNum * 26),
       oneYear: Math.ceil(weeklyCostNum * 52)
     };
-  }, [onboardingData, currentDay]);
+  }, [onboardingData?.weekly_cost, currentDay]);
 
-  // Group daily content by phases
+  // Group daily content by phases - memoized with stable dependencies
   const phaseGroups = useMemo(() => {
-    if (!phases || !dailyContent) return [];
+    if (!phases || !dailyContent || phases.length === 0 || dailyContent.length === 0) return [];
     
     return phases.map(phase => {
       const startDay = (phase.phase_number - 1) * 7 + 1;

@@ -41,7 +41,10 @@ export const useJourneyTracking = () => {
         return [];
       }
     },
-    enabled: !!user,
+    enabled: !!user?.id,
+    staleTime: 2 * 60 * 1000, // 2 minutes - tracking changes more frequently
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   // Start tracking an interaction
