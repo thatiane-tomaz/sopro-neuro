@@ -72,7 +72,8 @@ export const useFeedback = (userId: string | undefined) => {
   });
 
   const hasFeedbackForDay = (day: number) => {
-    return feedbackData?.some((f) => f.day_number === day) || false;
+    if (!Array.isArray(feedbackData)) return false;
+    return feedbackData.some((f) => f.day_number === day);
   };
 
   return {

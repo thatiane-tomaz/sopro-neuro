@@ -166,19 +166,27 @@ export const useJourneyTracking = () => {
   };
 
   // Check if a day is completed (both video and hypnosis at 98%+)
+  // For Phase 2 (days 8-14), only hypnosis is required
   const isDayCompleted = (day: number): boolean => {
-    if (!trackingData) return false;
+    if (!trackingData || !Array.isArray(trackingData)) return false;
     
-    const videoCompleted = trackingData.some(
-      track => 
-        track.interaction_type === `video_dia_${day}` && 
-        track.progress_percentage >= 98 &&
-        track.finished_at !== null
-    );
+    // Phase 2 (days 8-14) only requires hypnosis
+    const isPhase2 = day >= 8 && day <= 14;
     
     const hypnosisCompleted = trackingData.some(
       track => 
         track.interaction_type === `hipnose_dia_${day}` && 
+        track.progress_percentage >= 98 &&
+        track.finished_at !== null
+    );
+    
+    if (isPhase2) {
+      return hypnosisCompleted;
+    }
+    
+    const videoCompleted = trackingData.some(
+      track => 
+        track.interaction_type === `video_dia_${day}` && 
         track.progress_percentage >= 98 &&
         track.finished_at !== null
     );
@@ -188,7 +196,11 @@ export const useJourneyTracking = () => {
 
   // Get the completion time for a day
   const getDayCompletionTime = (day: number): Date | null => {
-    if (!trackingData) return null;
+    if (!trackingData || !Array.isArray(trackingData)) return null;
+    
+    // Phase 2 (days 8-14) only requires hypnosis
+    const isPhase2 = day >= 8 && day <= 14;
+    const requiredCount = isPhase2 ? 1 : 2;
     
     const completedTracks = trackingData.filter(
       track => 
@@ -198,7 +210,7 @@ export const useJourneyTracking = () => {
         track.finished_at !== null
     );
     
-    if (completedTracks.length < 2) return null;
+    if (completedTracks.length < requiredCount) return null;
     
     const times = completedTracks
       .map(t => new Date(t.finished_at!))
@@ -209,7 +221,7 @@ export const useJourneyTracking = () => {
 
   // Calculate current day based on what user has already seen (last completed day)
   const getCurrentDay = (): number => {
-    if (!trackingData) return 1;
+    if (!trackingData || !Array.isArray(trackingData) || trackingData.length === 0) return 1;
     
     // Find the highest completed day
     let lastCompletedDay = 0;
@@ -220,8 +232,9 @@ export const useJourneyTracking = () => {
     }
     
     // If no day is completed yet, user is on day 1
-    // Otherwise, show the last completed day
-    return lastCompletedDay || 1;
+    // Otherwise, return the next day to work on (unless already at 21)
+    if (lastCompletedDay === 0) return 1;
+    return Math.min(lastCompletedDay + 1, 21);
   };
 
   // Get time until next day unlocks

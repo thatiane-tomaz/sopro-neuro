@@ -13,6 +13,12 @@ export const FeedbackSection = ({ currentDay, showAllForPreview = false, isDayCo
 
   if (!session?.user?.id) return null;
 
+  // Validate feedbackQuestions is an array
+  if (!Array.isArray(feedbackQuestions)) {
+    console.error('feedbackQuestions is not an array');
+    return null;
+  }
+
   // Para preview, mostrar todas as perguntas
   if (showAllForPreview) {
     return (
@@ -31,7 +37,12 @@ export const FeedbackSection = ({ currentDay, showAllForPreview = false, isDayCo
   if (!todaysQuestion) return null;
 
   // Só mostra o feedback se o dia atual foi completado
-  if (!isDayCompleted(currentDay)) return null;
+  try {
+    if (typeof isDayCompleted !== 'function' || !isDayCompleted(currentDay)) return null;
+  } catch (error) {
+    console.error('Error checking if day is completed:', error);
+    return null;
+  }
 
   return (
     <div className="space-y-4">

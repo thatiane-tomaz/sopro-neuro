@@ -35,6 +35,7 @@ const Onboarding = () => {
   // Check if user already completed onboarding
   useEffect(() => {
     let isMounted = true;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     
     const checkOnboardingStatus = async () => {
       if (!user) {
@@ -45,15 +46,17 @@ const Onboarding = () => {
       try {
         const { data: existingResponse, error } = await supabase
           .from('onboarding_responses')
-          .select('*')
+          .select('id')
           .eq('user_id', user.id)
           .maybeSingle();
 
         if (!isMounted) return;
 
         if (existingResponse && !error) {
-          // User already completed onboarding, redirect to dashboard
-          window.location.href = "/dashboard";
+          // User already completed onboarding, redirect to dashboard with small delay
+          timeoutId = setTimeout(() => {
+            if (isMounted) window.location.href = "/dashboard";
+          }, 100);
         } else {
           setCheckingOnboarding(false);
         }
@@ -64,11 +67,15 @@ const Onboarding = () => {
     };
 
     if (!loading) {
-      checkOnboardingStatus();
+      // Small delay to prevent race conditions
+      timeoutId = setTimeout(() => {
+        if (isMounted) checkOnboardingStatus();
+      }, 50);
     }
     
     return () => {
       isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [user, loading]);
 

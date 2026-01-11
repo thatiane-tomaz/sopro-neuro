@@ -148,42 +148,58 @@ const Dashboard = () => {
 
   // Calculate savings for phase 2+ (from day 8+)
   const calculateSavings = useMemo(() => {
-    if (!onboardingData?.weekly_cost || currentDay < 8) return null;
-    
-    // Days in phase 2: currentDay - 7 (since phase 2 starts on day 8)
-    const daysInPhase2 = currentDay - 7;
-    const weeklyCostStr = onboardingData.weekly_cost;
-    const weeklyCostNum = parseFloat(weeklyCostStr.replace(',', '.'));
-    
-    // Validate the number
-    if (isNaN(weeklyCostNum) || weeklyCostNum <= 0) return null;
-    
-    const dailyCost = weeklyCostNum / 7;
-    const totalSaved = Math.ceil(dailyCost * daysInPhase2);
-    
-    return {
-      current: totalSaved,
-      sixMonths: Math.ceil(weeklyCostNum * 26),
-      oneYear: Math.ceil(weeklyCostNum * 52)
-    };
+    try {
+      if (!onboardingData?.weekly_cost || currentDay < 8) return null;
+      
+      // Days in phase 2: currentDay - 7 (since phase 2 starts on day 8)
+      const daysInPhase2 = currentDay - 7;
+      if (daysInPhase2 <= 0) return null;
+      
+      const weeklyCostStr = String(onboardingData.weekly_cost || '0');
+      const weeklyCostNum = parseFloat(weeklyCostStr.replace(',', '.'));
+      
+      // Validate the number
+      if (!isFinite(weeklyCostNum) || isNaN(weeklyCostNum) || weeklyCostNum <= 0) return null;
+      
+      const dailyCost = weeklyCostNum / 7;
+      const totalSaved = Math.ceil(dailyCost * daysInPhase2);
+      
+      // Extra validation for resulting numbers
+      if (!isFinite(totalSaved) || isNaN(totalSaved)) return null;
+      
+      return {
+        current: totalSaved,
+        sixMonths: Math.ceil(weeklyCostNum * 26),
+        oneYear: Math.ceil(weeklyCostNum * 52)
+      };
+    } catch (error) {
+      console.error('Error calculating savings:', error);
+      return null;
+    }
   }, [onboardingData?.weekly_cost, currentDay]);
 
   // Group daily content by phases - memoized with stable dependencies
   const phaseGroups = useMemo(() => {
-    if (!phases || !dailyContent || phases.length === 0 || dailyContent.length === 0) return [];
+    if (!phases || !dailyContent || !Array.isArray(phases) || !Array.isArray(dailyContent)) return [];
+    if (phases.length === 0 || dailyContent.length === 0) return [];
     
-    return phases.map(phase => {
-      const startDay = (phase.phase_number - 1) * 7 + 1;
-      const endDay = phase.phase_number * 7;
-      const phaseDays = dailyContent.filter(
-        content => content.day_number >= startDay && content.day_number <= endDay
-      );
-      
-      return {
-        ...phase,
-        days: phaseDays
-      };
-    });
+    try {
+      return phases.map(phase => {
+        const startDay = (phase.phase_number - 1) * 7 + 1;
+        const endDay = phase.phase_number * 7;
+        const phaseDays = dailyContent.filter(
+          content => content.day_number >= startDay && content.day_number <= endDay
+        );
+        
+        return {
+          ...phase,
+          days: phaseDays
+        };
+      });
+    } catch (error) {
+      console.error('Error grouping phases:', error);
+      return [];
+    }
   }, [phases, dailyContent]);
 
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
@@ -480,7 +496,10 @@ const Dashboard = () => {
 
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
-          {phaseGroups.map((phase) => {
+          {Array.isArray(phaseGroups) && phaseGroups.length > 0 && phaseGroups.map((phase) => {
+            // Safety check for phase data
+            if (!phase || !Array.isArray(phase.days)) return null;
+            
             const isPhase1 = phase.phase_number === 1;
             // Phase 1 is completed if:
             // - Admin simulating day 8+ (phase 1 has 7 days)
@@ -775,7 +794,7 @@ const Dashboard = () => {
               {/* Seção 1 - Sempre disponível */}
               <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {triggers?.filter(t => t.section === 'initial').map((trigger) => (
+                  {Array.isArray(triggers) && triggers.filter(t => t.section === 'initial').map((trigger) => (
                     <Card
                       key={trigger.id}
                       className="overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 group cursor-pointer"
@@ -833,7 +852,7 @@ const Dashboard = () => {
                 </div>
                 
                 <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ${currentDay < 8 ? 'opacity-50' : ''}`}>
-                  {triggers?.filter(t => t.section === 'post_cigarette').map((trigger) => (
+                  {Array.isArray(triggers) && triggers.filter(t => t.section === 'post_cigarette').map((trigger) => (
                     <Card
                       key={trigger.id}
                       className={`overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md transition-all duration-300 group ${
