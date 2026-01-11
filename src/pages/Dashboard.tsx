@@ -730,8 +730,8 @@ const Dashboard = () => {
                                 </Button>
                               </div>
                               
-                              {/* Progress Message for Current Day */}
-                              {isCurrent && !isLocked && (() => {
+                              {/* Progress Message - for current day (in progress) or just completed day (countdown) */}
+                              {(() => {
                                 const videoProgress = getDayProgress(day, 'video');
                                 const hypnosisProgress = getDayProgress(day, 'hypnosis');
                                 const videoCompleted = videoProgress.completed;
@@ -743,7 +743,10 @@ const Dashboard = () => {
                                 const isPhase2 = phase.phase_number === 2;
                                 const allRequired = isPhase2 ? hypnosisCompleted : bothCompleted;
                                 
-                                if (allRequired && countdownTime) {
+                                // Show countdown on the JUST COMPLETED day (currentDay - 1)
+                                const isJustCompleted = day === currentDay - 1 && allRequired && countdownTime;
+                                
+                                if (isJustCompleted) {
                                   return (
                                     <div className="mt-3 text-center">
                                       <p className="text-xs text-primary font-medium">
@@ -753,17 +756,20 @@ const Dashboard = () => {
                                   );
                                 }
                                 
-                                if (hasStarted && !allRequired) {
-                                  return (
-                                    <div className="mt-3 text-center">
-                                      <p className="text-xs text-muted-foreground">
-                                        {isPhase2 
-                                          ? "Finalize a hipnose para avançar"
-                                          : "Finalize o vídeo e a hipnose para avançar"
-                                        }
-                                      </p>
-                                    </div>
-                                  );
+                                // Show progress message for current day
+                                if (isCurrent && !isLocked) {
+                                  if (hasStarted && !allRequired) {
+                                    return (
+                                      <div className="mt-3 text-center">
+                                        <p className="text-xs text-muted-foreground">
+                                          {isPhase2 
+                                            ? "Finalize a hipnose para avançar"
+                                            : "Finalize o vídeo e a hipnose para avançar"
+                                          }
+                                        </p>
+                                      </div>
+                                    );
+                                  }
                                 }
                                 
                                 return null;
