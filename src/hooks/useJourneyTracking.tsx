@@ -267,12 +267,27 @@ export const useJourneyTracking = () => {
     return msUntilUnlock > 0 ? msUntilUnlock : 0;
   };
 
+  // Check if a day is time-locked (6h wait after previous day completion)
+  const isDayTimeLocked = (day: number): boolean => {
+    if (day <= 1) return false; // Day 1 is never time-locked
+    
+    const previousDay = day - 1;
+    if (!isDayCompleted(previousDay)) return true; // Previous day not done = locked
+    
+    const completionTime = getDayCompletionTime(previousDay);
+    if (!completionTime) return true;
+    
+    const unlockTime = new Date(completionTime.getTime() + 6 * 60 * 60 * 1000);
+    return Date.now() < unlockTime.getTime();
+  };
+
   return {
     trackingData,
     isLoading,
     startTracking: startTracking.mutateAsync,
     updateProgress: updateProgress.mutate,
     isDayCompleted,
+    isDayTimeLocked,
     getDayProgress,
     getDayCompletionTime,
     getCurrentDay,

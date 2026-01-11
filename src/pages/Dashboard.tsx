@@ -81,6 +81,7 @@ const Dashboard = () => {
   const { 
     getCurrentDay, 
     isDayCompleted, 
+    isDayTimeLocked,
     getDayProgress,
     getDayCompletionTime,
     getTimeUntilNextUnlock,
@@ -210,7 +211,7 @@ const Dashboard = () => {
     return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${fileName}`;
   };
 
-  const getDayStatus = (day: number): 'completed' | 'current' | 'locked' | 'subscription_locked' => {
+  const getDayStatus = (day: number): 'completed' | 'current' | 'locked' | 'subscription_locked' | 'time_locked' => {
     // First check subscription access
     const hasSubAccess = isAdmin || hasAccessToDay(day);
     
@@ -218,9 +219,14 @@ const Dashboard = () => {
       return 'subscription_locked';
     }
     
-    // Then check progress-based access
+    // Check if day is completed
     if (isDayCompleted(day)) {
       return 'completed';
+    }
+    
+    // Check if day is time-locked (6h wait after previous day)
+    if (isDayTimeLocked(day) && !isAdmin) {
+      return 'time_locked';
     }
     
     if (day === currentDay) {
@@ -613,8 +619,9 @@ const Dashboard = () => {
                     {phase.days.map((dayContent, index) => {
                       const day = dayContent.day_number;
                       const status = getDayStatus(day);
-                      const isLocked = status === 'locked' || status === 'subscription_locked';
+                      const isLocked = status === 'locked' || status === 'subscription_locked' || status === 'time_locked';
                       const needsUpgrade = status === 'subscription_locked';
+                      const isTimeLocked = status === 'time_locked';
                       const isCompleted = status === 'completed';
                       const isCurrent = status === 'current';
                       const isFirstInPhase = index === 0;
@@ -648,7 +655,7 @@ const Dashboard = () => {
                                       )}
                                     </div>
                                     <p className="text-sm font-medium text-muted-foreground">
-                                      {needsUpgrade ? 'Premium' : 'Em breve'}
+                                      {needsUpgrade ? 'Premium' : isTimeLocked ? `Aguarde ${countdownTime || '...'}` : 'Em breve'}
                                     </p>
                                   </div>
                                 </div>
