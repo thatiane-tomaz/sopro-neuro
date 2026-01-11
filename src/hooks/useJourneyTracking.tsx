@@ -244,7 +244,11 @@ export const useJourneyTracking = () => {
     const currentDay = getCurrentDay();
     if (currentDay >= 21) return null; // All days unlocked
     
-    const completionTime = getDayCompletionTime(currentDay);
+    // Get the completion time of the PREVIOUS day (the one that was just completed)
+    const previousDay = currentDay - 1;
+    if (previousDay < 1) return null;
+    
+    const completionTime = getDayCompletionTime(previousDay);
     if (!completionTime) return null;
     
     const unlockTime = new Date(completionTime.getTime() + 6 * 60 * 60 * 1000);
