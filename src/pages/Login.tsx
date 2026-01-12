@@ -234,16 +234,20 @@ const Login = () => {
     setIsLoading(true);
     
     // Use the correct app URL for password reset redirect
-    const appUrl = 'https://2814fbf6-4b2c-4db2-bb16-4476746b13fe.lovableproject.com';
+    const appUrl = window.location.origin;
     
-    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
-      redirectTo: `${appUrl}/login`,
+    // Use custom edge function to send password reset email via Resend
+    const { data, error } = await supabase.functions.invoke('custom-password-reset', {
+      body: { 
+        email: forgotEmail, 
+        redirectUrl: `${appUrl}/login`
+      }
     });
     
-    if (error) {
+    if (error || data?.error) {
       toast({
         title: "Erro",
-        description: error.message,
+        description: data?.error || error?.message,
         variant: "destructive"
       });
     } else {

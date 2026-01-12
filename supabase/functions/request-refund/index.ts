@@ -128,6 +128,29 @@ serve(async (req) => {
       // Don't throw - refund was processed, just log the error
     }
 
+    // Send refund confirmation email via Resend
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+      const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+      
+      await fetch(`${supabaseUrl}/functions/v1/send-refund-confirmation-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseKey}`
+        },
+        body: JSON.stringify({
+          email: user.email,
+          amountRefunded: refund.amount / 100,
+          refundId: refund.id
+        })
+      });
+      logStep("Refund confirmation email sent");
+    } catch (emailError) {
+      logStep("Error sending refund email", { error: emailError });
+      // Don't throw - refund was processed successfully
+    }
+
     logStep("Subscription cancelled successfully");
 
     return new Response(JSON.stringify({
