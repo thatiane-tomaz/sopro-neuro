@@ -210,7 +210,7 @@ const Login = () => {
       } else if (result.subscriptionExpired) {
         setSignupError("Sua assinatura expirou. Adquira novamente para continuar.");
       } else if (result.userExists) {
-        setSignupError("Este email já possui uma conta cadastrada. Faça login.");
+        setSignupError("Este email já possui cadastro. Vá para a aba 'Entrar' para acessar sua conta.");
       } else {
         setSignupError(result.error.message);
       }
