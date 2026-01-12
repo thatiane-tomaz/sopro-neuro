@@ -64,7 +64,7 @@ serve(async (req) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redefinir senha - Sopro</title>
+  <title>Redefinir senha - Sopro Neuro</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
@@ -87,7 +87,7 @@ serve(async (req) => {
               </h1>
               
               <p style="color: #4a5568; font-size: 16px; line-height: 1.8; margin: 0 0 30px 0;">
-                Recebemos uma solicitação para redefinir a senha da sua conta no Sopro. Clique no botão abaixo para criar uma nova senha:
+                Recebemos uma solicitação para redefinir a senha da sua conta no <strong>Sopro Neuro</strong>. Clique no botão abaixo para criar uma nova senha:
               </p>
               
               <!-- Botão de Reset -->
@@ -148,9 +148,9 @@ serve(async (req) => {
     `;
 
     const emailResponse = await resend.emails.send({
-      from: "Sopro <contato@soproneuro.com.br>",
+      from: "Sopro Neuro <contato@soproneuro.com.br>",
       to: [email],
-      subject: "Redefinir sua senha - Sopro",
+      subject: "Redefinir sua senha - Sopro Neuro",
       html: emailHtml,
     });
 
