@@ -56,6 +56,20 @@ serve(async (req) => {
 
     if (createError) {
       logStep("Error creating user", { error: createError.message });
+      
+      // Check if user already exists
+      if (createError.message.includes('already been registered') || 
+          createError.message.includes('already registered') ||
+          createError.message.includes('User already registered')) {
+        return new Response(
+          JSON.stringify({ error: "Este email já possui uma conta cadastrada. Faça login.", userExists: true }),
+          {
+            status: 400,
+            headers: { "Content-Type": "application/json", ...corsHeaders },
+          }
+        );
+      }
+      
       throw createError;
     }
 
