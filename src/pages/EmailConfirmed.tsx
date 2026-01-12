@@ -1,28 +1,8 @@
-import { useEffect, useState } from "react";
-import { CheckCircle, Smartphone, ArrowRight } from "lucide-react";
+import { CheckCircle, Smartphone } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const EmailConfirmed = () => {
-  const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    // Check if user is authenticated (came from email confirmation)
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-    };
-    checkAuth();
-  }, []);
-
-  const handleContinueInBrowser = () => {
-    navigate("/onboarding");
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/5">
       <div className="w-full max-w-md space-y-6">
@@ -59,46 +39,14 @@ const EmailConfirmed = () => {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">
-                    Tem o app instalado?
+                    Volte ao app
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Volte ao app e faça login com seu email e senha para continuar.
+                    Abra o app Sopro e faça login com seu email e senha para continuar sua jornada.
                   </p>
                 </div>
               </div>
             </div>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-muted" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">ou</span>
-              </div>
-            </div>
-
-            {/* Continue in Browser Button */}
-            {isAuthenticated && (
-              <Button 
-                onClick={handleContinueInBrowser}
-                className="w-full rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-              >
-                Continuar no navegador
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            )}
-
-            {!isAuthenticated && (
-              <Button 
-                onClick={() => navigate("/login")}
-                variant="outline"
-                className="w-full rounded-full border-primary/30 hover:bg-primary/10"
-              >
-                Fazer login no navegador
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            )}
           </CardContent>
         </Card>
 
