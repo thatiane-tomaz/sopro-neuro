@@ -75,6 +75,12 @@ serve(async (req) => {
       
       if (!freelistExpired) {
         logStep("User found in freelist", { email, reason: freelistData.reason });
+        
+        // Check if user already has an account in Supabase Auth
+        const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
+        const userExists = existingUsers?.users?.some(u => u.email?.toLowerCase() === email.toLowerCase()) || false;
+        logStep("Checking if freelist user has account", { email, userExists });
+        
         return new Response(JSON.stringify({
           subscribed: true,
           has_subscription: true,
@@ -82,7 +88,7 @@ serve(async (req) => {
           is_freelist: true,
           reason: freelistData.reason,
           expires_at: freelistData.expires_at,
-          has_account: false // Will be updated when user signs up
+          has_account: userExists
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 200,
