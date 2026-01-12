@@ -57,12 +57,17 @@ serve(async (req) => {
     if (createError) {
       logStep("Error creating user", { error: createError.message });
       
-      // Check if user already exists
-      if (createError.message.includes('already been registered') || 
-          createError.message.includes('already registered') ||
-          createError.message.includes('User already registered')) {
+      // Check if user already exists - handle all variations of the error message
+      const errorMsg = createError.message.toLowerCase();
+      if (errorMsg.includes('already been registered') || 
+          errorMsg.includes('already registered') ||
+          errorMsg.includes('user already') ||
+          errorMsg.includes('email address has already')) {
         return new Response(
-          JSON.stringify({ error: "Este email já possui uma conta cadastrada. Faça login.", userExists: true }),
+          JSON.stringify({ 
+            error: "Este email já possui uma conta cadastrada. Faça login na aba 'Entrar'.", 
+            userExists: true 
+          }),
           {
             status: 400,
             headers: { "Content-Type": "application/json", ...corsHeaders },
