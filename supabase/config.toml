@@ -3,6 +3,24 @@ project_id = "kpewsvpufzkyejchncta"
 [functions.send-inactive-user-notifications]
 verify_jwt = false
 
+[functions.send-confirmation-email]
+verify_jwt = false
+
+[functions.send-password-reset-email]
+verify_jwt = false
+
+[functions.send-refund-confirmation-email]
+verify_jwt = false
+
+[functions.custom-signup]
+verify_jwt = false
+
+[functions.custom-password-reset]
+verify_jwt = false
+
+[functions.resend-confirmation-email]
+verify_jwt = false
+
 [functions.create-checkout]
 
 [functions.check-subscription]

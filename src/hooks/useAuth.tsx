@@ -140,50 +140,46 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { error: { message: "Conta já cadastrada" }, userExists: true };
     }
 
-    // Proceed with signup
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          display_name: displayName
-        }
+    // Use custom signup edge function that sends email via Resend
+    const { data, error } = await supabase.functions.invoke('custom-signup', {
+      body: { 
+        email, 
+        password, 
+        displayName,
+        redirectUrl 
       }
     });
 
-    if (error) {
+    if (error || data?.error) {
+      const errorMessage = data?.error || error?.message;
+      
       // Handle specific error for user already exists
-      if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+      if (errorMessage?.includes('already registered') || errorMessage?.includes('User already registered')) {
         toast({
           title: "Email já cadastrado",
           description: "Este email já possui uma conta. Faça login ou reenvie a confirmação.",
           variant: "destructive"
         });
-        return { error, userExists: true };
+        return { error: { message: errorMessage }, userExists: true };
       } else {
         toast({
           title: "Erro no cadastro",
-          description: error.message,
+          description: errorMessage,
           variant: "destructive"
         });
+        return { error: { message: errorMessage } };
       }
-    } else if (data.user && !data.session) {
-      // User created but needs email confirmation
+    }
+
+    if (data?.needsEmailConfirmation) {
       toast({
         title: "Quase lá!",
         description: "Enviamos um email de confirmação. Verifique sua caixa de entrada."
       });
       return { error: null, needsEmailConfirmation: true };
-    } else if (data.session) {
-      // User created and confirmed (auto-confirm is enabled)
-      toast({
-        title: "Cadastro realizado",
-        description: "Bem-vindo!"
-      });
     }
 
-    return { error };
+    return { error: null };
   };
 
   const signIn = async (email: string, password: string) => {
@@ -235,28 +231,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const resendConfirmationEmail = async (email: string) => {
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email: email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`
-      }
+    const redirectUrl = `${window.location.origin}/`;
+    
+    // Use custom edge function to resend confirmation via Resend
+    const { data, error } = await supabase.functions.invoke('resend-confirmation-email', {
+      body: { email, redirectUrl }
     });
 
-    if (error) {
+    if (error || data?.error) {
       toast({
         title: "Erro ao reenviar",
-        description: error.message,
+        description: data?.error || error?.message,
         variant: "destructive"
       });
-    } else {
-      toast({
-        title: "Email reenviado",
-        description: "Verifique sua caixa de entrada para confirmar sua conta"
-      });
+      return { error: { message: data?.error || error?.message } };
     }
 
-    return { error };
+    toast({
+      title: "Email reenviado",
+      description: "Verifique sua caixa de entrada para confirmar sua conta"
+    });
+
+    return { error: null };
   };
 
 
