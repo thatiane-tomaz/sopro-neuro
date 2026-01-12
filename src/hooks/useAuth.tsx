@@ -142,34 +142,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Use custom signup edge function that sends email via Resend
     const { data, error } = await supabase.functions.invoke('custom-signup', {
-      body: { 
-        email, 
-        password, 
+      body: {
+        email,
+        password,
         displayName,
-        redirectUrl 
+        redirectUrl
       }
     });
 
+    // Custom non-error response when user already exists
+    if (data?.userExists) {
+      const msg = data?.message || "Este email já possui uma conta cadastrada. Faça login na aba 'Entrar'.";
+      toast({
+        title: "Email já cadastrado",
+        description: msg,
+        variant: "destructive"
+      });
+      return { error: { message: msg }, userExists: true };
+    }
+
     if (error || data?.error) {
       const errorMessage = data?.error || error?.message;
-      const userExists = data?.userExists || false;
-      
-      // Handle specific error for user already exists
-      if (userExists || errorMessage?.includes('já possui uma conta') || errorMessage?.includes('already registered')) {
+
+      // Still handle edge-function non-2xx / unexpected shapes gracefully
+      const looksLikeUserExists =
+        (typeof errorMessage === 'string' && (
+          errorMessage.toLowerCase().includes('already been registered') ||
+          errorMessage.toLowerCase().includes('already registered') ||
+          errorMessage.toLowerCase().includes('email address has already')
+        ));
+
+      if (looksLikeUserExists) {
+        const msg = "Este email já possui uma conta cadastrada. Faça login na aba 'Entrar'.";
         toast({
           title: "Email já cadastrado",
-          description: "Este email já possui uma conta. Faça login.",
+          description: msg,
           variant: "destructive"
         });
-        return { error: { message: errorMessage }, userExists: true };
-      } else {
-        toast({
-          title: "Erro no cadastro",
-          description: errorMessage,
-          variant: "destructive"
-        });
-        return { error: { message: errorMessage } };
+        return { error: { message: msg }, userExists: true };
       }
+
+      toast({
+        title: "Erro no cadastro",
+        description: errorMessage,
+        variant: "destructive"
+      });
+      return { error: { message: errorMessage } };
     }
 
     if (data?.needsEmailConfirmation) {

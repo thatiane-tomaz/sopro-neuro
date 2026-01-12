@@ -59,17 +59,20 @@ serve(async (req) => {
       
       // Check if user already exists - handle all variations of the error message
       const errorMsg = createError.message.toLowerCase();
-      if (errorMsg.includes('already been registered') || 
+      if (errorMsg.includes('already been registered') ||
           errorMsg.includes('already registered') ||
           errorMsg.includes('user already') ||
           errorMsg.includes('email address has already')) {
+        logStep("User already exists - returning friendly response", { email });
         return new Response(
-          JSON.stringify({ 
-            error: "Este email já possui uma conta cadastrada. Faça login na aba 'Entrar'.", 
-            userExists: true 
+          JSON.stringify({
+            success: false,
+            userExists: true,
+            message: "Este email já possui uma conta cadastrada. Faça login na aba 'Entrar'."
           }),
           {
-            status: 400,
+            // NOTE: must be 2xx so the frontend doesn't treat it as a generic edge-function error
+            status: 200,
             headers: { "Content-Type": "application/json", ...corsHeaders },
           }
         );
