@@ -152,12 +152,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (error || data?.error) {
       const errorMessage = data?.error || error?.message;
+      const userExists = data?.userExists || false;
       
       // Handle specific error for user already exists
-      if (errorMessage?.includes('already registered') || errorMessage?.includes('User already registered')) {
+      if (userExists || errorMessage?.includes('já possui uma conta') || errorMessage?.includes('already registered')) {
         toast({
           title: "Email já cadastrado",
-          description: "Este email já possui uma conta. Faça login ou reenvie a confirmação.",
+          description: "Este email já possui uma conta. Faça login.",
           variant: "destructive"
         });
         return { error: { message: errorMessage }, userExists: true };
