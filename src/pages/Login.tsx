@@ -28,7 +28,7 @@ const Login = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-  const { user, signIn, signUp, resendConfirmationEmail, updatePassword } = useAuth();
+  const { user, signIn, signUp, signOut, resendConfirmationEmail, updatePassword } = useAuth();
   const { toast } = useToast();
 
   // Detect and handle password recovery flow
@@ -62,6 +62,22 @@ const Login = () => {
       if (!user || showResetPassword) return;
 
       try {
+        // First check if user profile exists (user might have been deleted from DB but session still active)
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (!isMounted) return;
+
+        // If no profile found, user was likely deleted - sign out
+        if (!profileData || profileError) {
+          console.log('User profile not found, signing out...');
+          await signOut();
+          return;
+        }
+
         const { data: onboardingData, error } = await supabase
           .from('onboarding_responses')
           .select('id')
@@ -72,10 +88,6 @@ const Login = () => {
 
         if (error) {
           console.error('Error checking onboarding:', error);
-          // On error, still try to go to onboarding with delay
-          navigationTimeout = setTimeout(() => {
-            if (isMounted) window.location.href = "/onboarding";
-          }, 100);
           return;
         }
 
@@ -92,11 +104,6 @@ const Login = () => {
         }, 100);
       } catch (error) {
         console.error('Error in checkOnboarding:', error);
-        if (isMounted) {
-          navigationTimeout = setTimeout(() => {
-            if (isMounted) window.location.href = "/onboarding";
-          }, 100);
-        }
       }
     };
 
