@@ -83,12 +83,15 @@ serve(async (req) => {
 
     logStep("User created", { userId: userData.user.id });
 
-    // Generate signup confirmation link
+    // Generate signup confirmation link - always redirect to email-confirmed page
+    const baseUrl = redirectUrl.replace(/\/+$/, '').split('/').slice(0, 3).join('/');
+    const confirmRedirectUrl = `${baseUrl}/email-confirmed`;
+    
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'signup',
       email,
       options: {
-        redirectTo: redirectUrl
+        redirectTo: confirmRedirectUrl
       }
     });
 
