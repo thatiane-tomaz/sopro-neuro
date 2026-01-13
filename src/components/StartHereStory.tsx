@@ -171,12 +171,13 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
             )}
 
             {stories[currentStory].highlights && (
-              <div className="space-y-4 text-left">
+              <div className="space-y-4 text-left" key={`highlights-${currentStory}`}>
                 {stories[currentStory].highlights.map((highlight, index) => {
+                  const itemKey = `story-${currentStory}-item-${index}`;
                   // Special case for sparkles-special - render without card
                   if (highlight.icon === 'sparkles-special') {
                     return (
-                      <div key={index} className="flex flex-col items-center gap-2 py-4">
+                      <div key={itemKey} className="flex flex-col items-center gap-2 py-4">
                         <Sparkles className="w-10 h-10 text-white" />
                         <div className="text-white font-semibold text-lg text-center">
                           {highlight.text.split('\n').map((line, i) => (
@@ -193,7 +194,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   const description = parts[1];
                   
                   return (
-                    <div key={index} className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <div key={itemKey} className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
                       {/* Phase badge */}
                       {highlight.phase && (
                         <div className="mb-2">
