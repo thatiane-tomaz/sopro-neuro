@@ -83,9 +83,10 @@ serve(async (req) => {
 
     logStep("User created", { userId: userData.user.id });
 
-    // Generate signup confirmation link - always redirect to email-confirmed page
-    const baseUrl = redirectUrl.replace(/\/+$/, '').split('/').slice(0, 3).join('/');
-    const confirmRedirectUrl = `${baseUrl}/email-confirmed`;
+    // Generate signup confirmation link - always redirect to published URL
+    // Use production URL to avoid Lovable preview/auth pages
+    const PRODUCTION_URL = "https://sopro-neuro.lovable.app";
+    const confirmRedirectUrl = `${PRODUCTION_URL}/email-confirmed`;
     
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'signup',
