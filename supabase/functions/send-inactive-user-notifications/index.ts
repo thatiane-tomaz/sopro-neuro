@@ -10,6 +10,9 @@ const ONESIGNAL_APP_ID = Deno.env.get('ONESIGNAL_APP_ID');
 const ONESIGNAL_REST_API_KEY = Deno.env.get('ONESIGNAL_REST_API_KEY');
 const CRON_SECRET = Deno.env.get('CRON_SECRET');
 
+const INACTIVITY_HOURS = 48;
+const MIN_HOURS_BETWEEN_NOTIFICATIONS = 48;
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -27,98 +30,166 @@ serve(async (req) => {
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     console.log('Checking for inactive users...');
 
-    // Buscar usuários inativos há mais de 35 horas
-    const thirtyFiveHoursAgo = new Date(Date.now() - 35 * 60 * 60 * 1000).toISOString();
+    // Calculate timestamps
+    const fortyEightHoursAgo = new Date(Date.now() - INACTIVITY_HOURS * 60 * 60 * 1000).toISOString();
+    const minTimeBetweenPush = new Date(Date.now() - MIN_HOURS_BETWEEN_NOTIFICATIONS * 60 * 60 * 1000).toISOString();
 
-    const { data: inactiveUsers, error: usersError } = await supabase
+    // Get all users with their latest session
+    const { data: allSessions, error: sessionsError } = await supabase
       .from('app_sessions')
-      .select('user_id')
-      .lt('opened_at', thirtyFiveHoursAgo)
+      .select('user_id, opened_at')
       .order('opened_at', { ascending: false });
 
-    if (usersError) {
-      console.error('Error fetching inactive users:', usersError);
-      throw usersError;
+    if (sessionsError) {
+      console.error('Error fetching sessions:', sessionsError);
+      throw sessionsError;
     }
 
-    console.log(`Found ${inactiveUsers?.length || 0} potentially inactive users`);
-
-    // Para cada usuário inativo, verificar se tem dias incompletos
-    const usersToNotify = [];
-
-    for (const session of inactiveUsers || []) {
-      // Verificar quantos dias foram completados
-      const { data: completedDays, error: daysError } = await supabase.rpc(
-        'is_day_completed',
-        { p_user_id: session.user_id, p_day: 21 }
-      );
-
-      if (daysError) {
-        console.error('Error checking completed days:', daysError);
-        continue;
-      }
-
-      // Se não completou todos os 21 dias, adicionar à lista
-      if (!completedDays) {
-        // Buscar o player_id do OneSignal (armazenado no perfil)
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('onesignal_player_id')
-          .eq('user_id', session.user_id)
-          .single();
-
-        if (profile?.onesignal_player_id) {
-          usersToNotify.push(profile.onesignal_player_id);
-        }
+    // Get unique users with their most recent session
+    const userLatestSession = new Map<string, string>();
+    for (const session of allSessions || []) {
+      if (!userLatestSession.has(session.user_id)) {
+        userLatestSession.set(session.user_id, session.opened_at);
       }
     }
 
-    console.log(`Sending notifications to ${usersToNotify.length} users`);
+    // Filter users inactive for more than 48 hours
+    const inactiveUserIds = Array.from(userLatestSession.entries())
+      .filter(([_, lastOpened]) => new Date(lastOpened) < new Date(fortyEightHoursAgo))
+      .map(([userId]) => userId);
 
-    // Enviar notificações via OneSignal
-    if (usersToNotify.length > 0) {
-      const notificationResponse = await fetch('https://onesignal.com/api/v1/notifications', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${ONESIGNAL_REST_API_KEY}`,
-        },
-        body: JSON.stringify({
-          app_id: ONESIGNAL_APP_ID,
-          include_player_ids: usersToNotify,
-          headings: { en: "Sopro - Continue sua jornada" },
-          contents: { en: "Continue a sua jornada de libertação. O próximo dia está liberado." },
-          ios_badgeType: 'Increase',
-          ios_badgeCount: 1,
-        }),
-      });
+    console.log(`Found ${inactiveUserIds.length} users inactive for more than ${INACTIVITY_HOURS}h`);
 
-      const notificationResult = await notificationResponse.json();
-      console.log('OneSignal response:', notificationResult);
-
+    if (inactiveUserIds.length === 0) {
       return new Response(
         JSON.stringify({
           success: true,
-          usersChecked: inactiveUsers?.length || 0,
-          notificationsSent: usersToNotify.length,
-          onesignalResponse: notificationResult,
+          usersChecked: userLatestSession.size,
+          notificationsSent: 0,
+          message: 'No inactive users found',
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    // Get profiles with OneSignal player_id for inactive users
+    // Filter out users who received a push in the last 48 hours
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('user_id, onesignal_player_id, last_push_sent_at')
+      .in('user_id', inactiveUserIds)
+      .not('onesignal_player_id', 'is', null);
+
+    if (profilesError) {
+      console.error('Error fetching profiles:', profilesError);
+      throw profilesError;
+    }
+
+    // Filter users who haven't received a notification in the last 48 hours
+    const eligibleProfiles = (profiles || []).filter(profile => {
+      if (!profile.last_push_sent_at) return true;
+      return new Date(profile.last_push_sent_at) < new Date(minTimeBetweenPush);
+    });
+
+    console.log(`${eligibleProfiles.length} users eligible for notification (not notified in last ${MIN_HOURS_BETWEEN_NOTIFICATIONS}h)`);
+
+    if (eligibleProfiles.length === 0) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          usersChecked: userLatestSession.size,
+          inactiveUsers: inactiveUserIds.length,
+          notificationsSent: 0,
+          message: 'All inactive users were already notified recently',
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check which users haven't completed all 21 days
+    const usersToNotify: { userId: string; playerId: string }[] = [];
+
+    for (const profile of eligibleProfiles) {
+      const { data: completed } = await supabase.rpc(
+        'is_day_completed',
+        { p_user_id: profile.user_id, p_day: 21 }
+      );
+
+      if (!completed) {
+        usersToNotify.push({
+          userId: profile.user_id,
+          playerId: profile.onesignal_player_id!,
+        });
+      }
+    }
+
+    console.log(`${usersToNotify.length} users to notify (haven't completed day 21)`);
+
+    if (usersToNotify.length === 0) {
+      return new Response(
+        JSON.stringify({
+          success: true,
+          usersChecked: userLatestSession.size,
+          inactiveUsers: inactiveUserIds.length,
+          notificationsSent: 0,
+          message: 'No eligible users to notify',
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Send notifications via OneSignal
+    const playerIds = usersToNotify.map(u => u.playerId);
+    
+    const notificationResponse = await fetch('https://onesignal.com/api/v1/notifications', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${ONESIGNAL_REST_API_KEY}`,
+      },
+      body: JSON.stringify({
+        app_id: ONESIGNAL_APP_ID,
+        include_player_ids: playerIds,
+        headings: { pt: "Sopro", en: "Sopro" },
+        contents: { 
+          pt: "Um passo de cada vez. Sua jornada segue aqui.",
+          en: "Um passo de cada vez. Sua jornada segue aqui."
+        },
+        ios_badgeType: 'Increase',
+        ios_badgeCount: 1,
+      }),
+    });
+
+    const notificationResult = await notificationResponse.json();
+    console.log('OneSignal response:', notificationResult);
+
+    // Update last_push_sent_at for notified users
+    const userIdsToUpdate = usersToNotify.map(u => u.userId);
+    const now = new Date().toISOString();
+    
+    for (const userId of userIdsToUpdate) {
+      await supabase
+        .from('profiles')
+        .update({ last_push_sent_at: now })
+        .eq('user_id', userId);
+    }
+
+    console.log(`Updated last_push_sent_at for ${userIdsToUpdate.length} users`);
+
     return new Response(
       JSON.stringify({
         success: true,
-        usersChecked: inactiveUsers?.length || 0,
-        notificationsSent: 0,
-        message: 'No users to notify',
+        usersChecked: userLatestSession.size,
+        inactiveUsers: inactiveUserIds.length,
+        notificationsSent: usersToNotify.length,
+        onesignalResponse: notificationResult,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
