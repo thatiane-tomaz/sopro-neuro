@@ -175,7 +175,8 @@ export const useJourneyTracking = () => {
     // Phase 2 (days 8-14) only requires hypnosis
     const isPhase2 = day >= 8 && day <= 14;
     
-    // Content is completed if finished_at is set (user watched to the end)
+    // Content is completed if ANY tracking record has finished_at set
+    // This handles multiple tracking records for the same content
     const hypnosisCompleted = trackingData.some(
       track => 
         track.interaction_type === `hipnose_dia_${day}` && 
@@ -192,6 +193,8 @@ export const useJourneyTracking = () => {
         track.finished_at !== null
     );
     
+    console.log(`[isDayCompleted] Day ${day}: video=${videoCompleted}, hypnosis=${hypnosisCompleted}`);
+    
     return videoCompleted && hypnosisCompleted;
   };
 
@@ -202,18 +205,32 @@ export const useJourneyTracking = () => {
     // Phase 2 (days 8-14) only requires hypnosis
     const isPhase2 = day >= 8 && day <= 14;
     
-    // Get completed tracks (with finished_at set)
-    const videoTrack = trackingData.find(
+    // Get completed tracks (with finished_at set) - filter first, then find the earliest completion
+    // This handles the case where user has multiple tracking records for the same content
+    const completedVideoTracks = trackingData.filter(
       track => 
         track.interaction_type === `video_dia_${day}` &&
         track.finished_at !== null
     );
     
-    const hypnosisTrack = trackingData.find(
+    const completedHypnosisTracks = trackingData.filter(
       track => 
         track.interaction_type === `hipnose_dia_${day}` &&
         track.finished_at !== null
     );
+    
+    // Get the earliest completion time for each type (first time user completed it)
+    const videoTrack = completedVideoTracks.length > 0 
+      ? completedVideoTracks.reduce((earliest, current) => 
+          new Date(current.finished_at!) < new Date(earliest.finished_at!) ? current : earliest
+        )
+      : null;
+    
+    const hypnosisTrack = completedHypnosisTracks.length > 0
+      ? completedHypnosisTracks.reduce((earliest, current) =>
+          new Date(current.finished_at!) < new Date(earliest.finished_at!) ? current : earliest
+        )
+      : null;
     
     // For Phase 2, only hypnosis is required
     if (isPhase2) {
