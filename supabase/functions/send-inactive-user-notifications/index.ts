@@ -8,6 +8,7 @@ const corsHeaders = {
 
 const ONESIGNAL_APP_ID = Deno.env.get('ONESIGNAL_APP_ID');
 const ONESIGNAL_REST_API_KEY = Deno.env.get('ONESIGNAL_REST_API_KEY');
+const CRON_SECRET = Deno.env.get('CRON_SECRET');
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -15,6 +16,17 @@ serve(async (req) => {
   }
 
   try {
+    // Validate cron secret
+    const authHeader = req.headers.get('Authorization');
+    const providedSecret = authHeader?.replace('Bearer ', '');
+    
+    if (!providedSecret || providedSecret !== CRON_SECRET) {
+      console.error('Unauthorized: Invalid or missing CRON_SECRET');
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
