@@ -649,17 +649,8 @@ const Dashboard = () => {
                               />
                               {isLocked && (
                                 <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center">
-                                  <div className="text-center">
-                                    <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center mb-3 shadow-lg">
-                                      {needsUpgrade ? (
-                                        <Crown className="h-7 w-7 text-accent" />
-                                      ) : (
-                                        <Lock className="h-7 w-7 text-muted-foreground" />
-                                      )}
-                                    </div>
-                                    <p className="text-sm font-medium text-muted-foreground">
-                                      {needsUpgrade ? 'Premium' : isTimeLocked ? `Aguarde ${countdownTime || '...'}` : 'Em breve'}
-                                    </p>
+                                  <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center shadow-lg">
+                                    <Lock className="h-7 w-7 text-muted-foreground" />
                                   </div>
                                 </div>
                               )}
