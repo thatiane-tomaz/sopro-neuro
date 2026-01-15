@@ -72,11 +72,16 @@ serve(async (req) => {
           onConflict: 'email'
         })
         .select()
-        .single();
+        .maybeSingle();
 
       if (subError) {
         logStep("Error upserting subscription", { error: subError });
         throw subError;
+      }
+
+      if (!subData) {
+        logStep("No subscription data returned after upsert");
+        throw new Error("Failed to create subscription");
       }
 
       logStep("Subscription created/updated successfully", { subscription_id: subData?.id });
