@@ -40,15 +40,14 @@ export const useUserProfile = () => {
   });
 
   const hasAccessToDay = (day: number): boolean => {
-    if (!profile) return false;
-    if (profile.subscription_status === 'premium') return true;
-    return day <= 2;
+    // Todos os usuários cadastrados têm acesso a todos os dias
+    // (só consegue cadastrar quem pagou ou está na freelist)
+    return !!profile;
   };
 
-  const upgradeRequired = (day: number): boolean => {
-    if (!profile) return false;
-    if (profile.subscription_status === 'premium') return false;
-    return day > 2;
+  const upgradeRequired = (_day: number): boolean => {
+    // Não há mais limitação por plano - todos têm acesso completo
+    return false;
   };
 
   return {
