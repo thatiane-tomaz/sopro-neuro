@@ -761,6 +761,15 @@ const Dashboard = () => {
                                   }
                                 }
                                 
+                                // Show "Concluído" for completed days
+                                if (isCompleted) {
+                                  return (
+                                    <div className="mt-3 text-center h-5">
+                                      <p className="text-xs text-primary font-medium">Concluído</p>
+                                    </div>
+                                  );
+                                }
+                                
                                 // Placeholder to maintain consistent card height
                                 return <div className="mt-3 h-5" />;
                               })()}
