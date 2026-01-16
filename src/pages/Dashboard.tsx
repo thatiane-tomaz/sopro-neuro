@@ -121,11 +121,9 @@ const Dashboard = () => {
 
   // Calculate current day based on user progress
   const actualDay = getCurrentDay();
-  const currentDay: number = profile?.subscription_status === 'free' 
-    ? Math.min(actualDay, 2) 
-    : actualDay;
+  const currentDay: number = actualDay;
   
-  console.log('Current day from tracking:', { actualDay, currentDay, isFree: profile?.subscription_status === 'free' });
+  console.log('Current day from tracking:', { actualDay, currentDay });
 
   // Calculate savings for phase 2+ (from day 8+)
   const calculateSavings = useMemo(() => {
@@ -725,7 +723,6 @@ const Dashboard = () => {
                                 // Calculate countdown for THIS specific completed day
                                 // Show on completed days where the NEXT day is still time-locked
                                 if (isCompleted && day < 21) {
-                                  const nextDay = day + 1;
                                   const completionTime = getDayCompletionTime(day);
                                   
                                   if (completionTime) {
@@ -740,7 +737,7 @@ const Dashboard = () => {
                                       return (
                                         <div className="mt-3 text-center">
                                           <p className="text-xs text-primary font-medium">
-                                            🕐 Próximo dia em {timeStr}
+                                            Próximo dia em {timeStr}
                                           </p>
                                         </div>
                                       );
