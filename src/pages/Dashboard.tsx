@@ -104,40 +104,18 @@ const Dashboard = () => {
   const [currentTrackingId, setCurrentTrackingId] = useState<string | null>(null);
   const [showStartHere, setShowStartHere] = useState(false);
   const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
-  const [countdownTime, setCountdownTime] = useState<string | null>(null);
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
+  const [, setCountdownTick] = useState(0); // Forces re-render for countdown updates
   const { toast } = useToast();
 
-  // Countdown timer effect - recalculates when tracking data changes
+  // Countdown timer effect - triggers re-render every minute to update countdown displays
   useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
+    const interval = setInterval(() => {
+      setCountdownTick(tick => tick + 1);
+    }, 60000); // Update every minute
     
-    const updateCountdown = () => {
-      try {
-        const msRemaining = getTimeUntilNextUnlock();
-        console.log('Countdown update:', { msRemaining, currentDay: getCurrentDay() });
-        if (msRemaining && msRemaining > 0) {
-          const hours = Math.floor(msRemaining / (1000 * 60 * 60));
-          const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
-          setCountdownTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
-        } else {
-          setCountdownTime(null);
-        }
-      } catch (error) {
-        console.error('Error updating countdown:', error);
-        setCountdownTime(null);
-      }
-    };
-
-    if (!trackingLoading) {
-      updateCountdown();
-      interval = setInterval(updateCountdown, 60000); // Update every minute
-    }
-    
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [trackingLoading, getTimeUntilNextUnlock, getCurrentDay]);
+    return () => clearInterval(interval);
+  }, []);
 
   console.log('Dashboard render:', { user, authLoading, profileLoading, profile, isAdmin });
 
@@ -731,7 +709,7 @@ const Dashboard = () => {
                                 </Button>
                               </div>
                               
-                              {/* Progress Message - for current day (in progress) or just completed day (countdown) */}
+                              {/* Progress Message - for current day (in progress) or completed day with countdown */}
                               {(() => {
                                 const videoProgress = getDayProgress(day, 'video');
                                 const hypnosisProgress = getDayProgress(day, 'hypnosis');
@@ -744,17 +722,30 @@ const Dashboard = () => {
                                 const isPhase2 = phase.phase_number === 2;
                                 const allRequired = isPhase2 ? hypnosisCompleted : bothCompleted;
                                 
-                                // Show countdown on the JUST COMPLETED day (currentDay - 1)
-                                const isJustCompleted = day === currentDay - 1 && allRequired && countdownTime;
-                                
-                                if (isJustCompleted) {
-                                  return (
-                                    <div className="mt-3 text-center">
-                                      <p className="text-xs text-primary font-medium">
-                                        Próximo dia em {countdownTime}
-                                      </p>
-                                    </div>
-                                  );
+                                // Calculate countdown for THIS specific completed day
+                                // Show on completed days where the NEXT day is still time-locked
+                                if (isCompleted && day < 21) {
+                                  const nextDay = day + 1;
+                                  const completionTime = getDayCompletionTime(day);
+                                  
+                                  if (completionTime) {
+                                    const unlockTime = new Date(completionTime.getTime() + 6 * 60 * 60 * 1000);
+                                    const msRemaining = unlockTime.getTime() - Date.now();
+                                    
+                                    if (msRemaining > 0) {
+                                      const hours = Math.floor(msRemaining / (1000 * 60 * 60));
+                                      const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                                      const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                      
+                                      return (
+                                        <div className="mt-3 text-center">
+                                          <p className="text-xs text-primary font-medium">
+                                            🕐 Próximo dia em {timeStr}
+                                          </p>
+                                        </div>
+                                      );
+                                    }
+                                  }
                                 }
                                 
                                 // Show progress message for current day
