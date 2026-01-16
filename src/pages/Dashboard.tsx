@@ -613,8 +613,8 @@ const Dashboard = () => {
                               isLocked 
                                 ? 'opacity-50 cursor-not-allowed bg-card/30 shadow-sm' 
                                 : isCurrent
-                                  ? 'shadow-xl shadow-accent/20 cursor-pointer hover:shadow-2xl hover:shadow-accent/30 hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-primary/5'
-                                  : 'shadow-md opacity-70 cursor-pointer hover:opacity-100 hover:-translate-y-0.5 hover:shadow-lg bg-card/50 backdrop-blur-sm'
+                                  ? 'shadow-lg cursor-pointer hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-primary/5'
+                                  : 'shadow-md cursor-pointer hover:shadow-lg hover:-translate-y-0.5 bg-card/50 backdrop-blur-sm'
                             }`}
                           >
                             <div className="relative aspect-video overflow-hidden">
