@@ -647,11 +647,6 @@ const Dashboard = () => {
                                 <h3 className="text-base font-semibold text-navy dark:text-primary-light leading-tight tracking-tight flex-1">
                                   {dayContent.title}
                                 </h3>
-                                {isCompleted && (
-                                  <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs flex-shrink-0">
-                                    Concluído
-                                  </Badge>
-                                )}
                               </div>
                               
                               <div className={`flex gap-2 ${phase.phase_number === 2 ? 'justify-center' : ''}`}>
