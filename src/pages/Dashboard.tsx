@@ -735,7 +735,7 @@ const Dashboard = () => {
                                       const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
                                       
                                       return (
-                                        <div className="mt-3 text-center">
+                                        <div className="mt-3 text-center h-5">
                                           <p className="text-xs text-primary font-medium">
                                             Próximo dia em {timeStr}
                                           </p>
@@ -749,7 +749,7 @@ const Dashboard = () => {
                                 if (isCurrent && !isLocked) {
                                   if (hasStarted && !allRequired) {
                                     return (
-                                      <div className="mt-3 text-center">
+                                      <div className="mt-3 text-center h-5">
                                         <p className="text-xs text-muted-foreground">
                                           {isPhase2 
                                             ? "Finalize a hipnose para avançar"
@@ -761,7 +761,8 @@ const Dashboard = () => {
                                   }
                                 }
                                 
-                                return null;
+                                // Placeholder to maintain consistent card height
+                                return <div className="mt-3 h-5" />;
                               })()}
                             </div>
                           </div>
