@@ -240,8 +240,8 @@ const Login = () => {
     
     setIsLoading(true);
     
-    // Use the correct app URL for password reset redirect
-    const appUrl = window.location.origin;
+    // Use the published app URL for password reset redirect (hardcoded to avoid issues with native apps)
+    const appUrl = 'https://sopro-neuro.lovable.app';
     
     // Use custom edge function to send password reset email via Resend
     const { data, error } = await supabase.functions.invoke('custom-password-reset', {
