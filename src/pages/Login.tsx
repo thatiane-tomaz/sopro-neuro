@@ -37,7 +37,12 @@ const Login = () => {
     const search = window.location.search ?? "";
 
     // When coming from the recovery email link, Supabase typically appends `type=recovery`
-    if (hash.includes("type=recovery") || search.includes("type=recovery")) {
+    // We also support a custom query param to avoid mobile/in-app-browser hash issues.
+    if (
+      hash.includes("type=recovery") ||
+      search.includes("type=recovery") ||
+      search.includes("mode=recovery")
+    ) {
       setShowResetPassword(true);
     }
 
@@ -247,7 +252,7 @@ const Login = () => {
     const { data, error } = await supabase.functions.invoke('custom-password-reset', {
       body: { 
         email: forgotEmail, 
-        redirectUrl: `${appUrl}/login`
+        redirectUrl: `${appUrl}/login?mode=recovery`
       }
     });
     
