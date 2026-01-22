@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,7 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Lock, Mail, AlertTriangle, RefreshCw } from "lucide-react";
+import { ArrowLeft, Lock, Mail, AlertTriangle, RefreshCw, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -32,13 +32,16 @@ const REFUND_REASONS = [
 ] as const;
 
 const Settings = () => {
-  const { user, updatePassword, updateEmail } = useAuth();
+  const { user, updatePassword, updateEmail, signOut } = useAuth();
   const { profile } = useUserProfile();
   const { isPremium, subscriptionData, checkSubscription } = useSubscription();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isRefundLoading, setIsRefundLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [showRefundDialog, setShowRefundDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [refundReason, setRefundReason] = useState("");
   const [refundAdditionalInfo, setRefundAdditionalInfo] = useState("");
   const [daysUntilRefundExpires, setDaysUntilRefundExpires] = useState<number | null>(null);
@@ -116,6 +119,39 @@ const Settings = () => {
       });
     } finally {
       setIsRefundLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user?.email) return;
+
+    setIsDeleteLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-user-by-email', {
+        body: { email: user.email }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast({
+          title: "Conta excluída",
+          description: "Sua conta e todos os dados foram excluídos com sucesso.",
+        });
+        await signOut();
+        navigate('/');
+      } else {
+        throw new Error(data?.error || "Erro ao excluir conta");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Erro ao excluir conta",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleteLoading(false);
+      setShowDeleteDialog(false);
     }
   };
 
@@ -318,6 +354,29 @@ const Settings = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Delete Account Section */}
+                    <div className="border-t pt-6">
+                      <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4">
+                        <div className="flex items-start gap-3">
+                          <Trash2 className="w-5 h-5 text-destructive mt-0.5" />
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-destructive">Excluir Conta</h4>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Ao excluir sua conta, todos os seus dados serão permanentemente removidos. Esta ação não pode ser desfeita.
+                            </p>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="mt-3"
+                              onClick={() => setShowDeleteDialog(true)}
+                            >
+                              Excluir minha conta
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -383,6 +442,45 @@ const Settings = () => {
                 </>
               ) : (
                 "Confirmar Reembolso"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Account Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Trash2 className="w-5 h-5 text-destructive" />
+              Excluir Conta
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir sua conta? Esta ação irá remover permanentemente:
+              <ul className="list-disc list-inside mt-2 space-y-1">
+                <li>Seus dados de perfil</li>
+                <li>Histórico de progresso</li>
+                <li>Dados de assinatura</li>
+              </ul>
+              <p className="mt-2 font-semibold">Esta ação não pode ser desfeita.</p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleteLoading}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={isDeleteLoading}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {isDeleteLoading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Excluindo...
+                </>
+              ) : (
+                "Excluir permanentemente"
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
