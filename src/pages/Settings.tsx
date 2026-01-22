@@ -308,7 +308,6 @@ const Settings = () => {
                       <div className="space-y-2 text-sm">
                         <p><strong>Email:</strong> {user.email}</p>
                         <p><strong>ID do usuário:</strong> {user.id}</p>
-                        <p><strong>Assinatura:</strong> {profile?.subscription_status === 'premium' ? 'Premium' : 'Gratuita'}</p>
                       </div>
                     </div>
 
