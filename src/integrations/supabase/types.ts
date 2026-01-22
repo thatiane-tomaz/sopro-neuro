@@ -89,6 +89,27 @@ export type Database = {
         }
         Relationships: []
       }
+      deleted_accounts: {
+        Row: {
+          deleted_at: string
+          id: string
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          deleted_at?: string
+          id?: string
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          deleted_at?: string
+          id?: string
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       feedback_responses: {
         Row: {
           comment: string | null
