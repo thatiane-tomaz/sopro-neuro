@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { useSubscription } from '@/hooks/useSubscription';
-import { Crown, Settings } from 'lucide-react';
+import { useIsNativeIOS } from '@/hooks/useIsNativeIOS';
+import { Crown } from 'lucide-react';
 
 interface SubscriptionButtonProps {
   size?: 'default' | 'sm' | 'lg';
@@ -9,6 +10,7 @@ interface SubscriptionButtonProps {
 
 export const SubscriptionButton = ({ size = 'sm', variant = 'default' }: SubscriptionButtonProps) => {
   const { isPremium, createCheckout, daysRemaining, loading } = useSubscription();
+  const isNativeIOS = useIsNativeIOS();
 
   if (loading) {
     return <Button disabled size={size}>Carregando...</Button>;
@@ -26,6 +28,11 @@ export const SubscriptionButton = ({ size = 'sm', variant = 'default' }: Subscri
         {size !== 'sm' && `Premium - ${daysRemaining} dias restantes`}
       </Button>
     );
+  }
+
+  // Hide purchase button on native iOS (Apple requires IAP)
+  if (isNativeIOS) {
+    return null;
   }
 
   return (

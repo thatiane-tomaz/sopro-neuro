@@ -1,9 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Crown, Lock } from "lucide-react";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useIsNativeIOS } from "@/hooks/useIsNativeIOS";
 import { SubscriptionButton } from "./SubscriptionButton";
 
 const UpgradeCard = () => {
+  const isNativeIOS = useIsNativeIOS();
+
+  // Hide upgrade card on native iOS (Apple requires IAP)
+  if (isNativeIOS) {
+    return null;
+  }
+
   return (
     <Card className="border-accent/20 bg-gradient-to-br from-accent/5 to-accent/10">
       <CardHeader className="text-center">
@@ -37,6 +45,7 @@ interface ContentAccessWrapperProps {
 
 export const ContentAccessWrapper = ({ day, children, contentType, contentId }: ContentAccessWrapperProps) => {
   const { hasAccessToDay, upgradeRequired } = useUserProfile();
+  const isNativeIOS = useIsNativeIOS();
 
   if (upgradeRequired(day)) {
     return (
@@ -47,10 +56,13 @@ export const ContentAccessWrapper = ({ day, children, contentType, contentId }: 
             <div>
               <h3 className="text-lg font-semibold">Conteúdo Premium</h3>
               <p className="text-sm text-muted-foreground">
-                Faça upgrade para acessar este conteúdo
+                {isNativeIOS 
+                  ? "Acesse soproneuro.com.br para renovar seu acesso"
+                  : "Faça upgrade para acessar este conteúdo"
+                }
               </p>
             </div>
-            <SubscriptionButton />
+            {!isNativeIOS && <SubscriptionButton />}
           </div>
         </div>
         <div className="opacity-30">
