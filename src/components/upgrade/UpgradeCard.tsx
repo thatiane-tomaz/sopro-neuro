@@ -57,7 +57,7 @@ export const ContentAccessWrapper = ({ day, children, contentType, contentId }: 
               <h3 className="text-lg font-semibold">Conteúdo Premium</h3>
               <p className="text-sm text-muted-foreground">
                 {isNativeIOS 
-                  ? "Acesse soproneuro.com.br para renovar seu acesso"
+                  ? "Este conteúdo requer acesso premium"
                   : "Faça upgrade para acessar este conteúdo"
                 }
               </p>
