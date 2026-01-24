@@ -8,6 +8,7 @@ import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useIsNativeIOS } from "@/hooks/useIsNativeIOS";
 import soproLogo from "@/assets/sopro-logo.png";
 import { loginSchema, signupSchema } from "@/lib/validations";
 
@@ -30,6 +31,7 @@ const Login = () => {
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const { user, signIn, signUp, signOut, resendConfirmationEmail, updatePassword } = useAuth();
   const { toast } = useToast();
+  const isNativeIOS = useIsNativeIOS();
 
   // Detect and handle password recovery flow
   useEffect(() => {
@@ -607,33 +609,40 @@ const Login = () => {
                 <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
                   <p className="text-sm text-red-600 mb-1">{signupError}</p>
                   <p className="text-xs text-slate-600">
-                    Verifique se está utilizando o mesmo email do pagamento.{' '}
+                    Verifique se está utilizando o mesmo email do pagamento.
+                    {!isNativeIOS && (
+                      <>
+                        {' '}
+                        <a 
+                          href="https://soproneuro.com.br/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-primary font-semibold hover:underline"
+                        >
+                          Ainda não adquiriu? Clique aqui.
+                        </a>
+                      </>
+                    )}
+                  </p>
+                </div>
+              )}
+
+              {/* Link for users who haven't paid yet - hidden on iOS */}
+              {!isNativeIOS && (
+                <div className="text-center pt-2 border-t border-slate-200">
+                  <p className="text-xs text-slate-500">
+                    Ainda não adquiriu o programa?{' '}
                     <a 
                       href="https://soproneuro.com.br/" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-primary font-semibold hover:underline"
                     >
-                      Ainda não adquiriu? Clique aqui.
+                      Clique aqui
                     </a>
                   </p>
                 </div>
               )}
-
-              {/* Link for users who haven't paid yet */}
-              <div className="text-center pt-2 border-t border-slate-200">
-                <p className="text-xs text-slate-500">
-                  Ainda não adquiriu o programa?{' '}
-                  <a 
-                    href="https://soproneuro.com.br/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-primary font-semibold hover:underline"
-                  >
-                    Clique aqui
-                  </a>
-                </p>
-              </div>
             </form>
           </TabsContent>
         </Tabs>
