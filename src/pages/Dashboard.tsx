@@ -229,7 +229,7 @@ const Dashboard = () => {
         toast({
           title: "Conteúdo bloqueado",
           description: status === 'subscription_locked' 
-            ? "Faça upgrade para acessar este conteúdo"
+            ? (isNativeIOS ? "Este conteúdo requer acesso premium" : "Faça upgrade para acessar este conteúdo")
             : "Complete o dia anterior para desbloquear",
           variant: "destructive"
         });
@@ -946,7 +946,7 @@ const Dashboard = () => {
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center">
               {isNativeIOS 
-                ? "Seu acesso premium expirou. Acesse soproneuro.com.br pelo navegador para renovar sua assinatura."
+                ? "Seu acesso premium expirou. Entre em contato com nosso suporte para mais informações."
                 : "Seu acesso premium expirou. Renove agora para continuar sua jornada de transformação e ter acesso a todo o conteúdo exclusivo."
               }
             </AlertDialogDescription>

@@ -1,9 +1,29 @@
-import { Link } from "react-router-dom";
-import { ArrowLeft, Trash2, Mail } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Trash2, Mail, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const DeleteAccount = () => {
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
   const supportEmail = "contato@soproneuro.com.br";
   const emailSubject = "Solicitação de exclusão de conta e dados";
   const emailBody = `Olá,
@@ -16,11 +36,44 @@ Atenciosamente.`;
 
   const mailtoLink = `mailto:${supportEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
 
+  const handleDeleteAccount = async () => {
+    if (!user?.email) return;
+
+    setIsDeleteLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-user-by-email', {
+        body: { email: user.email }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast({
+          title: "Conta excluída",
+          description: "Sua conta e todos os dados foram excluídos com sucesso.",
+        });
+        await signOut();
+        navigate('/');
+      } else {
+        throw new Error(data?.error || "Erro ao excluir conta");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.message || "Erro ao excluir conta",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleteLoading(false);
+      setShowDeleteDialog(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-hero">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <Link to="/" className="inline-flex items-center text-white/80 hover:text-white transition-smooth mb-6">
+          <Link to={user ? "/dashboard" : "/"} className="inline-flex items-center text-white/80 hover:text-white transition-smooth mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Voltar
           </Link>
@@ -48,25 +101,44 @@ Atenciosamente.`;
                 </ul>
               </div>
 
-              <div className="space-y-4">
-                <h3 className="font-semibold text-lg">Como solicitar:</h3>
-                <p className="text-muted-foreground">
-                  Para solicitar a exclusão da sua conta, envie um email para nossa equipe de suporte. 
-                  Processaremos sua solicitação em até 30 dias conforme a LGPD.
-                </p>
-              </div>
-
-              <div className="border-t pt-6">
-                <a href={mailtoLink}>
-                  <Button className="w-full" variant="destructive">
-                    <Mail className="w-4 h-4 mr-2" />
-                    Enviar solicitação de exclusão
+              {/* If user is logged in, show direct delete button */}
+              {user ? (
+                <div className="border-t pt-6">
+                  <Button 
+                    className="w-full" 
+                    variant="destructive"
+                    onClick={() => setShowDeleteDialog(true)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Excluir minha conta
                   </Button>
-                </a>
-                <p className="text-xs text-center text-muted-foreground mt-4">
-                  Ou envie um email diretamente para: <strong>{supportEmail}</strong>
-                </p>
-              </div>
+                  <p className="text-xs text-center text-muted-foreground mt-4">
+                    Esta ação é permanente e não pode ser desfeita.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-lg">Como solicitar:</h3>
+                    <p className="text-muted-foreground">
+                      Para solicitar a exclusão da sua conta, envie um email para nossa equipe de suporte. 
+                      Processaremos sua solicitação em até 30 dias conforme a LGPD.
+                    </p>
+                  </div>
+
+                  <div className="border-t pt-6">
+                    <a href={mailtoLink}>
+                      <Button className="w-full" variant="destructive">
+                        <Mail className="w-4 h-4 mr-2" />
+                        Enviar solicitação de exclusão
+                      </Button>
+                    </a>
+                    <p className="text-xs text-center text-muted-foreground mt-4">
+                      Ou envie um email diretamente para: <strong>{supportEmail}</strong>
+                    </p>
+                  </div>
+                </>
+              )}
 
               <div className="bg-muted/50 rounded-lg p-4 text-sm text-muted-foreground">
                 <strong>Importante:</strong> A exclusão é permanente e não pode ser desfeita. 
@@ -76,6 +148,45 @@ Atenciosamente.`;
           </Card>
         </div>
       </div>
+
+      {/* Delete Account Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Trash2 className="w-5 h-5 text-destructive" />
+              Excluir Conta
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir sua conta? Esta ação irá remover permanentemente:
+              <ul className="list-disc list-inside mt-2 space-y-1">
+                <li>Seus dados de perfil</li>
+                <li>Histórico de progresso</li>
+                <li>Dados de assinatura</li>
+              </ul>
+              <p className="mt-2 font-semibold">Esta ação não pode ser desfeita.</p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleteLoading}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={isDeleteLoading}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {isDeleteLoading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Excluindo...
+                </>
+              ) : (
+                "Excluir permanentemente"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
