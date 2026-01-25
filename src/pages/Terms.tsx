@@ -167,7 +167,7 @@ const Terms = () => {
             <p className="mb-4">
               Para questões sobre estes Termos de Uso, entre em contato:
             </p>
-            <p className="mb-2">Email: sopro@gmail.com</p>
+            <p className="mb-2">Email: contato@soproneuro.com.br</p>
           </section>
         </article>
       </div>
