@@ -108,7 +108,7 @@ const Privacy = () => {
               <li><strong>Oposição:</strong> opor-se ao tratamento de seus dados em certas situações</li>
             </ul>
             <p className="mb-4">
-              Para exercer seus direitos, entre em contato através de: sopro@gmail.com
+              Para exercer seus direitos, entre em contato através de: contato@soproneuro.com.br
             </p>
           </section>
 
@@ -172,9 +172,9 @@ const Privacy = () => {
             <p className="mb-4">
               Para questões sobre privacidade ou exercício de direitos LGPD:
             </p>
-            <p className="mb-2"><strong>Email:</strong> sopro@gmail.com</p>
+            <p className="mb-2"><strong>Email:</strong> contato@soproneuro.com.br</p>
             <p className="mb-4 mt-4">
-              <strong>Encarregado de Proteção de Dados (DPO):</strong> sopro@gmail.com
+              <strong>Encarregado de Proteção de Dados (DPO):</strong> contato@soproneuro.com.br
             </p>
           </section>
         </article>
