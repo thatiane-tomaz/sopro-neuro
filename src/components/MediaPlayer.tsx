@@ -308,30 +308,30 @@ const MediaPlayer = ({
                 <Volume2 className="h-4 w-4" />
                 Dicas para melhor experiência
               </p>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-xl p-2.5">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3 bg-white/60 dark:bg-white/5 rounded-xl p-3">
                   <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
                     <Sofa className="h-4 w-4 text-navy dark:text-navy-foreground" />
                   </div>
-                  <span className="text-xs text-navy/80 dark:text-navy-foreground/80 leading-tight">Deite ou sente confortavelmente</span>
+                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Deite ou sente confortavelmente</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-xl p-2.5">
+                <div className="flex items-center gap-3 bg-white/60 dark:bg-white/5 rounded-xl p-3">
                   <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
                     <Headphones className="h-4 w-4 text-navy dark:text-navy-foreground" />
                   </div>
-                  <span className="text-xs text-navy/80 dark:text-navy-foreground/80 leading-tight">Local silencioso + fones</span>
+                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Local silencioso + fones de ouvido</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-xl p-2.5">
+                <div className="flex items-center gap-3 bg-white/60 dark:bg-white/5 rounded-xl p-3">
                   <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
                     <BellOff className="h-4 w-4 text-navy dark:text-navy-foreground" />
                   </div>
-                  <span className="text-xs text-navy/80 dark:text-navy-foreground/80 leading-tight">Ative "Não Perturbe"</span>
+                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Ative o modo "Não Perturbe"</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-xl p-2.5">
+                <div className="flex items-center gap-3 bg-white/60 dark:bg-white/5 rounded-xl p-3">
                   <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
                     <BatteryCharging className="h-4 w-4 text-navy dark:text-navy-foreground" />
                   </div>
-                  <span className="text-xs text-navy/80 dark:text-navy-foreground/80 leading-tight">Desative economia de bateria</span>
+                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Desative economia de bateria</span>
                 </div>
               </div>
             </div>
