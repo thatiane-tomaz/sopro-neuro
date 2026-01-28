@@ -313,7 +313,7 @@ const MediaPlayer = ({
                   <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
                     <Sofa className="h-4 w-4 text-navy dark:text-navy-foreground" />
                   </div>
-                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Deite ou sente confortavelmente</span>
+                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Deite-se ou sente-se confortavelmente</span>
                 </div>
                 <div className="flex items-center gap-3 bg-white/60 dark:bg-white/5 rounded-xl p-3">
                   <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
@@ -331,7 +331,7 @@ const MediaPlayer = ({
                   <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
                     <BatteryCharging className="h-4 w-4 text-navy dark:text-navy-foreground" />
                   </div>
-                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Desative economia de bateria</span>
+                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Desative o modo "Economia de Bateria"</span>
                 </div>
               </div>
             </div>
