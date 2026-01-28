@@ -319,10 +319,14 @@ const MediaPlayer = ({
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">3</span>
-                  Deite-se ou sente-se confortavelmente
+                  Desative o modo de economia de bateria
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">4</span>
+                  Deite-se ou sente-se confortavelmente
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">5</span>
                   Escolha um local silencioso
                 </li>
               </ul>
