@@ -315,10 +315,14 @@ const MediaPlayer = ({
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">2</span>
-                  Deite-se ou sente-se confortavelmente
+                  Ative o modo "Não Perturbe" do celular
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">3</span>
+                  Deite-se ou sente-se confortavelmente
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">4</span>
                   Escolha um local silencioso
                 </li>
               </ul>
