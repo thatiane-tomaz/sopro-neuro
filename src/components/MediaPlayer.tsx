@@ -35,12 +35,36 @@ const MediaPlayer = ({
   const onProgressRef = useRef(onProgress);
   const onCompleteRef = useRef(onComplete);
   
+  // Throttle progress updates to prevent excessive database calls
+  const lastProgressUpdateRef = useRef<number>(0);
+  const lastReportedPercentageRef = useRef<number>(0);
+  
   useEffect(() => {
     onProgressRef.current = onProgress;
     onCompleteRef.current = onComplete;
   }, [onProgress, onComplete]);
 
   console.log('MediaPlayer opened with:', { title, fileUrl, contentType, interactionType });
+  
+  // Handle visibility change (screen lock, app backgrounding)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const media = mediaRef.current;
+      if (!media) return;
+      
+      if (document.hidden) {
+        // App went to background - try to keep audio playing for hypnosis
+        console.log('App backgrounded, media playing:', !media.paused);
+      } else {
+        // App came back to foreground - sync UI state
+        console.log('App foregrounded, media playing:', !media.paused);
+        setIsPlaying(!media.paused);
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
 
   useEffect(() => {
     const media = mediaRef.current;
@@ -57,18 +81,35 @@ const MediaPlayer = ({
 
     const updateTime = () => {
       if (!isMounted) return;
-      setCurrentTime(media.currentTime);
       
-      if (media.duration > 0) {
-        const percentage = Math.floor((media.currentTime / media.duration) * 100);
-        if (onProgressRef.current) {
-          onProgressRef.current(percentage);
-        }
+      try {
+        const currentMediaTime = media.currentTime;
+        const mediaDuration = media.duration;
         
-        if (percentage >= 98 && !hasCompleted && onCompleteRef.current) {
-          setHasCompleted(true);
-          onCompleteRef.current();
+        setCurrentTime(currentMediaTime);
+        
+        if (mediaDuration > 0 && isFinite(mediaDuration)) {
+          const percentage = Math.floor((currentMediaTime / mediaDuration) * 100);
+          const now = Date.now();
+          
+          // Throttle progress updates: only update if 5+ seconds passed AND percentage changed by 5+
+          const timeSinceLastUpdate = now - lastProgressUpdateRef.current;
+          const percentageChange = Math.abs(percentage - lastReportedPercentageRef.current);
+          
+          if (onProgressRef.current && (timeSinceLastUpdate >= 5000 && percentageChange >= 5)) {
+            lastProgressUpdateRef.current = now;
+            lastReportedPercentageRef.current = percentage;
+            onProgressRef.current(percentage);
+          }
+          
+          // Completion check (unchanged)
+          if (percentage >= 98 && !hasCompleted && onCompleteRef.current) {
+            setHasCompleted(true);
+            onCompleteRef.current();
+          }
         }
+      } catch (error) {
+        console.error('Error in updateTime:', error);
       }
     };
     
@@ -106,6 +147,31 @@ const MediaPlayer = ({
         onCompleteRef.current();
       }
     };
+    
+    // Handle stalling (network issues, buffering)
+    const handleStalled = () => {
+      console.log('Media stalled - waiting for data');
+    };
+    
+    const handleWaiting = () => {
+      console.log('Media waiting for data');
+    };
+    
+    // Handle when media resumes after stalling
+    const handlePlaying = () => {
+      if (isMounted) {
+        console.log('Media resumed playing');
+        setIsPlaying(true);
+      }
+    };
+    
+    // Handle unexpected pause (e.g., audio interruption on mobile)
+    const handlePause = () => {
+      if (isMounted) {
+        console.log('Media paused');
+        setIsPlaying(false);
+      }
+    };
 
     media.addEventListener('timeupdate', updateTime);
     media.addEventListener('loadedmetadata', updateDuration);
@@ -114,6 +180,10 @@ const MediaPlayer = ({
     media.addEventListener('loadstart', handleLoadStart);
     media.addEventListener('canplay', handleCanPlay);
     media.addEventListener('ratechange', enforcePlaybackRate);
+    media.addEventListener('stalled', handleStalled);
+    media.addEventListener('waiting', handleWaiting);
+    media.addEventListener('playing', handlePlaying);
+    media.addEventListener('pause', handlePause);
 
     // Initial enforcement
     media.playbackRate = 1;
@@ -127,6 +197,10 @@ const MediaPlayer = ({
       media.removeEventListener('loadstart', handleLoadStart);
       media.removeEventListener('canplay', handleCanPlay);
       media.removeEventListener('ratechange', enforcePlaybackRate);
+      media.removeEventListener('stalled', handleStalled);
+      media.removeEventListener('waiting', handleWaiting);
+      media.removeEventListener('playing', handlePlaying);
+      media.removeEventListener('pause', handlePause);
     };
   }, [fileUrl, hasCompleted]);
 
@@ -137,14 +211,49 @@ const MediaPlayer = ({
     try {
       if (isPlaying) {
         media.pause();
-        setIsPlaying(false);
+        // State will be updated by pause event handler
       } else {
+        // Reset any previous error before attempting to play
+        setError(null);
+        
+        // Check if media is ready to play
+        if (media.readyState < 2) {
+          console.log('Media not ready, waiting...');
+          // Wait for media to be ready
+          await new Promise<void>((resolve, reject) => {
+            const timeout = setTimeout(() => {
+              reject(new Error('Timeout waiting for media'));
+            }, 10000);
+            
+            const onCanPlay = () => {
+              clearTimeout(timeout);
+              media.removeEventListener('canplay', onCanPlay);
+              media.removeEventListener('error', onError);
+              resolve();
+            };
+            
+            const onError = () => {
+              clearTimeout(timeout);
+              media.removeEventListener('canplay', onCanPlay);
+              media.removeEventListener('error', onError);
+              reject(new Error('Media load error'));
+            };
+            
+            media.addEventListener('canplay', onCanPlay);
+            media.addEventListener('error', onError);
+          });
+        }
+        
         await media.play();
-        setIsPlaying(true);
+        // State will be updated by playing event handler
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error playing media:', error);
-      setError('Erro ao reproduzir mídia. Tente novamente.');
+      // Don't show error for AbortError (user interrupted)
+      if (error?.name !== 'AbortError') {
+        setError('Erro ao reproduzir mídia. Verifique sua conexão e tente novamente.');
+      }
+      setIsPlaying(false);
     }
   };
 
