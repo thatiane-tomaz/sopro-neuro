@@ -202,9 +202,14 @@ const Dashboard = () => {
       return 'completed';
     }
     
-    // Check if day is time-locked (6h wait after previous day) - BEFORE checking current
-    // This ensures that even the "current" day stays locked until the timer expires
-    // Note: Admins also see time lock to test user experience
+    // IMPORTANT: Past days should ALWAYS be accessible, even if tracking data is inconsistent
+    // This must come BEFORE the time-lock check to prevent past days from being locked
+    if (day < currentDay) {
+      return 'completed';
+    }
+    
+    // Check if day is time-locked (6h wait after previous day)
+    // This only applies to the NEXT day after the current one
     if (isDayTimeLocked(day)) {
       return 'time_locked';
     }
@@ -212,10 +217,6 @@ const Dashboard = () => {
     // Now check if this is the current day (only if not time-locked)
     if (day === currentDay) {
       return 'current';
-    }
-    
-    if (day < currentDay) {
-      return 'completed';
     }
     
     return 'locked';
