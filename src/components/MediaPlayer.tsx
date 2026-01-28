@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, X, Headphones, Volume2 } from 'lucide-react';
+import { Play, Pause, X, Headphones, Volume2, Sofa, VolumeX, BellOff, BatteryCharging } from 'lucide-react';
 import hypnosisImage from '@/assets/hypnosis-relaxed-man.jpg';
 
 interface MediaPlayerProps {
@@ -304,32 +304,36 @@ const MediaPlayer = ({
           {/* Tips for hypnosis */}
           {contentType === 'hypnosis' && (
             <div className="bg-navy/5 dark:bg-navy/20 p-4 rounded-2xl border border-navy/10 dark:border-navy/30">
-              <p className="text-sm font-medium text-navy dark:text-navy-foreground mb-2 flex items-center gap-2">
+              <p className="text-sm font-medium text-navy dark:text-navy-foreground mb-3 flex items-center gap-2">
                 <Volume2 className="h-4 w-4" />
                 Dicas para melhor experiência
               </p>
-              <ul className="text-sm text-navy/80 dark:text-navy-foreground/80 space-y-1.5">
-                <li className="flex items-start gap-2">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">1</span>
-                  Utilize fones de ouvido
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">2</span>
-                  Ative o modo "Não Perturbe" do celular
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">3</span>
-                  Desative o modo de economia de bateria
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">4</span>
-                  Deite-se ou sente-se confortavelmente
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-navy/10 dark:bg-navy/40 text-navy dark:text-navy-foreground text-xs font-medium flex-shrink-0">5</span>
-                  Escolha um local silencioso
-                </li>
-              </ul>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-xl p-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
+                    <Sofa className="h-4 w-4 text-navy dark:text-navy-foreground" />
+                  </div>
+                  <span className="text-xs text-navy/80 dark:text-navy-foreground/80 leading-tight">Deite ou sente confortavelmente</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-xl p-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
+                    <Headphones className="h-4 w-4 text-navy dark:text-navy-foreground" />
+                  </div>
+                  <span className="text-xs text-navy/80 dark:text-navy-foreground/80 leading-tight">Local silencioso + fones</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-xl p-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
+                    <BellOff className="h-4 w-4 text-navy dark:text-navy-foreground" />
+                  </div>
+                  <span className="text-xs text-navy/80 dark:text-navy-foreground/80 leading-tight">Ative "Não Perturbe"</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-xl p-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
+                    <BatteryCharging className="h-4 w-4 text-navy dark:text-navy-foreground" />
+                  </div>
+                  <span className="text-xs text-navy/80 dark:text-navy-foreground/80 leading-tight">Desative economia de bateria</span>
+                </div>
+              </div>
             </div>
           )}
 
