@@ -17,8 +17,8 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt'],
       manifest: {
-        name: 'Sopro',
-        short_name: 'Sopro',
+        name: 'Sopro Neuro',
+        short_name: 'Sopro Neuro',
         description: 'Transforme sua vida e pare de fumar usando hipnose e neurociência',
         theme_color: '#1A1F2C',
         background_color: '#1A1F2C',
