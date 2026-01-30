@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Sopro - Parar de Fumar</string>
-    <string name="title_activity_main">Sopro - Parar de Fumar</string>
+    <string name="app_name">Sopro</string>
+    <string name="title_activity_main">Sopro</string>
     <string name="package_name">app.sopro.neuro</string>
     <string name="custom_url_scheme">app.sopro.neuro</string>
 </resources>
