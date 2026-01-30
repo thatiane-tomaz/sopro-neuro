@@ -13,7 +13,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useIsNativeIOS } from '@/hooks/useIsNativeIOS';
 import { supabase } from '@/integrations/supabase/client';
 import { initializePushNotifications } from '@/services/pushNotifications';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard, ExternalLink } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard, ExternalLink, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -388,7 +388,7 @@ const Dashboard = () => {
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={() => navigate('/settings')}>
                       <User className="h-4 w-4 mr-2" />
                       Conta
@@ -399,6 +399,10 @@ const Dashboard = () => {
                         Renovar Acesso
                       </DropdownMenuItem>
                     )}
+                    <DropdownMenuItem onClick={() => navigate('/delete-account')} className="text-destructive focus:text-destructive">
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Excluir Conta
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="h-4 w-4 mr-2" />
                       Sair
