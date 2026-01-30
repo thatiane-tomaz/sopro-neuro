@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt'],
       manifest: {
-        name: 'Sopro - Parar de Fumar',
+        name: 'Sopro',
         short_name: 'Sopro',
         description: 'Transforme sua vida e pare de fumar usando hipnose e neurociência',
         theme_color: '#1A1F2C',
