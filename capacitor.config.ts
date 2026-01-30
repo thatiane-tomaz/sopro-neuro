@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.sopro.neuro',
-  appName: 'Sopro',
+  appName: 'Sopro Neuro',
   webDir: 'dist'
 };
 
