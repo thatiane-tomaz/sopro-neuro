@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Onboarding from "./pages/Onboarding";
+import Paywall from "./pages/Paywall";
 import Settings from "./pages/Settings";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/paywall" element={<Paywall />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/install" element={<Install />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />

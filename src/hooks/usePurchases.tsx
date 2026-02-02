@@ -1,0 +1,221 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { useSubscription } from '@/hooks/useSubscription';
+import { Capacitor } from '@capacitor/core';
+import { useToast } from '@/hooks/use-toast';
+
+// RevenueCat Product ID
+const PRODUCT_ID = 'sopro_30_days';
+const REVENUECAT_API_KEY_IOS = 'appl_QmMRMglMnjgQtzPjEjHutHtUqMW';
+
+interface PurchaseProduct {
+  identifier: string;
+  priceString: string;
+  price: number;
+  title: string;
+  description: string;
+}
+
+interface PurchasesState {
+  isConfigured: boolean;
+  products: PurchaseProduct[];
+  isPurchasing: boolean;
+  error: string | null;
+}
+
+export const usePurchases = () => {
+  const [state, setState] = useState<PurchasesState>({
+    isConfigured: false,
+    products: [],
+    isPurchasing: false,
+    error: null
+  });
+  const { user } = useAuth();
+  const { isPremium, checkSubscription } = useSubscription();
+  const { toast } = useToast();
+
+  const isNativeIOS = Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios';
+
+  // Configure RevenueCat when the component mounts
+  useEffect(() => {
+    const configureRevenueCat = async () => {
+      if (!isNativeIOS) {
+        console.log('[usePurchases] Not native iOS, skipping RevenueCat config');
+        return;
+      }
+
+      try {
+        // Dynamic import to avoid issues on web
+        const { Purchases } = await import('@revenuecat/purchases-capacitor');
+        
+        // Configure with user ID if available
+        await Purchases.configure({
+          apiKey: REVENUECAT_API_KEY_IOS,
+          appUserID: user?.id || undefined
+        });
+
+        console.log('[usePurchases] RevenueCat configured');
+        
+        // Get available products
+        const offerings = await Purchases.getOfferings();
+        console.log('[usePurchases] Offerings:', offerings);
+
+        const products: PurchaseProduct[] = [];
+        
+        if (offerings.current?.availablePackages) {
+          for (const pkg of offerings.current.availablePackages) {
+            products.push({
+              identifier: pkg.product.identifier,
+              priceString: pkg.product.priceString,
+              price: pkg.product.price,
+              title: pkg.product.title,
+              description: pkg.product.description
+            });
+          }
+        }
+
+        setState(prev => ({
+          ...prev,
+          isConfigured: true,
+          products
+        }));
+      } catch (error) {
+        console.error('[usePurchases] Error configuring RevenueCat:', error);
+        setState(prev => ({
+          ...prev,
+          error: 'Erro ao carregar produtos'
+        }));
+      }
+    };
+
+    configureRevenueCat();
+  }, [isNativeIOS, user?.id]);
+
+  // Purchase the premium product
+  const purchasePremium = useCallback(async () => {
+    if (!isNativeIOS) {
+      toast({
+        title: "Erro",
+        description: "Compras só estão disponíveis no app nativo iOS",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    setState(prev => ({ ...prev, isPurchasing: true, error: null }));
+
+    try {
+      const { Purchases } = await import('@revenuecat/purchases-capacitor');
+      
+      // Get offerings to find the package
+      const offerings = await Purchases.getOfferings();
+      const pkg = offerings.current?.availablePackages?.find(
+        p => p.product.identifier === PRODUCT_ID
+      );
+
+      if (!pkg) {
+        throw new Error('Produto não encontrado');
+      }
+
+      // Make the purchase
+      const purchaseResult = await Purchases.purchasePackage({ aPackage: pkg });
+      console.log('[usePurchases] Purchase result:', purchaseResult);
+
+      // Check entitlements
+      const customerInfo = purchaseResult.customerInfo;
+      const hasPremium = customerInfo.entitlements.active['premium'] !== undefined;
+
+      if (hasPremium) {
+        toast({
+          title: "Compra realizada!",
+          description: "Você agora tem acesso premium por 30 dias"
+        });
+        
+        // Refresh subscription status
+        await checkSubscription();
+        
+        setState(prev => ({ ...prev, isPurchasing: false }));
+        return true;
+      } else {
+        throw new Error('Compra não concedeu acesso premium');
+      }
+    } catch (error: unknown) {
+      console.error('[usePurchases] Purchase error:', error);
+      
+      let errorMessage = 'Erro ao realizar compra';
+      if (error && typeof error === 'object' && 'userCancelled' in error && error.userCancelled) {
+        errorMessage = 'Compra cancelada';
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      setState(prev => ({
+        ...prev,
+        isPurchasing: false,
+        error: errorMessage
+      }));
+
+      toast({
+        title: "Erro na compra",
+        description: errorMessage,
+        variant: "destructive"
+      });
+
+      return false;
+    }
+  }, [isNativeIOS, checkSubscription, toast]);
+
+  // Restore purchases
+  const restorePurchases = useCallback(async () => {
+    if (!isNativeIOS) {
+      return false;
+    }
+
+    setState(prev => ({ ...prev, isPurchasing: true, error: null }));
+
+    try {
+      const { Purchases } = await import('@revenuecat/purchases-capacitor');
+      
+      const customerInfo = await Purchases.restorePurchases();
+      console.log('[usePurchases] Restore result:', customerInfo);
+
+      const hasPremium = customerInfo.customerInfo.entitlements.active['premium'] !== undefined;
+
+      if (hasPremium) {
+        toast({
+          title: "Compras restauradas!",
+          description: "Seu acesso premium foi restaurado"
+        });
+        await checkSubscription();
+        setState(prev => ({ ...prev, isPurchasing: false }));
+        return true;
+      } else {
+        toast({
+          title: "Nenhuma compra encontrada",
+          description: "Não encontramos compras anteriores para restaurar"
+        });
+        setState(prev => ({ ...prev, isPurchasing: false }));
+        return false;
+      }
+    } catch (error) {
+      console.error('[usePurchases] Restore error:', error);
+      setState(prev => ({
+        ...prev,
+        isPurchasing: false,
+        error: 'Erro ao restaurar compras'
+      }));
+      return false;
+    }
+  }, [isNativeIOS, checkSubscription, toast]);
+
+  return {
+    isConfigured: state.isConfigured,
+    products: state.products,
+    isPurchasing: state.isPurchasing,
+    error: state.error,
+    isNativeIOS,
+    isPremium,
+    purchasePremium,
+    restorePurchases
+  };
+};
