@@ -129,7 +129,9 @@ const Onboarding = () => {
         description: "Suas respostas foram salvas com sucesso!"
       });
       
-      window.location.href = "/dashboard";
+      // Redirect to paywall instead of dashboard
+      // Paywall will check if user is premium and redirect accordingly
+      window.location.href = "/paywall";
     } catch (error) {
       console.error('Error saving onboarding:', error);
       toast({
