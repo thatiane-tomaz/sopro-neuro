@@ -29,7 +29,10 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     const expectedSecret = Deno.env.get("REVENUECAT_WEBHOOK_SECRET");
     
-    if (!authHeader || authHeader !== `Bearer ${expectedSecret}`) {
+    // Accept either raw secret or "Bearer <secret>" format
+    const isValid = authHeader === expectedSecret || authHeader === `Bearer ${expectedSecret}`;
+    
+    if (!authHeader || !isValid) {
       logStep("Unauthorized request", { hasAuth: !!authHeader });
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
