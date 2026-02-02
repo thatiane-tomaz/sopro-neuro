@@ -6,7 +6,10 @@ import { useToast } from '@/hooks/use-toast';
 
 // RevenueCat Product ID
 const PRODUCT_ID = 'sopro_30_days';
+
+// RevenueCat API Keys (public keys - safe to include in code)
 const REVENUECAT_API_KEY_IOS = 'appl_QmMRMglMnjgQtzPjEjHutHtUqMW';
+const REVENUECAT_API_KEY_ANDROID = 'goog_PLACEHOLDER'; // TODO: Replace with actual Google Play API key
 
 interface PurchaseProduct {
   identifier: string;
@@ -34,13 +37,26 @@ export const usePurchases = () => {
   const { isPremium, checkSubscription } = useSubscription();
   const { toast } = useToast();
 
-  const isNativeIOS = Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios';
+  const platform = Capacitor.getPlatform();
+  const isNative = Capacitor.isNativePlatform();
+  const isNativeIOS = isNative && platform === 'ios';
+  const isNativeAndroid = isNative && platform === 'android';
+  const canPurchase = isNativeIOS || isNativeAndroid;
+
+  // Get the appropriate API key based on platform
+  const getApiKey = useCallback(() => {
+    if (isNativeIOS) return REVENUECAT_API_KEY_IOS;
+    if (isNativeAndroid) return REVENUECAT_API_KEY_ANDROID;
+    return null;
+  }, [isNativeIOS, isNativeAndroid]);
 
   // Configure RevenueCat when the component mounts
   useEffect(() => {
     const configureRevenueCat = async () => {
-      if (!isNativeIOS) {
-        console.log('[usePurchases] Not native iOS, skipping RevenueCat config');
+      const apiKey = getApiKey();
+      
+      if (!canPurchase || !apiKey || apiKey.includes('PLACEHOLDER')) {
+        console.log('[usePurchases] Not native or missing API key, skipping RevenueCat config');
         return;
       }
 
@@ -50,11 +66,11 @@ export const usePurchases = () => {
         
         // Configure with user ID if available
         await Purchases.configure({
-          apiKey: REVENUECAT_API_KEY_IOS,
+          apiKey,
           appUserID: user?.id || undefined
         });
 
-        console.log('[usePurchases] RevenueCat configured');
+        console.log('[usePurchases] RevenueCat configured for', platform);
         
         // Get available products
         const offerings = await Purchases.getOfferings();
@@ -89,14 +105,14 @@ export const usePurchases = () => {
     };
 
     configureRevenueCat();
-  }, [isNativeIOS, user?.id]);
+  }, [canPurchase, platform, user?.id, getApiKey]);
 
   // Purchase the premium product
   const purchasePremium = useCallback(async () => {
-    if (!isNativeIOS) {
+    if (!canPurchase) {
       toast({
         title: "Erro",
-        description: "Compras só estão disponíveis no app nativo iOS",
+        description: "Compras só estão disponíveis no app nativo",
         variant: "destructive"
       });
       return false;
@@ -163,11 +179,11 @@ export const usePurchases = () => {
 
       return false;
     }
-  }, [isNativeIOS, checkSubscription, toast]);
+  }, [canPurchase, checkSubscription, toast]);
 
   // Restore purchases
   const restorePurchases = useCallback(async () => {
-    if (!isNativeIOS) {
+    if (!canPurchase) {
       return false;
     }
 
@@ -206,14 +222,17 @@ export const usePurchases = () => {
       }));
       return false;
     }
-  }, [isNativeIOS, checkSubscription, toast]);
+  }, [canPurchase, checkSubscription, toast]);
 
   return {
     isConfigured: state.isConfigured,
     products: state.products,
     isPurchasing: state.isPurchasing,
     error: state.error,
+    isNative,
     isNativeIOS,
+    isNativeAndroid,
+    canPurchase,
     isPremium,
     purchasePremium,
     restorePurchases
