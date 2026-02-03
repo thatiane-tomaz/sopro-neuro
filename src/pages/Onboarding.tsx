@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Question1 from "@/components/onboarding/Question1";
@@ -30,6 +31,7 @@ const Onboarding = () => {
   });
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const { user, loading } = useAuth();
+  const { isPremium, loading: subLoading } = useSubscription();
   const { toast } = useToast();
 
   // Check if user already completed onboarding
@@ -129,9 +131,14 @@ const Onboarding = () => {
         description: "Suas respostas foram salvas com sucesso!"
       });
       
-      // Redirect to paywall instead of dashboard
-      // Paywall will check if user is premium and redirect accordingly
-      window.location.href = "/paywall";
+      // Redirect based on subscription status
+      // If already premium (freelist or paid), go directly to dashboard
+      // Otherwise, go to paywall
+      if (isPremium) {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/paywall";
+      }
     } catch (error) {
       console.error('Error saving onboarding:', error);
       toast({
