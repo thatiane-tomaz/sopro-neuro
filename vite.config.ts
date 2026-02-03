@@ -10,6 +10,12 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  build: {
+    rollupOptions: {
+      // Externalize native-only Capacitor plugins for web builds
+      external: ['@revenuecat/purchases-capacitor']
+    }
+  },
   plugins: [
     react(),
     mode === 'development' && componentTagger(),
