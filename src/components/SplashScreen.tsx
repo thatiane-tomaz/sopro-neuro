@@ -6,74 +6,99 @@ interface SplashScreenProps {
 }
 
 const SplashScreen = ({ onComplete }: SplashScreenProps) => {
-  const [phase, setPhase] = useState<'visible' | 'dissolving' | 'revealing'>('visible');
+  const [phase, setPhase] = useState<'visible' | 'fading' | 'done'>('visible');
+  const [letterOpacities, setLetterOpacities] = useState([1, 1, 1, 1, 1]); // S O P R O
 
   useEffect(() => {
-    // Phase 1: Show logo for 1.8s
-    const dissolveTimer = setTimeout(() => {
-      setPhase('dissolving');
-    }, 1800);
+    // Show logo for 1.5s
+    const startFadeTimer = setTimeout(() => {
+      setPhase('fading');
+      
+      // Fade each letter one by one with soft timing
+      const letters = [0, 1, 2, 3, 4];
+      letters.forEach((index) => {
+        setTimeout(() => {
+          setLetterOpacities(prev => {
+            const newOpacities = [...prev];
+            newOpacities[index] = 0;
+            return newOpacities;
+          });
+        }, index * 250); // 250ms between each letter
+      });
+    }, 1500);
 
-    // Phase 2: Start revealing background
-    const revealTimer = setTimeout(() => {
-      setPhase('revealing');
-    }, 2600);
-
-    // Phase 3: Complete transition
+    // Complete after all letters fade
     const completeTimer = setTimeout(() => {
+      setPhase('done');
       onComplete();
-    }, 3400);
+    }, 3200);
 
     return () => {
-      clearTimeout(dissolveTimer);
-      clearTimeout(revealTimer);
+      clearTimeout(startFadeTimer);
       clearTimeout(completeTimer);
     };
   }, [onComplete]);
 
+  // Create a mask effect using the logo as reference but with animated opacity per "section"
+  const letterPositions = [
+    { left: '0%', width: '18%' },   // S
+    { left: '18%', width: '22%' },  // O
+    { left: '40%', width: '18%' },  // P
+    { left: '58%', width: '22%' },  // R
+    { left: '80%', width: '20%' },  // O
+  ];
+
   return (
     <div 
-      className={`fixed inset-0 z-[9999] flex items-center justify-center transition-all duration-1000 ease-out ${
-        phase === 'revealing' ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
+      className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-700 ${
+        phase === 'done' ? 'opacity-0' : 'opacity-100'
       }`}
       style={{
-        background: phase === 'revealing' 
-          ? 'transparent' 
-          : 'linear-gradient(180deg, #d5e2ea 0%, #c5d8e8 50%, #d5e2ea 100%)',
+        background: 'linear-gradient(180deg, #d5e2ea 0%, #cde0ed 50%, #d5e2ea 100%)',
       }}
     >
       {/* Subtle ambient glow */}
       <div 
-        className={`absolute inset-0 transition-opacity duration-1000 ${
-          phase === 'visible' ? 'opacity-30' : 'opacity-0'
-        }`}
+        className="absolute inset-0 opacity-40"
         style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(33, 150, 243, 0.15) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at 50% 45%, rgba(33, 150, 243, 0.12) 0%, transparent 50%)',
         }}
       />
       
-      {/* Logo container with dissolve effect */}
-      <div 
-        className={`relative transition-all ease-out ${
-          phase === 'visible' 
-            ? 'opacity-100 blur-0 scale-100 duration-500' 
-            : phase === 'dissolving'
-              ? 'opacity-60 blur-[2px] scale-[1.02] duration-800'
-              : 'opacity-0 blur-md scale-110 duration-700'
-        }`}
-      >
+      {/* Logo with letter-by-letter fade effect */}
+      <div className="relative w-52 md:w-72">
+        {/* Base logo (hidden, just for sizing) */}
         <img 
           src={soproLogo} 
           alt="Sopro Neuro"
-          className="w-52 md:w-72 h-auto"
-          style={{
-            filter: phase === 'dissolving' 
-              ? 'drop-shadow(0 0 30px rgba(33, 150, 243, 0.3))' 
-              : phase === 'visible'
-                ? 'drop-shadow(0 0 15px rgba(33, 150, 243, 0.15))'
-                : 'none',
-          }}
+          className="w-full h-auto opacity-0"
         />
+        
+        {/* Layered sections that fade independently */}
+        <div className="absolute inset-0 flex">
+          {letterPositions.map((pos, index) => (
+            <div
+              key={index}
+              className="h-full overflow-hidden transition-all duration-700 ease-out"
+              style={{
+                width: pos.width,
+                opacity: letterOpacities[index],
+                filter: letterOpacities[index] === 0 ? 'blur(8px)' : 'blur(0px)',
+                transform: letterOpacities[index] === 0 ? 'translateY(-10px)' : 'translateY(0)',
+              }}
+            >
+              <img 
+                src={soproLogo} 
+                alt=""
+                className="h-full w-auto max-w-none"
+                style={{
+                  marginLeft: `-${parseFloat(pos.left) / parseFloat(pos.width) * 100}%`,
+                  width: `${100 / parseFloat(pos.width) * 100}%`,
+                }}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
