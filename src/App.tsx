@@ -54,7 +54,6 @@ const App = () => {
     return (
       <SplashScreen 
         onComplete={handleSplashComplete}
-        videoSrc={brandVideo}
       />
     );
   }
