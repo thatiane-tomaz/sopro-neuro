@@ -132,10 +132,10 @@ const Paywall = () => {
           <div className="text-center">
             <div className="flex items-baseline justify-center gap-1">
               <span className="text-4xl font-bold text-primary">{priceString}</span>
-              <span className="text-muted-foreground">/30 dias</span>
+              <span className="text-muted-foreground">/mês</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              Pagamento único, sem renovação automática
+              Assinatura recorrente, cancele a qualquer momento
             </p>
           </div>
 

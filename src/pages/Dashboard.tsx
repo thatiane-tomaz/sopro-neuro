@@ -13,7 +13,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useIsNativeIOS } from '@/hooks/useIsNativeIOS';
 import { supabase } from '@/integrations/supabase/client';
 import { initializePushNotifications } from '@/services/pushNotifications';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard, ExternalLink, Trash2 } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard, ExternalLink, Trash2, XCircle, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -94,7 +94,7 @@ const Dashboard = () => {
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
   const { data: onboardingData } = useOnboardingData();
-  const { isPremium, isExpired, openCustomerPortal, verifyPayment, daysRemaining, createCheckout, loading: subscriptionLoading } = useSubscription();
+  const { isPremium, isExpired, verifyPayment, daysRemaining, loading: subscriptionLoading } = useSubscription();
   const isNativeIOS = useIsNativeIOS();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
@@ -107,6 +107,7 @@ const Dashboard = () => {
   const [showStartHere, setShowStartHere] = useState(false);
   const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
+  const [showDay14Congrats, setShowDay14Congrats] = useState(false);
   const [, setCountdownTick] = useState(0); // Forces re-render for countdown updates
   const { toast } = useToast();
 
@@ -281,6 +282,16 @@ const Dashboard = () => {
         title: "Progresso salvo!",
         description: "Seu progresso foi registrado com sucesso."
       });
+      
+      // Check if this completes day 14 (both video and hypnosis)
+      if (selectedMedia?.day === 14) {
+        // Small delay to allow tracking to update
+        setTimeout(() => {
+          if (isDayCompleted(14)) {
+            setShowDay14Congrats(true);
+          }
+        }, 1000);
+      }
     }
   };
 
@@ -388,17 +399,15 @@ const Dashboard = () => {
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuContent align="end" className="w-52">
                     <DropdownMenuItem onClick={() => navigate('/settings')}>
                       <User className="h-4 w-4 mr-2" />
                       Conta
                     </DropdownMenuItem>
-                    {!isPremium && !isNativeIOS && (
-                      <DropdownMenuItem onClick={createCheckout}>
-                        <Crown className="h-4 w-4 mr-2" />
-                        Renovar Acesso
-                      </DropdownMenuItem>
-                    )}
+                    <DropdownMenuItem onClick={() => navigate('/cancel-subscription')}>
+                      <XCircle className="h-4 w-4 mr-2" />
+                      Cancelar Assinatura
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/delete-account')} className="text-destructive focus:text-destructive">
                       <Trash2 className="h-4 w-4 mr-2" />
                       Excluir Conta
@@ -950,32 +959,75 @@ const Dashboard = () => {
               Sua assinatura expirou
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center">
-              {isNativeIOS 
-                ? "Seu acesso premium expirou. Entre em contato com nosso suporte para mais informações."
-                : "Seu acesso premium expirou. Renove agora para continuar sua jornada de transformação e ter acesso a todo o conteúdo exclusivo."
-              }
+              Seu acesso premium expirou. Para renovar, acesse as configurações de assinatura do seu dispositivo (App Store ou Google Play).
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
-            {isNativeIOS ? (
-              <AlertDialogAction 
-                onClick={() => setShowExpiredDialog(false)}
-                className="w-full"
-              >
-                Entendi
-              </AlertDialogAction>
-            ) : (
-              <AlertDialogAction 
-                onClick={() => {
-                  setShowExpiredDialog(false);
-                  createCheckout();
-                }}
-                className="w-full bg-accent hover:bg-accent/90"
-              >
-                <CreditCard className="w-4 h-4 mr-2" />
-                Renovar Acesso
-              </AlertDialogAction>
-            )}
+            <AlertDialogAction 
+              onClick={() => {
+                setShowExpiredDialog(false);
+                navigate('/cancel-subscription');
+              }}
+              className="w-full bg-accent hover:bg-accent/90"
+            >
+              Ver instruções
+            </AlertDialogAction>
+            <Button 
+              onClick={() => setShowExpiredDialog(false)}
+              className="w-full"
+              variant="outline"
+            >
+              Fechar
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Day 14 Completion Congratulations Dialog */}
+      <AlertDialog open={showDay14Congrats} onOpenChange={setShowDay14Congrats}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <div className="flex justify-center mb-4">
+              <div className="relative">
+                <div className="absolute inset-0 animate-ping bg-accent/30 rounded-full" />
+                <div className="relative bg-gradient-to-br from-accent to-primary p-4 rounded-full">
+                  <PartyPopper className="w-12 h-12 text-white" />
+                </div>
+              </div>
+            </div>
+            <AlertDialogTitle className="text-center text-2xl">
+              🎉 Parabéns!
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center space-y-3">
+              <p className="text-base">
+                Você completou os <strong>14 dias de conteúdo</strong> da sua jornada de transformação!
+              </p>
+              <p>
+                Este é um marco incrível. Continue praticando as técnicas aprendidas e acompanhando seu progresso.
+              </p>
+              <div className="bg-muted/50 rounded-lg p-3 mt-4">
+                <p className="text-xs text-muted-foreground">
+                  💡 Lembre-se: sua assinatura é recorrente.{' '}
+                  <button 
+                    onClick={() => {
+                      setShowDay14Congrats(false);
+                      navigate('/cancel-subscription');
+                    }}
+                    className="text-primary hover:underline font-medium"
+                  >
+                    Veja como gerenciar sua assinatura aqui
+                  </button>
+                </p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction 
+              onClick={() => setShowDay14Congrats(false)}
+              className="w-full bg-accent hover:bg-accent/90"
+            >
+              Continuar minha jornada
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
