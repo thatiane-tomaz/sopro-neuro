@@ -59,7 +59,7 @@ const SplashScreen = ({ onComplete, videoSrc }: SplashScreenProps) => {
         playsInline
         onEnded={handleVideoEnd}
         onError={handleVideoError}
-        className="w-auto h-auto min-w-full min-h-full object-contain relative z-0"
+        className="w-full h-full object-cover scale-110 relative z-0"
         controlsList="nodownload"
         disablePictureInPicture
         onContextMenu={(e) => e.preventDefault()}
