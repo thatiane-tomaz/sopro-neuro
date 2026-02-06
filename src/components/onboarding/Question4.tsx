@@ -82,10 +82,10 @@ const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
           <CardContent className="space-y-6">
             <div className="grid gap-4">
               {reasons.map((reason, index) => (
-                <div 
+                <Label 
                   key={index}
+                  htmlFor={`reason-${index}`}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
-                  onClick={() => handleReasonToggle(reason, !data.smokingReasons?.includes(reason))}
                 >
                   <Checkbox
                     id={`reason-${index}`}
@@ -94,10 +94,10 @@ const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
                       handleReasonToggle(reason, checked as boolean)
                     }
                   />
-                  <Label htmlFor={`reason-${index}`} className="flex-1 cursor-pointer">
+                  <span className="flex-1">
                     {reason}
-                  </Label>
-                </div>
+                  </span>
+                </Label>
               ))}
             </div>
 

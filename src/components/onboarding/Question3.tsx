@@ -82,10 +82,10 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
           <CardContent className="space-y-6">
             <div className="grid gap-4">
               {smokingTypes.map((type, index) => (
-                <div 
+                <Label 
                   key={index}
+                  htmlFor={`smoking-type-${index}`}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
-                  onClick={() => handleTypeToggle(type, !data.smokingTypes?.includes(type))}
                 >
                   <Checkbox
                     id={`smoking-type-${index}`}
@@ -94,10 +94,10 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
                       handleTypeToggle(type, checked as boolean)
                     }
                   />
-                  <Label htmlFor={`smoking-type-${index}`} className="flex-1 cursor-pointer">
+                  <span className="flex-1">
                     {type}
-                  </Label>
-                </div>
+                  </span>
+                </Label>
               ))}
             </div>
 
