@@ -59,21 +59,29 @@ const SplashScreen = ({ onComplete, videoSrc }: SplashScreenProps) => {
         playsInline
         onEnded={handleVideoEnd}
         onError={handleVideoError}
-        className="w-auto h-auto min-w-full min-h-full object-contain"
+        className="w-auto h-auto min-w-full min-h-full object-contain relative z-0"
         controlsList="nodownload"
         disablePictureInPicture
         onContextMenu={(e) => e.preventDefault()}
       />
-      {/* Blur gradient edges */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Blur gradient edges - must be on top of video */}
+      <div className="absolute inset-0 pointer-events-none z-10">
         {/* Top edge */}
-        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#D9E4EC] to-transparent" style={{ filter: 'blur(8px)' }} />
+        <div 
+          className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#D9E4EC] via-[#D9E4EC]/80 to-transparent"
+        />
         {/* Bottom edge */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#D9E4EC] to-transparent" style={{ filter: 'blur(8px)' }} />
+        <div 
+          className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#D9E4EC] via-[#D9E4EC]/80 to-transparent"
+        />
         {/* Left edge */}
-        <div className="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-[#D9E4EC] to-transparent" style={{ filter: 'blur(8px)' }} />
+        <div 
+          className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-[#D9E4EC] via-[#D9E4EC]/80 to-transparent"
+        />
         {/* Right edge */}
-        <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-[#D9E4EC] to-transparent" style={{ filter: 'blur(8px)' }} />
+        <div 
+          className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-[#D9E4EC] via-[#D9E4EC]/80 to-transparent"
+        />
       </div>
     </div>
   );
