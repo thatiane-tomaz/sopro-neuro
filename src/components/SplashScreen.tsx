@@ -64,6 +64,17 @@ const SplashScreen = ({ onComplete, videoSrc }: SplashScreenProps) => {
         disablePictureInPicture
         onContextMenu={(e) => e.preventDefault()}
       />
+      {/* Blur gradient edges */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Top edge */}
+        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#D9E4EC] to-transparent" style={{ filter: 'blur(8px)' }} />
+        {/* Bottom edge */}
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#D9E4EC] to-transparent" style={{ filter: 'blur(8px)' }} />
+        {/* Left edge */}
+        <div className="absolute top-0 bottom-0 left-0 w-16 bg-gradient-to-r from-[#D9E4EC] to-transparent" style={{ filter: 'blur(8px)' }} />
+        {/* Right edge */}
+        <div className="absolute top-0 bottom-0 right-0 w-16 bg-gradient-to-l from-[#D9E4EC] to-transparent" style={{ filter: 'blur(8px)' }} />
+      </div>
     </div>
   );
 };
