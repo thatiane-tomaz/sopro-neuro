@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Trash2, Mail, RefreshCw } from "lucide-react";
+import { ArrowLeft, Trash2, Mail, RefreshCw, CreditCard } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,6 +89,28 @@ Atenciosamente.`;
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Subscription Warning */}
+              <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <CreditCard className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-amber-800 dark:text-amber-400">
+                      Importante sobre sua assinatura
+                    </p>
+                    <p className="text-sm text-amber-700 dark:text-amber-500/90">
+                      A exclusão da conta <strong>não cancela automaticamente</strong> sua assinatura e pagamentos recorrentes. 
+                      Para evitar cobranças futuras, cancele sua assinatura antes de excluir a conta.
+                    </p>
+                    <p className="text-sm text-amber-700 dark:text-amber-500/90">
+                      O acesso ao conteúdo continua disponível até o fim do período atual que já foi pago.
+                    </p>
+                    <Link to="/cancel-subscription" className="inline-flex items-center text-sm font-medium text-amber-800 dark:text-amber-400 hover:underline">
+                      Ver como cancelar assinatura →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-4">
                 <h3 className="font-semibold text-lg">O que será excluído:</h3>
                 <ul className="list-disc list-inside space-y-2 text-muted-foreground">
@@ -97,7 +119,7 @@ Atenciosamente.`;
                   <li>Histórico de progresso na jornada</li>
                   <li>Respostas do onboarding</li>
                   <li>Feedback e avaliações</li>
-                  <li>Dados de assinatura</li>
+                  <li>Dados de assinatura no app</li>
                 </ul>
               </div>
 

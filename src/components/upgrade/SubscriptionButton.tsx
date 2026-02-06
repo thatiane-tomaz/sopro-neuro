@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useSubscription } from '@/hooks/useSubscription';
-import { useIsNativeIOS } from '@/hooks/useIsNativeIOS';
+import { usePurchases } from '@/hooks/usePurchases';
 import { Crown } from 'lucide-react';
 
 interface SubscriptionButtonProps {
@@ -9,8 +9,8 @@ interface SubscriptionButtonProps {
 }
 
 export const SubscriptionButton = ({ size = 'sm', variant = 'default' }: SubscriptionButtonProps) => {
-  const { isPremium, createCheckout, daysRemaining, loading } = useSubscription();
-  const isNativeIOS = useIsNativeIOS();
+  const { isPremium, daysRemaining, loading } = useSubscription();
+  const { canPurchase, purchasePremium, isPurchasing } = usePurchases();
 
   if (loading) {
     return <Button disabled size={size}>Carregando...</Button>;
@@ -30,20 +30,22 @@ export const SubscriptionButton = ({ size = 'sm', variant = 'default' }: Subscri
     );
   }
 
-  // Hide purchase button on native iOS (Apple requires IAP)
-  if (isNativeIOS) {
+  // Only show purchase button on native platforms (iOS/Android)
+  // Web users should not see this button as all purchases are in-app only
+  if (!canPurchase) {
     return null;
   }
 
   return (
     <Button
-      onClick={createCheckout}
+      onClick={purchasePremium}
       variant={variant}
       size={size}
+      disabled={isPurchasing}
       className="gap-1 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
     >
       <Crown className="w-3 h-3" />
-      {size === 'sm' ? 'Premium' : 'Desbloquear 30 dias - R$ 49,90'}
+      {size === 'sm' ? 'Premium' : 'Desbloquear 30 dias'}
     </Button>
   );
 };
