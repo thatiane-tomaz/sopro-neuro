@@ -36,7 +36,7 @@ const SplashScreen = ({ onComplete, videoSrc }: SplashScreenProps) => {
   // Fallback animated splash when no video
   if (showFallback || !videoSrc) {
     return (
-      <div className="fixed inset-0 z-[9999] bg-[#D9E4EC] flex items-center justify-center">
+      <div className="fixed inset-0 z-[9999] bg-[#d5e2ea] flex items-center justify-center">
         <div className="text-center animate-fade-in">
           <h1 className="text-5xl md:text-7xl font-bold text-[#2196F3] tracking-wider animate-pulse">
             SOPRO
@@ -50,7 +50,7 @@ const SplashScreen = ({ onComplete, videoSrc }: SplashScreenProps) => {
   }
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#D9E4EC] flex items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 z-[9999] bg-[#d5e2ea] flex items-center justify-center overflow-hidden">
       <video
         ref={videoRef}
         src={videoSrc}
@@ -68,19 +68,19 @@ const SplashScreen = ({ onComplete, videoSrc }: SplashScreenProps) => {
       <div className="absolute inset-0 pointer-events-none z-10">
         {/* Top edge */}
         <div 
-          className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#D9E4EC] via-[#D9E4EC]/80 to-transparent"
+          className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#d5e2ea] via-[#d5e2ea]/80 to-transparent"
         />
         {/* Bottom edge */}
         <div 
-          className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#D9E4EC] via-[#D9E4EC]/80 to-transparent"
+          className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#d5e2ea] via-[#d5e2ea]/80 to-transparent"
         />
         {/* Left edge */}
         <div 
-          className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-[#D9E4EC] via-[#D9E4EC]/80 to-transparent"
+          className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-[#d5e2ea] via-[#d5e2ea]/80 to-transparent"
         />
         {/* Right edge */}
         <div 
-          className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-[#D9E4EC] via-[#D9E4EC]/80 to-transparent"
+          className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-[#d5e2ea] via-[#d5e2ea]/80 to-transparent"
         />
       </div>
     </div>
