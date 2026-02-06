@@ -16,6 +16,8 @@ const Paywall = () => {
     products, 
     isPurchasing, 
     isNativeIOS,
+    isNativeAndroid,
+    canPurchase,
     purchasePremium,
     restorePurchases
   } = usePurchases();
@@ -35,13 +37,14 @@ const Paywall = () => {
   }, [user, authLoading, navigate]);
 
   const handlePurchase = async () => {
-    if (isNativeIOS) {
+    if (isNativeIOS || isNativeAndroid) {
+      // Use RevenueCat for native platforms (required by App Store/Play Store)
       const success = await purchasePremium();
       if (success) {
         navigate('/dashboard', { replace: true });
       }
     } else {
-      // Use Stripe for web
+      // Use Stripe only for web browser (not native apps)
       await createCheckout();
     }
   };
@@ -139,7 +142,7 @@ const Paywall = () => {
           {/* Purchase Button */}
           <Button 
             onClick={handlePurchase}
-            disabled={isPurchasing || (isNativeIOS && !isConfigured)}
+            disabled={isPurchasing || (canPurchase && !isConfigured)}
             className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
           >
             {isPurchasing ? (
@@ -155,8 +158,8 @@ const Paywall = () => {
             )}
           </Button>
 
-          {/* Restore Purchases - Only on iOS */}
-          {isNativeIOS && (
+          {/* Restore Purchases - Only on native platforms */}
+          {canPurchase && (
             <Button
               variant="ghost"
               onClick={handleRestore}
