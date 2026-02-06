@@ -36,12 +36,12 @@ const SplashScreen = ({ onComplete, videoSrc }: SplashScreenProps) => {
   // Fallback animated splash when no video
   if (showFallback || !videoSrc) {
     return (
-      <div className="fixed inset-0 z-[9999] bg-[#1A1F2C] flex items-center justify-center">
+      <div className="fixed inset-0 z-[9999] bg-[#D9E4EC] flex items-center justify-center">
         <div className="text-center animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-bold text-white tracking-wider animate-pulse">
+          <h1 className="text-5xl md:text-7xl font-bold text-[#2196F3] tracking-wider animate-pulse">
             SOPRO
           </h1>
-          <p className="text-white/60 mt-4 text-lg tracking-widest">
+          <p className="text-[#2196F3]/60 mt-4 text-lg tracking-widest">
             NEURO
           </p>
         </div>
@@ -50,7 +50,7 @@ const SplashScreen = ({ onComplete, videoSrc }: SplashScreenProps) => {
   }
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#1A1F2C] flex items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 z-[9999] bg-[#D9E4EC] flex items-center justify-center overflow-hidden">
       <video
         ref={videoRef}
         src={videoSrc}
@@ -59,7 +59,7 @@ const SplashScreen = ({ onComplete, videoSrc }: SplashScreenProps) => {
         playsInline
         onEnded={handleVideoEnd}
         onError={handleVideoError}
-        className="w-full h-full object-cover"
+        className="w-auto h-auto min-w-full min-h-full object-contain"
         controlsList="nodownload"
         disablePictureInPicture
         onContextMenu={(e) => e.preventDefault()}

@@ -21,8 +21,8 @@ import Install from "./pages/Install";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import EmailConfirmed from "./pages/EmailConfirmed";
 
-// Import your brand video here:
-// import brandVideo from "@/assets/brand-video.mp4";
+// Brand video for splash screen
+import brandVideo from "@/assets/brand-video.mp4";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,8 +54,7 @@ const App = () => {
     return (
       <SplashScreen 
         onComplete={handleSplashComplete}
-        // Uncomment and add your video path here:
-        // videoSrc={brandVideo}
+        videoSrc={brandVideo}
       />
     );
   }
