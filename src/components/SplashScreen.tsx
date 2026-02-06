@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import soproLogo from "@/assets/sopro-logo.png";
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -30,24 +31,13 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
         fadeOut ? 'opacity-0' : 'opacity-100'
       }`}
     >
-      <div 
-        className={`text-center transition-opacity duration-700 ${
+      <img 
+        src={soproLogo} 
+        alt="Sopro Neuro"
+        className={`w-48 md:w-64 h-auto transition-opacity duration-700 ${
           fadeOut ? 'opacity-0' : 'opacity-100'
         }`}
-      >
-        <h1 
-          className="text-6xl md:text-8xl font-bold tracking-[0.25em]"
-          style={{ color: '#2196F3' }}
-        >
-          SOPRO
-        </h1>
-        <p 
-          className="text-lg md:text-xl tracking-[0.5em] mt-3 opacity-60"
-          style={{ color: '#2196F3' }}
-        >
-          NEURO
-        </p>
-      </div>
+      />
     </div>
   );
 };
