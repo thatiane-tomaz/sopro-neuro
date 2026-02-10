@@ -9,6 +9,7 @@ import Question2 from "@/components/onboarding/Question2";
 import Question3 from "@/components/onboarding/Question3";
 import Question4 from "@/components/onboarding/Question4";
 import Question5 from "@/components/onboarding/Question5";
+import Question6 from "@/components/onboarding/Question6";
 
 export interface OnboardingData {
   age: string;
@@ -16,6 +17,7 @@ export interface OnboardingData {
   smokingFrequency: string;
   smokingTypes: string[];
   smokingReasons: string[];
+  smokingFears: string[];
   weeklyCost: string;
 }
 
@@ -27,6 +29,7 @@ const Onboarding = () => {
     smokingFrequency: "",
     smokingTypes: [],
     smokingReasons: [],
+    smokingFears: [],
     weeklyCost: ""
   });
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
@@ -97,7 +100,7 @@ const Onboarding = () => {
   };
 
   const nextQuestion = () => {
-    if (currentQuestion < 5) {
+    if (currentQuestion < 6) {
       setCurrentQuestion(prev => prev + 1);
     }
   };
@@ -154,7 +157,8 @@ const Onboarding = () => {
     2: <Question2 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     3: <Question3 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     4: <Question5 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    5: <Question4 data={data} updateData={updateData} onFinish={finishOnboarding} onPrev={prevQuestion} />
+    5: <Question6 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    6: <Question4 data={data} updateData={updateData} onFinish={finishOnboarding} onPrev={prevQuestion} />
   };
 
   return (

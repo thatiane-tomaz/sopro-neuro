@@ -5,41 +5,46 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft } from "lucide-react";
 import { OnboardingData } from "@/pages/Onboarding";
-import { onboardingQuestion3Schema } from "@/lib/validations";
 import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
 
-interface Question3Props {
+interface Question6Props {
   data: OnboardingData;
   updateData: (data: Partial<OnboardingData>) => void;
   onNext: () => void;
   onPrev: () => void;
 }
 
-const smokingTypes = [
-  "Cigarro industrializado",
-  "Tabaco enrolado",
-  "Cigarro de palha",
-  "Vape / Pod eletrônico",
-  "Charuto / narguilé",
+const fearOptions = [
+  "Ficar mais ansioso(a) ou irritado(a)",
+  "Engordar",
+  "Perder momentos de prazer ou pausa",
+  "Não conseguir lidar com o estresse",
+  "Sentir falta do foco ou da motivação",
+  "Tentar de novo e fracassar",
+  "Não tenho medo, só quero parar",
   "Outro",
 ];
 
-const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
+const smokingFearsSchema = z.object({
+  smokingFears: z.array(z.string().trim().max(100)).min(1, "Selecione pelo menos uma opção"),
+});
+
+const Question6 = ({ data, updateData, onNext, onPrev }: Question6Props) => {
   const { toast } = useToast();
 
-  const handleTypeToggle = (type: string, checked: boolean) => {
-    const currentTypes = data.smokingTypes || [];
-    const updatedTypes = checked
-      ? [...currentTypes, type]
-      : currentTypes.filter(t => t !== type);
+  const handleFearToggle = (fear: string, checked: boolean) => {
+    const currentFears = data.smokingFears || [];
+    const updatedFears = checked
+      ? [...currentFears, fear]
+      : currentFears.filter(f => f !== fear);
     
-    updateData({ smokingTypes: updatedTypes });
+    updateData({ smokingFears: updatedFears });
   };
 
   const handleNext = () => {
-    // Validate before proceeding
-    const validation = onboardingQuestion3Schema.safeParse({
-      smokingTypes: data.smokingTypes,
+    const validation = smokingFearsSchema.safeParse({
+      smokingFears: data.smokingFears,
     });
 
     if (!validation.success) {
@@ -55,7 +60,7 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
     onNext();
   };
 
-  const canProceed = data.smokingTypes && data.smokingTypes.length > 0;
+  const canProceed = data.smokingFears && data.smokingFears.length > 0;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -63,39 +68,39 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 3 de 6</span>
-            <span>50%</span>
+            <span>Pergunta 5 de 6</span>
+            <span>83%</span>
           </div>
-          <Progress value={50} className="h-2" />
+          <Progress value={83} className="h-2" />
         </div>
 
         {/* Question Card */}
         <Card className="border-primary/20 shadow-wellness">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl text-foreground">
-              O que você costuma fumar?
+              Quando você pensa em parar de fumar, o que mais te preocupa?
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-2">
-              Selecione todos que se aplicam
+              É normal ter mais de um medo
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid gap-4">
-              {smokingTypes.map((type, index) => (
+              {fearOptions.map((fear, index) => (
                 <Label 
                   key={index}
-                  htmlFor={`smoking-type-${index}`}
+                  htmlFor={`fear-${index}`}
                   className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
                 >
                   <Checkbox
-                    id={`smoking-type-${index}`}
-                    checked={data.smokingTypes?.includes(type) || false}
+                    id={`fear-${index}`}
+                    checked={data.smokingFears?.includes(fear) || false}
                     onCheckedChange={(checked) => 
-                      handleTypeToggle(type, checked as boolean)
+                      handleFearToggle(fear, checked as boolean)
                     }
                   />
                   <span className="flex-1">
-                    {type}
+                    {fear}
                   </span>
                 </Label>
               ))}
@@ -125,4 +130,4 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
   );
 };
 
-export default Question3;
+export default Question6;
