@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import Question1 from "@/components/onboarding/Question1";
 import Question2 from "@/components/onboarding/Question2";
 import Question3 from "@/components/onboarding/Question3";
@@ -37,6 +38,7 @@ const Onboarding = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, loading } = useAuth();
   const { isPremium, loading: subLoading } = useSubscription();
+  const { isAdmin } = useIsAdmin();
   const { toast } = useToast();
 
   // Check if user already completed onboarding
@@ -59,7 +61,7 @@ const Onboarding = () => {
 
         if (!isMounted) return;
 
-        if (existingResponse && !error) {
+        if (existingResponse && !error && !isAdmin) {
           // User already completed onboarding, redirect to dashboard with small delay
           timeoutId = setTimeout(() => {
             if (isMounted) window.location.href = "/dashboard";
@@ -84,7 +86,7 @@ const Onboarding = () => {
       isMounted = false;
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [user, loading]);
+  }, [user, loading, isAdmin]);
 
   // Redirect to login if not authenticated
   if (!loading && !user) {
