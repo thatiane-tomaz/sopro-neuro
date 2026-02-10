@@ -412,6 +412,12 @@ const Dashboard = () => {
                       <HelpCircle className="h-4 w-4 mr-2" />
                       Ajuda / FAQ
                     </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem onClick={() => navigate('/onboarding')}>
+                        <ListTodo className="h-4 w-4 mr-2" />
+                        Questionário
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={() => navigate('/delete-account')} className="text-destructive focus:text-destructive">
                       <Trash2 className="h-4 w-4 mr-2" />
                       Excluir Conta
