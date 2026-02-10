@@ -124,7 +124,7 @@ const Paywall = () => {
           <div className="bg-muted/50 rounded-lg p-4 text-center">
             <p className="text-sm text-muted-foreground">
               <Check className="w-4 h-4 inline mr-1 text-green-500" />
-              Garantia de 7 dias - Reembolso integral
+              Cancele a qualquer momento pela {(isNativeIOS || isNativeAndroid) ? (isNativeIOS ? 'App Store' : 'Play Store') : 'sua conta'}
             </p>
           </div>
 
