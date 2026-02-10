@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navigate, Link, useNavigate } from "react-router-dom";
+import { Capacitor } from "@capacitor/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -311,8 +312,9 @@ const Settings = () => {
                       </div>
                     </div>
 
-                    {/* Refund Section */}
-                    {isPremium && daysUntilRefundExpires !== null && (
+                    {/* Refund Section - Only visible on web (Stripe refunds) */}
+                    {/* Native platforms handle refunds through App Store / Play Store */}
+                    {!Capacitor.isNativePlatform() && isPremium && daysUntilRefundExpires !== null && (
                       <div className="border-t pt-6">
                         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                           <div className="flex items-start gap-3">
@@ -336,8 +338,8 @@ const Settings = () => {
                       </div>
                     )}
 
-                    {/* Refund Period Expired Message */}
-                    {isPremium && daysUntilRefundExpires === null && subscriptionData?.started_at && (
+                    {/* Refund Period Expired Message - Only on web */}
+                    {!Capacitor.isNativePlatform() && isPremium && daysUntilRefundExpires === null && subscriptionData?.started_at && (
                       <div className="border-t pt-6">
                         <div className="bg-muted/50 border border-border rounded-lg p-4">
                           <div className="flex items-start gap-3">
