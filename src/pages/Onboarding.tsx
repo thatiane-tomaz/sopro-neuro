@@ -173,8 +173,8 @@ const Onboarding = () => {
     2: <Question2 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     3: <Question3 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     4: <Question5 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    5: <Question6 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    6: <Question4 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    5: <Question4 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    6: <Question6 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     7: <CompletionScreen onFinish={finishOnboarding} isSubmitting={isSubmitting} />
   };
 
