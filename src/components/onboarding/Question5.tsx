@@ -12,7 +12,7 @@ import { useState } from "react";
 interface Question5Props {
   data: OnboardingData;
   updateData: (data: Partial<OnboardingData>) => void;
-  onFinish: () => void;
+  onNext: () => void;
   onPrev: () => void;
 }
 
@@ -26,7 +26,7 @@ const weeklyCostSchema = z.object({
     }, { message: "Digite um valor válido entre R$ 0,00 e R$ 10.000,00" })
 });
 
-const Question5 = ({ data, updateData, onFinish, onPrev }: Question5Props) => {
+const Question5 = ({ data, updateData, onNext, onPrev }: Question5Props) => {
   const { toast } = useToast();
   const [inputValue, setInputValue] = useState(data.weeklyCost || "");
 
@@ -38,7 +38,7 @@ const Question5 = ({ data, updateData, onFinish, onPrev }: Question5Props) => {
     updateData({ weeklyCost: sanitized });
   };
 
-  const handleFinish = () => {
+  const handleNext = () => {
     const validation = weeklyCostSchema.safeParse({
       weeklyCost: inputValue
     });
@@ -53,7 +53,7 @@ const Question5 = ({ data, updateData, onFinish, onPrev }: Question5Props) => {
       return;
     }
 
-    onFinish();
+    onNext();
   };
 
   const canProceed = inputValue.trim() !== "";
@@ -64,10 +64,10 @@ const Question5 = ({ data, updateData, onFinish, onPrev }: Question5Props) => {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 5 de 5</span>
-            <span>100%</span>
+            <span>Pergunta 4 de 5</span>
+            <span>80%</span>
           </div>
-          <Progress value={100} className="h-2" />
+          <Progress value={80} className="h-2" />
         </div>
 
         {/* Question Card */}
@@ -115,11 +115,11 @@ const Question5 = ({ data, updateData, onFinish, onPrev }: Question5Props) => {
                 Voltar
               </Button>
               <Button
-                onClick={handleFinish}
+                onClick={handleNext}
                 disabled={!canProceed}
                 className="flex-1"
               >
-                Finalizar
+                Próxima
               </Button>
             </div>
           </CardContent>

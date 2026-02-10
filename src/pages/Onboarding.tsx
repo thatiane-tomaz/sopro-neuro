@@ -153,8 +153,8 @@ const Onboarding = () => {
     1: <Question1 data={data} updateData={updateData} onNext={nextQuestion} />,
     2: <Question2 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     3: <Question3 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    4: <Question4 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    5: <Question5 data={data} updateData={updateData} onFinish={finishOnboarding} onPrev={prevQuestion} />
+    4: <Question5 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    5: <Question4 data={data} updateData={updateData} onFinish={finishOnboarding} onPrev={prevQuestion} />
   };
 
   return (

@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 interface Question4Props {
   data: OnboardingData;
   updateData: (data: Partial<OnboardingData>) => void;
-  onNext: () => void;
+  onFinish: () => void;
   onPrev: () => void;
 }
 
@@ -24,7 +24,7 @@ const reasons = [
   "Por prazer (sabor/sensação)",
 ];
 
-const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
+const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
   const { toast } = useToast();
 
   const handleReasonToggle = (reason: string, checked: boolean) => {
@@ -52,7 +52,7 @@ const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
       return;
     }
 
-    onNext();
+    onFinish();
   };
 
   const canProceed = data.smokingReasons && data.smokingReasons.length > 0;
@@ -63,10 +63,10 @@ const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 4 de 5</span>
-            <span>80%</span>
+            <span>Pergunta 5 de 5</span>
+            <span>100%</span>
           </div>
-          <Progress value={80} className="h-2" />
+          <Progress value={100} className="h-2" />
         </div>
 
         {/* Question Card */}
@@ -115,7 +115,7 @@ const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
                 disabled={!canProceed}
                 className="flex-1 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
               >
-                Próximo
+                Finalizar
               </Button>
             </div>
           </CardContent>
