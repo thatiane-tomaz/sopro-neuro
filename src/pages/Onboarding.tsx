@@ -124,8 +124,9 @@ const Onboarding = () => {
           smoking_frequency: data.smokingFrequency,
           smoking_types: data.smokingTypes,
           smoking_reasons: data.smokingReasons,
+          smoking_fears: data.smokingFears,
           weekly_cost: data.weeklyCost
-        });
+        } as any);
 
       if (error) throw error;
       
