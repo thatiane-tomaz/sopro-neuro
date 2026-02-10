@@ -117,6 +117,17 @@ const Onboarding = () => {
 
   const finishOnboarding = async () => {
     if (!user) return;
+
+    // Admin preview mode: don't save, just redirect back
+    if (isAdmin) {
+      toast({
+        title: "Modo visualização",
+        description: "Respostas não foram salvas (modo admin)."
+      });
+      window.location.href = "/dashboard";
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -140,9 +151,6 @@ const Onboarding = () => {
         description: "Suas respostas foram salvas com sucesso!"
       });
       
-      // Redirect based on subscription status
-      // If already premium (freelist or paid), go directly to dashboard
-      // Otherwise, go to paywall
       if (isPremium) {
         window.location.href = "/dashboard";
       } else {
