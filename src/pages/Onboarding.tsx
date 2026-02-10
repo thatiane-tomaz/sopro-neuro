@@ -10,6 +10,7 @@ import Question3 from "@/components/onboarding/Question3";
 import Question4 from "@/components/onboarding/Question4";
 import Question5 from "@/components/onboarding/Question5";
 import Question6 from "@/components/onboarding/Question6";
+import CompletionScreen from "@/components/onboarding/CompletionScreen";
 
 export interface OnboardingData {
   age: string;
@@ -33,6 +34,7 @@ const Onboarding = () => {
     weeklyCost: ""
   });
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, loading } = useAuth();
   const { isPremium, loading: subLoading } = useSubscription();
   const { toast } = useToast();
@@ -100,7 +102,7 @@ const Onboarding = () => {
   };
 
   const nextQuestion = () => {
-    if (currentQuestion < 6) {
+    if (currentQuestion < 7) {
       setCurrentQuestion(prev => prev + 1);
     }
   };
@@ -113,6 +115,7 @@ const Onboarding = () => {
 
   const finishOnboarding = async () => {
     if (!user) return;
+    setIsSubmitting(true);
     
     try {
       const { error } = await supabase
@@ -150,6 +153,8 @@ const Onboarding = () => {
         description: "Erro ao salvar suas respostas. Tente novamente.",
         variant: "destructive"
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -159,7 +164,8 @@ const Onboarding = () => {
     3: <Question3 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     4: <Question5 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     5: <Question6 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    6: <Question4 data={data} updateData={updateData} onFinish={finishOnboarding} onPrev={prevQuestion} />
+    6: <Question4 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    7: <CompletionScreen onFinish={finishOnboarding} isSubmitting={isSubmitting} />
   };
 
   return (

@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 interface Question4Props {
   data: OnboardingData;
   updateData: (data: Partial<OnboardingData>) => void;
-  onFinish: () => void;
+  onNext: () => void;
   onPrev: () => void;
 }
 
@@ -24,7 +24,7 @@ const reasons = [
   "Por prazer (sabor/sensação)",
 ];
 
-const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
+const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
   const { toast } = useToast();
 
   const handleReasonToggle = (reason: string, checked: boolean) => {
@@ -52,7 +52,7 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
       return;
     }
 
-    onFinish();
+    onNext();
   };
 
   const canProceed = data.smokingReasons && data.smokingReasons.length > 0;
@@ -115,7 +115,7 @@ const Question4 = ({ data, updateData, onFinish, onPrev }: Question4Props) => {
                 disabled={!canProceed}
                 className="flex-1 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
               >
-                Finalizar
+                Próxima
               </Button>
             </div>
           </CardContent>
