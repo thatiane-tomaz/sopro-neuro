@@ -16,11 +16,11 @@ interface Question2Props {
 }
 
 const frequencyOptions = [
-  "Mais de 10 vezes por dia",
-  "Entre 5 e 10 vezes por dia",
-  "Menos de 5 vezes por dia",
-  "Menos de 5 vezes por semana",
-  "Raramente",
+  "Várias vezes ao dia (mais de 10x)",
+  "Todos os dias, algumas vezes (5–10x)",
+  "Todos os dias, mas menos (menos de 5x)",
+  "Só em alguns dias da semana",
+  "Raramente, mas ainda não consegui parar",
 ];
 
 const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
@@ -67,7 +67,7 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
         <Card className="border-primary/20 shadow-wellness">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl text-foreground">
-              Com que frequência você fuma atualmente?
+              Hoje, como o cigarro aparece na sua rotina?
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
