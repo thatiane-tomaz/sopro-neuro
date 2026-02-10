@@ -206,6 +206,7 @@ export type Database = {
           completed_at: string
           gender: string | null
           id: string
+          smoking_fears: string[] | null
           smoking_frequency: string | null
           smoking_reasons: string[] | null
           smoking_types: string[] | null
@@ -217,6 +218,7 @@ export type Database = {
           completed_at?: string
           gender?: string | null
           id?: string
+          smoking_fears?: string[] | null
           smoking_frequency?: string | null
           smoking_reasons?: string[] | null
           smoking_types?: string[] | null
@@ -228,6 +230,7 @@ export type Database = {
           completed_at?: string
           gender?: string | null
           id?: string
+          smoking_fears?: string[] | null
           smoking_frequency?: string | null
           smoking_reasons?: string[] | null
           smoking_types?: string[] | null

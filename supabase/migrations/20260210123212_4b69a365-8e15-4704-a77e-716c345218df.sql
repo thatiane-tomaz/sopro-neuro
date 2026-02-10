@@ -1,0 +1,1 @@
+ALTER TABLE public.onboarding_responses ADD COLUMN smoking_fears TEXT[] DEFAULT NULL;
