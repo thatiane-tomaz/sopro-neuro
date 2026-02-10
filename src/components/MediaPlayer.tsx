@@ -39,10 +39,11 @@ const MediaPlayer = ({
   const lastProgressUpdateRef = useRef<number>(0);
   const lastReportedPercentageRef = useRef<number>(0);
   
-  // Retry logic for network errors during playback
+  // Retry logic for network errors - silent recovery, user never sees error during retries
   const retryCountRef = useRef(0);
-  const maxRetries = 3;
+  const maxRetries = 10;
   const savedTimeRef = useRef(0);
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     onProgressRef.current = onProgress;
@@ -125,26 +126,32 @@ const MediaPlayer = ({
     };
     
     const handleError = (e: Event) => {
-      console.error('Media error:', e, 'Retry count:', retryCountRef.current);
+      console.error('Media error, retry count:', retryCountRef.current);
       if (!isMounted) return;
       
-      // Auto-retry on network errors during playback
-      if (retryCountRef.current < maxRetries && savedTimeRef.current > 0) {
+      // Silent auto-retry - user never sees error during retries
+      // This is critical for hypnosis sessions where interruption ruins the experience
+      if (retryCountRef.current < maxRetries) {
         retryCountRef.current++;
-        console.log(`Retrying media playback (attempt ${retryCountRef.current}/${maxRetries}) from ${savedTimeRef.current}s`);
+        const delay = Math.min(1000 * retryCountRef.current, 5000);
+        console.log(`Silent retry ${retryCountRef.current}/${maxRetries} in ${delay}ms from ${savedTimeRef.current}s`);
         
-        setTimeout(() => {
+        // Clear any previous retry timeout
+        if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
+        
+        retryTimeoutRef.current = setTimeout(() => {
           if (!isMounted || !media) return;
-          // Re-load and seek to saved position
+          const resumeTime = savedTimeRef.current;
           media.load();
           media.addEventListener('canplay', function onRetryCanPlay() {
             media.removeEventListener('canplay', onRetryCanPlay);
-            media.currentTime = savedTimeRef.current;
+            if (resumeTime > 0) media.currentTime = resumeTime;
             media.play().catch(err => console.error('Retry play failed:', err));
           }, { once: true });
-        }, 1500 * retryCountRef.current); // Increasing delay
+        }, delay);
       } else {
-        setError('Erro ao carregar o arquivo. Verifique sua conexão e tente novamente.');
+        // Only show error after all retries exhausted
+        setError('Erro de conexão. Feche e abra novamente para continuar.');
       }
     };
     
@@ -216,6 +223,7 @@ const MediaPlayer = ({
 
     return () => {
       isMounted = false;
+      if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
       media.removeEventListener('timeupdate', updateTime);
       media.removeEventListener('loadedmetadata', updateDuration);
       media.removeEventListener('ended', handleEnded);
