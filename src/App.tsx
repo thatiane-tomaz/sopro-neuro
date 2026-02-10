@@ -14,6 +14,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import DeleteAccount from "./pages/DeleteAccount";
 import CancelSubscription from "./pages/CancelSubscription";
+import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import Install from "./pages/Install";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -59,6 +60,7 @@ const App = () => (
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/delete-account" element={<DeleteAccount />} />
             <Route path="/cancel-subscription" element={<CancelSubscription />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
