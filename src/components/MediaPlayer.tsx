@@ -39,6 +39,11 @@ const MediaPlayer = ({
   const lastProgressUpdateRef = useRef<number>(0);
   const lastReportedPercentageRef = useRef<number>(0);
   
+  // Retry logic for network errors during playback
+  const retryCountRef = useRef(0);
+  const maxRetries = 3;
+  const savedTimeRef = useRef(0);
+  
   useEffect(() => {
     onProgressRef.current = onProgress;
     onCompleteRef.current = onComplete;
@@ -84,6 +89,8 @@ const MediaPlayer = ({
       
       try {
         const currentMediaTime = media.currentTime;
+        // Save time for recovery
+        if (currentMediaTime > 0) savedTimeRef.current = currentMediaTime;
         const mediaDuration = media.duration;
         
         setCurrentTime(currentMediaTime);
@@ -118,9 +125,26 @@ const MediaPlayer = ({
     };
     
     const handleError = (e: Event) => {
-      console.error('Media error:', e);
-      if (isMounted) {
-        setError('Erro ao carregar o arquivo. Verifique se o arquivo existe no storage.');
+      console.error('Media error:', e, 'Retry count:', retryCountRef.current);
+      if (!isMounted) return;
+      
+      // Auto-retry on network errors during playback
+      if (retryCountRef.current < maxRetries && savedTimeRef.current > 0) {
+        retryCountRef.current++;
+        console.log(`Retrying media playback (attempt ${retryCountRef.current}/${maxRetries}) from ${savedTimeRef.current}s`);
+        
+        setTimeout(() => {
+          if (!isMounted || !media) return;
+          // Re-load and seek to saved position
+          media.load();
+          media.addEventListener('canplay', function onRetryCanPlay() {
+            media.removeEventListener('canplay', onRetryCanPlay);
+            media.currentTime = savedTimeRef.current;
+            media.play().catch(err => console.error('Retry play failed:', err));
+          }, { once: true });
+        }, 1500 * retryCountRef.current); // Increasing delay
+      } else {
+        setError('Erro ao carregar o arquivo. Verifique sua conexão e tente novamente.');
       }
     };
     
@@ -162,6 +186,8 @@ const MediaPlayer = ({
       if (isMounted) {
         console.log('Media resumed playing');
         setIsPlaying(true);
+        setError(null); // Clear any previous error on successful playback
+        retryCountRef.current = 0; // Reset retry counter on success
       }
     };
     
