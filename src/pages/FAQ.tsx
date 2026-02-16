@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { X, Smartphone, Wifi, WifiOff, Battery, BellOff, Headphones, Mail } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
 
 const FAQ = () => {
   const navigate = useNavigate();
+  const isIOS = Capacitor.getPlatform() === 'ios';
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,7 +55,7 @@ const FAQ = () => {
               <div>
                 <p className="text-sm font-medium text-foreground">1. Desative a Economia de Bateria</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  <strong>Android:</strong> Configurações → Apps → SoPro Neuro → Bateria → Sem restrições
+                  {!isIOS && <><strong>Android:</strong> Configurações → Apps → SoPro Neuro → Bateria → Sem restrições<br/></>}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   <strong>iPhone:</strong> Ajustes → Bateria → Desative "Modo de Baixa Energia"
@@ -69,7 +71,7 @@ const FAQ = () => {
               <div>
                 <p className="text-sm font-medium text-foreground">2. Mantenha o WiFi ativo durante a suspensão</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  <strong>Android:</strong> Configurações → WiFi → Avançado → Manter WiFi durante suspensão → Sempre
+                  {!isIOS && <><strong>Android:</strong> Configurações → WiFi → Avançado → Manter WiFi durante suspensão → Sempre<br/></>}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   <strong>iPhone:</strong> O WiFi permanece ativo por padrão. Se usar dados móveis, 

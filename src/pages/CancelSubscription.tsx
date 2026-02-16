@@ -42,7 +42,7 @@ const CancelSubscription = () => {
           </div>
 
           {/* iOS Instructions */}
-          <div className={`space-y-4 ${isAndroid ? 'opacity-60' : ''}`}>
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-2.5 rounded-xl">
                 <Apple className="w-5 h-5 text-white" />
@@ -74,8 +74,9 @@ const CancelSubscription = () => {
             </div>
           </div>
 
-          {/* Android Instructions */}
-          <div className={`space-y-4 ${isIOS ? 'opacity-60' : ''}`}>
+          {/* Android Instructions - Hidden on iOS to comply with App Store guidelines */}
+          {!isIOS && (
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="bg-gradient-to-br from-green-500 to-green-600 p-2.5 rounded-xl">
                 <Smartphone className="w-5 h-5 text-white" />
@@ -110,6 +111,7 @@ const CancelSubscription = () => {
               </div>
             </div>
           </div>
+          )}
 
           {/* Back Button */}
           <Link to="/dashboard" className="block pt-2">
