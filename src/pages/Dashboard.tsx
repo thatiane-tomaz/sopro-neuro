@@ -94,7 +94,7 @@ const Dashboard = () => {
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
   const { data: onboardingData } = useOnboardingData();
-  const { isPremium, isExpired, verifyPayment, daysRemaining, loading: subscriptionLoading } = useSubscription();
+  const { isPremium, isExpired, daysRemaining, loading: subscriptionLoading } = useSubscription();
   const isNativeIOS = useIsNativeIOS();
   const [selectedMedia, setSelectedMedia] = useState<{
     title: string;
@@ -310,19 +310,14 @@ const Dashboard = () => {
       
       if (!isMounted) return;
       
-      // Check if returning from successful checkout
+      // Clean up any leftover checkout URL params
       try {
         const urlParams = new URLSearchParams(window.location.search);
-        const checkoutStatus = urlParams.get('checkout');
-        const sessionId = urlParams.get('session_id');
-        
-        if (checkoutStatus === 'success' && sessionId) {
-          await verifyPayment(sessionId);
-          // Clean up URL
+        if (urlParams.has('checkout') || urlParams.has('session_id')) {
           window.history.replaceState({}, '', '/dashboard');
         }
       } catch (error) {
-        console.error('Error verifying payment:', error);
+        // Silently ignore
       }
     };
 
