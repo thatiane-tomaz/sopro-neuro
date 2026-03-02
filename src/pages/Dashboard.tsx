@@ -14,7 +14,7 @@ import { useIsNativeIOS } from '@/hooks/useIsNativeIOS';
 import { supabase } from '@/integrations/supabase/client';
 import { initializePushNotifications } from '@/services/pushNotifications';
 import { useSosHypnosis } from '@/hooks/useSosHypnosis';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard, ExternalLink, Trash2, XCircle, PartyPopper, HelpCircle, ShieldAlert } from 'lucide-react';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard, ExternalLink, Trash2, XCircle, PartyPopper, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -507,7 +507,7 @@ const Dashboard = () => {
         {(currentDay >= 8 || isAdmin) && (
           <div className="mb-8">
             <div 
-              className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="relative overflow-hidden rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group bg-gradient-to-r from-sky-50 to-indigo-50 dark:from-sky-950/40 dark:to-indigo-950/40"
               onClick={() => {
                 const sos = getSosHypnosis();
                 setSelectedMedia({
@@ -517,30 +517,24 @@ const Dashboard = () => {
                 });
               }}
             >
-              {/* Gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-r from-rose-500/90 via-red-500/85 to-orange-500/90" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent)]" />
-              
-              <div className="relative px-5 py-5 flex items-center gap-4">
-                {/* Pulsing icon */}
+              <div className="px-5 py-5 flex items-center gap-4">
                 <div className="relative flex-shrink-0">
-                  <div className="absolute inset-0 bg-white/20 rounded-full animate-ping" />
-                  <div className="relative w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                    <ShieldAlert className="w-7 h-7 text-white" />
+                  <div className="w-14 h-14 rounded-full bg-sky-100 dark:bg-sky-900/50 flex items-center justify-center">
+                    <Headphones className="w-7 h-7 text-sky-600 dark:text-sky-400" />
                   </div>
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-bold text-lg leading-tight">
-                    SOS — Preciso de Ajuda
+                  <h3 className="text-foreground font-bold text-lg leading-tight">
+                    Momento de Apoio
                   </h3>
-                  <p className="text-white/80 text-sm mt-0.5 leading-snug">
-                    Sentindo vontade de fumar? Toque aqui para uma hipnose de emergência
+                  <p className="text-muted-foreground text-sm mt-0.5 leading-snug">
+                    Sentindo vontade de fumar? Ouça uma hipnose agora
                   </p>
                 </div>
                 
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                  <Headphones className="w-5 h-5 text-white" />
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-sky-500 dark:bg-sky-600 flex items-center justify-center group-hover:bg-sky-600 dark:group-hover:bg-sky-500 transition-colors">
+                  <Play className="w-5 h-5 text-white ml-0.5" />
                 </div>
               </div>
             </div>
