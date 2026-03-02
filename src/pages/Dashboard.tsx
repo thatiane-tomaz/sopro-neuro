@@ -503,43 +503,7 @@ const Dashboard = () => {
         )}
 
 
-        {/* SOS Button - Visible after Phase 2 starts (day 8+) or for admins */}
-        {(currentDay >= 8 || isAdmin) && (
-          <div className="mb-8">
-            <div 
-              className="relative overflow-hidden rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer group bg-gradient-to-r from-sky-50 to-indigo-50 dark:from-sky-950/40 dark:to-indigo-950/40"
-              onClick={() => {
-                const sos = getSosHypnosis();
-                setSelectedMedia({
-                  title: sos.title,
-                  fileUrl: sos.fileUrl,
-                  contentType: 'hypnosis',
-                });
-              }}
-            >
-              <div className="px-5 py-5 flex items-center gap-4">
-                <div className="relative flex-shrink-0">
-                  <div className="w-14 h-14 rounded-full bg-sky-100 dark:bg-sky-900/50 flex items-center justify-center">
-                    <Headphones className="w-7 h-7 text-sky-600 dark:text-sky-400" />
-                  </div>
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-foreground font-bold text-lg leading-tight">
-                    Momento de Apoio
-                  </h3>
-                  <p className="text-muted-foreground text-sm mt-0.5 leading-snug">
-                    Sentindo vontade de fumar? Ouça uma hipnose agora
-                  </p>
-                </div>
-                
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-sky-500 dark:bg-sky-600 flex items-center justify-center group-hover:bg-sky-600 dark:group-hover:bg-sky-500 transition-colors">
-                  <Play className="w-5 h-5 text-white ml-0.5" />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+
 
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
@@ -644,6 +608,32 @@ const Dashboard = () => {
                     )}
                   </div>
                 </div>
+
+                {/* SOS Button inside Phase 2 */}
+                {!isPhase1 && (currentDay >= 8 || isAdmin) && (
+                  <div className="flex items-center gap-4 mb-4 px-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const sos = getSosHypnosis();
+                        setSelectedMedia({
+                          title: sos.title,
+                          fileUrl: sos.fileUrl,
+                          contentType: 'hypnosis',
+                        });
+                      }}
+                      className="flex-shrink-0 w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-900/30 border-2 border-rose-300 dark:border-rose-700 flex items-center justify-center hover:bg-rose-200 dark:hover:bg-rose-800/40 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md"
+                    >
+                      <Headphones className="w-7 h-7 text-rose-500 dark:text-rose-400" />
+                    </button>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-foreground font-semibold text-base leading-tight">SOS</h4>
+                      <p className="text-muted-foreground text-sm leading-snug">
+                        Vontade de fumar? Toque para ouvir uma hipnose agora
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {(!isPhase1Completed || (isPhase1Completed && isPhase1Expanded)) && (
 
