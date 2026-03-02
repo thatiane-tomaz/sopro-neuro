@@ -10,26 +10,22 @@ import { Crown, Check, Shield, Brain, Headphones, Loader2, RefreshCw } from 'luc
 const Paywall = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { isPremium, loading: subLoading, createCheckout } = useSubscription();
+  const { isPremium, loading: subLoading } = useSubscription();
   const { 
     isConfigured, 
     products, 
     isPurchasing, 
-    isNativeIOS,
-    isNativeAndroid,
     canPurchase,
     purchasePremium,
     restorePurchases
   } = usePurchases();
 
-  // Redirect to dashboard if already premium
   useEffect(() => {
     if (!subLoading && isPremium) {
       navigate('/dashboard', { replace: true });
     }
   }, [isPremium, subLoading, navigate]);
 
-  // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/login', { replace: true });
@@ -37,15 +33,9 @@ const Paywall = () => {
   }, [user, authLoading, navigate]);
 
   const handlePurchase = async () => {
-    if (isNativeIOS || isNativeAndroid) {
-      // Use RevenueCat for native platforms (required by App Store/Play Store)
-      const success = await purchasePremium();
-      if (success) {
-        navigate('/dashboard', { replace: true });
-      }
-    } else {
-      // Use Stripe only for web browser (not native apps)
-      await createCheckout();
+    const success = await purchasePremium();
+    if (success) {
+      navigate('/dashboard', { replace: true });
     }
   };
 
@@ -64,7 +54,6 @@ const Paywall = () => {
     );
   }
 
-  // Get product price from RevenueCat or use default
   const priceString = products.length > 0 
     ? products[0].priceString 
     : 'R$ 49,90';
@@ -105,7 +94,6 @@ const Paywall = () => {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Benefits */}
           <div className="space-y-4">
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-start gap-3">
@@ -120,15 +108,13 @@ const Paywall = () => {
             ))}
           </div>
 
-          {/* Guarantee */}
           <div className="bg-muted/50 rounded-lg p-4 text-center">
             <p className="text-sm text-muted-foreground">
               <Check className="w-4 h-4 inline mr-1 text-green-500" />
-              Cancele a qualquer momento pela {(isNativeIOS || isNativeAndroid) ? (isNativeIOS ? 'App Store' : 'Play Store') : 'sua conta'}
+              Cancele a qualquer momento pela loja
             </p>
           </div>
 
-          {/* Price */}
           <div className="text-center">
             <div className="flex items-baseline justify-center gap-1">
               <span className="text-4xl font-bold text-primary">{priceString}</span>
@@ -139,10 +125,9 @@ const Paywall = () => {
             </p>
           </div>
 
-          {/* Purchase Button */}
           <Button 
             onClick={handlePurchase}
-            disabled={isPurchasing || (canPurchase && !isConfigured)}
+            disabled={isPurchasing || !isConfigured}
             className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
           >
             {isPurchasing ? (
@@ -158,20 +143,16 @@ const Paywall = () => {
             )}
           </Button>
 
-          {/* Restore Purchases - Only on native platforms */}
-          {canPurchase && (
-            <Button
-              variant="ghost"
-              onClick={handleRestore}
-              disabled={isPurchasing}
-              className="w-full text-sm"
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Restaurar compras anteriores
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            onClick={handleRestore}
+            disabled={isPurchasing}
+            className="w-full text-sm"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Restaurar compras anteriores
+          </Button>
 
-          {/* Legal Links */}
           <div className="text-center space-y-1">
             <p className="text-xs text-muted-foreground">
               Ao continuar, você concorda com nossos{' '}

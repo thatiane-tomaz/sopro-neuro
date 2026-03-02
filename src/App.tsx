@@ -17,7 +17,6 @@ import CancelSubscription from "./pages/CancelSubscription";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import Install from "./pages/Install";
-import PaymentSuccess from "./pages/PaymentSuccess";
 import EmailConfirmed from "./pages/EmailConfirmed";
 
 const queryClient = new QueryClient({
@@ -54,7 +53,6 @@ const App = () => (
             <Route path="/paywall" element={<Paywall />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/install" element={<Install />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/email-confirmed" element={<EmailConfirmed />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />

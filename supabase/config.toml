@@ -21,13 +21,7 @@ verify_jwt = false
 [functions.resend-confirmation-email]
 verify_jwt = false
 
-[functions.create-checkout]
-
 [functions.check-subscription]
-
-[functions.customer-portal]
-
-[functions.verify-payment]
 
 [functions.revenuecat-webhook]
 verify_jwt = false
