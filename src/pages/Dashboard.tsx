@@ -13,7 +13,8 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useIsNativeIOS } from '@/hooks/useIsNativeIOS';
 import { supabase } from '@/integrations/supabase/client';
 import { initializePushNotifications } from '@/services/pushNotifications';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard, ExternalLink, Trash2, XCircle, PartyPopper, HelpCircle } from 'lucide-react';
+import { useSosHypnosis } from '@/hooks/useSosHypnosis';
+import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard, ExternalLink, Trash2, XCircle, PartyPopper, HelpCircle, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -109,6 +110,7 @@ const Dashboard = () => {
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
   const [showDay14Congrats, setShowDay14Congrats] = useState(false);
   const [, setCountdownTick] = useState(0); // Forces re-render for countdown updates
+  const { getSosHypnosis } = useSosHypnosis();
   const { toast } = useToast();
 
   // Countdown timer effect - triggers re-render every minute to update countdown displays
@@ -501,6 +503,49 @@ const Dashboard = () => {
         )}
 
 
+        {/* SOS Button - Visible after Phase 2 starts (day 8+) or for admins */}
+        {(currentDay >= 8 || isAdmin) && (
+          <div className="mb-8">
+            <div 
+              className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              onClick={() => {
+                const sos = getSosHypnosis();
+                setSelectedMedia({
+                  title: sos.title,
+                  fileUrl: sos.fileUrl,
+                  contentType: 'hypnosis',
+                });
+              }}
+            >
+              {/* Gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-rose-500/90 via-red-500/85 to-orange-500/90" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent)]" />
+              
+              <div className="relative px-5 py-5 flex items-center gap-4">
+                {/* Pulsing icon */}
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 bg-white/20 rounded-full animate-ping" />
+                  <div className="relative w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                    <ShieldAlert className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-white font-bold text-lg leading-tight">
+                    SOS — Preciso de Ajuda
+                  </h3>
+                  <p className="text-white/80 text-sm mt-0.5 leading-snug">
+                    Sentindo vontade de fumar? Toque aqui para uma hipnose de emergência
+                  </p>
+                </div>
+                
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                  <Headphones className="w-5 h-5 text-white" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
