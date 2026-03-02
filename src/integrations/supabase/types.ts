@@ -410,6 +410,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_progress_summary: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          last_app_access: string
+          max_unlocked_day: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_app_access?: string
+          max_unlocked_day?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_app_access?: string
+          max_unlocked_day?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
