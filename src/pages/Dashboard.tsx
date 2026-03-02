@@ -609,31 +609,7 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                {/* SOS Button inside Phase 2 */}
-                {!isPhase1 && (currentDay >= 8 || isAdmin) && (
-                  <div className="flex items-center gap-4 mb-4 px-1">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const sos = getSosHypnosis();
-                        setSelectedMedia({
-                          title: sos.title,
-                          fileUrl: sos.fileUrl,
-                          contentType: 'hypnosis',
-                        });
-                      }}
-                      className="flex-shrink-0 w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-900/30 border-2 border-rose-300 dark:border-rose-700 flex items-center justify-center hover:bg-rose-200 dark:hover:bg-rose-800/40 hover:scale-105 active:scale-95 transition-all duration-200 shadow-md"
-                    >
-                      <Headphones className="w-7 h-7 text-rose-500 dark:text-rose-400" />
-                    </button>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-foreground font-semibold text-base leading-tight">SOS</h4>
-                      <p className="text-muted-foreground text-sm leading-snug">
-                        Vontade de fumar? Toque para ouvir uma hipnose agora
-                      </p>
-                    </div>
-                  </div>
-                )}
+
 
                 {(!isPhase1Completed || (isPhase1Completed && isPhase1Expanded)) && (
 
@@ -836,6 +812,31 @@ const Dashboard = () => {
             );
           })}
         </div>
+
+        {/* SOS Button - Centered after phases */}
+        {(currentDay >= 8 || isAdmin) && (
+          <div className="flex flex-col items-center gap-3 py-8">
+            <button
+              onClick={() => {
+                const sos = getSosHypnosis();
+                setSelectedMedia({
+                  title: sos.title,
+                  fileUrl: sos.fileUrl,
+                  contentType: 'hypnosis',
+                });
+              }}
+              className="w-20 h-20 rounded-full bg-rose-50 dark:bg-rose-950/30 border-2 border-rose-200 dark:border-rose-800 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
+            >
+              <Headphones className="w-8 h-8 text-rose-400 dark:text-rose-400" />
+            </button>
+            <div className="text-center">
+              <h4 className="text-foreground font-bold text-base">SOS</h4>
+              <p className="text-muted-foreground text-sm max-w-[220px]">
+                Vontade de fumar? Toque para ouvir uma hipnose
+              </p>
+            </div>
+          </div>
+        )}
 
 
         </TabsContent>
