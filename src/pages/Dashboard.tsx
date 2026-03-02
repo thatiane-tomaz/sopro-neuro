@@ -825,14 +825,14 @@ const Dashboard = () => {
                   contentType: 'hypnosis',
                 });
               }}
-              className="w-20 h-20 rounded-full bg-rose-50 dark:bg-rose-950/30 border-2 border-rose-200 dark:border-rose-800 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
+              className="w-20 h-20 rounded-full bg-rose-50 dark:bg-rose-950/30 border-0 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
             >
-              <Headphones className="w-8 h-8 text-rose-400 dark:text-rose-400" />
+              <span className="text-rose-400 font-bold text-xl">SOS</span>
             </button>
             <div className="text-center">
-              <h4 className="text-foreground font-bold text-base">SOS</h4>
-              <p className="text-muted-foreground text-sm max-w-[220px]">
-                Vontade de fumar? Toque para ouvir uma hipnose
+              <h4 className="text-foreground font-semibold text-base">A vontade está forte?</h4>
+              <p className="text-muted-foreground text-sm max-w-[260px]">
+                Toque aqui e acalme seu cérebro em minutos.
               </p>
             </div>
           </div>
