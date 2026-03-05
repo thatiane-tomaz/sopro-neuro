@@ -33,7 +33,7 @@ export const useSosHypnosis = () => {
 
     return {
       title: `Hipnose SOS #${sosNumber}`,
-      fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/sos_${sosNumber}.mp3`,
+      fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/sos_${sosNumber}.MP3`,
       index: currentIndex,
     };
   }, [user, getNextIndex]);
