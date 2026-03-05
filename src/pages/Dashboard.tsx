@@ -225,7 +225,7 @@ const Dashboard = () => {
     return 'locked';
   };
 
-  const handleMediaOpen = async (day: number, type: 'video' | 'hypnosis') => {
+  const handleMediaOpen = (day: number, type: 'video' | 'hypnosis') => {
     // Admins can open all media for testing
     if (!isAdmin) {
       const status = getDayStatus(day);
@@ -243,22 +243,24 @@ const Dashboard = () => {
     
     const interactionType = `${type === 'video' ? 'video' : 'hipnose'}_dia_${day}`;
     
-    try {
-      // Start tracking and get the tracking ID
-      const trackingResult = await startTracking({ interactionType });
-      if (trackingResult?.id) {
-        setCurrentTrackingId(trackingResult.id);
-      }
-    } catch (error) {
-      console.error('Error starting tracking:', error);
-    }
-    
+    // IMPORTANT: Open the media player IMMEDIATELY (synchronously) to preserve
+    // the user gesture context on mobile browsers. Without this, audio/video
+    // loading is blocked by the browser's autoplay policy.
     setSelectedMedia({
       title: dailyContent?.find(d => d.day_number === day)?.title || `Dia ${day}`,
       fileUrl: getMediaUrl(day, type),
       contentType: type,
       day,
       interactionType
+    });
+    
+    // Start tracking in the background (non-blocking)
+    startTracking({ interactionType }).then(trackingResult => {
+      if (trackingResult?.id) {
+        setCurrentTrackingId(trackingResult.id);
+      }
+    }).catch(error => {
+      console.error('Error starting tracking:', error);
     });
   };
 
