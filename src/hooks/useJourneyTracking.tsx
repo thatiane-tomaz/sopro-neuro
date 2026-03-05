@@ -57,15 +57,20 @@ export const useJourneyTracking = () => {
 
       try {
         // Check if there's already an existing tracking for this interaction
-        const { data: existing } = await supabase
+        // Use limit(1) instead of maybeSingle() to avoid errors with multiple records
+        const { data: existingRows } = await supabase
           .from('journey_tracking')
           .select('*')
           .eq('user_id', user.id)
           .eq('interaction_type', interactionType)
-          .maybeSingle();
+          .is('finished_at', null)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        const existing = existingRows?.[0] || null;
 
         // If already exists and not completed, return the existing one
-        if (existing && !existing.finished_at) {
+        if (existing) {
           return existing as JourneyTrack;
         }
 
