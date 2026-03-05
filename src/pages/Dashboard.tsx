@@ -188,7 +188,9 @@ const Dashboard = () => {
 
   const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
     const bucket = type === 'video' ? 'videos' : 'hypnosis';
-    const fileName = type === 'video' ? `video_${day}.mp4` : `hipnose_${day}.mp3`;
+    // Days 1-7 use .mp3 (lowercase), days 8+ use .MP3 (uppercase) in storage
+    const hypnosisExt = day >= 8 ? 'MP3' : 'mp3';
+    const fileName = type === 'video' ? `video_${day}.mp4` : `hipnose_${day}.${hypnosisExt}`;
     return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${fileName}`;
   };
 
