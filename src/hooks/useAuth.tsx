@@ -32,6 +32,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       (event, session) => {
         if (!isMounted) return;
         
+        // Handle token refresh errors by clearing stale session
+        if (event === 'TOKEN_REFRESHED' && !session) {
+          console.warn('Token refresh failed, clearing local auth state...');
+          supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+          setSession(null);
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -75,6 +85,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         if (error) {
           console.error('Error getting session:', error);
+          
+          // Handle stale/corrupted refresh tokens by clearing session
+          const errorMsg = error.message?.toLowerCase() || '';
+          if (
+            errorMsg.includes('refresh_token_already_used') ||
+            errorMsg.includes('invalid refresh token') ||
+            errorMsg.includes('token is expired') ||
+            errorMsg.includes('abuse')
+          ) {
+            console.warn('Stale session detected, clearing local auth state...');
+            await supabase.auth.signOut({ scope: 'local' });
+            setSession(null);
+            setUser(null);
+          }
         }
         
         setSession(session);
