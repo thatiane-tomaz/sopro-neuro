@@ -399,7 +399,6 @@ const MediaPlayer = ({
                 controls
                 controlsList="nodownload noplaybackrate"
                 disablePictureInPicture
-                crossOrigin="anonymous"
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
                 onContextMenu={(e) => e.preventDefault()}
@@ -418,7 +417,6 @@ const MediaPlayer = ({
                   ref={mediaRef as React.RefObject<HTMLAudioElement>}
                   className="hidden"
                   controlsList="nodownload noplaybackrate"
-                  crossOrigin="anonymous"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
                   onContextMenu={(e) => e.preventDefault()}
