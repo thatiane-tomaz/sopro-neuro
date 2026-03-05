@@ -126,7 +126,16 @@ const MediaPlayer = ({
     };
     
     const handleError = (e: Event) => {
-      console.error('Media error, retry count:', retryCountRef.current);
+      const mediaEl = e.target as HTMLMediaElement;
+      const mediaError = mediaEl?.error;
+      console.error('Media error details:', {
+        code: mediaError?.code,
+        message: mediaError?.message,
+        networkState: mediaEl?.networkState,
+        readyState: mediaEl?.readyState,
+        src: mediaEl?.currentSrc || mediaEl?.src,
+        retryCount: retryCountRef.current,
+      });
       if (!isMounted) return;
       
       // Silent auto-retry - user never sees error during retries
@@ -403,8 +412,9 @@ const MediaPlayer = ({
                 onPause={() => setIsPlaying(false)}
                 onContextMenu={(e) => e.preventDefault()}
                 onError={(e) => {
-                  console.error('Video error details:', e.currentTarget.error);
-                  setError(`Erro no vídeo: ${e.currentTarget.error?.message || 'Falha ao carregar'}`);
+                  const err = e.currentTarget.error;
+                  console.error('Video inline error:', { code: err?.code, message: err?.message, src: e.currentTarget.currentSrc });
+                  // Don't set error here - let the useEffect handleError manage retries
                 }}
                 onLoadStart={() => console.log('Video load started:', fileUrl)}
               >
@@ -421,8 +431,10 @@ const MediaPlayer = ({
                   onPause={() => setIsPlaying(false)}
                   onContextMenu={(e) => e.preventDefault()}
                   onError={(e) => {
-                    console.error('Audio error details:', e.currentTarget.error);
-                    setError(`Erro no áudio: ${e.currentTarget.error?.message || 'Falha ao carregar'}`);
+                    const err = e.currentTarget.error;
+                    console.error('Audio inline error:', { code: err?.code, message: err?.message, src: e.currentTarget.currentSrc });
+                    // Don't set error here - let the useEffect handleError manage retries
+                    // setError will only be shown after all retries fail
                   }}
                   onLoadStart={() => console.log('Audio load started:', fileUrl)}
                 >
