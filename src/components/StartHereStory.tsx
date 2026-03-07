@@ -141,8 +141,8 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-12 right-4 z-10 text-white/80 hover:text-white transition-colors p-2"
-        style={{ paddingTop: 'env(safe-area-inset-top, 12px)' }}
+        className="absolute right-4 z-20 text-white/80 hover:text-white transition-colors p-3"
+        style={{ top: 'calc(env(safe-area-inset-top, 12px) + 24px)' }}
         aria-label="Fechar"
       >
         <X className="h-7 w-7" />
