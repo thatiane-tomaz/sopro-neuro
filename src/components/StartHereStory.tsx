@@ -150,7 +150,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
       {/* Story content */}
       <div className="relative w-full max-w-md h-full md:h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
-        <div className="absolute inset-0 flex flex-col items-center p-6 pt-12 pb-32 text-center overflow-y-auto">
+        <div className="absolute inset-0 flex flex-col items-center p-6 pb-32 text-center overflow-y-auto" style={{ paddingTop: 'calc(env(safe-area-inset-top, 12px) + 48px)' }}>
           <div className="animate-fade-in max-w-lg w-full pb-8">
             {/* Story-level phase badge */}
             {stories[currentStory].phase && (

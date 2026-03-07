@@ -685,7 +685,7 @@ const Dashboard = () => {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                  className={`flex-1 justify-center ${
+                                  className={`flex-1 justify-center min-h-[44px] ${
                                     !isLocked 
                                       ? 'bg-sky-50 hover:bg-sky-100 text-sky-600 border-sky-200' 
                                       : ''
