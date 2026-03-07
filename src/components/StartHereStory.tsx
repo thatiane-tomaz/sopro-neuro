@@ -141,10 +141,11 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-10 text-white/80 hover:text-white transition-colors"
+        className="absolute top-12 right-4 z-10 text-white/80 hover:text-white transition-colors p-2"
+        style={{ paddingTop: 'env(safe-area-inset-top, 12px)' }}
         aria-label="Fechar"
       >
-        <X className="h-6 w-6" />
+        <X className="h-7 w-7" />
       </button>
 
       {/* Story content */}
