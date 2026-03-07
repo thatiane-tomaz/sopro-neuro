@@ -712,13 +712,17 @@ const Dashboard = () => {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className={`${phase.phase_number === 2 ? 'w-auto px-6' : 'flex-1'} justify-center ${
+                                  className={`${phase.phase_number === 2 ? 'w-auto px-6' : 'flex-1'} justify-center min-h-[44px] ${
                                     !isLocked 
                                       ? 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200' 
                                       : ''
                                   }`}
-                                  onClick={() => !isLocked && handleMediaOpen(day, 'hypnosis')}
-                                  disabled={isLocked}
+                                  onClick={() => {
+                                    if (!isLocked || isAdmin) {
+                                      handleMediaOpen(day, 'hypnosis');
+                                    }
+                                  }}
+                                  disabled={isLocked && !isAdmin}
                                 >
                                   <Headphones className="h-3.5 w-3.5 mr-1.5" />
                                   <span className="text-xs">
