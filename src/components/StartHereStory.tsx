@@ -124,8 +124,8 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
-      {/* Progress indicators */}
-      <div className="absolute top-0 left-0 right-0 flex gap-1 p-2 z-10">
+      {/* Progress indicators - respect safe area */}
+      <div className="absolute top-0 left-0 right-0 flex gap-1 p-2 z-10" style={{ paddingTop: 'calc(env(safe-area-inset-top, 8px) + 8px)' }}>
         {stories.map((_, index) => (
           <div key={index} className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
             <div
