@@ -450,7 +450,7 @@ const Dashboard = () => {
         {currentDay === 1 && (
           <div className="mb-8">
             <div 
-              className="relative overflow-hidden rounded-xl shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4"
+              className="relative overflow-hidden rounded-xl shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4 touch-manipulation"
               onClick={() => setShowStartHere(true)}
             >
               <div className="flex items-center justify-between gap-4">
