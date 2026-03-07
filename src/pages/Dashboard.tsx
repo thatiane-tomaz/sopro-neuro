@@ -460,7 +460,7 @@ const Dashboard = () => {
                 
                 <Button 
                   variant="default"
-                  className="shadow-lg flex-shrink-0"
+                  className="shadow-lg flex-shrink-0 pointer-events-none"
                 >
                   <Sparkles className="h-4 w-4 mr-2" />
                   Comece aqui
