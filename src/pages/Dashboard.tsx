@@ -916,7 +916,7 @@ const Dashboard = () => {
                   {Array.isArray(triggers) && triggers.filter(t => t.section === 'post_cigarette').map((trigger) => (
                     <Card
                       key={trigger.id}
-                      className={`overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md transition-all duration-300 group ${
+                      className={`overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md transition-all duration-300 group touch-manipulation ${
                         currentDay >= 8 ? 'hover:shadow-lg cursor-pointer' : 'cursor-not-allowed'
                       }`}
                       onClick={() => {
