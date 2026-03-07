@@ -833,9 +833,9 @@ const Dashboard = () => {
                   contentType: 'hypnosis',
                 });
               }}
-              className="w-20 h-20 rounded-full bg-rose-50 dark:bg-rose-950/30 border-0 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
+              className="w-20 h-20 rounded-full bg-rose-50 dark:bg-rose-950/30 border-0 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-95 transition-all duration-200 shadow-lg touch-manipulation"
             >
-              <span className="text-rose-400 font-bold text-xl">SOS</span>
+              <span className="text-rose-400 font-bold text-xl select-none">SOS</span>
             </button>
             <div className="text-center">
               <h4 className="text-foreground font-semibold text-base">A vontade está forte?</h4>
