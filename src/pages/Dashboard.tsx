@@ -858,7 +858,7 @@ const Dashboard = () => {
                   {Array.isArray(triggers) && triggers.filter(t => t.section === 'initial').map((trigger) => (
                     <Card
                       key={trigger.id}
-                      className="overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                      className="overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 group cursor-pointer touch-manipulation"
                       onClick={() =>
                         setSelectedMedia({
                           title: trigger.title,
