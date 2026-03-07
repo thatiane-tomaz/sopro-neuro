@@ -335,9 +335,9 @@ const MediaPlayer = ({
               variant="ghost" 
               size="icon"
               onClick={onClose}
-              className="rounded-full hover:bg-primary/10 text-muted-foreground hover:text-foreground"
+              className="rounded-full hover:bg-primary/10 text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px]"
             >
-              <X className="h-5 w-5" />
+              <X className="h-6 w-6" />
             </Button>
           </div>
         </div>

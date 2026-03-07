@@ -450,7 +450,7 @@ const Dashboard = () => {
         {currentDay === 1 && (
           <div className="mb-8">
             <div 
-              className="relative overflow-hidden rounded-xl shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4"
+              className="relative overflow-hidden rounded-xl shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4 touch-manipulation"
               onClick={() => setShowStartHere(true)}
             >
               <div className="flex items-center justify-between gap-4">
@@ -685,7 +685,7 @@ const Dashboard = () => {
                                   <Button
                                     variant="outline"
                                     size="sm"
-                                  className={`flex-1 justify-center ${
+                                  className={`flex-1 justify-center min-h-[44px] ${
                                     !isLocked 
                                       ? 'bg-sky-50 hover:bg-sky-100 text-sky-600 border-sky-200' 
                                       : ''
@@ -712,13 +712,17 @@ const Dashboard = () => {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className={`${phase.phase_number === 2 ? 'w-auto px-6' : 'flex-1'} justify-center ${
+                                  className={`${phase.phase_number === 2 ? 'w-auto px-6' : 'flex-1'} justify-center min-h-[44px] ${
                                     !isLocked 
                                       ? 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200' 
                                       : ''
                                   }`}
-                                  onClick={() => !isLocked && handleMediaOpen(day, 'hypnosis')}
-                                  disabled={isLocked}
+                                  onClick={() => {
+                                    if (!isLocked || isAdmin) {
+                                      handleMediaOpen(day, 'hypnosis');
+                                    }
+                                  }}
+                                  disabled={isLocked && !isAdmin}
                                 >
                                   <Headphones className="h-3.5 w-3.5 mr-1.5" />
                                   <span className="text-xs">
@@ -829,9 +833,9 @@ const Dashboard = () => {
                   contentType: 'hypnosis',
                 });
               }}
-              className="w-20 h-20 rounded-full bg-rose-50 dark:bg-rose-950/30 border-0 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 hover:scale-105 active:scale-95 transition-all duration-200 shadow-lg"
+              className="w-20 h-20 rounded-full bg-rose-50 dark:bg-rose-950/30 border-0 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-95 transition-all duration-200 shadow-lg touch-manipulation"
             >
-              <span className="text-rose-400 font-bold text-xl">SOS</span>
+              <span className="text-rose-400 font-bold text-xl select-none">SOS</span>
             </button>
             <div className="text-center">
               <h4 className="text-foreground font-semibold text-base">A vontade está forte?</h4>
@@ -854,7 +858,7 @@ const Dashboard = () => {
                   {Array.isArray(triggers) && triggers.filter(t => t.section === 'initial').map((trigger) => (
                     <Card
                       key={trigger.id}
-                      className="overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                      className="overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 group cursor-pointer touch-manipulation"
                       onClick={() =>
                         setSelectedMedia({
                           title: trigger.title,
@@ -912,7 +916,7 @@ const Dashboard = () => {
                   {Array.isArray(triggers) && triggers.filter(t => t.section === 'post_cigarette').map((trigger) => (
                     <Card
                       key={trigger.id}
-                      className={`overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md transition-all duration-300 group ${
+                      className={`overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md transition-all duration-300 group touch-manipulation ${
                         currentDay >= 8 ? 'hover:shadow-lg cursor-pointer' : 'cursor-not-allowed'
                       }`}
                       onClick={() => {
