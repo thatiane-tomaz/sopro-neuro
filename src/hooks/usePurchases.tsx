@@ -4,8 +4,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { Capacitor } from '@capacitor/core';
 import { useToast } from '@/hooks/use-toast';
 
-// RevenueCat Product ID
-const PRODUCT_ID = 'sopro_30_days';
+// No hardcoded product ID - uses dynamic offerings from RevenueCat
 
 // RevenueCat API Keys (public keys - safe to include in code)
 const REVENUECAT_API_KEY_IOS = 'appl_QmMRMglMnjgQtzPjEjHutHtUqMW';
@@ -123,14 +122,12 @@ export const usePurchases = () => {
     try {
       const { Purchases } = await import('@revenuecat/purchases-capacitor');
       
-      // Get offerings to find the package
+      // Get offerings and use the first available package (dynamic - works for any product type)
       const offerings = await Purchases.getOfferings();
-      const pkg = offerings.current?.availablePackages?.find(
-        p => p.product.identifier === PRODUCT_ID
-      );
+      const pkg = offerings.current?.availablePackages?.[0];
 
       if (!pkg) {
-        throw new Error('Produto não encontrado');
+        throw new Error('Nenhum produto disponível');
       }
 
       // Make the purchase
