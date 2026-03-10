@@ -4,8 +4,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { Capacitor } from '@capacitor/core';
 import { useToast } from '@/hooks/use-toast';
 
-// RevenueCat Product ID
-const PRODUCT_ID = 'sopro_30_days';
+// No hardcoded product ID - uses dynamic offerings from RevenueCat
 
 // RevenueCat API Keys (public keys - safe to include in code)
 const REVENUECAT_API_KEY_IOS = 'appl_QmMRMglMnjgQtzPjEjHutHtUqMW';
