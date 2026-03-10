@@ -841,7 +841,7 @@ const Dashboard = () => {
                 <span className="text-rose-400 font-bold text-lg select-none">SOS</span>
               </button>
               <div>
-                <h4 className="text-foreground font-semibold text-base leading-tight">A vontade está forte?</h4>
+                <h4 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">A vontade está forte?</h4>
                 <p className="text-muted-foreground text-sm">
                   Toque no botão<br />e acalme seu cérebro em minutos.
                 </p>
