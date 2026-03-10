@@ -823,7 +823,7 @@ const Dashboard = () => {
 
         {/* SOS Button - Inside card matching phase containers */}
         {(currentDay >= 8 || isAdmin) && (
-          <div className="rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg p-4 md:p-6">
+          <div className="mt-8 rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg p-4 md:p-6">
             <div 
               className="flex items-center gap-4 cursor-pointer touch-manipulation"
               onClick={() => {
@@ -841,9 +841,9 @@ const Dashboard = () => {
                 <span className="text-rose-400 font-bold text-lg select-none">SOS</span>
               </button>
               <div>
-                <h4 className="text-foreground font-semibold text-base leading-tight">Toque no botão</h4>
+                <h4 className="text-foreground font-semibold text-base leading-tight">A vontade está forte?</h4>
                 <p className="text-muted-foreground text-sm">
-                  e acalme seu cérebro em minutos.
+                  Toque no botão<br />e acalme seu cérebro em minutos.
                 </p>
               </div>
             </div>
