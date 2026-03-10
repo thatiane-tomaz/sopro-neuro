@@ -821,10 +821,11 @@ const Dashboard = () => {
           })}
         </div>
 
-        {/* SOS Button - Centered after phases */}
+        {/* SOS Button - Inside card matching phase containers */}
         {(currentDay >= 8 || isAdmin) && (
-          <div className="flex flex-col items-center gap-3 py-8">
-            <button
+          <div className="rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg p-4 md:p-6">
+            <div 
+              className="flex items-center gap-4 cursor-pointer touch-manipulation"
               onClick={() => {
                 const sos = getSosHypnosis();
                 setSelectedMedia({
@@ -833,15 +834,18 @@ const Dashboard = () => {
                   contentType: 'hypnosis',
                 });
               }}
-              className="w-20 h-20 rounded-full bg-rose-50 dark:bg-rose-950/30 border-0 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-95 transition-all duration-200 shadow-lg touch-manipulation"
             >
-              <span className="text-rose-400 font-bold text-xl select-none">SOS</span>
-            </button>
-            <div className="text-center">
-              <h4 className="text-foreground font-semibold text-base">A vontade está forte?</h4>
-              <p className="text-muted-foreground text-sm max-w-[260px]">
-                Toque aqui e acalme seu cérebro em minutos.
-              </p>
+              <button
+                className="w-16 h-16 rounded-full bg-rose-50 dark:bg-rose-950/30 border-0 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-95 transition-all duration-200 shadow-md touch-manipulation flex-shrink-0"
+              >
+                <span className="text-rose-400 font-bold text-lg select-none">SOS</span>
+              </button>
+              <div>
+                <h4 className="text-foreground font-semibold text-base leading-tight">Toque no botão</h4>
+                <p className="text-muted-foreground text-sm">
+                  e acalme seu cérebro em minutos.
+                </p>
+              </div>
             </div>
           </div>
         )}
