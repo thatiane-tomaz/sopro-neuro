@@ -122,14 +122,12 @@ export const usePurchases = () => {
     try {
       const { Purchases } = await import('@revenuecat/purchases-capacitor');
       
-      // Get offerings to find the package
+      // Get offerings and use the first available package (dynamic - works for any product type)
       const offerings = await Purchases.getOfferings();
-      const pkg = offerings.current?.availablePackages?.find(
-        p => p.product.identifier === PRODUCT_ID
-      );
+      const pkg = offerings.current?.availablePackages?.[0];
 
       if (!pkg) {
-        throw new Error('Produto não encontrado');
+        throw new Error('Nenhum produto disponível');
       }
 
       // Make the purchase
