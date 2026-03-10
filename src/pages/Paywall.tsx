@@ -61,7 +61,7 @@ const Paywall = () => {
   const benefits = [
     {
       icon: Brain,
-      title: 'Processo completo de 21 dias',
+      title: 'Processo completo de 14 dias',
       description: 'Metodologia cientificamente comprovada'
     },
     {
