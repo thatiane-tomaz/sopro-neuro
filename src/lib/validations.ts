@@ -29,8 +29,8 @@ export const ageSchema = z
   .regex(/^\d+$/, "Idade deve ser um número")
   .refine((val) => {
     const age = parseInt(val);
-    return age >= 18 && age <= 120;
-  }, "Idade deve estar entre 18 e 120 anos");
+    return age >= 18 && age <= 100;
+  }, "Idade deve estar entre 18 e 100 anos");
 
 // Gender validation - accepts the actual labels
 export const genderSchema = z

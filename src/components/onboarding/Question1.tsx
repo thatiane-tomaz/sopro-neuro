@@ -99,15 +99,16 @@ const Question1 = ({ data, updateData, onNext }: Question1Props) => {
                   className="mt-2 space-y-3"
                 >
                   {genderOptions.map((option, index) => (
-                    <div 
+                    <Label
                       key={option.id}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors"
+                      htmlFor={`gender-option-${index}`}
+                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
                     >
                       <RadioGroupItem value={option.label} id={`gender-option-${index}`} />
-                      <Label htmlFor={`gender-option-${index}`} className="flex-1 cursor-pointer">
+                      <span className="flex-1">
                         {option.label}
-                      </Label>
-                    </div>
+                      </span>
+                    </Label>
                   ))}
                 </RadioGroup>
               </div>

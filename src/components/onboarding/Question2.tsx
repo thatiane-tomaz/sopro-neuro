@@ -77,21 +77,19 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
               className="space-y-4"
             >
               {frequencyOptions.map((option, index) => (
-                <div 
+                <Label
                   key={index}
-                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors"
+                  htmlFor={`frequency-option-${index}`}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-accent/10 transition-colors cursor-pointer"
                 >
                   <RadioGroupItem 
                     value={option} 
                     id={`frequency-option-${index}`} 
                   />
-                  <Label 
-                    htmlFor={`frequency-option-${index}`} 
-                    className="flex-1 cursor-pointer"
-                  >
+                  <span className="flex-1">
                     {option}
-                  </Label>
-                </div>
+                  </span>
+                </Label>
               ))}
             </RadioGroup>
 
