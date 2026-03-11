@@ -539,9 +539,6 @@ const Login = () => {
                     required 
                   />
                 </div>
-                <p className="text-xs text-slate-500">
-                  Use o mesmo email que você utilizou na hora do pagamento.
-                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="register-password" className="text-slate-500">Criar Senha</Label>
