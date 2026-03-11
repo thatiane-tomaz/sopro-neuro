@@ -24,6 +24,7 @@ const Login = () => {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showSignupConfirmationMsg, setShowSignupConfirmationMsg] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -224,6 +225,10 @@ const Login = () => {
       } else {
         setSignupError(result.error.message);
       }
+    } else {
+      // Signup successful - pre-fill login email and show confirmation message
+      setLoginData(prev => ({ ...prev, email: signupData.email }));
+      setShowSignupConfirmationMsg(true);
     }
     
     setIsLoading(false);
@@ -539,9 +544,6 @@ const Login = () => {
                     required 
                   />
                 </div>
-                <p className="text-xs text-slate-500">
-                  Use o mesmo email que você utilizou na hora do pagamento.
-                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="register-password" className="text-slate-500">Criar Senha</Label>
@@ -590,6 +592,15 @@ const Login = () => {
               <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
                 {isLoading ? "Criando conta..." : "Criar conta"}
               </Button>
+
+              {showSignupConfirmationMsg && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+                  <p className="text-sm text-green-700 font-medium">
+                    📩 Após confirmar seu email, acesse sua conta em "Entrar"
+                  </p>
+                </div>
+              )}
+
               <div className="text-center">
                 <button
                   type="button"
@@ -600,51 +611,19 @@ const Login = () => {
                 </button>
               </div>
 
-              {/* Error message with help link */}
+              {/* Error message */}
               {signupError && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
-                  <p className="text-sm text-red-600 mb-1">{signupError}</p>
-                  <p className="text-xs text-slate-600">
-                    Verifique se está utilizando o mesmo email do pagamento.
-                    {!isNativeIOS && (
-                      <>
-                        {' '}
-                        <a 
-                          href="https://soproneuro.com.br/" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary font-semibold hover:underline"
-                        >
-                          Ainda não adquiriu? Clique aqui.
-                        </a>
-                      </>
-                    )}
-                  </p>
+                  <p className="text-sm text-red-600">{signupError}</p>
                 </div>
               )}
 
-              {/* Link for users who haven't paid yet - hidden on iOS */}
-              {!isNativeIOS && (
-                <div className="text-center pt-2 border-t border-slate-200">
-                  <p className="text-xs text-slate-500">
-                    Ainda não adquiriu o programa?{' '}
-                    <a 
-                      href="https://soproneuro.com.br/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-primary font-semibold hover:underline"
-                    >
-                      Clique aqui
-                    </a>
-                  </p>
-                </div>
-              )}
             </form>
           </TabsContent>
         </Tabs>
 
         <div className="text-center text-sm">
-          <p className="text-slate-400 font-medium mb-1">Ao continuar, você concorda com nossos</p>
+          <p className="text-slate-400 font-medium mb-1">Ao cadastrar, você concorda com nossos</p>
           <p>
             <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-slate-500 font-semibold hover:underline">
               Termos de Uso
