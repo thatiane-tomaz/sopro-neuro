@@ -224,6 +224,10 @@ const Login = () => {
       } else {
         setSignupError(result.error.message);
       }
+    } else {
+      // Signup successful - pre-fill login email and show confirmation message
+      setLoginData(prev => ({ ...prev, email: signupData.email }));
+      setShowSignupConfirmationMsg(true);
     }
     
     setIsLoading(false);
