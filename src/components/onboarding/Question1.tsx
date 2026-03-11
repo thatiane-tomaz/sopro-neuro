@@ -84,7 +84,7 @@ const Question1 = ({ data, updateData, onNext }: Question1Props) => {
                   type="text"
                   value={data.age}
                   onChange={handleAgeChange}
-                  placeholder="Digite sua idade (18-120)"
+                  placeholder="Digite sua idade (18-100)"
                   className="mt-1"
                 />
               </div>
