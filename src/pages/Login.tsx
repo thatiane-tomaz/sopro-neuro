@@ -611,26 +611,10 @@ const Login = () => {
                 </button>
               </div>
 
-              {/* Error message with help link */}
+              {/* Error message */}
               {signupError && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
-                  <p className="text-sm text-red-600 mb-1">{signupError}</p>
-                  <p className="text-xs text-slate-600">
-                    Verifique se está utilizando o mesmo email do pagamento.
-                    {!isNativeIOS && (
-                      <>
-                        {' '}
-                        <a 
-                          href="https://soproneuro.com.br/" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary font-semibold hover:underline"
-                        >
-                          Ainda não adquiriu? Clique aqui.
-                        </a>
-                      </>
-                    )}
-                  </p>
+                  <p className="text-sm text-red-600">{signupError}</p>
                 </div>
               )}
 
