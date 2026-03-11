@@ -592,6 +592,15 @@ const Login = () => {
               <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
                 {isLoading ? "Criando conta..." : "Criar conta"}
               </Button>
+
+              {showSignupConfirmationMsg && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+                  <p className="text-sm text-green-700 font-medium">
+                    📩 Após confirmar seu email, acesse sua conta em "Entrar"
+                  </p>
+                </div>
+              )}
+
               <div className="text-center">
                 <button
                   type="button"
