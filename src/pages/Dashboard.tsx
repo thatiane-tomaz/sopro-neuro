@@ -335,12 +335,12 @@ const Dashboard = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // Show expired dialog when subscription is expired
+  // Redirect expired users to paywall
   useEffect(() => {
     if (!subscriptionLoading && isExpired && !isAdmin) {
-      setShowExpiredDialog(true);
+      navigate('/paywall');
     }
-  }, [isExpired, subscriptionLoading, isAdmin]);
+  }, [isExpired, subscriptionLoading, isAdmin, navigate]);
 
   if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
     console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });
