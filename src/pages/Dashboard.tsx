@@ -230,6 +230,12 @@ const Dashboard = () => {
   const handleMediaOpen = (day: number, type: 'video' | 'hypnosis') => {
     // Admins can open all media for testing
     if (!isAdmin) {
+      // Check if subscription is expired
+      if (isExpired) {
+        setShowExpiredDialog(true);
+        return;
+      }
+      
       const status = getDayStatus(day);
       if (status === 'locked' || status === 'subscription_locked') {
         toast({
