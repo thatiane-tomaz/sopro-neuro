@@ -1007,18 +1007,18 @@ const Dashboard = () => {
               Sua assinatura expirou
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center">
-              Seu acesso premium expirou. Para renovar, acesse as configurações de assinatura do seu dispositivo.
+              Seu acesso premium expirou. Renove sua assinatura para continuar acessando todo o conteúdo.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
             <AlertDialogAction 
               onClick={() => {
                 setShowExpiredDialog(false);
-                navigate('/cancel-subscription');
+                navigate('/paywall');
               }}
               className="w-full bg-accent hover:bg-accent/90"
             >
-              Ver instruções
+              Renovar assinatura
             </AlertDialogAction>
             <Button 
               onClick={() => setShowExpiredDialog(false)}
