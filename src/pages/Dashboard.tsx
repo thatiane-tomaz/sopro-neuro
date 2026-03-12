@@ -230,6 +230,12 @@ const Dashboard = () => {
   const handleMediaOpen = (day: number, type: 'video' | 'hypnosis') => {
     // Admins can open all media for testing
     if (!isAdmin) {
+      // Check if subscription is expired
+      if (isExpired) {
+        setShowExpiredDialog(true);
+        return;
+      }
+      
       const status = getDayStatus(day);
       if (status === 'locked' || status === 'subscription_locked') {
         toast({
@@ -335,12 +341,7 @@ const Dashboard = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // Show expired dialog when subscription is expired
-  useEffect(() => {
-    if (!subscriptionLoading && isExpired && !isAdmin) {
-      setShowExpiredDialog(true);
-    }
-  }, [isExpired, subscriptionLoading, isAdmin]);
+  // Expired dialog is now shown only when user tries to play content
 
   if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
     console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });
@@ -1006,18 +1007,18 @@ const Dashboard = () => {
               Sua assinatura expirou
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center">
-              Seu acesso premium expirou. Para renovar, acesse as configurações de assinatura do seu dispositivo.
+              Seu acesso premium expirou. Renove sua assinatura para continuar acessando todo o conteúdo.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
             <AlertDialogAction 
               onClick={() => {
                 setShowExpiredDialog(false);
-                navigate('/cancel-subscription');
+                navigate('/paywall');
               }}
               className="w-full bg-accent hover:bg-accent/90"
             >
-              Ver instruções
+              Renovar assinatura
             </AlertDialogAction>
             <Button 
               onClick={() => setShowExpiredDialog(false)}
