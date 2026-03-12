@@ -335,12 +335,7 @@ const Dashboard = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // Show expired dialog when subscription is expired
-  useEffect(() => {
-    if (!subscriptionLoading && isExpired && !isAdmin) {
-      setShowExpiredDialog(true);
-    }
-  }, [isExpired, subscriptionLoading, isAdmin]);
+  // Expired dialog is now shown only when user tries to play content
 
   if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
     console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });
