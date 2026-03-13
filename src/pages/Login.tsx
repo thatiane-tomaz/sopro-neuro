@@ -625,11 +625,11 @@ const Login = () => {
         <div className="text-center text-sm">
           <p className="text-slate-400 font-medium mb-1">Ao cadastrar, você concorda com nossos</p>
           <p>
-            <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-slate-500 font-semibold hover:underline">
+            <a href="https://soproneuro.com.br/terms" target="_blank" rel="noopener noreferrer" className="text-slate-500 font-semibold hover:underline">
               Termos de Uso
             </a>
             {" e "}
-            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-slate-500 font-semibold hover:underline">
+            <a href="https://soproneuro.com.br/privacy" target="_blank" rel="noopener noreferrer" className="text-slate-500 font-semibold hover:underline">
               Política de Privacidade
             </a>
           </p>
