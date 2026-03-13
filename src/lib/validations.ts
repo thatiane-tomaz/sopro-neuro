@@ -3,9 +3,9 @@ import { z } from "zod";
 // Password validation - simple 6 characters with letters and numbers
 export const passwordSchema = z
   .string()
-  .min(6, "A senha deve ter no mínimo 6 caracteres")
-  .regex(/[a-zA-Z]/, "A senha deve conter pelo menos uma letra")
-  .regex(/[0-9]/, "A senha deve conter pelo menos um número");
+  .min(6, "A senha deve conter no mínimo 6 caracteres com letras e números")
+  .regex(/[a-zA-Z]/, "A senha deve conter no mínimo 6 caracteres com letras e números")
+  .regex(/[0-9]/, "A senha deve conter no mínimo 6 caracteres com letras e números");
 
 // Email validation
 export const emailSchema = z
