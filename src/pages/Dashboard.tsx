@@ -195,8 +195,15 @@ const Dashboard = () => {
   };
 
   const getDayStatus = (day: number): 'completed' | 'current' | 'locked' | 'subscription_locked' | 'time_locked' => {
+    // Admins have full access to all days, phases, and content
+    if (isAdmin) {
+      if (isDayCompleted(day)) return 'completed';
+      if (day < currentDay) return 'completed';
+      return 'current';
+    }
+
     // First check subscription access
-    const hasSubAccess = isAdmin || hasAccessToDay(day);
+    const hasSubAccess = hasAccessToDay(day);
     
     if (!hasSubAccess) {
       return 'subscription_locked';
@@ -208,13 +215,11 @@ const Dashboard = () => {
     }
     
     // IMPORTANT: Past days should ALWAYS be accessible, even if tracking data is inconsistent
-    // This must come BEFORE the time-lock check to prevent past days from being locked
     if (day < currentDay) {
       return 'completed';
     }
     
     // Check if day is time-locked (6h wait after previous day)
-    // This only applies to the NEXT day after the current one
     if (isDayTimeLocked(day)) {
       return 'time_locked';
     }
