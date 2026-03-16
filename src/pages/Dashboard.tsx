@@ -552,12 +552,12 @@ const Dashboard = () => {
                         
                         {/* Progress Indicators */}
                         <div className="flex items-center gap-2">
-                          {/* Dots */}
+                          {/* Dots */
                           <div className="flex gap-1">
                             {phase.days.map((day, idx) => {
-                              // A day is completed if it's before the current day OR if isDayCompleted returns true
-                              const isCompleted = day.day_number < currentDay || isDayCompleted(day.day_number);
-                              const isCurrent = day.day_number === currentDay;
+                              // For admins, all days are completed
+                              const isCompleted = isAdmin || day.day_number < currentDay || isDayCompleted(day.day_number);
+                              const isCurrent = !isAdmin && day.day_number === currentDay;
                               return (
                                 <div
                                   key={day.id}
@@ -574,9 +574,9 @@ const Dashboard = () => {
                             })}
                           </div>
                           
-                          {/* Count */}
+                          {/* Count - for admins always show 7/7 */}
                           <span className={`text-xs font-medium ${isPhase1Completed ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
-                            {phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length} dias
+                            {isAdmin ? '7' : phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length} dias
                           </span>
                         </div>
                         
