@@ -657,7 +657,9 @@ const Dashboard = () => {
                               <img 
                                 src={`${dayImages[day - 1]}?v=2`} 
                                 alt={dayContent.title}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+                                  isAdmin ? 'opacity-100 brightness-100 saturate-100' : ''
+                                }`}
                               />
                               {isLocked && !isAdmin && (
                                 <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center">
