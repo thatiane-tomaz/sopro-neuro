@@ -918,15 +918,15 @@ const Dashboard = () => {
                   </p>
                 </div>
                 
-                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ${currentDay < 8 ? 'opacity-50' : ''}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ${currentDay < 8 && !isAdmin ? 'opacity-50' : ''}`}>
                   {Array.isArray(triggers) && triggers.filter(t => t.section === 'post_cigarette').map((trigger) => (
                     <Card
                       key={trigger.id}
                       className={`overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md transition-all duration-300 group touch-manipulation ${
-                        currentDay >= 8 ? 'hover:shadow-lg cursor-pointer' : 'cursor-not-allowed'
+                        currentDay >= 8 || isAdmin ? 'hover:shadow-lg cursor-pointer' : 'cursor-not-allowed'
                       }`}
                       onClick={() => {
-                        if (currentDay >= 8) {
+                        if (currentDay >= 8 || isAdmin) {
                           setSelectedMedia({
                             title: trigger.title,
                             fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/${trigger.file_name}`,
@@ -936,7 +936,7 @@ const Dashboard = () => {
                       }}
                     >
                       <div className="p-3 relative">
-                        {currentDay < 8 && (
+                        {currentDay < 8 && !isAdmin && (
                           <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] flex items-center justify-center z-10">
                             <Lock className="h-5 w-5 text-muted-foreground" />
                           </div>
