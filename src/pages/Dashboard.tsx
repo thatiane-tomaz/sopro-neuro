@@ -775,9 +775,10 @@ const Dashboard = () => {
                                   }
                                 }
                                 
-                                // Show progress message for current day
-                                if (isCurrent && !isLocked) {
-                                  if (hasStarted && !allRequired) {
+                                // Show progress message for current day (not for admins, not if next day is already unlocked)
+                                if (isCurrent && !isLocked && !isAdmin) {
+                                  const nextDayUnlocked = day < 21 && (isDayCompleted(day) || !isDayTimeLocked(day + 1));
+                                  if (hasStarted && !allRequired && !nextDayUnlocked) {
                                     return (
                                       <div className="mt-3 text-center h-5">
                                         <p className="text-xs text-muted-foreground">
