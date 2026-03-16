@@ -646,9 +646,9 @@ const Dashboard = () => {
                         <CarouselItem key={day} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                           <div 
                             className={`group relative overflow-hidden rounded-2xl border-0 transition-all duration-300 ${
-                              isLocked 
+                              isLocked && !isAdmin
                                 ? 'opacity-50 cursor-not-allowed bg-card/30 shadow-sm' 
-                                : isCurrent
+                                : isCurrent || isAdmin
                                   ? 'shadow-lg cursor-pointer hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-primary/5'
                                   : 'shadow-md cursor-pointer hover:shadow-lg hover:-translate-y-0.5 bg-card/50 backdrop-blur-sm'
                             }`}
@@ -659,17 +659,10 @@ const Dashboard = () => {
                                 alt={dayContent.title}
                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                               />
-                              {isLocked && (
+                              {isLocked && !isAdmin && (
                                 <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center">
                                   <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center shadow-lg">
                                     <Lock className="h-7 w-7 text-muted-foreground" />
-                                  </div>
-                                </div>
-                              )}
-                              {!isAdmin && isCurrent && (
-                                <div className="absolute top-3 right-3">
-                                  <div className="bg-accent text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-pulse">
-                                    Atual
                                   </div>
                                 </div>
                               )}
