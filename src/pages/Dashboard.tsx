@@ -522,14 +522,15 @@ const Dashboard = () => {
             if (!phase || !Array.isArray(phase.days)) return null;
             
             const isPhase1 = phase.phase_number === 1;
+            // For admins, all phases appear completed
             // Phase 1 is completed if:
-            // - Admin simulating day 8+ (phase 1 has 7 days)
+            // - Admin (all phases completed for admin)
             // - OR user actually completed day 7
             const phase1LastDay = 7;
-            const isPhase1Completed = isPhase1 && (
+            const isPhase1Completed = isAdmin || (isPhase1 && (
               (isAdmin && currentDay >= 8) || 
               isDayCompleted(phase1LastDay)
-            );
+            ));
             
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg transition-all duration-300 ${
