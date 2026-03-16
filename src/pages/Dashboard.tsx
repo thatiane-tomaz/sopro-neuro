@@ -522,14 +522,15 @@ const Dashboard = () => {
             if (!phase || !Array.isArray(phase.days)) return null;
             
             const isPhase1 = phase.phase_number === 1;
+            // For admins, all phases appear completed
             // Phase 1 is completed if:
-            // - Admin simulating day 8+ (phase 1 has 7 days)
+            // - Admin (all phases completed for admin)
             // - OR user actually completed day 7
             const phase1LastDay = 7;
-            const isPhase1Completed = isPhase1 && (
+            const isPhase1Completed = isAdmin || (isPhase1 && (
               (isAdmin && currentDay >= 8) || 
               isDayCompleted(phase1LastDay)
-            );
+            ));
             
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg transition-all duration-300 ${
@@ -552,12 +553,11 @@ const Dashboard = () => {
                         
                         {/* Progress Indicators */}
                         <div className="flex items-center gap-2">
-                          {/* Dots */}
+                          {/* Dots - for admins all days are completed */}
                           <div className="flex gap-1">
                             {phase.days.map((day, idx) => {
-                              // A day is completed if it's before the current day OR if isDayCompleted returns true
-                              const isCompleted = day.day_number < currentDay || isDayCompleted(day.day_number);
-                              const isCurrent = day.day_number === currentDay;
+                              const isCompleted = isAdmin || day.day_number < currentDay || isDayCompleted(day.day_number);
+                              const isCurrent = !isAdmin && day.day_number === currentDay;
                               return (
                                 <div
                                   key={day.id}
@@ -574,13 +574,13 @@ const Dashboard = () => {
                             })}
                           </div>
                           
-                          {/* Count */}
+                          {/* Count - for admins always show 7/7 */}
                           <span className={`text-xs font-medium ${isPhase1Completed ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
-                            {phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length} dias
+                            {isAdmin ? '7' : phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length} dias
                           </span>
                         </div>
                         
-                        {isPhase1Completed && (
+                        {(isPhase1Completed || isAdmin) && (
                           <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
                             Concluído
                           </Badge>
@@ -666,7 +666,7 @@ const Dashboard = () => {
                                   </div>
                                 </div>
                               )}
-                              {isCurrent && (
+                              {!isAdmin && isCurrent && (
                                 <div className="absolute top-3 right-3">
                                   <div className="bg-accent text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-pulse">
                                     Atual
