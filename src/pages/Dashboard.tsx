@@ -907,7 +907,7 @@ const Dashboard = () => {
               {/* Seção 2 - Pós último cigarro */}
               <div>
                 <div className="mb-4">
-                  {currentDay < 8 && (
+                  {currentDay < 8 && !isAdmin && (
                     <p className="text-sm font-semibold text-accent mb-2">
                       Ficará disponível após finalizar a Fase 1
                     </p>
