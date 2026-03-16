@@ -552,10 +552,9 @@ const Dashboard = () => {
                         
                         {/* Progress Indicators */}
                         <div className="flex items-center gap-2">
-                          {/* Dots */
+                          {/* Dots - for admins all days are completed */}
                           <div className="flex gap-1">
                             {phase.days.map((day, idx) => {
-                              // For admins, all days are completed
                               const isCompleted = isAdmin || day.day_number < currentDay || isDayCompleted(day.day_number);
                               const isCurrent = !isAdmin && day.day_number === currentDay;
                               return (
@@ -580,7 +579,7 @@ const Dashboard = () => {
                           </span>
                         </div>
                         
-                        {isPhase1Completed && (
+                        {(isPhase1Completed || isAdmin) && (
                           <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
                             Concluído
                           </Badge>
