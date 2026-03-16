@@ -649,7 +649,7 @@ const Dashboard = () => {
                               isLocked && !isAdmin
                                 ? 'opacity-50 cursor-not-allowed bg-card/30 shadow-sm' 
                                 : isCurrent || isAdmin
-                                  ? 'shadow-lg cursor-pointer hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-primary/5'
+                                  ? 'shadow-xl cursor-pointer hover:shadow-2xl hover:-translate-y-1 bg-gradient-to-br from-accent/10 to-primary/10 brightness-100'
                                   : 'shadow-md cursor-pointer hover:shadow-lg hover:-translate-y-0.5 bg-card/50 backdrop-blur-sm'
                             }`}
                           >
@@ -657,7 +657,9 @@ const Dashboard = () => {
                               <img 
                                 src={`${dayImages[day - 1]}?v=2`} 
                                 alt={dayContent.title}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+                                  isAdmin ? 'opacity-100 brightness-100 saturate-100' : ''
+                                }`}
                               />
                               {isLocked && !isAdmin && (
                                 <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center">
