@@ -666,7 +666,7 @@ const Dashboard = () => {
                                   </div>
                                 </div>
                               )}
-                              {isCurrent && (
+                              {!isAdmin && isCurrent && (
                                 <div className="absolute top-3 right-3">
                                   <div className="bg-accent text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-pulse">
                                     Atual
