@@ -792,8 +792,8 @@ const Dashboard = () => {
                                   }
                                 }
                                 
-                                // Show "Concluído" for completed days
-                                if (isCompleted) {
+                                // Show "Concluído" for completed days (hide for admin)
+                                if (isCompleted && !isAdmin) {
                                   return (
                                     <div className="mt-3 text-center h-5">
                                       <p className="text-xs text-primary font-medium">Concluído</p>
