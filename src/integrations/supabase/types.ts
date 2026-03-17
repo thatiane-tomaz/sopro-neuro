@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_error_logs: {
+        Row: {
+          created_at: string
+          error_context: string | null
+          error_message: string
+          error_stack: string | null
+          id: string
+          page_url: string | null
+          platform: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_context?: string | null
+          error_message: string
+          error_stack?: string | null
+          id?: string
+          page_url?: string | null
+          platform?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_context?: string | null
+          error_message?: string
+          error_stack?: string | null
+          id?: string
+          page_url?: string | null
+          platform?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       app_sessions: {
         Row: {
           id: string
