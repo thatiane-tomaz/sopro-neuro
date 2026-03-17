@@ -580,7 +580,7 @@ const Dashboard = () => {
                           </span>
                         </div>
                         
-                        {(isPhase1Completed || isAdmin) && (
+                        {(isPhase1Completed || isAdmin) && !isAdmin && (
                           <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
                             Concluído
                           </Badge>
