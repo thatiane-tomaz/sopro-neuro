@@ -580,7 +580,7 @@ const Dashboard = () => {
                           </span>
                         </div>
                         
-                        {(isPhase1Completed || isAdmin) && (
+                        {(isPhase1Completed || isAdmin) && !isAdmin && (
                           <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
                             Concluído
                           </Badge>
@@ -792,8 +792,8 @@ const Dashboard = () => {
                                   }
                                 }
                                 
-                                // Show "Concluído" for completed days
-                                if (isCompleted) {
+                                // Show "Concluído" for completed days (hide for admin)
+                                if (isCompleted && !isAdmin) {
                                   return (
                                     <div className="mt-3 text-center h-5">
                                       <p className="text-xs text-primary font-medium">Concluído</p>
