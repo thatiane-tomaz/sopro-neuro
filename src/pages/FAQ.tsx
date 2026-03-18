@@ -80,7 +80,8 @@ const FAQ = () => {
               </div>
             </div>
 
-            {/* Step 3 */}
+            {/* Step 3 - Android only: Samsung/Xiaomi specific settings */}
+            {!isIOS && (
             <div className="flex gap-3 bg-accent/30 rounded-xl p-4">
               <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <Smartphone className="h-4 w-4 text-primary" />
@@ -95,6 +96,7 @@ const FAQ = () => {
                 </p>
               </div>
             </div>
+            )}
 
             {/* Step 4 */}
             <div className="flex gap-3 bg-accent/30 rounded-xl p-4">

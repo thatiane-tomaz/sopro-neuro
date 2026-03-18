@@ -348,7 +348,7 @@ const Dashboard = () => {
 
   // Expired dialog is now shown only when user tries to play content
 
-  if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading) {
+  if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading || subscriptionLoading) {
     console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary">
