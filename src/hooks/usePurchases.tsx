@@ -95,10 +95,26 @@ export const usePurchases = () => {
       }));
       return true;
     } catch (error) {
-      console.error('[usePurchases] Error configuring RevenueCat:', error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('[usePurchases] Error configuring RevenueCat:', errorMsg, error);
+      
+      // Log to database for remote debugging
+      try {
+        const { supabase } = await import('@/integrations/supabase/client');
+        await supabase.from('app_error_logs').insert({
+          error_message: `RevenueCat config failed: ${errorMsg}`,
+          error_stack: error instanceof Error ? error.stack : null,
+          error_context: 'usePurchases.configureRevenueCat',
+          page_url: window.location.pathname,
+          platform,
+        });
+      } catch (logErr) {
+        console.warn('[usePurchases] Failed to log error:', logErr);
+      }
+      
       setState(prev => ({
         ...prev,
-        error: 'Erro ao carregar produtos'
+        error: `Erro ao carregar produtos: ${errorMsg}`
       }));
       return false;
     }
