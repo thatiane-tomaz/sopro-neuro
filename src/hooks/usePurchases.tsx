@@ -49,62 +49,65 @@ export const usePurchases = () => {
     return null;
   }, [isNativeIOS, isNativeAndroid]);
 
-  // Configure RevenueCat when the component mounts
-  useEffect(() => {
-    const configureRevenueCat = async () => {
-      const apiKey = getApiKey();
+  // Configure RevenueCat - extracted as a reusable function
+  const configureRevenueCat = useCallback(async () => {
+    const apiKey = getApiKey();
+    
+    if (!canPurchase || !apiKey || apiKey.includes('PLACEHOLDER')) {
+      console.log('[usePurchases] Not native or missing API key, skipping RevenueCat config');
+      return false;
+    }
+
+    try {
+      const { Purchases } = await import('@revenuecat/purchases-capacitor');
       
-      if (!canPurchase || !apiKey || apiKey.includes('PLACEHOLDER')) {
-        console.log('[usePurchases] Not native or missing API key, skipping RevenueCat config');
-        return;
-      }
+      // Configure with user ID if available
+      await Purchases.configure({
+        apiKey,
+        appUserID: user?.id || undefined
+      });
 
-      try {
-        // Dynamic import to avoid issues on web
-        const { Purchases } = await import('@revenuecat/purchases-capacitor');
-        
-        // Configure with user ID if available
-        await Purchases.configure({
-          apiKey,
-          appUserID: user?.id || undefined
-        });
+      console.log('[usePurchases] RevenueCat configured for', platform);
+      
+      // Get available products
+      const offerings = await Purchases.getOfferings();
+      console.log('[usePurchases] Offerings:', offerings);
 
-        console.log('[usePurchases] RevenueCat configured for', platform);
-        
-        // Get available products
-        const offerings = await Purchases.getOfferings();
-        console.log('[usePurchases] Offerings:', offerings);
-
-        const products: PurchaseProduct[] = [];
-        
-        if (offerings.current?.availablePackages) {
-          for (const pkg of offerings.current.availablePackages) {
-            products.push({
-              identifier: pkg.product.identifier,
-              priceString: pkg.product.priceString,
-              price: pkg.product.price,
-              title: pkg.product.title,
-              description: pkg.product.description
-            });
-          }
+      const products: PurchaseProduct[] = [];
+      
+      if (offerings.current?.availablePackages) {
+        for (const pkg of offerings.current.availablePackages) {
+          products.push({
+            identifier: pkg.product.identifier,
+            priceString: pkg.product.priceString,
+            price: pkg.product.price,
+            title: pkg.product.title,
+            description: pkg.product.description
+          });
         }
-
-        setState(prev => ({
-          ...prev,
-          isConfigured: true,
-          products
-        }));
-      } catch (error) {
-        console.error('[usePurchases] Error configuring RevenueCat:', error);
-        setState(prev => ({
-          ...prev,
-          error: 'Erro ao carregar produtos'
-        }));
       }
-    };
 
-    configureRevenueCat();
+      setState(prev => ({
+        ...prev,
+        isConfigured: true,
+        products,
+        error: null
+      }));
+      return true;
+    } catch (error) {
+      console.error('[usePurchases] Error configuring RevenueCat:', error);
+      setState(prev => ({
+        ...prev,
+        error: 'Erro ao carregar produtos'
+      }));
+      return false;
+    }
   }, [canPurchase, platform, user?.id, getApiKey]);
+
+  // Auto-configure on mount
+  useEffect(() => {
+    configureRevenueCat();
+  }, [configureRevenueCat]);
 
   // Purchase the premium product
   const purchasePremium = useCallback(async () => {
@@ -115,6 +118,19 @@ export const usePurchases = () => {
         variant: "destructive"
       });
       return false;
+    }
+
+    // Try to configure on demand if not yet configured
+    if (!state.isConfigured) {
+      const configured = await configureRevenueCat();
+      if (!configured) {
+        toast({
+          title: "Erro",
+          description: "Não foi possível conectar à loja. Tente novamente.",
+          variant: "destructive"
+        });
+        return false;
+      }
     }
 
     setState(prev => ({ ...prev, isPurchasing: true, error: null }));
@@ -176,7 +192,7 @@ export const usePurchases = () => {
 
       return false;
     }
-  }, [canPurchase, checkSubscription, toast]);
+  }, [canPurchase, state.isConfigured, configureRevenueCat, checkSubscription, toast]);
 
   // Restore purchases
   const restorePurchases = useCallback(async () => {

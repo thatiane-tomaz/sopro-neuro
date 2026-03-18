@@ -127,7 +127,7 @@ const Paywall = () => {
 
           <Button 
             onClick={handlePurchase}
-            disabled={isPurchasing || !isConfigured}
+            disabled={isPurchasing}
             className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
           >
             {isPurchasing ? (
