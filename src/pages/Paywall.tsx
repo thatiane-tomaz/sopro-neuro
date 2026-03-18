@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { usePurchases } from '@/hooks/usePurchases';
@@ -56,7 +56,7 @@ const Paywall = () => {
 
   const priceString = products.length > 0 
     ? products[0].priceString 
-    : 'R$ 49,90';
+    : null;
 
   const benefits = [
     {
@@ -89,7 +89,7 @@ const Paywall = () => {
             Desbloqueie sua Transformação
           </CardTitle>
           <CardDescription className="text-base mt-2">
-            Acesso completo ao programa por 30 dias
+            Acesso completo ao programa
           </CardDescription>
         </CardHeader>
 
@@ -111,19 +111,18 @@ const Paywall = () => {
           <div className="bg-muted/50 rounded-lg p-4 text-center">
             <p className="text-sm text-muted-foreground">
               <Check className="w-4 h-4 inline mr-1 text-green-500" />
-              Cancele a qualquer momento pela loja
+              Cancele a qualquer momento
             </p>
           </div>
 
-          <div className="text-center">
-            <div className="flex items-baseline justify-center gap-1">
-              <span className="text-4xl font-bold text-primary">{priceString}</span>
-              <span className="text-muted-foreground">/mês</span>
+          {priceString && (
+            <div className="text-center">
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-4xl font-bold text-primary">{priceString}</span>
+                <span className="text-muted-foreground">/mês</span>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Assinatura recorrente, cancele a qualquer momento
-            </p>
-          </div>
+          )}
 
           <Button 
             onClick={handlePurchase}
@@ -153,12 +152,23 @@ const Paywall = () => {
             Restaurar compras anteriores
           </Button>
 
-          <div className="text-center space-y-1">
-            <p className="text-xs text-muted-foreground">
-              Ao continuar, você concorda com nossos{' '}
-              <a href="/terms" className="underline hover:text-primary">Termos de Uso</a>
-              {' '}e{' '}
-              <a href="/privacy" className="underline hover:text-primary">Política de Privacidade</a>
+          {/* Apple Required Subscription Terms (Guideline 3.1.2) */}
+          <div className="text-center space-y-2 pt-2">
+            <div className="text-[10px] text-muted-foreground leading-relaxed space-y-1">
+              <p>
+                A assinatura é renovada automaticamente a menos que a renovação automática seja desativada pelo menos 24 horas antes do final do período atual.
+              </p>
+              <p>
+                O pagamento será cobrado na sua conta do iTunes na confirmação da compra. O valor da renovação será cobrado dentro de 24 horas antes do final do período atual.
+              </p>
+              <p>
+                Você pode gerenciar e cancelar suas assinaturas acessando as configurações da sua conta na App Store após a compra.
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground pt-1">
+              <Link to="/terms" className="underline hover:text-primary">Termos de Uso</Link>
+              {' • '}
+              <Link to="/privacy" className="underline hover:text-primary">Política de Privacidade</Link>
             </p>
           </div>
         </CardContent>
