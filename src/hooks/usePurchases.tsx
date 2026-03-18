@@ -192,7 +192,7 @@ export const usePurchases = () => {
 
       return false;
     }
-  }, [canPurchase, checkSubscription, toast]);
+  }, [canPurchase, state.isConfigured, configureRevenueCat, checkSubscription, toast]);
 
   // Restore purchases
   const restorePurchases = useCallback(async () => {
