@@ -120,6 +120,19 @@ export const usePurchases = () => {
       return false;
     }
 
+    // Try to configure on demand if not yet configured
+    if (!state.isConfigured) {
+      const configured = await configureRevenueCat();
+      if (!configured) {
+        toast({
+          title: "Erro",
+          description: "Não foi possível conectar à loja. Tente novamente.",
+          variant: "destructive"
+        });
+        return false;
+      }
+    }
+
     setState(prev => ({ ...prev, isPurchasing: true, error: null }));
 
     try {
