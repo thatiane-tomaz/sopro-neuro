@@ -142,7 +142,7 @@ export const usePurchases = () => {
       if (!configured) {
         toast({
           title: "Erro",
-          description: "Não foi possível conectar à loja. Tente novamente.",
+          description: state.error || "Não foi possível conectar à loja. Verifique sua conexão e tente novamente.",
           variant: "destructive"
         });
         return false;
