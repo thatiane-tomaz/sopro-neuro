@@ -151,8 +151,11 @@ const Onboarding = () => {
         description: "Suas respostas foram salvas com sucesso!"
       });
       
-      // Always go to dashboard - media is gated there for non-premium users
-      window.location.href = "/dashboard";
+      if (isPremium) {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/paywall";
+      }
     } catch (error) {
       console.error('Error saving onboarding:', error);
       toast({
