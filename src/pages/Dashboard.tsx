@@ -235,6 +235,12 @@ const Dashboard = () => {
   const handleMediaOpen = (day: number, type: 'video' | 'hypnosis') => {
     // Admins can open all media for testing
     if (!isAdmin) {
+      // Check if user has no active subscription (never paid)
+      if (!isPremium && !isExpired) {
+        navigate('/paywall');
+        return;
+      }
+      
       // Check if subscription is expired
       if (isExpired) {
         setShowExpiredDialog(true);
@@ -365,11 +371,7 @@ const Dashboard = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // Block access for non-premium, non-admin users
-  if (!isAdmin && !isPremium && !isExpired) {
-    console.log('User has no subscription, redirecting to paywall');
-    return <Navigate to="/paywall" replace />;
-  }
+  // Non-premium users can browse the dashboard but media is gated
 
   console.log('Rendering dashboard content');
 
