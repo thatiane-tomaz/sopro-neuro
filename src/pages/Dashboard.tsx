@@ -365,6 +365,12 @@ const Dashboard = () => {
     return <Navigate to="/login" replace />;
   }
 
+  // Block access for non-premium, non-admin users
+  if (!isAdmin && !isPremium && !isExpired) {
+    console.log('User has no subscription, redirecting to paywall');
+    return <Navigate to="/paywall" replace />;
+  }
+
   console.log('Rendering dashboard content');
 
   const handleLogout = async () => {
