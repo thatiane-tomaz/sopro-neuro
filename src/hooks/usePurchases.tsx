@@ -61,17 +61,25 @@ export const usePurchases = () => {
     try {
       const { Purchases } = await import('@revenuecat/purchases-capacitor');
       
+      console.log('[usePurchases] Step 1: Importing Purchases OK');
+      console.log('[usePurchases] Step 2: Configuring with apiKey:', apiKey?.substring(0, 10) + '...', 'userID:', user?.id?.substring(0, 8));
+      
       // Configure with user ID if available
       await Purchases.configure({
         apiKey,
         appUserID: user?.id || undefined
       });
 
-      console.log('[usePurchases] RevenueCat configured for', platform);
+      console.log('[usePurchases] Step 3: RevenueCat configured for', platform);
       
       // Get available products
       const offerings = await Purchases.getOfferings();
-      console.log('[usePurchases] Offerings:', offerings);
+      console.log('[usePurchases] Step 4: Offerings received:', JSON.stringify({
+        hasOfferings: !!offerings,
+        hasCurrent: !!offerings?.current,
+        packagesCount: offerings?.current?.availablePackages?.length || 0,
+        packageIds: offerings?.current?.availablePackages?.map(p => p.product.identifier) || []
+      }));
 
       const products: PurchaseProduct[] = [];
       
@@ -96,15 +104,16 @@ export const usePurchases = () => {
       return true;
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
-      console.error('[usePurchases] Error configuring RevenueCat:', errorMsg, error);
+      const errorCode = error && typeof error === 'object' && 'code' in error ? (error as any).code : 'unknown';
+      console.error('[usePurchases] Error configuring RevenueCat:', { errorMsg, errorCode, fullError: JSON.stringify(error) });
       
       // Log to database for remote debugging
       try {
         const { supabase } = await import('@/integrations/supabase/client');
         await supabase.from('app_error_logs').insert({
-          error_message: `RevenueCat config failed: ${errorMsg}`,
-          error_stack: error instanceof Error ? error.stack : null,
-          error_context: 'usePurchases.configureRevenueCat',
+          error_message: `RevenueCat config failed [${errorCode}]: ${errorMsg}`,
+          error_stack: error instanceof Error ? error.stack : JSON.stringify(error),
+          error_context: `usePurchases.configureRevenueCat | platform=${platform} | apiKey=${apiKey?.substring(0, 10)}`,
           page_url: window.location.pathname,
           platform,
         });
@@ -154,17 +163,30 @@ export const usePurchases = () => {
     try {
       const { Purchases } = await import('@revenuecat/purchases-capacitor');
       
+      console.log('[usePurchases] Purchase Step 1: Getting offerings...');
       // Get offerings and use the first available package (dynamic - works for any product type)
       const offerings = await Purchases.getOfferings();
+      console.log('[usePurchases] Purchase Step 2: Offerings:', JSON.stringify({
+        hasCurrent: !!offerings?.current,
+        packagesCount: offerings?.current?.availablePackages?.length || 0,
+        packageIds: offerings?.current?.availablePackages?.map(p => p.product.identifier) || []
+      }));
       const pkg = offerings.current?.availablePackages?.[0];
 
       if (!pkg) {
-        throw new Error('Nenhum produto disponível');
+        throw new Error('Nenhum produto disponível. Offerings: ' + JSON.stringify({
+          hasCurrent: !!offerings?.current,
+          allOfferingIds: Object.keys(offerings?.all || {})
+        }));
       }
 
+      console.log('[usePurchases] Purchase Step 3: Purchasing package:', pkg.product.identifier, pkg.product.priceString);
       // Make the purchase
       const purchaseResult = await Purchases.purchasePackage({ aPackage: pkg });
-      console.log('[usePurchases] Purchase result:', purchaseResult);
+      console.log('[usePurchases] Purchase Step 4: Result:', JSON.stringify({
+        hasEntitlements: !!purchaseResult?.customerInfo?.entitlements?.active,
+        activeEntitlements: Object.keys(purchaseResult?.customerInfo?.entitlements?.active || {})
+      }));
 
       // Check entitlements
       const customerInfo = purchaseResult.customerInfo;
@@ -185,13 +207,28 @@ export const usePurchases = () => {
         throw new Error('Compra não concedeu acesso premium');
       }
     } catch (error: unknown) {
-      console.error('[usePurchases] Purchase error:', error);
+      console.error('[usePurchases] Purchase error:', JSON.stringify(error));
       
       let errorMessage = 'Erro ao realizar compra';
+      const errorCode = error && typeof error === 'object' && 'code' in error ? (error as any).code : 'unknown';
       if (error && typeof error === 'object' && 'userCancelled' in error && error.userCancelled) {
         errorMessage = 'Compra cancelada';
       } else if (error instanceof Error) {
         errorMessage = error.message;
+      }
+
+      // Log purchase errors to database
+      try {
+        const { supabase } = await import('@/integrations/supabase/client');
+        await supabase.from('app_error_logs').insert({
+          error_message: `Purchase failed [${errorCode}]: ${errorMessage}`,
+          error_stack: error instanceof Error ? error.stack : JSON.stringify(error),
+          error_context: `usePurchases.purchasePremium | platform=${platform}`,
+          page_url: window.location.pathname,
+          platform,
+        });
+      } catch (logErr) {
+        console.warn('[usePurchases] Failed to log purchase error:', logErr);
       }
 
       setState(prev => ({
