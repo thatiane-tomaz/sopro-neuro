@@ -207,13 +207,28 @@ export const usePurchases = () => {
         throw new Error('Compra não concedeu acesso premium');
       }
     } catch (error: unknown) {
-      console.error('[usePurchases] Purchase error:', error);
+      console.error('[usePurchases] Purchase error:', JSON.stringify(error));
       
       let errorMessage = 'Erro ao realizar compra';
+      const errorCode = error && typeof error === 'object' && 'code' in error ? (error as any).code : 'unknown';
       if (error && typeof error === 'object' && 'userCancelled' in error && error.userCancelled) {
         errorMessage = 'Compra cancelada';
       } else if (error instanceof Error) {
         errorMessage = error.message;
+      }
+
+      // Log purchase errors to database
+      try {
+        const { supabase } = await import('@/integrations/supabase/client');
+        await supabase.from('app_error_logs').insert({
+          error_message: `Purchase failed [${errorCode}]: ${errorMessage}`,
+          error_stack: error instanceof Error ? error.stack : JSON.stringify(error),
+          error_context: `usePurchases.purchasePremium | platform=${platform}`,
+          page_url: window.location.pathname,
+          platform,
+        });
+      } catch (logErr) {
+        console.warn('[usePurchases] Failed to log purchase error:', logErr);
       }
 
       setState(prev => ({
