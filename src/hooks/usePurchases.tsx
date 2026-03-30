@@ -104,15 +104,16 @@ export const usePurchases = () => {
       return true;
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
-      console.error('[usePurchases] Error configuring RevenueCat:', errorMsg, error);
+      const errorCode = error && typeof error === 'object' && 'code' in error ? (error as any).code : 'unknown';
+      console.error('[usePurchases] Error configuring RevenueCat:', { errorMsg, errorCode, fullError: JSON.stringify(error) });
       
       // Log to database for remote debugging
       try {
         const { supabase } = await import('@/integrations/supabase/client');
         await supabase.from('app_error_logs').insert({
-          error_message: `RevenueCat config failed: ${errorMsg}`,
-          error_stack: error instanceof Error ? error.stack : null,
-          error_context: 'usePurchases.configureRevenueCat',
+          error_message: `RevenueCat config failed [${errorCode}]: ${errorMsg}`,
+          error_stack: error instanceof Error ? error.stack : JSON.stringify(error),
+          error_context: `usePurchases.configureRevenueCat | platform=${platform} | apiKey=${apiKey?.substring(0, 10)}`,
           page_url: window.location.pathname,
           platform,
         });
