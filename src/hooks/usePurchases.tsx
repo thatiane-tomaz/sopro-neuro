@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Capacitor } from '@capacitor/core';
@@ -25,6 +25,24 @@ interface PurchasesState {
   error: string | null;
 }
 
+interface RevenueCatCustomerInfo {
+  entitlements?: {
+    active?: Record<string, unknown>;
+  };
+  activeSubscriptions?: string[];
+}
+
+const getRevenueCatAccess = (customerInfo?: RevenueCatCustomerInfo) => {
+  const activeEntitlements = Object.keys(customerInfo?.entitlements?.active || {});
+  const activeSubscriptions = customerInfo?.activeSubscriptions || [];
+
+  return {
+    activeEntitlements,
+    activeSubscriptions,
+    hasAccess: activeEntitlements.length > 0 || activeSubscriptions.length > 0,
+  };
+};
+
 export const usePurchases = () => {
   const [state, setState] = useState<PurchasesState>({
     isConfigured: false,
@@ -32,6 +50,7 @@ export const usePurchases = () => {
     isPurchasing: false,
     error: null
   });
+  const configuredUserIdRef = useRef<string | null>(null);
   const { user } = useAuth();
   const { isPremium, checkSubscription } = useSubscription();
   const { toast } = useToast();
@@ -62,15 +81,28 @@ export const usePurchases = () => {
       const { Purchases } = await import('@revenuecat/purchases-capacitor');
       
       console.log('[usePurchases] Step 1: Importing Purchases OK');
-      console.log('[usePurchases] Step 2: Configuring with apiKey:', apiKey?.substring(0, 10) + '...', 'userID:', user?.id?.substring(0, 8));
       
-      // Configure with user ID if available
-      await Purchases.configure({
-        apiKey,
-        appUserID: user?.id || undefined
-      });
+      if (!state.isConfigured) {
+        console.log('[usePurchases] Step 2: Configuring with apiKey:', apiKey?.substring(0, 10) + '...', 'userID:', user?.id?.substring(0, 8));
 
-      console.log('[usePurchases] Step 3: RevenueCat configured for', platform);
+        await Purchases.configure({
+          apiKey,
+          appUserID: user?.id || undefined
+        });
+        configuredUserIdRef.current = user?.id || null;
+
+        console.log('[usePurchases] Step 3: RevenueCat configured for', platform);
+      } else if (user?.id && configuredUserIdRef.current !== user.id) {
+        const logIn = (Purchases as unknown as {
+          logIn?: (params: { appUserID: string }) => Promise<unknown>;
+        }).logIn;
+
+        if (logIn) {
+          await logIn({ appUserID: user.id });
+          configuredUserIdRef.current = user.id;
+          console.log('[usePurchases] Step 3b: RevenueCat user linked via logIn', user.id.substring(0, 8));
+        }
+      }
       
       // Get available products
       const offerings = await Purchases.getOfferings();
@@ -191,14 +223,16 @@ export const usePurchases = () => {
       console.log('[usePurchases] Purchase Step 3: Purchasing package:', pkg.product.identifier, pkg.product.priceString);
       // Make the purchase
       const purchaseResult = await Purchases.purchasePackage({ aPackage: pkg });
+      const access = getRevenueCatAccess(purchaseResult.customerInfo as RevenueCatCustomerInfo);
       console.log('[usePurchases] Purchase Step 4: Result:', JSON.stringify({
         hasEntitlements: !!purchaseResult?.customerInfo?.entitlements?.active,
-        activeEntitlements: Object.keys(purchaseResult?.customerInfo?.entitlements?.active || {})
+        activeEntitlements: access.activeEntitlements,
+        activeSubscriptions: access.activeSubscriptions
       }));
 
       // Check entitlements
       const customerInfo = purchaseResult.customerInfo;
-      const hasPremium = customerInfo.entitlements.active['premium'] !== undefined;
+      const hasPremium = getRevenueCatAccess(customerInfo as RevenueCatCustomerInfo).hasAccess;
 
       if (hasPremium) {
         toast({
@@ -212,7 +246,7 @@ export const usePurchases = () => {
         setState(prev => ({ ...prev, isPurchasing: false }));
         return true;
       } else {
-        throw new Error('Compra não concedeu acesso premium');
+        throw new Error('Compra concluída, mas nenhum entitlement/assinatura ativa foi identificado');
       }
     } catch (error: unknown) {
       console.error('[usePurchases] Purchase error:', JSON.stringify(error));
@@ -269,7 +303,7 @@ export const usePurchases = () => {
       const customerInfo = await Purchases.restorePurchases();
       console.log('[usePurchases] Restore result:', customerInfo);
 
-      const hasPremium = customerInfo.customerInfo.entitlements.active['premium'] !== undefined;
+      const hasPremium = getRevenueCatAccess(customerInfo.customerInfo as RevenueCatCustomerInfo).hasAccess;
 
       if (hasPremium) {
         toast({
