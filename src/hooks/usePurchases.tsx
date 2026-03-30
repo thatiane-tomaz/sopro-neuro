@@ -74,11 +74,19 @@ export const usePurchases = () => {
       
       // Get available products
       const offerings = await Purchases.getOfferings();
-      console.log('[usePurchases] Step 4: Offerings received:', JSON.stringify({
+      console.log('[usePurchases] Step 4: FULL offerings object:', JSON.stringify(offerings));
+      console.log('[usePurchases] Step 4: Offerings summary:', JSON.stringify({
         hasOfferings: !!offerings,
         hasCurrent: !!offerings?.current,
+        currentId: offerings?.current?.identifier || 'none',
+        allOfferingIds: Object.keys(offerings?.all || {}),
         packagesCount: offerings?.current?.availablePackages?.length || 0,
-        packageIds: offerings?.current?.availablePackages?.map(p => p.product.identifier) || []
+        packageIds: offerings?.current?.availablePackages?.map(p => p.product.identifier) || [],
+        packageDetails: offerings?.current?.availablePackages?.map(p => ({
+          id: p.product.identifier,
+          price: p.product.priceString,
+          type: p.packageType
+        })) || []
       }));
 
       const products: PurchaseProduct[] = [];
