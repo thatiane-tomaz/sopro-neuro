@@ -61,17 +61,25 @@ export const usePurchases = () => {
     try {
       const { Purchases } = await import('@revenuecat/purchases-capacitor');
       
+      console.log('[usePurchases] Step 1: Importing Purchases OK');
+      console.log('[usePurchases] Step 2: Configuring with apiKey:', apiKey?.substring(0, 10) + '...', 'userID:', user?.id?.substring(0, 8));
+      
       // Configure with user ID if available
       await Purchases.configure({
         apiKey,
         appUserID: user?.id || undefined
       });
 
-      console.log('[usePurchases] RevenueCat configured for', platform);
+      console.log('[usePurchases] Step 3: RevenueCat configured for', platform);
       
       // Get available products
       const offerings = await Purchases.getOfferings();
-      console.log('[usePurchases] Offerings:', offerings);
+      console.log('[usePurchases] Step 4: Offerings received:', JSON.stringify({
+        hasOfferings: !!offerings,
+        hasCurrent: !!offerings?.current,
+        packagesCount: offerings?.current?.availablePackages?.length || 0,
+        packageIds: offerings?.current?.availablePackages?.map(p => p.product.identifier) || []
+      }));
 
       const products: PurchaseProduct[] = [];
       
