@@ -163,17 +163,30 @@ export const usePurchases = () => {
     try {
       const { Purchases } = await import('@revenuecat/purchases-capacitor');
       
+      console.log('[usePurchases] Purchase Step 1: Getting offerings...');
       // Get offerings and use the first available package (dynamic - works for any product type)
       const offerings = await Purchases.getOfferings();
+      console.log('[usePurchases] Purchase Step 2: Offerings:', JSON.stringify({
+        hasCurrent: !!offerings?.current,
+        packagesCount: offerings?.current?.availablePackages?.length || 0,
+        packageIds: offerings?.current?.availablePackages?.map(p => p.product.identifier) || []
+      }));
       const pkg = offerings.current?.availablePackages?.[0];
 
       if (!pkg) {
-        throw new Error('Nenhum produto disponível');
+        throw new Error('Nenhum produto disponível. Offerings: ' + JSON.stringify({
+          hasCurrent: !!offerings?.current,
+          allOfferingIds: Object.keys(offerings?.all || {})
+        }));
       }
 
+      console.log('[usePurchases] Purchase Step 3: Purchasing package:', pkg.product.identifier, pkg.product.priceString);
       // Make the purchase
       const purchaseResult = await Purchases.purchasePackage({ aPackage: pkg });
-      console.log('[usePurchases] Purchase result:', purchaseResult);
+      console.log('[usePurchases] Purchase Step 4: Result:', JSON.stringify({
+        hasEntitlements: !!purchaseResult?.customerInfo?.entitlements?.active,
+        activeEntitlements: Object.keys(purchaseResult?.customerInfo?.entitlements?.active || {})
+      }));
 
       // Check entitlements
       const customerInfo = purchaseResult.customerInfo;
