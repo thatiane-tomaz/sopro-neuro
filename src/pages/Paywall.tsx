@@ -50,14 +50,18 @@ const Paywall = () => {
   }, [user, authLoading, navigate]);
 
   const handlePurchase = async () => {
+    console.log('[Paywall] Purchase button clicked', { canPurchase, isConfigured, productsCount: products.length });
     const success = await purchasePremium();
+    console.log('[Paywall] Purchase result:', success);
     if (success) {
       navigate('/dashboard', { replace: true });
     }
   };
 
   const handleRestore = async () => {
+    console.log('[Paywall] Restore button clicked', { canPurchase, isConfigured });
     const success = await restorePurchases();
+    console.log('[Paywall] Restore result:', success);
     if (success) {
       navigate('/dashboard', { replace: true });
     }
