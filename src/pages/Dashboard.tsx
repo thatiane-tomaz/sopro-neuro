@@ -858,6 +858,12 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* Feedback Section */}
+        <FeedbackSection 
+          currentDay={currentDay} 
+          showAllForPreview={isAdmin} 
+          isDayCompleted={(day) => isDayCompleted(day)} 
+        />
 
         </TabsContent>
 
