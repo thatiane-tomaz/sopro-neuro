@@ -20,14 +20,31 @@ const Paywall = () => {
     restorePurchases
   } = usePurchases();
 
+  // Diagnostic logging for paywall state
+  useEffect(() => {
+    console.log('[Paywall] Rendered with state:', {
+      authLoading,
+      subLoading,
+      hasUser: !!user,
+      isPremium,
+      canPurchase,
+      isConfigured,
+      productsCount: products.length,
+      productIds: products.map(p => p.identifier),
+      isPurchasing,
+    });
+  }, [authLoading, subLoading, user, isPremium, canPurchase, isConfigured, products, isPurchasing]);
+
   useEffect(() => {
     if (!subLoading && isPremium) {
+      console.log('[Paywall] Redirecting to dashboard - user is premium');
       navigate('/dashboard', { replace: true });
     }
   }, [isPremium, subLoading, navigate]);
 
   useEffect(() => {
     if (!authLoading && !user) {
+      console.log('[Paywall] Redirecting to login - no user');
       navigate('/login', { replace: true });
     }
   }, [user, authLoading, navigate]);
