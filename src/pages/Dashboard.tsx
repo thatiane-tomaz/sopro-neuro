@@ -448,6 +448,13 @@ const Dashboard = () => {
           </div>
         </header>
 
+        {/* Feedback Section - shown at the top until user answers */}
+        <FeedbackSection 
+          currentDay={currentDay} 
+          showAllForPreview={isAdmin} 
+          isDayCompleted={(day) => isDayCompleted(day)} 
+        />
+
         {/* Tabs Navigation */}
         <Tabs defaultValue="daily" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
