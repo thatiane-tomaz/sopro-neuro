@@ -521,8 +521,6 @@ const Dashboard = () => {
         )}
 
 
-
-
         {/* Phases with Day Carousels */}
         <div className="space-y-8">
           {Array.isArray(phaseGroups) && phaseGroups.length > 0 && phaseGroups.map((phase) => {
@@ -860,6 +858,12 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* Feedback Section */}
+        <FeedbackSection 
+          currentDay={currentDay} 
+          showAllForPreview={isAdmin} 
+          isDayCompleted={(day) => isDayCompleted(day)} 
+        />
 
         </TabsContent>
 
