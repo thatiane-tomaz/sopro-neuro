@@ -4,6 +4,8 @@ export interface FeedbackQuestion {
   question: string;
   responseType: "single" | "scale";
   options?: string[];
+  scaleLabelLow?: string;
+  scaleLabelHigh?: string;
 }
 
 export const feedbackQuestions: FeedbackQuestion[] = [
@@ -26,6 +28,8 @@ export const feedbackQuestions: FeedbackQuestion[] = [
     type: "motivation",
     question: "Como está seu nível de motivação e confiança para parar de fumar hoje?",
     responseType: "scale",
+    scaleLabelLow: "Pouco motivado",
+    scaleLabelHigh: "Muito motivado",
   },
   {
     day: 10,
@@ -44,5 +48,7 @@ export const feedbackQuestions: FeedbackQuestion[] = [
     type: "nps",
     question: "De 0 a 10, qual a chance de você recomendar o Sopro para alguém que quer parar de fumar?",
     responseType: "scale",
+    scaleLabelLow: "Baixa",
+    scaleLabelHigh: "Alta",
   },
 ];
