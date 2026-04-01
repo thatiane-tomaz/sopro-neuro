@@ -18,6 +18,7 @@ import CancelSubscription from "./pages/CancelSubscription";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import Install from "./pages/Install";
+import FeedbackPreview from "./pages/FeedbackPreview";
 import EmailConfirmed from "./pages/EmailConfirmed";
 import ErrorLogs from "./pages/ErrorLogs";
 
