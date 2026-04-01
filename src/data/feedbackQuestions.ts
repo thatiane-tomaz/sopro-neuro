@@ -48,5 +48,7 @@ export const feedbackQuestions: FeedbackQuestion[] = [
     type: "nps",
     question: "De 0 a 10, qual a chance de você recomendar o Sopro para alguém que quer parar de fumar?",
     responseType: "scale",
+    scaleLabelLow: "Baixa",
+    scaleLabelHigh: "Alta",
   },
 ];
