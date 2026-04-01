@@ -28,6 +28,8 @@ export const feedbackQuestions: FeedbackQuestion[] = [
     type: "motivation",
     question: "Como está seu nível de motivação e confiança para parar de fumar hoje?",
     responseType: "scale",
+    scaleLabelLow: "Pouco motivado",
+    scaleLabelHigh: "Muito motivado",
   },
   {
     day: 10,
