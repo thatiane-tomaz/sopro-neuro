@@ -293,9 +293,12 @@ const Dashboard = () => {
     }
   };
 
+  // Track last reported progress for close handler
+  const lastReportedProgressRef = useRef(0);
+
   // Save final progress when user closes the player (catches progress missed by throttle)
   const handleCloseWithProgress = (percentage: number) => {
-    if (currentTrackingId && percentage > lastReportedProgress.current) {
+    if (currentTrackingId && percentage > lastReportedProgressRef.current) {
       console.log(`[Dashboard] Saving final progress on close: ${percentage}%`);
       updateProgress({
         trackingId: currentTrackingId,
@@ -304,8 +307,6 @@ const Dashboard = () => {
       });
     }
   };
-
-  const lastReportedProgress = useRef(0);
 
   const handleMediaComplete = () => {
     if (currentTrackingId) {
