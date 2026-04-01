@@ -69,12 +69,13 @@ export const usePurchases = () => {
   }, [isNativeIOS, isNativeAndroid]);
 
   // Configure RevenueCat - extracted as a reusable function
-  const configureRevenueCat = useCallback(async () => {
+  // Returns { success: true } or { success: false, errorDetail: string }
+  const configureRevenueCat = useCallback(async (): Promise<{ success: boolean; errorDetail?: string }> => {
     const apiKey = getApiKey();
     
     if (!canPurchase || !apiKey || apiKey.includes('PLACEHOLDER')) {
       console.log('[usePurchases] Not native or missing API key, skipping RevenueCat config');
-      return false;
+      return { success: false, errorDetail: `Plataforma não suportada (canPurchase=${canPurchase}, hasKey=${!!apiKey})` };
     }
 
     try {
@@ -135,24 +136,41 @@ export const usePurchases = () => {
         }
       }
 
+      // Log to DB if offerings loaded but no products found
+      if (products.length === 0) {
+        const emptyDetail = `Offerings loaded but 0 products. current=${offerings?.current?.identifier || 'null'}, allIds=${Object.keys(offerings?.all || {}).join(',')}`;
+        console.warn('[usePurchases] ' + emptyDetail);
+        try {
+          const { supabase } = await import('@/integrations/supabase/client');
+          await supabase.from('app_error_logs').insert({
+            error_message: `RevenueCat: ${emptyDetail}`,
+            error_context: `usePurchases.configureRevenueCat | platform=${platform}`,
+            page_url: window.location.pathname,
+            platform,
+          });
+        } catch (_) { /* ignore */ }
+      }
+
       setState(prev => ({
         ...prev,
         isConfigured: true,
         products,
         error: null
       }));
-      return true;
+      return { success: true };
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       const errorCode = error && typeof error === 'object' && 'code' in error ? (error as any).code : 'unknown';
-      console.error('[usePurchases] Error configuring RevenueCat:', { errorMsg, errorCode, fullError: JSON.stringify(error) });
+      const fullErrorStr = JSON.stringify(error);
+      const errorDetail = `[${errorCode}] ${errorMsg}`;
+      console.error('[usePurchases] Error configuring RevenueCat:', { errorMsg, errorCode, fullError: fullErrorStr });
       
       // Log to database for remote debugging
       try {
         const { supabase } = await import('@/integrations/supabase/client');
         await supabase.from('app_error_logs').insert({
-          error_message: `RevenueCat config failed [${errorCode}]: ${errorMsg}`,
-          error_stack: error instanceof Error ? error.stack : JSON.stringify(error),
+          error_message: `RevenueCat config failed ${errorDetail}`,
+          error_stack: error instanceof Error ? error.stack : fullErrorStr,
           error_context: `usePurchases.configureRevenueCat | platform=${platform} | apiKey=${apiKey?.substring(0, 10)}`,
           page_url: window.location.pathname,
           platform,
@@ -163,9 +181,9 @@ export const usePurchases = () => {
       
       setState(prev => ({
         ...prev,
-        error: `Erro ao carregar produtos: ${errorMsg}`
+        error: errorDetail
       }));
-      return false;
+      return { success: false, errorDetail };
     }
   }, [canPurchase, platform, user?.id, getApiKey]);
 
