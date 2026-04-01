@@ -36,6 +36,7 @@ const MediaPlayer = ({
   // Store callbacks in refs to avoid dependency issues
   const onProgressRef = useRef(onProgress);
   const onCompleteRef = useRef(onComplete);
+  const onCloseWithProgressRef = useRef(onCloseWithProgress);
   
   // Throttle progress updates to prevent excessive database calls
   const lastProgressUpdateRef = useRef<number>(0);
