@@ -51,7 +51,21 @@ const MediaPlayer = ({
   useEffect(() => {
     onProgressRef.current = onProgress;
     onCompleteRef.current = onComplete;
-  }, [onProgress, onComplete]);
+    onCloseWithProgressRef.current = onCloseWithProgress;
+  }, [onProgress, onComplete, onCloseWithProgress]);
+
+  // Handle close: save final progress before closing
+  const handleClose = useCallback(() => {
+    const media = mediaRef.current;
+    if (media && media.duration > 0 && isFinite(media.duration)) {
+      const finalPercentage = Math.floor((media.currentTime / media.duration) * 100);
+      console.log(`[MediaPlayer] Closing with progress: ${finalPercentage}%`);
+      if (onCloseWithProgressRef.current && finalPercentage > 0) {
+        onCloseWithProgressRef.current(finalPercentage);
+      }
+    }
+    onClose();
+  }, [onClose]);
 
   console.log('MediaPlayer opened with:', { title, fileUrl, contentType, interactionType });
   
