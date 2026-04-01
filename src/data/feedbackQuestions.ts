@@ -4,6 +4,8 @@ export interface FeedbackQuestion {
   question: string;
   responseType: "single" | "scale";
   options?: string[];
+  scaleLabelLow?: string;
+  scaleLabelHigh?: string;
 }
 
 export const feedbackQuestions: FeedbackQuestion[] = [
