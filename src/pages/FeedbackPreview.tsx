@@ -40,9 +40,9 @@ const FeedbackPreview = () => {
 
             {question.responseType === "scale" && (
               <div className="space-y-3">
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>0</span>
-                  <span>10</span>
+              <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>{question.scaleLabelLow || "0"}</span>
+                  <span>{question.scaleLabelHigh || "10"}</span>
                 </div>
                 <div className="grid grid-cols-11 gap-1">
                   {Array.from({ length: 11 }, (_, i) => (
