@@ -284,6 +284,7 @@ const Dashboard = () => {
   };
 
   const handleMediaProgress = (percentage: number) => {
+    lastReportedProgressRef.current = percentage;
     if (currentTrackingId) {
       updateProgress({
         trackingId: currentTrackingId,
