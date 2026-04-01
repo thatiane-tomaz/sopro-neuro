@@ -12,6 +12,7 @@ interface MediaPlayerProps {
   onClose: () => void;
   onProgress?: (percentage: number) => void;
   onComplete?: () => void;
+  onCloseWithProgress?: (percentage: number) => void;
 }
 
 const MediaPlayer = ({ 
@@ -22,7 +23,8 @@ const MediaPlayer = ({
   interactionType,
   onClose,
   onProgress,
-  onComplete 
+  onComplete,
+  onCloseWithProgress
 }: MediaPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -34,6 +36,7 @@ const MediaPlayer = ({
   // Store callbacks in refs to avoid dependency issues
   const onProgressRef = useRef(onProgress);
   const onCompleteRef = useRef(onComplete);
+  const onCloseWithProgressRef = useRef(onCloseWithProgress);
   
   // Throttle progress updates to prevent excessive database calls
   const lastProgressUpdateRef = useRef<number>(0);
@@ -48,7 +51,21 @@ const MediaPlayer = ({
   useEffect(() => {
     onProgressRef.current = onProgress;
     onCompleteRef.current = onComplete;
-  }, [onProgress, onComplete]);
+    onCloseWithProgressRef.current = onCloseWithProgress;
+  }, [onProgress, onComplete, onCloseWithProgress]);
+
+  // Handle close: save final progress before closing
+  const handleClose = useCallback(() => {
+    const media = mediaRef.current;
+    if (media && media.duration > 0 && isFinite(media.duration)) {
+      const finalPercentage = Math.floor((media.currentTime / media.duration) * 100);
+      console.log(`[MediaPlayer] Closing with progress: ${finalPercentage}%`);
+      if (onCloseWithProgressRef.current && finalPercentage > 0) {
+        onCloseWithProgressRef.current(finalPercentage);
+      }
+    }
+    onClose();
+  }, [onClose]);
 
   console.log('MediaPlayer opened with:', { title, fileUrl, contentType, interactionType });
   
@@ -100,18 +117,18 @@ const MediaPlayer = ({
           const percentage = Math.floor((currentMediaTime / mediaDuration) * 100);
           const now = Date.now();
           
-          // Throttle progress updates: only update if 5+ seconds passed AND percentage changed by 5+
+          // Throttle progress updates: only update if 3+ seconds passed AND percentage changed by 2+
           const timeSinceLastUpdate = now - lastProgressUpdateRef.current;
           const percentageChange = Math.abs(percentage - lastReportedPercentageRef.current);
           
-          if (onProgressRef.current && (timeSinceLastUpdate >= 5000 && percentageChange >= 5)) {
+          if (onProgressRef.current && (timeSinceLastUpdate >= 3000 && percentageChange >= 2)) {
             lastProgressUpdateRef.current = now;
             lastReportedPercentageRef.current = percentage;
             onProgressRef.current(percentage);
           }
           
-          // Completion check (unchanged)
-          if (percentage >= 98 && !hasCompleted && onCompleteRef.current) {
+          // Completion check - trigger at 85% to match DB trigger
+          if (percentage >= 85 && !hasCompleted && onCompleteRef.current) {
             setHasCompleted(true);
             onCompleteRef.current();
           }
@@ -334,7 +351,7 @@ const MediaPlayer = ({
             <Button 
               variant="ghost" 
               size="icon"
-              onClick={onClose}
+              onClick={handleClose}
               className="rounded-full hover:bg-primary/10 text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px]"
             >
               <X className="h-6 w-6" />

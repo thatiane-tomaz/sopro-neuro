@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
@@ -112,6 +112,7 @@ const Dashboard = () => {
   const [, setCountdownTick] = useState(0); // Forces re-render for countdown updates
   const { getSosHypnosis } = useSosHypnosis();
   const { toast } = useToast();
+  const lastReportedProgressRef = useRef(0);
 
   // Countdown timer effect - triggers re-render every minute to update countdown displays
   useEffect(() => {
@@ -284,7 +285,23 @@ const Dashboard = () => {
   };
 
   const handleMediaProgress = (percentage: number) => {
+    lastReportedProgressRef.current = percentage;
     if (currentTrackingId) {
+      updateProgress({
+        trackingId: currentTrackingId,
+        progressPercentage: percentage,
+        finished: percentage >= 85
+      });
+    }
+  };
+
+
+
+
+  // Save final progress when user closes the player (catches progress missed by throttle)
+  const handleCloseWithProgress = (percentage: number) => {
+    if (currentTrackingId && percentage > lastReportedProgressRef.current) {
+      console.log(`[Dashboard] Saving final progress on close: ${percentage}%`);
       updateProgress({
         trackingId: currentTrackingId,
         progressPercentage: percentage,
@@ -998,10 +1015,12 @@ const Dashboard = () => {
           interactionType={selectedMedia.interactionType}
           onClose={() => {
             setSelectedMedia(null);
-            setCurrentTrackingId(null); // Clean up tracking ID when closing
+            setCurrentTrackingId(null);
+            lastReportedProgressRef.current = 0;
           }}
           onProgress={handleMediaProgress}
           onComplete={handleMediaComplete}
+          onCloseWithProgress={handleCloseWithProgress}
         />
       )}
 
