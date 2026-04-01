@@ -351,7 +351,7 @@ const MediaPlayer = ({
             <Button 
               variant="ghost" 
               size="icon"
-              onClick={onClose}
+              onClick={handleClose}
               className="rounded-full hover:bg-primary/10 text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px]"
             >
               <X className="h-6 w-6" />
