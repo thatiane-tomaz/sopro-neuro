@@ -112,6 +112,7 @@ const Dashboard = () => {
   const [, setCountdownTick] = useState(0); // Forces re-render for countdown updates
   const { getSosHypnosis } = useSosHypnosis();
   const { toast } = useToast();
+  const lastReportedProgressRef = useRef(0);
 
   // Countdown timer effect - triggers re-render every minute to update countdown displays
   useEffect(() => {
