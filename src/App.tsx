@@ -18,6 +18,7 @@ import CancelSubscription from "./pages/CancelSubscription";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import Install from "./pages/Install";
+import FeedbackPreview from "./pages/FeedbackPreview";
 import EmailConfirmed from "./pages/EmailConfirmed";
 import ErrorLogs from "./pages/ErrorLogs";
 
@@ -61,6 +62,7 @@ const App = () => (
               <Route path="/cancel-subscription" element={<CancelSubscription />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/error-logs" element={<ErrorLogs />} />
+              <Route path="/feedback-preview" element={<FeedbackPreview />} />
               <Route path="/404" element={<NotFound />} />
               <Route path="*" element={<Navigate to="/404" replace />} />
             </Routes>
