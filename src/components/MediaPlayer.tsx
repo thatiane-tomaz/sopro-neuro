@@ -12,6 +12,7 @@ interface MediaPlayerProps {
   onClose: () => void;
   onProgress?: (percentage: number) => void;
   onComplete?: () => void;
+  onCloseWithProgress?: (percentage: number) => void;
 }
 
 const MediaPlayer = ({ 
