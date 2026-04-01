@@ -100,18 +100,18 @@ const MediaPlayer = ({
           const percentage = Math.floor((currentMediaTime / mediaDuration) * 100);
           const now = Date.now();
           
-          // Throttle progress updates: only update if 5+ seconds passed AND percentage changed by 5+
+          // Throttle progress updates: only update if 3+ seconds passed AND percentage changed by 2+
           const timeSinceLastUpdate = now - lastProgressUpdateRef.current;
           const percentageChange = Math.abs(percentage - lastReportedPercentageRef.current);
           
-          if (onProgressRef.current && (timeSinceLastUpdate >= 5000 && percentageChange >= 5)) {
+          if (onProgressRef.current && (timeSinceLastUpdate >= 3000 && percentageChange >= 2)) {
             lastProgressUpdateRef.current = now;
             lastReportedPercentageRef.current = percentage;
             onProgressRef.current(percentage);
           }
           
-          // Completion check (unchanged)
-          if (percentage >= 98 && !hasCompleted && onCompleteRef.current) {
+          // Completion check - trigger at 85% to match DB trigger
+          if (percentage >= 85 && !hasCompleted && onCompleteRef.current) {
             setHasCompleted(true);
             onCompleteRef.current();
           }
