@@ -11,10 +11,8 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   build: {
-    rollupOptions: {
-      // Externalize native-only Capacitor plugins for web builds
-      external: ['@revenuecat/purchases-capacitor']
-    }
+    // @revenuecat/purchases-capacitor is bundled normally;
+    // on web it's guarded by Capacitor.isNativePlatform() checks
   },
   plugins: [
     react(),
