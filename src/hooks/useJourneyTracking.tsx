@@ -42,9 +42,9 @@ export const useJourneyTracking = () => {
       }
     },
     enabled: !!user?.id,
-    staleTime: 2 * 60 * 1000, // 2 minutes - tracking changes more frequently
+    staleTime: 2 * 60 * 1000,
     gcTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true, // Refetch when user returns to app
   });
 
   // Start tracking an interaction
