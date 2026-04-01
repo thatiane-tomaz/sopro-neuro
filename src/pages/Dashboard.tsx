@@ -295,8 +295,8 @@ const Dashboard = () => {
     }
   };
 
-  // Track last reported progress for close handler
-  const lastReportedProgressRef = useRef(0);
+
+
 
   // Save final progress when user closes the player (catches progress missed by throttle)
   const handleCloseWithProgress = (percentage: number) => {
