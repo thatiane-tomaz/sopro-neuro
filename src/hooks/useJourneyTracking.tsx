@@ -286,6 +286,7 @@ export const useJourneyTracking = () => {
     const unlockTime = new Date(completionTime.getTime() + 6 * 60 * 60 * 1000);
     const msUntilUnlock = unlockTime.getTime() - Date.now();
     
+    console.log(`[getTimeUntilNextUnlock] day=${previousDay}, completionTime=${completionTime.toISOString()}, unlockTime=${unlockTime.toISOString()}, msLeft=${msUntilUnlock}`);
     return msUntilUnlock > 0 ? msUntilUnlock : 0;
   };
 
