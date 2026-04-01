@@ -288,7 +288,7 @@ const Dashboard = () => {
       updateProgress({
         trackingId: currentTrackingId,
         progressPercentage: percentage,
-        finished: percentage >= 98
+        finished: percentage >= 85
       });
     }
   };
