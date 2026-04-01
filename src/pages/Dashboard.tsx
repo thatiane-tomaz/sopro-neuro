@@ -1014,10 +1014,12 @@ const Dashboard = () => {
           interactionType={selectedMedia.interactionType}
           onClose={() => {
             setSelectedMedia(null);
-            setCurrentTrackingId(null); // Clean up tracking ID when closing
+            setCurrentTrackingId(null);
+            lastReportedProgressRef.current = 0;
           }}
           onProgress={handleMediaProgress}
           onComplete={handleMediaComplete}
+          onCloseWithProgress={handleCloseWithProgress}
         />
       )}
 
