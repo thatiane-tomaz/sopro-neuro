@@ -449,7 +449,6 @@ const MediaPlayer = ({
               <div className="relative" onContextMenu={(e) => e.preventDefault()}>
                 <audio
                   ref={mediaRef as React.RefObject<HTMLAudioElement>}
-                  className="sr-only"
                   preload="auto"
                   controlsList="nodownload noplaybackrate"
                   onPlay={() => setIsPlaying(true)}
