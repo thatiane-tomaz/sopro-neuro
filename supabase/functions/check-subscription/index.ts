@@ -96,12 +96,34 @@ serve(async (req) => {
       }
     }
 
-    // Check subscription in database by email
-    const { data: subData, error: subError } = await supabaseClient
+    // Check subscription in database by email first, then by user_id
+    let subData = null;
+    let subError = null;
+
+    // Try by email
+    const emailResult = await supabaseClient
       .from('subscriptions')
       .select('*')
       .eq('email', email)
       .maybeSingle();
+
+    subData = emailResult.data;
+    subError = emailResult.error;
+
+    // If not found by email and we have a userId, try by user_id
+    if (!subData && !subError && userId) {
+      logStep("No subscription by email, trying user_id", { userId });
+      const userIdResult = await supabaseClient
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      subData = userIdResult.data;
+      subError = userIdResult.error;
+    }
 
     if (subError) {
       logStep("Error fetching subscription", { error: subError });
@@ -109,7 +131,7 @@ serve(async (req) => {
     }
 
     if (!subData) {
-      logStep("No subscription found for email", { email });
+      logStep("No subscription found", { email, userId });
       return new Response(JSON.stringify({ 
         subscribed: false,
         has_subscription: false
@@ -117,6 +139,15 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
+    }
+
+    // If subscription found by user_id but missing email, update it
+    if (subData && !subData.email && email) {
+      logStep("Updating subscription with email", { email });
+      await supabaseClient
+        .from('subscriptions')
+        .update({ email })
+        .eq('id', subData.id);
     }
 
     const now = new Date();
