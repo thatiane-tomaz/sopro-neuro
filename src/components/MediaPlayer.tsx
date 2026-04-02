@@ -450,6 +450,7 @@ const MediaPlayer = ({
                 <audio
                   ref={mediaRef as React.RefObject<HTMLAudioElement>}
                   className="hidden"
+                  preload="auto"
                   controlsList="nodownload noplaybackrate"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
