@@ -278,12 +278,19 @@ const MediaPlayer = ({
         
         // Check if media is ready to play
         if (media.readyState < 2) {
-          console.log('Media not ready, waiting...');
+          console.log('Media not ready, readyState:', media.readyState, 'networkState:', media.networkState);
+          // On iOS WKWebView, hidden audio elements may not load automatically
+          // Force load if not started yet
+          if (media.readyState === 0 || media.networkState === 0) {
+            console.log('Forcing media.load() for iOS compatibility');
+            media.load();
+          }
           // Wait for media to be ready
           await new Promise<void>((resolve, reject) => {
             const timeout = setTimeout(() => {
+              console.error('Timeout waiting for media. readyState:', media.readyState, 'networkState:', media.networkState, 'src:', media.currentSrc);
               reject(new Error('Timeout waiting for media'));
-            }, 10000);
+            }, 15000);
             
             const onCanPlay = () => {
               clearTimeout(timeout);
@@ -443,6 +450,7 @@ const MediaPlayer = ({
                 <audio
                   ref={mediaRef as React.RefObject<HTMLAudioElement>}
                   className="hidden"
+                  preload="auto"
                   controlsList="nodownload noplaybackrate"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
