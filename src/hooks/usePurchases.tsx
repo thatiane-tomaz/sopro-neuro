@@ -307,10 +307,41 @@ export const usePurchases = () => {
       }));
 
       if (access.hasAccess) {
-        toast({ title: "Compra realizada!", description: "Você agora tem acesso premium por 30 dias" });
-        await checkSubscription();
-        setState(prev => ({ ...prev, isPurchasing: false }));
-        return true;
+        // Wait for webhook to process and verify Supabase actually has the subscription
+        console.log('[usePurchases] Purchase: RevenueCat confirms access, verifying Supabase subscription...');
+        
+        // Retry checking subscription a few times to allow webhook processing
+        let supabaseConfirmed = false;
+        for (let attempt = 1; attempt <= 5; attempt++) {
+          await delay(2000); // Wait 2s between checks
+          await checkSubscription();
+          
+          // Re-check subscription status from Supabase
+          const { supabase } = await import('@/integrations/supabase/client');
+          const { data } = await supabase.functions.invoke('check-subscription');
+          console.log(`[usePurchases] Supabase verification attempt ${attempt}:`, JSON.stringify(data));
+          
+          if (data?.subscribed) {
+            supabaseConfirmed = true;
+            break;
+          }
+        }
+        
+        if (supabaseConfirmed) {
+          toast({ title: "Compra realizada!", description: "Você agora tem acesso premium por 30 dias" });
+          setState(prev => ({ ...prev, isPurchasing: false }));
+          return true;
+        } else {
+          // RevenueCat says access but Supabase doesn't have it - likely subscription belongs to another account
+          console.warn('[usePurchases] ⚠️ RevenueCat has access but Supabase subscription not found for this user');
+          toast({ 
+            title: "Assinatura não vinculada", 
+            description: "Sua assinatura da Apple está vinculada a outra conta. Faça login na conta original ou entre em contato com o suporte.", 
+            variant: "destructive" 
+          });
+          setState(prev => ({ ...prev, isPurchasing: false }));
+          return false;
+        }
       } else {
         throw new Error('Compra concluída, mas nenhum entitlement/assinatura ativa identificado');
       }
