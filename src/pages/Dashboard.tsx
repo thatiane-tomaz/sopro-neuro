@@ -618,12 +618,13 @@ const Dashboard = () => {
                       </h2>
                       {(!isPhaseCollapsible || isPhaseExpanded) && (
                         <p className={`text-sm md:text-base ${isPhaseCollapsible ? 'text-muted-foreground/80' : 'text-muted-foreground'}`}>
-                          {phase.subtitle}
-                        </p>
-                      )}
-                      {isPhaseCollapsible && isPhaseExpanded && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Clique para minimizar
+                          {phase.phase_number === 1 ? (
+                            <>Dissolva as crenças que te prendem ao cigarro.<br />Você vai entender que nunca precisou dele.</>
+                          ) : phase.phase_number === 2 ? (
+                            <>Agora você já é um ex-fumante!<br />Será mais fácil do que você imagina.</>
+                          ) : (
+                            phase.subtitle
+                          )}
                         </p>
                       )}
                     </div>
