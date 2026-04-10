@@ -32,7 +32,7 @@ export const useSosHypnosis = () => {
     setNextIndex(newIndex);
 
     return {
-      title: `Hipnose SOS #${sosNumber}`,
+      title: `Hipnose SOS`,
       fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/sos_${sosNumber}.MP3`,
       index: currentIndex,
     };
