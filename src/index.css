@@ -37,29 +37,29 @@ All colors MUST be HSL.
     --muted: 210 18% 93%;
     --muted-foreground: 215 18% 45%;
 
-    /* Navy mais forte */
-    --navy: 200 55% 35%;
+    /* Navy forte */
+    --navy: 200 70% 32%;
     --navy-foreground: 0 0% 98%;
 
-    --destructive: 5 50% 50%;
+    --destructive: 5 65% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 210 15% 86%;
-    --input: 210 15% 86%;
-    --ring: 200 55% 42%;
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 200 70% 45%;
 
     --radius: 0.75rem;
 
-    /* Gradients mais expressivos */
-    --gradient-primary: linear-gradient(135deg, hsl(200 55% 42%), hsl(185 45% 45%));
-    --gradient-hero: linear-gradient(135deg, hsl(200 40% 80%), hsl(185 35% 82%), hsl(200 30% 88%));
-    --gradient-wellness: linear-gradient(180deg, hsl(200 40% 65%), hsl(210 25% 90%));
-    --gradient-transformation: linear-gradient(45deg, hsl(185 45% 45%), hsl(200 40% 58%));
+    /* Gradients vibrantes */
+    --gradient-primary: linear-gradient(135deg, hsl(200 70% 45%), hsl(180 60% 42%));
+    --gradient-hero: linear-gradient(135deg, hsl(200 55% 78%), hsl(180 50% 80%), hsl(200 40% 86%));
+    --gradient-wellness: linear-gradient(180deg, hsl(200 55% 60%), hsl(210 30% 88%));
+    --gradient-transformation: linear-gradient(45deg, hsl(180 60% 42%), hsl(200 55% 55%));
 
     /* Shadows mais definidas */
-    --shadow-primary: 0 4px 20px -8px hsl(200 55% 42% / 0.2);
-    --shadow-wellness: 0 3px 15px -5px hsl(200 45% 55% / 0.25);
-    --shadow-glow: 0 0 30px hsl(185 45% 45% / 0.2);
+    --shadow-primary: 0 4px 20px -8px hsl(200 70% 45% / 0.25);
+    --shadow-wellness: 0 3px 15px -5px hsl(200 60% 50% / 0.3);
+    --shadow-glow: 0 0 30px hsl(180 60% 42% / 0.25);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
