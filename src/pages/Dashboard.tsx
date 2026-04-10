@@ -198,8 +198,6 @@ const Dashboard = () => {
   const getDayStatus = (day: number): 'completed' | 'current' | 'locked' | 'subscription_locked' | 'time_locked' => {
     // Admins have full access to all days, phases, and content
     if (isAdmin) {
-      if (isDayCompleted(day)) return 'completed';
-      if (day < currentDay) return 'completed';
       return 'current';
     }
 
