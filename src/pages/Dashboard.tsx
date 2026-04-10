@@ -551,25 +551,19 @@ const Dashboard = () => {
             if (!phase || !Array.isArray(phase.days)) return null;
             
             const isPhase1 = phase.phase_number === 1;
-            // For admins, all phases appear completed
-            // Phase 1 is completed if:
-            // - Admin (all phases completed for admin)
-            // - OR user actually completed day 7
             const phase1LastDay = 7;
-            const isPhase1Completed = isAdmin || (isPhase1 && (
-              (isAdmin && currentDay >= 8) || 
-              isDayCompleted(phase1LastDay)
-            ));
+            const isPhaseCollapsible = isAdmin || (isPhase1 && isDayCompleted(phase1LastDay));
+            const isPhaseExpanded = expandedPhases[phase.phase_number] || false;
             
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg transition-all duration-300 ${
-                isPhase1Completed ? 'p-4 opacity-70' : 'p-4 md:p-6'
+                isPhaseCollapsible && !isPhaseExpanded ? 'p-4 opacity-70' : 'p-4 md:p-6'
               }`}>
                 <div 
-                  className={`mb-4 ${isPhase1Completed ? 'cursor-pointer hover:bg-accent/10 rounded-lg p-2 -m-2 transition-colors' : ''}`}
+                  className={`mb-4 ${isPhaseCollapsible ? 'cursor-pointer hover:bg-accent/10 rounded-lg p-2 -m-2 transition-colors' : ''}`}
                   onClick={() => {
-                    if (isPhase1Completed) {
-                      setIsPhase1Expanded(!isPhase1Expanded);
+                    if (isPhaseCollapsible) {
+                      setExpandedPhases(prev => ({ ...prev, [phase.phase_number]: !prev[phase.phase_number] }));
                     }
                   }}
                 >
