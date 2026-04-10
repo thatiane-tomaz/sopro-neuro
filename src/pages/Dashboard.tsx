@@ -106,7 +106,7 @@ const Dashboard = () => {
   } | null>(null);
   const [currentTrackingId, setCurrentTrackingId] = useState<string | null>(null);
   const [showStartHere, setShowStartHere] = useState(false);
-  const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
+  const [expandedPhases, setExpandedPhases] = useState<Record<number, boolean>>({});
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
   const [showDay14Congrats, setShowDay14Congrats] = useState(false);
   const [, setCountdownTick] = useState(0); // Forces re-render for countdown updates
@@ -551,32 +551,26 @@ const Dashboard = () => {
             if (!phase || !Array.isArray(phase.days)) return null;
             
             const isPhase1 = phase.phase_number === 1;
-            // For admins, all phases appear completed
-            // Phase 1 is completed if:
-            // - Admin (all phases completed for admin)
-            // - OR user actually completed day 7
             const phase1LastDay = 7;
-            const isPhase1Completed = isAdmin || (isPhase1 && (
-              (isAdmin && currentDay >= 8) || 
-              isDayCompleted(phase1LastDay)
-            ));
+            const isPhaseCollapsible = isAdmin || (isPhase1 && isDayCompleted(phase1LastDay));
+            const isPhaseExpanded = expandedPhases[phase.phase_number] || false;
             
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg transition-all duration-300 ${
-                isPhase1Completed ? 'p-4 opacity-70' : 'p-4 md:p-6'
+                isPhaseCollapsible && !isPhaseExpanded ? 'p-4 opacity-70' : 'p-4 md:p-6'
               }`}>
                 <div 
-                  className={`mb-4 ${isPhase1Completed ? 'cursor-pointer hover:bg-accent/10 rounded-lg p-2 -m-2 transition-colors' : ''}`}
+                  className={`mb-4 ${isPhaseCollapsible ? 'cursor-pointer hover:bg-accent/10 rounded-lg p-2 -m-2 transition-colors' : ''}`}
                   onClick={() => {
-                    if (isPhase1Completed) {
-                      setIsPhase1Expanded(!isPhase1Expanded);
+                    if (isPhaseCollapsible) {
+                      setExpandedPhases(prev => ({ ...prev, [phase.phase_number]: !prev[phase.phase_number] }));
                     }
                   }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
-                        <span className={`text-sm font-semibold px-3 py-1 rounded-full ${isPhase1Completed ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary'}`}>
+                        <span className={`text-sm font-semibold px-3 py-1 rounded-full ${isPhaseCollapsible && !isPhaseExpanded ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary'}`}>
                           Fase {phase.phase_number}
                         </span>
                         
@@ -604,37 +598,37 @@ const Dashboard = () => {
                           </div>
                           
                           {/* Count - for admins always show 7/7 */}
-                          <span className={`text-xs font-medium ${isPhase1Completed ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
+                          <span className={`text-xs font-medium ${isPhaseCollapsible && !isPhaseExpanded ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
                             {isAdmin ? '7' : phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length} dias
                           </span>
                         </div>
                         
-                        {(isPhase1Completed || isAdmin) && !isAdmin && (
+                        {isPhaseCollapsible && !isAdmin && (
                           <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
                             Concluído
                           </Badge>
                         )}
                       </div>
                       <h2 className={`text-xl md:text-2xl font-bold ${
-                        isPhase1Completed 
+                        isPhaseCollapsible && !isPhaseExpanded
                           ? 'text-muted-foreground' 
                           : 'bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent'
                       }`}>
                         {phase.title}
                       </h2>
-                      {(!isPhase1Completed || isPhase1Expanded) && (
-                        <p className={`text-sm md:text-base ${isPhase1Completed ? 'text-muted-foreground/80' : 'text-muted-foreground'}`}>
+                      {(!isPhaseCollapsible || isPhaseExpanded) && (
+                        <p className={`text-sm md:text-base ${isPhaseCollapsible ? 'text-muted-foreground/80' : 'text-muted-foreground'}`}>
                           {phase.subtitle}
                         </p>
                       )}
-                      {isPhase1Completed && isPhase1Expanded && (
+                      {isPhaseCollapsible && isPhaseExpanded && (
                         <p className="text-sm text-muted-foreground mt-1">
                           Clique para minimizar
                         </p>
                       )}
                     </div>
-                    {isPhase1Completed && (
-                      <div className={`transition-transform duration-300 ${isPhase1Expanded ? 'rotate-180' : ''}`}>
+                    {isPhaseCollapsible && (
+                      <div className={`transition-transform duration-300 ${isPhaseExpanded ? 'rotate-180' : ''}`}>
                         <svg 
                           className="w-6 h-6 text-primary" 
                           fill="none" 
@@ -650,12 +644,12 @@ const Dashboard = () => {
 
 
 
-                {(!isPhase1Completed || (isPhase1Completed && isPhase1Expanded)) && (
+                {(!isPhaseCollapsible || isPhaseExpanded) && (
 
                 <Carousel 
                   opts={{ 
                     align: "center",
-                    startIndex: phase.days.findIndex(d => d.day_number === currentDay),
+                    startIndex: isAdmin ? 0 : phase.days.findIndex(d => d.day_number === currentDay),
                   }}
                   className="w-full"
                 >
