@@ -619,7 +619,7 @@ const Dashboard = () => {
                       {(!isPhaseCollapsible || isPhaseExpanded) && (
                         <p className={`text-sm md:text-base ${isPhaseCollapsible ? 'text-muted-foreground/80' : 'text-muted-foreground'}`}>
                           {phase.phase_number === 1 ? (
-                            <>Dissolva as crenças que te prendem ao cigarro.<br />Você vai entender que nunca precisou dele.</>
+                            <>Mude como seu cérebro vê o cigarro.<br />Fume seu último cigarro ao final desta fase.</>
                           ) : phase.phase_number === 2 ? (
                             <>Agora você já é um ex-fumante!<br />Será mais fácil do que você imagina.</>
                           ) : (
