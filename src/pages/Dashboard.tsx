@@ -466,11 +466,12 @@ const Dashboard = () => {
         </header>
 
         {/* Feedback Section - shown at the top until user answers */}
-        <FeedbackSection 
-          currentDay={currentDay} 
-          showAllForPreview={isAdmin} 
-          isDayCompleted={(day) => isDayCompleted(day)} 
-        />
+        {!isAdmin && (
+          <FeedbackSection 
+            currentDay={currentDay} 
+            isDayCompleted={(day) => isDayCompleted(day)} 
+          />
+        )}
 
         {/* Tabs Navigation */}
         <Tabs defaultValue="daily" className="w-full">
@@ -678,9 +679,11 @@ const Dashboard = () => {
                             className={`group relative overflow-hidden rounded-2xl border-0 transition-all duration-300 ${
                               isLocked && !isAdmin
                                 ? 'opacity-50 cursor-not-allowed bg-card/30 shadow-sm' 
-                                : isCurrent || isAdmin
+                                : isAdmin
                                   ? 'shadow-xl cursor-pointer hover:shadow-2xl hover:-translate-y-1 bg-gradient-to-br from-accent/10 to-primary/10 brightness-100'
-                                  : 'shadow-md cursor-pointer hover:shadow-lg hover:-translate-y-0.5 bg-card/50 backdrop-blur-sm'
+                                  : isCurrent
+                                    ? 'shadow-xl cursor-pointer hover:shadow-2xl hover:-translate-y-1 bg-gradient-to-br from-accent/10 to-primary/10 brightness-100'
+                                    : 'shadow-md cursor-pointer hover:shadow-lg hover:-translate-y-0.5 bg-card/50 backdrop-blur-sm'
                             }`}
                           >
                             <div className="relative aspect-video overflow-hidden">
