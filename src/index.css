@@ -18,21 +18,21 @@ All colors MUST be HSL.
     --popover: 210 30% 97%;
     --popover-foreground: 215 30% 22%;
 
-    /* Azul mais vivo como cor primária */
-    --primary: 200 55% 42%;
+    /* Azul vibrante como cor primária */
+    --primary: 200 70% 45%;
     --primary-foreground: 0 0% 98%;
-    --primary-light: 200 50% 55%;
-    --primary-glow: 200 45% 65%;
+    --primary-light: 200 65% 55%;
+    --primary-glow: 200 60% 65%;
 
     /* Secundária com mais presença */
-    --secondary: 210 20% 85%;
-    --secondary-foreground: 215 30% 22%;
-    --secondary-light: 210 25% 92%;
+    --secondary: 210 30% 88%;
+    --secondary-foreground: 215 35% 20%;
+    --secondary-light: 210 30% 93%;
 
-    /* Teal mais vibrante */
-    --accent: 185 45% 45%;
+    /* Teal vibrante */
+    --accent: 180 60% 42%;
     --accent-foreground: 0 0% 98%;
-    --accent-light: 185 35% 62%;
+    --accent-light: 180 50% 58%;
 
     --muted: 210 18% 93%;
     --muted-foreground: 215 18% 45%;
