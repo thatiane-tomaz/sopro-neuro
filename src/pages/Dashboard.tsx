@@ -570,7 +570,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
-                        <span className={`text-sm font-semibold px-3 py-1 rounded-full ${isPhase1Completed ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary'}`}>
+                        <span className={`text-sm font-semibold px-3 py-1 rounded-full ${isPhaseCollapsible && !isPhaseExpanded ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary'}`}>
                           Fase {phase.phase_number}
                         </span>
                         
@@ -598,37 +598,37 @@ const Dashboard = () => {
                           </div>
                           
                           {/* Count - for admins always show 7/7 */}
-                          <span className={`text-xs font-medium ${isPhase1Completed ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
+                          <span className={`text-xs font-medium ${isPhaseCollapsible && !isPhaseExpanded ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
                             {isAdmin ? '7' : phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length} dias
                           </span>
                         </div>
                         
-                        {(isPhase1Completed || isAdmin) && !isAdmin && (
+                        {isPhaseCollapsible && !isAdmin && (
                           <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
                             Concluído
                           </Badge>
                         )}
                       </div>
                       <h2 className={`text-xl md:text-2xl font-bold ${
-                        isPhase1Completed 
+                        isPhaseCollapsible && !isPhaseExpanded
                           ? 'text-muted-foreground' 
                           : 'bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent'
                       }`}>
                         {phase.title}
                       </h2>
-                      {(!isPhase1Completed || isPhase1Expanded) && (
-                        <p className={`text-sm md:text-base ${isPhase1Completed ? 'text-muted-foreground/80' : 'text-muted-foreground'}`}>
+                      {(!isPhaseCollapsible || isPhaseExpanded) && (
+                        <p className={`text-sm md:text-base ${isPhaseCollapsible ? 'text-muted-foreground/80' : 'text-muted-foreground'}`}>
                           {phase.subtitle}
                         </p>
                       )}
-                      {isPhase1Completed && isPhase1Expanded && (
+                      {isPhaseCollapsible && isPhaseExpanded && (
                         <p className="text-sm text-muted-foreground mt-1">
                           Clique para minimizar
                         </p>
                       )}
                     </div>
-                    {isPhase1Completed && (
-                      <div className={`transition-transform duration-300 ${isPhase1Expanded ? 'rotate-180' : ''}`}>
+                    {isPhaseCollapsible && (
+                      <div className={`transition-transform duration-300 ${isPhaseExpanded ? 'rotate-180' : ''}`}>
                         <svg 
                           className="w-6 h-6 text-primary" 
                           fill="none" 
@@ -644,12 +644,12 @@ const Dashboard = () => {
 
 
 
-                {(!isPhase1Completed || (isPhase1Completed && isPhase1Expanded)) && (
+                {(!isPhaseCollapsible || isPhaseExpanded) && (
 
                 <Carousel 
                   opts={{ 
                     align: "center",
-                    startIndex: phase.days.findIndex(d => d.day_number === currentDay),
+                    startIndex: isAdmin ? 0 : phase.days.findIndex(d => d.day_number === currentDay),
                   }}
                   className="w-full"
                 >
