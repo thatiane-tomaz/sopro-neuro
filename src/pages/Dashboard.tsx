@@ -106,7 +106,7 @@ const Dashboard = () => {
   } | null>(null);
   const [currentTrackingId, setCurrentTrackingId] = useState<string | null>(null);
   const [showStartHere, setShowStartHere] = useState(false);
-  const [isPhase1Expanded, setIsPhase1Expanded] = useState(false);
+  const [expandedPhases, setExpandedPhases] = useState<Record<number, boolean>>({});
   const [showExpiredDialog, setShowExpiredDialog] = useState(false);
   const [showDay14Congrats, setShowDay14Congrats] = useState(false);
   const [, setCountdownTick] = useState(0); // Forces re-render for countdown updates
