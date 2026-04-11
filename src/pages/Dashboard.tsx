@@ -558,7 +558,7 @@ const Dashboard = () => {
             return (
               <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg transition-all duration-300 ${
                 isPhaseCollapsible && !isPhaseExpanded ? 'p-4 opacity-70' : 'p-4 md:p-6'
-              }`}>
+              }`} style={{ minHeight: isPhaseCollapsible && !isPhaseExpanded ? 'auto' : undefined }}>
                 <div 
                   className={`mb-4 ${isPhaseCollapsible ? 'cursor-pointer hover:bg-accent/10 rounded-lg p-2 -m-2 transition-colors' : ''}`}
                   onClick={() => {
@@ -683,6 +683,8 @@ const Dashboard = () => {
                               <img 
                                 src={`${dayImages[day - 1]}?v=2`} 
                                 alt={dayContent.title}
+                                loading="eager"
+                                decoding="async"
                                 className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${
                                   isAdmin ? 'opacity-100 brightness-100 saturate-100' : ''
                                 }`}
