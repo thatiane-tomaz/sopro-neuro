@@ -32,6 +32,7 @@ const MediaPlayer = ({
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [hasCompleted, setHasCompleted] = useState(false);
+  const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
   
   // Store callbacks in refs to avoid dependency issues
@@ -220,8 +221,9 @@ const MediaPlayer = ({
       if (isMounted) {
         console.log('Media resumed playing');
         setIsPlaying(true);
-        setError(null); // Clear any previous error on successful playback
-        retryCountRef.current = 0; // Reset retry counter on success
+        setHasStartedPlaying(true);
+        setError(null);
+        retryCountRef.current = 0;
       }
     };
     
@@ -308,12 +310,13 @@ const MediaPlayer = ({
   };
 
   const formatTime = (time: number) => {
+    if (!isFinite(time) || isNaN(time)) return '0:00';
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const progressPercentage = duration > 0 && isFinite(duration) ? (currentTime / duration) * 100 : 0;
 
   return (
     <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
