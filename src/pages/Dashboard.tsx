@@ -396,7 +396,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background" style={{ overscrollBehavior: 'none' }}>
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         {/* Header */}
         <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 shadow-sm mb-6 rounded-b-xl pt-[env(safe-area-inset-top)]">
