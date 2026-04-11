@@ -141,7 +141,9 @@ const MediaPlayer = ({
     };
     
     const updateDuration = () => {
-      if (isMounted) setDuration(media.duration);
+      if (isMounted && isFinite(media.duration) && !isNaN(media.duration)) {
+        setDuration(media.duration);
+      }
     };
     
     const handleError = (e: Event) => {
