@@ -402,7 +402,7 @@ const MediaPlayer = ({
           
           {/* Media Player */}
           <div 
-            className="rounded-2xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5"
+            className="rounded-xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5 flex-1 min-h-0"
             onContextMenu={(e) => e.preventDefault()}
           >
             {contentType === 'video' ? (
@@ -450,7 +450,7 @@ const MediaPlayer = ({
                 </audio>
                 
                 {/* Audio Player Visual */}
-                <div className="relative aspect-video w-full" onContextMenu={(e) => e.preventDefault()}>
+                <div className="relative w-full flex-1 min-h-0" style={{ aspectRatio: '16/9' }} onContextMenu={(e) => e.preventDefault()}>
                   <img 
                     src={hypnosisImage} 
                     alt="Homem relaxando com fones de ouvido" 
@@ -481,7 +481,7 @@ const MediaPlayer = ({
 
                 {/* Progress Bar */}
                 {duration > 0 && (
-                  <div className="p-4 bg-gradient-to-r from-navy/5 dark:from-navy/20 to-background">
+                  <div className="px-3 py-2 bg-gradient-to-r from-navy/5 dark:from-navy/20 to-background flex-shrink-0">
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-medium text-muted-foreground w-12 text-right">
                         {formatTime(currentTime)}
