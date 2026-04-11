@@ -366,7 +366,7 @@ const MediaPlayer = ({
               <div className="grid grid-cols-2 gap-1.5">
                 <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
                   <Sofa className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
-                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Sente-se confortavelmente</span>
+                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Deite-se confortavelmente</span>
                 </div>
                 <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
                   <Headphones className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
