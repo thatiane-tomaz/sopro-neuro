@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, X, Headphones, Volume2, Sofa, VolumeX, BellOff, BatteryCharging } from 'lucide-react';
+import videoCoverImage from '@/assets/video-cover.jpg';
 import hypnosisImage from '@/assets/hypnosis-relaxed-man.jpg';
 
 interface MediaPlayerProps {
