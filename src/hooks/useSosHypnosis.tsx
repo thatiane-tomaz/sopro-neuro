@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
 // Total number of SOS hypnosis files available in storage
-const TOTAL_SOS_HYPNOSES = 5;
+const TOTAL_SOS_HYPNOSES = 2;
 
 const getStorageKey = (userId: string) => `sos_next_index_${userId}`;
 
