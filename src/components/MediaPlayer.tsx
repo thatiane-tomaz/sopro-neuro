@@ -322,11 +322,11 @@ const MediaPlayer = ({
 
   return (
     <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="w-full max-w-2xl max-h-[100dvh] overflow-y-auto bg-gradient-to-br from-background via-background to-primary/5 rounded-3xl shadow-2xl shadow-primary/20 border border-primary/10">
+      <div className="w-full max-w-2xl max-h-[100dvh] flex flex-col bg-gradient-to-br from-background via-background to-primary/5 rounded-3xl shadow-2xl shadow-primary/20 border border-primary/10 overflow-hidden">
         {/* Header */}
-        <div className="relative px-6 py-4 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-accent/5">
+        <div className="relative px-4 py-3 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-accent/5 flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
               contentType === 'video' 
                 ? 'bg-sky-100 dark:bg-sky-900/30' 
                 : 'bg-navy/10 dark:bg-navy/30'
@@ -338,7 +338,7 @@ const MediaPlayer = ({
               )}
             </div>
             <div className="flex-1">
-              <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+              <h2 className="text-base font-semibold text-foreground leading-tight">{title}</h2>
               <p className="text-xs text-muted-foreground">
                 {contentType === 'video' ? 'Vídeo' : 'Hipnose'}
               </p>
@@ -355,38 +355,30 @@ const MediaPlayer = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-4">
-          {/* Tips for hypnosis */}
+        <div className="p-3 sm:p-4 space-y-3 flex-1 min-h-0 flex flex-col">
+          {/* Tips for hypnosis - compact */}
           {contentType === 'hypnosis' && (
-            <div className="bg-navy/5 dark:bg-navy/20 p-4 rounded-2xl border border-navy/10 dark:border-navy/30">
-              <p className="text-sm font-medium text-navy dark:text-navy-foreground mb-3 flex items-center gap-2">
-                <Volume2 className="h-4 w-4" />
+            <div className="bg-navy/5 dark:bg-navy/20 p-3 rounded-xl border border-navy/10 dark:border-navy/30 flex-shrink-0">
+              <p className="text-xs font-medium text-navy dark:text-navy-foreground mb-2 flex items-center gap-1.5">
+                <Volume2 className="h-3.5 w-3.5" />
                 Dicas para melhor experiência
               </p>
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 bg-white/60 dark:bg-white/5 rounded-xl p-3">
-                  <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
-                    <Sofa className="h-4 w-4 text-navy dark:text-navy-foreground" />
-                  </div>
-                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Deite-se ou sente-se confortavelmente</span>
+              <div className="grid grid-cols-2 gap-1.5">
+                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
+                  <Sofa className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
+                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Sente-se confortavelmente</span>
                 </div>
-                <div className="flex items-center gap-3 bg-white/60 dark:bg-white/5 rounded-xl p-3">
-                  <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
-                    <Headphones className="h-4 w-4 text-navy dark:text-navy-foreground" />
-                  </div>
-                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Local silencioso + fones de ouvido</span>
+                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
+                  <Headphones className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
+                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Use fones de ouvido</span>
                 </div>
-                <div className="flex items-center gap-3 bg-white/60 dark:bg-white/5 rounded-xl p-3">
-                  <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
-                    <BellOff className="h-4 w-4 text-navy dark:text-navy-foreground" />
-                  </div>
-                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Ative o modo "Não Perturbe"</span>
+                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
+                  <BellOff className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
+                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Modo "Não Perturbe"</span>
                 </div>
-                <div className="flex items-center gap-3 bg-white/60 dark:bg-white/5 rounded-xl p-3">
-                  <div className="w-8 h-8 rounded-lg bg-navy/10 dark:bg-navy/30 flex items-center justify-center flex-shrink-0">
-                    <BatteryCharging className="h-4 w-4 text-navy dark:text-navy-foreground" />
-                  </div>
-                  <span className="text-sm text-navy/80 dark:text-navy-foreground/80">Desative o modo "Economia de Bateria"</span>
+                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
+                  <BatteryCharging className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
+                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Desative economia de bateria</span>
                 </div>
               </div>
             </div>
@@ -410,7 +402,7 @@ const MediaPlayer = ({
           
           {/* Media Player */}
           <div 
-            className="rounded-2xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5"
+            className="rounded-xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5 flex-1 min-h-0"
             onContextMenu={(e) => e.preventDefault()}
           >
             {contentType === 'video' ? (
@@ -458,7 +450,7 @@ const MediaPlayer = ({
                 </audio>
                 
                 {/* Audio Player Visual */}
-                <div className="relative aspect-video w-full" onContextMenu={(e) => e.preventDefault()}>
+                <div className="relative w-full flex-1 min-h-0" style={{ aspectRatio: '16/9' }} onContextMenu={(e) => e.preventDefault()}>
                   <img 
                     src={hypnosisImage} 
                     alt="Homem relaxando com fones de ouvido" 
@@ -489,7 +481,7 @@ const MediaPlayer = ({
 
                 {/* Progress Bar */}
                 {duration > 0 && (
-                  <div className="p-4 bg-gradient-to-r from-navy/5 dark:from-navy/20 to-background">
+                  <div className="px-3 py-2 bg-gradient-to-r from-navy/5 dark:from-navy/20 to-background flex-shrink-0">
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-medium text-muted-foreground w-12 text-right">
                         {formatTime(currentTime)}
