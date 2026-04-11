@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, X, Headphones, Volume2, Sofa, VolumeX, BellOff, BatteryCharging } from 'lucide-react';
+import videoCoverImage from '@/assets/video-cover.jpg';
 import hypnosisImage from '@/assets/hypnosis-relaxed-man.jpg';
 
 interface MediaPlayerProps {
@@ -31,6 +32,7 @@ const MediaPlayer = ({
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [hasCompleted, setHasCompleted] = useState(false);
+  const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
   
   // Store callbacks in refs to avoid dependency issues
@@ -139,7 +141,9 @@ const MediaPlayer = ({
     };
     
     const updateDuration = () => {
-      if (isMounted) setDuration(media.duration);
+      if (isMounted && isFinite(media.duration) && !isNaN(media.duration)) {
+        setDuration(media.duration);
+      }
     };
     
     const handleError = (e: Event) => {
@@ -219,8 +223,9 @@ const MediaPlayer = ({
       if (isMounted) {
         console.log('Media resumed playing');
         setIsPlaying(true);
-        setError(null); // Clear any previous error on successful playback
-        retryCountRef.current = 0; // Reset retry counter on success
+        setHasStartedPlaying(true);
+        setError(null);
+        retryCountRef.current = 0;
       }
     };
     
@@ -307,16 +312,17 @@ const MediaPlayer = ({
   };
 
   const formatTime = (time: number) => {
+    if (!isFinite(time) || isNaN(time)) return '0:00';
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const progressPercentage = duration > 0 && isFinite(duration) ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="w-full max-w-2xl bg-gradient-to-br from-background via-background to-primary/5 rounded-3xl shadow-2xl shadow-primary/20 overflow-hidden border border-primary/10">
+    <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="w-full max-w-2xl max-h-[100dvh] overflow-y-auto bg-gradient-to-br from-background via-background to-primary/5 rounded-3xl shadow-2xl shadow-primary/20 border border-primary/10">
         {/* Header */}
         <div className="relative px-6 py-4 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-accent/5">
           <div className="flex items-center gap-3">
@@ -408,25 +414,27 @@ const MediaPlayer = ({
             onContextMenu={(e) => e.preventDefault()}
           >
             {contentType === 'video' ? (
-              <video
-                ref={mediaRef as React.RefObject<HTMLVideoElement>}
-                className="w-full h-auto max-h-96"
-                controls
-                controlsList="nodownload noplaybackrate"
-                disablePictureInPicture
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                onContextMenu={(e) => e.preventDefault()}
-                onError={(e) => {
-                  const err = e.currentTarget.error;
-                  console.error('Video inline error:', { code: err?.code, message: err?.message, src: e.currentTarget.currentSrc });
-                  // Don't set error here - let the useEffect handleError manage retries
-                }}
-                onLoadStart={() => console.log('Video load started:', fileUrl)}
-              >
-                {fileUrl && <source src={fileUrl} type="video/mp4" />}
-                Seu navegador não suporta vídeo HTML5.
-              </video>
+              <div className="relative">
+                <video
+                  ref={mediaRef as React.RefObject<HTMLVideoElement>}
+                  className="w-full h-auto max-h-96"
+                  controls
+                  controlsList="nodownload noplaybackrate"
+                  disablePictureInPicture
+                  poster={videoCoverImage}
+                  onPlay={() => { setIsPlaying(true); setHasStartedPlaying(true); }}
+                  onPause={() => setIsPlaying(false)}
+                  onContextMenu={(e) => e.preventDefault()}
+                  onError={(e) => {
+                    const err = e.currentTarget.error;
+                    console.error('Video inline error:', { code: err?.code, message: err?.message, src: e.currentTarget.currentSrc });
+                  }}
+                  onLoadStart={() => console.log('Video load started:', fileUrl)}
+                >
+                  {fileUrl && <source src={fileUrl} type="video/mp4" />}
+                  Seu navegador não suporta vídeo HTML5.
+                </video>
+              </div>
             ) : (
               <div className="relative" onContextMenu={(e) => e.preventDefault()}>
                 <audio
