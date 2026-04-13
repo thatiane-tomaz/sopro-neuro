@@ -234,16 +234,18 @@ const Dashboard = () => {
   const handleMediaOpen = (day: number, type: 'video' | 'hypnosis') => {
     // Admins can open all media for testing
     if (!isAdmin) {
-      // Check if user has no active subscription (never paid)
-      if (!isPremium && !isExpired) {
-        navigate('/paywall');
-        return;
-      }
-      
-      // Check if subscription is expired
-      if (isExpired) {
-        setShowExpiredDialog(true);
-        return;
+      // Day 1 is always free - no subscription check needed
+      // For day 2+, check subscription
+      if (day >= 2) {
+        if (!isPremium && !isExpired) {
+          navigate('/paywall');
+          return;
+        }
+        
+        if (isExpired) {
+          setShowExpiredDialog(true);
+          return;
+        }
       }
       
       const status = getDayStatus(day);
@@ -320,6 +322,15 @@ const Dashboard = () => {
         title: "Progresso salvo!",
         description: "Seu progresso foi registrado com sucesso."
       });
+      
+      // Check if this completes day 1 - redirect to paywall if not premium
+      if (selectedMedia?.day === 1 && !isPremium && !isExpired && !isAdmin) {
+        setTimeout(() => {
+          if (isDayCompleted(1)) {
+            navigate('/paywall');
+          }
+        }, 1500);
+      }
       
       // Check if this completes day 14 (both video and hypnosis)
       if (selectedMedia?.day === 14) {
