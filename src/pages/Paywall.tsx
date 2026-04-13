@@ -5,7 +5,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { usePurchases } from '@/hooks/usePurchases';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Crown, Check, Shield, Brain, Headphones, Loader2, RefreshCw } from 'lucide-react';
+import { Crown, Check, Shield, Brain, Headphones, Loader2, RefreshCw, X } from 'lucide-react';
 
 const Paywall = () => {
   const navigate = useNavigate();
@@ -98,7 +98,16 @@ const Paywall = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center p-4 relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => navigate('/dashboard')}
+        className="absolute top-4 right-4 z-10"
+        aria-label="Fechar"
+      >
+        <X className="w-5 h-5" />
+      </Button>
       <Card className="w-full max-w-md border-accent/20 shadow-2xl">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
