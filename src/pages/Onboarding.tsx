@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useSubscription } from "@/hooks/useSubscription";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -37,7 +37,7 @@ const Onboarding = () => {
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, loading } = useAuth();
-  const { isPremium, loading: subLoading } = useSubscription();
+  
   const { isAdmin } = useIsAdmin();
   const { toast } = useToast();
 
