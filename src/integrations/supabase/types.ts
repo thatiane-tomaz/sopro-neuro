@@ -65,6 +65,33 @@ export type Database = {
         }
         Relationships: []
       }
+      button_clicks: {
+        Row: {
+          button: string
+          click_date: string
+          count: number
+          id: string
+          page: string
+          updated_at: string
+        }
+        Insert: {
+          button: string
+          click_date?: string
+          count?: number
+          id?: string
+          page: string
+          updated_at?: string
+        }
+        Update: {
+          button?: string
+          click_date?: string
+          count?: number
+          id?: string
+          page?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       content_views: {
         Row: {
           content_identifier: string
@@ -540,6 +567,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_button_click: {
+        Args: { _button: string; _page: string }
+        Returns: undefined
       }
       is_day_completed: {
         Args: { p_day: number; p_user_id: string }
