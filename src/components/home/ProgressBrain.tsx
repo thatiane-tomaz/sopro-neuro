@@ -7,67 +7,87 @@ interface Props {
 }
 
 /**
- * Semicircle progress arc with the 3D brain centered.
+ * Open-bottom 3/4 circular progress arc with the 3D brain centered.
+ * The arc starts at bottom-left, goes counter-clockwise across the top,
+ * and ends at bottom-right, leaving a gap at the bottom (matches ref).
  */
 export default function ProgressBrain({ progress, locked }: Props) {
   const clamped = Math.max(0, Math.min(100, progress));
-  const radius = 120;
-  const cx = 140;
-  const cy = 140;
-  // Half circle path from left to right (top arc only)
-  const start = { x: cx - radius, y: cy };
-  const end = { x: cx + radius, y: cy };
-  const arcLen = Math.PI * radius; // length of half circle
+
+  const size = 280;
+  const cx = size / 2;
+  const cy = size / 2;
+  const radius = 118;
+
+  // Open-bottom arc: gap of ~70° at the bottom.
+  // Start angle = 125° (bottom-left), sweep clockwise to 55° (bottom-right) → 290° total.
+  const startAngle = 125;
+  const sweep = 290;
+  const toXY = (angleDeg: number) => {
+    const a = (angleDeg * Math.PI) / 180;
+    return { x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a) };
+  };
+  const start = toXY(startAngle);
+  const end = toXY(startAngle + sweep);
+  const largeArc = sweep > 180 ? 1 : 0;
+  const arcPath = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 1 ${end.x} ${end.y}`;
+
+  const arcLen = (sweep / 360) * 2 * Math.PI * radius;
   const dash = (clamped / 100) * arcLen;
 
   return (
-    <div className="relative mx-auto" style={{ width: 280, height: 170 }}>
-      <svg width={280} height={170} viewBox="0 0 280 170" className="absolute inset-0">
+    <div className="relative mx-auto" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute inset-0">
         <defs>
-          <linearGradient id="arcGrad" x1="0" x2="1">
-            <stop offset="0%" stopColor="hsl(230 85% 60%)" />
-            <stop offset="100%" stopColor="hsl(258 80% 65%)" />
+          <linearGradient id="arcGrad" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor="hsl(258 80% 70%)" />
+            <stop offset="50%" stopColor="hsl(240 85% 65%)" />
+            <stop offset="100%" stopColor="hsl(210 90% 60%)" />
           </linearGradient>
         </defs>
         {/* Track */}
         <path
-          d={`M ${start.x} ${start.y} A ${radius} ${radius} 0 0 1 ${end.x} ${end.y}`}
+          d={arcPath}
           fill="none"
-          stroke="hsl(258 60% 92%)"
-          strokeWidth={10}
+          stroke="hsl(220 40% 92%)"
+          strokeWidth={8}
           strokeLinecap="round"
         />
         {/* Filled */}
         <path
-          d={`M ${start.x} ${start.y} A ${radius} ${radius} 0 0 1 ${end.x} ${end.y}`}
+          d={arcPath}
           fill="none"
           stroke="url(#arcGrad)"
-          strokeWidth={10}
+          strokeWidth={9}
           strokeLinecap="round"
           strokeDasharray={`${dash} ${arcLen}`}
           style={{ transition: "stroke-dasharray 1.2s ease-out" }}
         />
       </svg>
+
+      {/* Soft glow behind brain */}
       <div
-        className="absolute left-1/2 -translate-x-1/2 top-2 w-[180px] h-[180px] rounded-full"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full"
         style={{ background: "var(--gradient-brain-glow)" }}
         aria-hidden="true"
       />
-      <div className="absolute left-1/2 -translate-x-1/2 top-0 w-[180px] h-[180px] flex items-center justify-center">
+
+      {/* Brain centered */}
+      <div className="absolute inset-0 flex items-center justify-center">
         <img
           src={brainImg}
           alt="Cérebro"
-          width={180}
-          height={180}
+          width={200}
+          height={200}
           loading="eager"
-          className={`w-[170px] h-[170px] object-contain animate-pulse-glow ${
+          className={`w-[200px] h-[200px] object-contain animate-pulse-glow ${
             locked ? "grayscale opacity-60" : ""
           }`}
         />
         {locked && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-md">
-              <Lock className="h-5 w-5 text-muted-foreground" />
+            <div className="w-14 h-14 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
+              <Lock className="h-6 w-6 text-muted-foreground" />
             </div>
           </div>
         )}
