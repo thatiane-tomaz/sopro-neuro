@@ -341,7 +341,7 @@ export default function Dashboard() {
             </p>
           ) : (
             <p className="text-xs text-muted-foreground">
-              Após concluir todo o conteúdo do dia, o próximo será liberado em <span className="font-semibold">6h</span>.
+              Após concluir todo o conteúdo do dia,<br />o próximo será liberado em <span className="font-semibold">6h</span>.
             </p>
           )}
         </div>
@@ -382,7 +382,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-2 gap-4 mt-4">
               <SavingsBlock
                 icon={<Cigarette className="h-4 w-4" />}
-                label={"Cigarros que você\nnão vai fumar"}
+                label={"Cigarros que\ndeixará de fumar"}
                 rows={[
                   { label: "por mês", value: phase1Stats.cigsMonth.toLocaleString("pt-BR") },
                   { label: "por ano", value: phase1Stats.cigsYear.toLocaleString("pt-BR") },
@@ -390,7 +390,7 @@ export default function Dashboard() {
               />
               <SavingsBlock
                 icon={<DollarSign className="h-4 w-4" />}
-                label={"Dinheiro que você\nvai economizar"}
+                label={"Dinheiro que\nirá economizar"}
                 rows={[
                   { label: "por mês", value: formatBRL(phase1Stats.moneyMonth) },
                   { label: "por ano", value: formatBRL(phase1Stats.moneyYear) },

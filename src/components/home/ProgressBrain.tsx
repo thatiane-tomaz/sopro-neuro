@@ -14,10 +14,10 @@ interface Props {
 export default function ProgressBrain({ progress, locked }: Props) {
   const clamped = Math.max(0, Math.min(100, progress));
 
-  const size = 280;
+  const size = 520;
   const cx = size / 2;
   const cy = size / 2;
-  const radius = 122;
+  const radius = 230;
 
   // Open-bottom arc: gap of ~70° at the bottom.
   // Start angle = 125° (bottom-left), sweep clockwise to 55° (bottom-right) → 290° total.
@@ -40,17 +40,26 @@ export default function ProgressBrain({ progress, locked }: Props) {
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute inset-0">
         <defs>
           <linearGradient id="arcGrad" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="hsl(258 80% 70%)" />
-            <stop offset="50%" stopColor="hsl(240 85% 65%)" />
-            <stop offset="100%" stopColor="hsl(210 90% 60%)" />
+            <stop offset="0%" stopColor="hsl(195 95% 60%)" />
+            <stop offset="25%" stopColor="hsl(215 95% 60%)" />
+            <stop offset="55%" stopColor="hsl(245 90% 62%)" />
+            <stop offset="80%" stopColor="hsl(275 85% 65%)" />
+            <stop offset="100%" stopColor="hsl(300 80% 70%)" />
           </linearGradient>
+          <filter id="arcGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
         {/* Track */}
         <path
           d={arcPath}
           fill="none"
           stroke="hsl(220 40% 92%)"
-          strokeWidth={8}
+          strokeWidth={10}
           strokeLinecap="round"
         />
         {/* Filled */}
@@ -58,16 +67,17 @@ export default function ProgressBrain({ progress, locked }: Props) {
           d={arcPath}
           fill="none"
           stroke="url(#arcGrad)"
-          strokeWidth={9}
+          strokeWidth={12}
           strokeLinecap="round"
           strokeDasharray={`${dash} ${arcLen}`}
+          filter="url(#arcGlow)"
           style={{ transition: "stroke-dasharray 1.2s ease-out" }}
         />
       </svg>
 
       {/* Soft glow behind brain */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[230px] h-[230px] rounded-full"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full"
         style={{ background: "var(--gradient-brain-glow)" }}
         aria-hidden="true"
       />
@@ -77,10 +87,10 @@ export default function ProgressBrain({ progress, locked }: Props) {
         <img
           src={brainImg}
           alt="Cérebro"
-          width={240}
-          height={240}
+          width={460}
+          height={460}
           loading="eager"
-          className={`w-[240px] h-[240px] object-contain animate-pulse-glow ${
+          className={`w-[460px] h-[460px] object-contain animate-pulse-glow ${
             locked ? "grayscale opacity-60" : ""
           }`}
         />
