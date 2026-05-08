@@ -1,24 +1,16 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { useUserProfile } from '@/hooks/useUserProfile';
-import { useJourneyTracking } from '@/hooks/useJourneyTracking';
-import { useIsAdmin } from '@/hooks/useIsAdmin';
-import { useToast } from '@/hooks/use-toast';
-import { usePhases } from '@/hooks/usePhases';
-import { useDailyContent } from '@/hooks/useDailyContent';
-import { useTriggersContent } from '@/hooks/useTriggersContent';
-import { useOnboardingData } from '@/hooks/useOnboardingData';
-import { useSubscription } from '@/hooks/useSubscription';
-import { useIsNativeIOS } from '@/hooks/useIsNativeIOS';
-import { supabase } from '@/integrations/supabase/client';
-import { initializePushNotifications } from '@/services/pushNotifications';
-import { useSosHypnosis } from '@/hooks/useSosHypnosis';
-import { LogOut, PlayCircle, Headphones, Lock, Crown, Sparkles, Info, MoreVertical, User, Shield, ListTodo, Layers, Play, Coins, CreditCard, ExternalLink, Trash2, XCircle, PartyPopper, HelpCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useMemo, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useDailyContent } from "@/hooks/useDailyContent";
+import { useJourneyTracking } from "@/hooks/useJourneyTracking";
+import { useOnboardingData } from "@/hooks/useOnboardingData";
+import { useSubscription } from "@/hooks/useSubscription";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,996 +18,434 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import MediaPlayer from '@/components/MediaPlayer';
-import StartHereStory from '@/components/StartHereStory';
-import { FeedbackSection } from '@/components/FeedbackSection';
-import { SubscriptionButton } from '@/components/upgrade/SubscriptionButton';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+  Calendar as CalendarIcon,
+  Headphones,
+  Play,
+  Timer,
+  Cigarette,
+  DollarSign,
+  Zap,
+  Target,
+  Flower2,
+  HeartPulse,
+  User,
+  LogOut,
+  HelpCircle,
+  Pencil,
+  Lock,
+} from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import MediaPlayer from "@/components/MediaPlayer";
+import WaveBackground from "@/components/home/WaveBackground";
+import ProgressBrain from "@/components/home/ProgressBrain";
+import BottomNav from "@/components/home/BottomNav";
+import soproLogo from "@/assets/sopro-logo.png";
 
-import day1 from '@/assets/day-1.jpg';
-import day2 from '@/assets/day-2.jpg';
-import day3 from '@/assets/day-3.jpg';
-import day4 from '@/assets/day-4.jpg';
-import day5 from '@/assets/day-5.jpg';
-import day6 from '@/assets/day-6.jpg';
-import day7 from '@/assets/day-7.jpg';
-import day8 from '@/assets/day-8.jpg';
-import day9 from '@/assets/day-9.jpg';
-import day10 from '@/assets/day-10.jpg';
-import day11 from '@/assets/day-11.jpg';
-import day12 from '@/assets/day-12.jpg';
-import day13 from '@/assets/day-13.jpg';
-import day14 from '@/assets/day-14.jpg';
-import day15 from '@/assets/day-15.jpg';
-import day16 from '@/assets/day-16.jpg';
-import day17 from '@/assets/day-17.jpg';
-import day18 from '@/assets/day-18.jpg';
-import day19 from '@/assets/day-19.jpg';
-import day20 from '@/assets/day-20.jpg';
-import day21 from '@/assets/day-21.jpg';
-import soproLogo from '@/assets/sopro-logo.png';
+const getGreeting = () => {
+  const h = new Date().getHours();
+  if (h < 12) return "Bom dia";
+  if (h < 18) return "Boa tarde";
+  return "Boa noite";
+};
 
-const dayImages = [
-  day1, day2, day3, day4, day5, day6, day7,
-  day8, day9, day10, day11, day12, day13, day14,
-  day15, day16, day17, day18, day19, day20, day21
-];
+const formatBRL = (n: number) =>
+  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 
-const Dashboard = () => {
+export default function Dashboard() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { profile, loading: profileLoading, hasAccessToDay, upgradeRequired } = useUserProfile();
+  const { profile, loading: profileLoading } = useUserProfile();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
-  const { 
-    getCurrentDay, 
-    isDayCompleted, 
+  const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
+  const {
+    getCurrentDay,
+    isDayCompleted,
     isDayTimeLocked,
-    getDayProgress,
     getDayCompletionTime,
-    getTimeUntilNextUnlock,
     startTracking,
     updateProgress,
-    isLoading: trackingLoading 
+    isLoading: trackingLoading,
   } = useJourneyTracking();
-  const { data: phases, isLoading: phasesLoading } = usePhases();
-  const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
-  const { data: triggers, isLoading: triggersLoading } = useTriggersContent();
-  const { data: onboardingData } = useOnboardingData();
-  const { isPremium, isExpired, daysRemaining, loading: subscriptionLoading } = useSubscription();
-  const isNativeIOS = useIsNativeIOS();
-  const [selectedMedia, setSelectedMedia] = useState<{
-    title: string;
-    fileUrl: string;
-    contentType: 'video' | 'hypnosis';
-    day?: number;
-    interactionType?: string;
-  } | null>(null);
-  const [currentTrackingId, setCurrentTrackingId] = useState<string | null>(null);
-  const [showStartHere, setShowStartHere] = useState(false);
-  const [expandedPhases, setExpandedPhases] = useState<Record<number, boolean>>({});
-  const [showExpiredDialog, setShowExpiredDialog] = useState(false);
-  const [showDay14Congrats, setShowDay14Congrats] = useState(false);
-  const [, setCountdownTick] = useState(0); // Forces re-render for countdown updates
-  const { getSosHypnosis } = useSosHypnosis();
+  const { data: onboarding, refetch: refetchOnboarding } = useOnboardingData();
+  const { loading: subLoading } = useSubscription();
   const { toast } = useToast();
-  const lastReportedProgressRef = useRef(0);
 
-  // Countdown timer effect - triggers re-render every minute to update countdown displays
+  const [tick, setTick] = useState(0);
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdownTick(tick => tick + 1);
-    }, 60000); // Update every minute
-    
-    return () => clearInterval(interval);
+    const i = setInterval(() => setTick((t) => t + 1), 1000);
+    return () => clearInterval(i);
   }, []);
 
-  console.log('Dashboard render:', { user, authLoading, profileLoading, profile, isAdmin });
+  const [selectedMedia, setSelectedMedia] = useState<any>(null);
+  const [trackingId, setTrackingId] = useState<string | null>(null);
+  const [savingDate, setSavingDate] = useState(false);
 
-  // Calculate current day based on user progress
-  const actualDay = getCurrentDay();
-  const currentDay: number = actualDay;
-  
-  console.log('Current day from tracking:', { actualDay, currentDay });
+  const currentDay = getCurrentDay();
+  const phaseNumber = currentDay <= 7 ? 1 : 2;
+  const phaseStart = phaseNumber === 1 ? 1 : 8;
+  const phaseEnd = phaseNumber === 1 ? 7 : 14;
+  const phaseDayIndex = currentDay - phaseStart + 1; // "Dia X de 7"
 
-  // Calculate savings for phase 2+ (from day 8+)
-  const calculateSavings = useMemo(() => {
-    try {
-      if (!onboardingData?.weekly_cost || currentDay < 8) return null;
-      
-      // Days in phase 2: currentDay - 7 (since phase 2 starts on day 8)
-      const daysInPhase2 = currentDay - 7;
-      if (daysInPhase2 <= 0) return null;
-      
-      const weeklyCostStr = String(onboardingData.weekly_cost || '0');
-      const weeklyCostNum = parseFloat(weeklyCostStr.replace(',', '.'));
-      
-      // Validate the number
-      if (!isFinite(weeklyCostNum) || isNaN(weeklyCostNum) || weeklyCostNum <= 0) return null;
-      
-      const dailyCost = weeklyCostNum / 7;
-      const totalSaved = Math.ceil(dailyCost * daysInPhase2);
-      
-      // Extra validation for resulting numbers
-      if (!isFinite(totalSaved) || isNaN(totalSaved)) return null;
-      
-      return {
-        current: totalSaved,
-        sixMonths: Math.ceil(weeklyCostNum * 26),
-        oneYear: Math.ceil(weeklyCostNum * 52)
-      };
-    } catch (error) {
-      console.error('Error calculating savings:', error);
-      return null;
-    }
-  }, [onboardingData?.weekly_cost, currentDay]);
+  // Days completed within current phase (excluding current)
+  const completedInPhase = useMemo(() => {
+    let n = 0;
+    for (let d = phaseStart; d <= phaseEnd; d++) if (isDayCompleted(d)) n++;
+    return n;
+  }, [tick, phaseStart, phaseEnd, isDayCompleted]);
 
-  // Group daily content by phases - memoized with stable dependencies
-  const phaseGroups = useMemo(() => {
-    if (!phases || !dailyContent || !Array.isArray(phases) || !Array.isArray(dailyContent)) return [];
-    if (phases.length === 0 || dailyContent.length === 0) return [];
-    
-    try {
-      return phases.map(phase => {
-        const startDay = (phase.phase_number - 1) * 7 + 1;
-        const endDay = phase.phase_number * 7;
-        const phaseDays = dailyContent.filter(
-          content => content.day_number >= startDay && content.day_number <= endDay
-        );
-        
-        return {
-          ...phase,
-          days: phaseDays
-        };
-      });
-    } catch (error) {
-      console.error('Error grouping phases:', error);
-      return [];
-    }
-  }, [phases, dailyContent]);
+  const progressPct = Math.round((completedInPhase / 7) * 100);
 
-  const getMediaUrl = (day: number, type: 'video' | 'hypnosis') => {
-    const bucket = type === 'video' ? 'videos' : 'hypnosis';
-    // Days 1-7 use .mp3 (lowercase), days 8+ use .MP3 (uppercase) in storage
-    const hypnosisExt = day >= 8 ? 'MP3' : 'mp3';
-    const fileName = type === 'video' ? `video_${day}.mp4` : `hipnose_${day}.${hypnosisExt}`;
-    return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${fileName}`;
+  const dayLocked = isDayTimeLocked(currentDay) && !isAdmin;
+
+  const dayContent = dailyContent?.find((d) => d.day_number === currentDay);
+  const firstName = (profile?.display_name || "").split(" ")[0] || "";
+
+  // Countdown until current day unlocks (when locked)
+  const lockCountdown = useMemo(() => {
+    if (!dayLocked || currentDay <= 1) return null;
+    const prev = getDayCompletionTime(currentDay - 1);
+    if (!prev) return null;
+    const unlock = new Date(prev.getTime() + 6 * 60 * 60 * 1000);
+    const ms = unlock.getTime() - Date.now();
+    if (ms <= 0) return null;
+    const h = Math.floor(ms / 3_600_000);
+    const m = Math.floor((ms % 3_600_000) / 60_000);
+    const s = Math.floor((ms % 60_000) / 1000);
+    return `${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
+  }, [tick, dayLocked, currentDay]);
+
+  // ----- Savings calculations -----
+  const cigsPerDay = onboarding?.cigarettes_per_day || 0;
+  const vapesPerWeek = onboarding?.vapes_per_week || 0;
+  // Convert vapes/week to cigarette-equivalents per day (round up)
+  const equivCigsPerDay = cigsPerDay + Math.ceil(vapesPerWeek / 7);
+  const weeklyCostNum = (() => {
+    const v = onboarding?.weekly_cost_value;
+    if (typeof v === "number" && isFinite(v) && v > 0) return v;
+    const txt = onboarding?.weekly_cost;
+    if (!txt) return 0;
+    const parsed = parseFloat(String(txt).replace(",", "."));
+    return isFinite(parsed) && parsed > 0 ? parsed : 0;
+  })();
+
+  const phase1Stats = useMemo(() => ({
+    cigsMonth: equivCigsPerDay * 30,
+    cigsYear: equivCigsPerDay * 365,
+    moneyMonth: weeklyCostNum * 4,
+    moneyYear: weeklyCostNum * 52,
+  }), [equivCigsPerDay, weeklyCostNum]);
+
+  const lastCigDateStr = onboarding?.last_cigarette_date as string | undefined;
+  const lastCigDate = lastCigDateStr ? new Date(lastCigDateStr + "T00:00:00") : null;
+  const daysSinceQuit = lastCigDate
+    ? Math.max(0, Math.floor((Date.now() - lastCigDate.getTime()) / 86_400_000))
+    : 0;
+
+  const phase2Stats = useMemo(() => {
+    if (!lastCigDate) return { cigs: 0, money: 0 };
+    return {
+      cigs: equivCigsPerDay * daysSinceQuit,
+      money: (weeklyCostNum / 7) * daysSinceQuit,
+    };
+  }, [lastCigDate, daysSinceQuit, equivCigsPerDay, weeklyCostNum]);
+
+  // ----- Media handler -----
+  const getMediaUrl = (day: number, type: "video" | "hypnosis") => {
+    const bucket = type === "video" ? "videos" : "hypnosis";
+    const ext = type === "video" ? "mp4" : day >= 8 ? "MP3" : "mp3";
+    const file = type === "video" ? `video_${day}.${ext}` : `hipnose_${day}.${ext}`;
+    return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${file}`;
   };
 
-  const getDayStatus = (day: number): 'completed' | 'current' | 'locked' | 'subscription_locked' | 'time_locked' => {
-    // Admins have full access to all days, phases, and content
-    if (isAdmin) {
-      return 'current';
-    }
-
-    // First check subscription access
-    const hasSubAccess = hasAccessToDay(day);
-    
-    if (!hasSubAccess) {
-      return 'subscription_locked';
-    }
-    
-    // Check if day is completed
-    if (isDayCompleted(day)) {
-      return 'completed';
-    }
-    
-    // IMPORTANT: Past days should ALWAYS be accessible, even if tracking data is inconsistent
-    if (day < currentDay) {
-      return 'completed';
-    }
-    
-    // Check if day is time-locked (6h wait after previous day)
-    if (isDayTimeLocked(day)) {
-      return 'time_locked';
-    }
-    
-    // Now check if this is the current day (only if not time-locked)
-    if (day === currentDay) {
-      return 'current';
-    }
-    
-    return 'locked';
-  };
-
-  const handleMediaOpen = (day: number, type: 'video' | 'hypnosis') => {
-    // Admins can open all media for testing
-    if (!isAdmin) {
-      // Day 1 is always free - no subscription check needed
-      // For day 2+, check subscription
-      if (day >= 2) {
-        if (!isPremium && !isExpired) {
-          navigate('/paywall');
-          return;
-        }
-        
-        if (isExpired) {
-          setShowExpiredDialog(true);
-          return;
-        }
-      }
-      
-      const status = getDayStatus(day);
-      if (status === 'locked' || status === 'subscription_locked') {
-        toast({
-          title: "Conteúdo bloqueado",
-          description: status === 'subscription_locked' 
-            ? (isNativeIOS ? "Este conteúdo requer acesso premium" : "Faça upgrade para acessar este conteúdo")
-            : "Complete o dia anterior para desbloquear",
-          variant: "destructive"
-        });
-        return;
-      }
-    }
-    
-    const interactionType = `${type === 'video' ? 'video' : 'hipnose'}_dia_${day}`;
-    
-    // IMPORTANT: Open the media player IMMEDIATELY (synchronously) to preserve
-    // the user gesture context on mobile browsers. Without this, audio/video
-    // loading is blocked by the browser's autoplay policy.
+  const openMedia = async (type: "video" | "hypnosis") => {
+    if (dayLocked) return;
+    const interactionType = `${type === "video" ? "video" : "hipnose"}_dia_${currentDay}`;
     setSelectedMedia({
-      title: dailyContent?.find(d => d.day_number === day)?.title || `Dia ${day}`,
-      fileUrl: getMediaUrl(day, type),
+      title: dayContent?.title || `Dia ${currentDay}`,
+      fileUrl: getMediaUrl(currentDay, type),
       contentType: type,
-      day,
-      interactionType
+      day: currentDay,
+      interactionType,
     });
-    
-    // Start tracking in the background (non-blocking)
-    startTracking({ interactionType }).then(trackingResult => {
-      if (trackingResult?.id) {
-        setCurrentTrackingId(trackingResult.id);
-      }
-    }).catch(error => {
-      console.error('Error starting tracking:', error);
-    });
-  };
-
-  const handleMediaProgress = (percentage: number) => {
-    lastReportedProgressRef.current = percentage;
-    if (currentTrackingId) {
-      updateProgress({
-        trackingId: currentTrackingId,
-        progressPercentage: percentage,
-        finished: percentage >= 85
-      });
+    try {
+      const r = await startTracking({ interactionType });
+      if (r?.id) setTrackingId(r.id);
+    } catch (e) {
+      console.error(e);
     }
   };
 
-
-
-
-  // Save final progress when user closes the player (catches progress missed by throttle)
-  const handleCloseWithProgress = (percentage: number) => {
-    if (currentTrackingId && percentage > lastReportedProgressRef.current) {
-      console.log(`[Dashboard] Saving final progress on close: ${percentage}%`);
-      updateProgress({
-        trackingId: currentTrackingId,
-        progressPercentage: percentage,
-        finished: percentage >= 85
-      });
-    }
+  const handleProgress = (p: number) => {
+    if (!trackingId) return;
+    updateProgress({ trackingId, progressPercentage: p, finished: p >= 85 });
+  };
+  const handleComplete = () => {
+    if (!trackingId) return;
+    updateProgress({ trackingId, progressPercentage: 100, finished: true });
+    toast({ title: "Progresso salvo!" });
   };
 
-  const handleMediaComplete = () => {
-    if (currentTrackingId) {
-      updateProgress({
-        trackingId: currentTrackingId,
-        progressPercentage: 100,
-        finished: true
-      });
-      
-      toast({
-        title: "Progresso salvo!",
-        description: "Seu progresso foi registrado com sucesso."
-      });
-      
-      // Check if this completes day 1 - redirect to paywall if not premium
-      if (selectedMedia?.day === 1 && !isPremium && !isExpired && !isAdmin) {
-        setTimeout(() => {
-          if (isDayCompleted(1)) {
-            navigate('/paywall');
-          }
-        }, 1500);
-      }
-      
-      // Check if this completes day 14 (both video and hypnosis)
-      if (selectedMedia?.day === 14) {
-        // Small delay to allow tracking to update
-        setTimeout(() => {
-          if (isDayCompleted(14)) {
-            setShowDay14Congrats(true);
-          }
-        }, 1000);
-      }
+  // ----- Save last cigarette date -----
+  const saveLastCigDate = async (dateStr: string) => {
+    if (!user || !onboarding) return;
+    setSavingDate(true);
+    const { error } = await supabase
+      .from("onboarding_responses")
+      .update({ last_cigarette_date: dateStr })
+      .eq("user_id", user.id);
+    setSavingDate(false);
+    if (error) {
+      toast({ title: "Erro ao salvar", description: error.message, variant: "destructive" });
+      return;
     }
+    toast({ title: "Data salva!" });
+    refetchOnboarding();
   };
 
-  useEffect(() => {
-    if (!user) return;
-    
-    let isMounted = true;
-
-    const initApp = async () => {
-      try {
-        // Initialize push notifications safely
-        await initializePushNotifications();
-      } catch (error) {
-        console.error('Error initializing push notifications:', error);
-      }
-      
-      if (!isMounted) return;
-      
-      // Clean up any leftover checkout URL params
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('checkout') || urlParams.has('session_id')) {
-          window.history.replaceState({}, '', '/dashboard');
-        }
-      } catch (error) {
-        // Silently ignore
-      }
-    };
-
-    initApp();
-
-    return () => {
-      isMounted = false;
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
-  // Expired dialog is now shown only when user tries to play content
-
-  if (authLoading || profileLoading || phasesLoading || contentLoading || triggersLoading || trackingLoading || adminLoading || subscriptionLoading) {
-    console.log('Loading state:', { authLoading, profileLoading, trackingLoading, adminLoading });
+  if (authLoading || profileLoading || adminLoading || contentLoading || trackingLoading || subLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <p className="mt-4 text-muted-foreground">Carregando...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
+  if (!user) return <Navigate to="/login" replace />;
 
-  if (!user) {
-    console.log('No user, redirecting to login');
-    return <Navigate to="/login" replace />;
-  }
-
-  // Non-premium users can browse the dashboard but media is gated
-
-  console.log('Rendering dashboard content');
+  const motivational = (() => {
+    if (phaseNumber === 1) {
+      const remaining = Math.max(0, 7 - phaseDayIndex);
+      return `Faltam ${remaining} dias para a sua liberdade`;
+    }
+    if (lastCigDate) return `Você está livre da nicotina há ${daysSinceQuit} dias`;
+    return null;
+  })();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/');
+    navigate("/");
   };
 
+  const showLastCigCard = phaseNumber === 2 && !lastCigDate;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background" style={{ overscrollBehavior: 'none' }}>
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
+    <div className="relative min-h-screen overflow-x-hidden pb-32">
+      <WaveBackground />
+
+      <div className="mx-auto max-w-md px-5 pt-[env(safe-area-inset-top)]">
         {/* Header */}
-        <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-50 shadow-sm mb-6 rounded-b-xl pt-[env(safe-area-inset-top)]">
-          <div className="px-4 py-3">
-            <div className="flex items-center justify-between mb-3">
-              <img src={soproLogo} alt="Sopro" className="h-8 w-auto object-contain" />
-              
-              <div className="flex items-center gap-2">
-                {isPremium && daysRemaining > 0 && (
-                  <Badge className="text-xs bg-accent whitespace-nowrap">
-                    <Crown className="w-3 h-3 mr-1" />
-                    {daysRemaining} dias
-                  </Badge>
-                )}
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setShowStartHere(true)}
-                  title="Informações"
-                >
-                  <Info className="h-4 w-4" />
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      title="Menu"
-                    >
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuItem onClick={() => navigate('/settings')}>
-                      <User className="h-4 w-4 mr-2" />
-                      Conta
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/cancel-subscription')}>
-                      <XCircle className="h-4 w-4 mr-2" />
-                      Cancelar Assinatura
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/faq')}>
-                      <HelpCircle className="h-4 w-4 mr-2" />
-                      Ajuda / FAQ
-                    </DropdownMenuItem>
-                    {isAdmin && (
-                      <DropdownMenuItem onClick={() => navigate('/onboarding')}>
-                        <ListTodo className="h-4 w-4 mr-2" />
-                        Questionário
-                      </DropdownMenuItem>
-                    )}
-                    <DropdownMenuItem onClick={() => navigate('/delete-account')} className="text-destructive focus:text-destructive">
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Excluir Conta
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sair
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+        <header className="flex items-center justify-between pt-4">
+          <img src={soproLogo} alt="Sopro Neuro" className="h-10 w-auto" />
+          <div className="flex items-center gap-2">
+            <div className="text-right">
+              <p className="text-sm font-semibold text-foreground leading-tight">
+                {getGreeting()}{firstName ? `, ${firstName}!` : "!"} 👋
+              </p>
+              <p className="text-[11px] text-muted-foreground leading-tight">
+                Seu cérebro está aprendendo<br />uma nova forma de viver.
+              </p>
             </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="h-10 w-10 rounded-full bg-white/70 backdrop-blur border border-white/60 flex items-center justify-center shadow-sm">
+                  <User className="h-5 w-5 text-primary" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => navigate("/settings")}>
+                  <User className="h-4 w-4 mr-2" /> Conta
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/faq")}>
+                  <HelpCircle className="h-4 w-4 mr-2" /> Ajuda
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-2" /> Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
 
-        {/* Feedback Section - shown at the top until user answers */}
-        {!isAdmin && (
-          <FeedbackSection 
-            currentDay={currentDay} 
-            isDayCompleted={(day) => isDayCompleted(day)} 
-          />
-        )}
-
-        {/* Tabs Navigation */}
-        <Tabs defaultValue="daily" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="daily">
-              <ListTodo className="h-5 w-5" />
-            </TabsTrigger>
-            <TabsTrigger value="support">
-              <Layers className="h-5 w-5" />
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="daily" className="mt-0">{/* Daily Tasks Tab */}
-
-        {currentDay === 1 && (
-          <div className="mb-8">
-            <div 
-              className="relative overflow-hidden rounded-xl shadow-lg shadow-primary/20 cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary/5 to-accent/5 p-4 touch-manipulation"
-              onClick={() => setShowStartHere(true)}
-            >
-              <div className="flex items-center justify-between gap-4">
-                <p className="text-sm text-muted-foreground flex-1">
-                  Entenda como funciona sua jornada de 14 dias
-                </p>
-                
-                <Button 
-                  variant="default"
-                  className="shadow-lg flex-shrink-0 pointer-events-none"
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Comece aqui
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Motivational Message for Day 8+ */}
-        {currentDay >= 8 && dailyContent && (
-          <div className="mb-6 space-y-4">
-            {/* Welcome Title */}
-            {dailyContent.find(d => d.day_number === currentDay)?.welcome_title && (
-              <div className="bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-lg p-4 shadow-sm">
-                <p className="text-sm text-navy font-medium text-center leading-relaxed whitespace-pre-line">
-                  {dailyContent.find(d => d.day_number === currentDay)?.welcome_title}
-                </p>
-              </div>
-            )}
-            
-            {/* Savings Display */}
-            {calculateSavings !== null && (
-              <div className="bg-gradient-to-r from-accent/5 via-primary/5 to-accent/5 rounded-lg p-4 shadow-sm">
-                <p className="text-sm text-navy/70 text-center flex items-center justify-center gap-2">
-                  <Coins className="w-4 h-4 text-navy" />
-                  Você já economizou cerca de <span className="font-semibold text-navy text-base">R${calculateSavings.current}</span>
-                </p>
-                
-                {/* Savings Projection */}
-                <div className="flex items-center justify-center gap-4 mt-3 pt-3">
-                  <div className="text-center">
-                    <p className="text-xs text-navy/60">Em 6 meses</p>
-                    <p className="text-sm font-semibold text-navy">R${calculateSavings.sixMonths}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs text-navy/60">Em 1 ano</p>
-                    <p className="text-sm font-semibold text-navy">R${calculateSavings.oneYear}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-
-        {/* Phases with Day Carousels */}
-        <div className="space-y-8">
-          {Array.isArray(phaseGroups) && phaseGroups.length > 0 && phaseGroups.map((phase) => {
-            // Safety check for phase data
-            if (!phase || !Array.isArray(phase.days)) return null;
-            
-            const isPhase1 = phase.phase_number === 1;
-            const phase1LastDay = 7;
-            const isPhaseCollapsible = isAdmin || (isPhase1 && isDayCompleted(phase1LastDay));
-            const isPhaseExpanded = expandedPhases[phase.phase_number] || false;
-            
-            return (
-              <div key={phase.id} className={`rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg transition-all duration-300 ${
-                isPhaseCollapsible && !isPhaseExpanded ? 'p-4 opacity-70' : 'p-4 md:p-6'
-              }`} style={{ minHeight: isPhaseCollapsible && !isPhaseExpanded ? 'auto' : undefined }}>
-                <div 
-                  className={`mb-4 ${isPhaseCollapsible ? 'cursor-pointer hover:bg-accent/10 rounded-lg p-2 -m-2 transition-colors' : ''}`}
-                  onClick={() => {
-                    if (isPhaseCollapsible) {
-                      setExpandedPhases(prev => ({ ...prev, [phase.phase_number]: !prev[phase.phase_number] }));
-                    }
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <span className={`text-sm font-semibold px-3 py-1 rounded-full ${isPhaseCollapsible && !isPhaseExpanded ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary'}`}>
-                          Fase {phase.phase_number}
-                        </span>
-                        
-                        {/* Progress Indicators */}
-                        <div className="flex items-center gap-2">
-                          {/* Dots - for admins all days are completed */}
-                          <div className="flex gap-1">
-                            {phase.days.map((day, idx) => {
-                              const isCompleted = isAdmin || day.day_number < currentDay || isDayCompleted(day.day_number);
-                              const isCurrent = !isAdmin && day.day_number === currentDay;
-                              return (
-                                <div
-                                  key={day.id}
-                                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                                    isCompleted 
-                                      ? 'bg-primary scale-110' 
-                                      : isCurrent
-                                      ? 'bg-purple-500 scale-110'
-                                      : 'bg-muted-foreground/20'
-                                  }`}
-                                  title={`Dia ${day.day_number}${isCompleted ? ' - Concluído' : isCurrent ? ' - Atual' : ''}`}
-                                />
-                              );
-                            })}
-                          </div>
-                          
-                          {/* Count - for admins always show 7/7 */}
-                          <span className={`text-xs font-medium ${isPhaseCollapsible && !isPhaseExpanded ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
-                            {isAdmin ? '7' : phase.days.filter(day => day.day_number <= currentDay || isDayCompleted(day.day_number)).length}/{phase.days.length} dias
-                          </span>
-                        </div>
-                        
-                        {isPhaseCollapsible && !isAdmin && (
-                          <Badge className="bg-gray-500/20 text-gray-600 dark:text-gray-400 border-gray-500/30 text-xs">
-                            Concluído
-                          </Badge>
-                        )}
-                      </div>
-                      <h2 className={`text-xl md:text-2xl font-bold ${
-                        isPhaseCollapsible && !isPhaseExpanded
-                          ? 'text-muted-foreground' 
-                          : 'bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent'
-                      }`}>
-                        {phase.title}
-                      </h2>
-                      {(!isPhaseCollapsible || isPhaseExpanded) && (
-                        <p className={`text-sm md:text-base ${isPhaseCollapsible ? 'text-muted-foreground/80' : 'text-muted-foreground'}`}>
-                          {phase.phase_number === 1 ? (
-                            <>Mude como seu cérebro vê o cigarro.<br />Fume seu último cigarro ao final desta fase.</>
-                          ) : phase.phase_number === 2 ? (
-                            <>Agora você já é um ex-fumante!<br />Será mais fácil do que você imagina.</>
-                          ) : (
-                            phase.subtitle
-                          )}
-                        </p>
-                      )}
-                    </div>
-                    {isPhaseCollapsible && (
-                      <div className={`transition-transform duration-300 ${isPhaseExpanded ? 'rotate-180' : ''}`}>
-                        <svg 
-                          className="w-6 h-6 text-primary" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-
-
-                {(!isPhaseCollapsible || isPhaseExpanded) && (
-
-                <Carousel 
-                  opts={{ 
-                    align: "center",
-                    startIndex: isAdmin ? 0 : phase.days.findIndex(d => d.day_number === currentDay),
-                  }}
-                  className="w-full"
-                >
-                  <CarouselContent className="-ml-2 md:-ml-4">
-                    {phase.days.map((dayContent, index) => {
-                      const day = dayContent.day_number;
-                      const status = getDayStatus(day);
-                      const isLocked = status === 'locked' || status === 'subscription_locked' || status === 'time_locked';
-                      const needsUpgrade = status === 'subscription_locked';
-                      const isTimeLocked = status === 'time_locked';
-                      const isCompleted = status === 'completed';
-                      const isCurrent = status === 'current';
-                      const isFirstInPhase = index === 0;
-                      const isLastInPhase = index === phase.days.length - 1;
-
-                      return (
-                        <CarouselItem key={day} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
-                          <div 
-                            className={`group relative overflow-hidden rounded-2xl border-0 transition-all duration-300 ${
-                              isLocked && !isAdmin
-                                ? 'opacity-50 cursor-not-allowed bg-card/30 shadow-sm' 
-                                : isAdmin
-                                  ? 'shadow-xl cursor-pointer hover:shadow-2xl hover:-translate-y-1 bg-gradient-to-br from-accent/10 to-primary/10 brightness-100'
-                                  : isCurrent
-                                    ? 'shadow-xl cursor-pointer hover:shadow-2xl hover:-translate-y-1 bg-gradient-to-br from-accent/10 to-primary/10 brightness-100'
-                                    : 'shadow-md cursor-pointer hover:shadow-lg hover:-translate-y-0.5 bg-card/50 backdrop-blur-sm'
-                            }`}
-                          >
-                            <div className="relative aspect-video overflow-hidden">
-                              <img 
-                                src={`${dayImages[day - 1]}?v=2`} 
-                                alt={dayContent.title}
-                                loading="eager"
-                                decoding="async"
-                                className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${
-                                  isAdmin ? 'opacity-100 brightness-100 saturate-100' : ''
-                                }`}
-                              />
-                              {isLocked && !isAdmin && (
-                                <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center">
-                                  <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center shadow-lg">
-                                    <Lock className="h-7 w-7 text-muted-foreground" />
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-
-                            <div className={`p-5 ${isLocked ? 'pointer-events-none' : ''}`}>
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-bold flex-shrink-0">
-                                  {day}
-                                </span>
-                                <h3 className="text-base font-semibold text-navy dark:text-primary-light leading-tight tracking-tight flex-1">
-                                  {dayContent.title}
-                                </h3>
-                              </div>
-                              
-                              <div className={`flex gap-2 ${phase.phase_number === 2 ? 'justify-center' : ''}`}>
-                                {/* Show video button only if NOT Phase 2 */}
-                                {phase.phase_number !== 2 && (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                  className={`flex-1 justify-center min-h-[44px] ${
-                                    !isLocked 
-                                      ? 'bg-sky-50 hover:bg-sky-100 text-sky-600 border-sky-200' 
-                                      : ''
-                                  }`}
-                                    onClick={() => {
-                                      if (!isLocked || isAdmin) {
-                                        handleMediaOpen(day, 'video');
-                                      }
-                                    }}
-                                    disabled={isLocked && !isAdmin}
-                                  >
-                                    <PlayCircle className="h-3.5 w-3.5 mr-1.5" />
-                                    <span className="text-xs">
-                                      Vídeo
-                                      {dayContent.video_minutes && (
-                                        <span className="text-[10px] opacity-70 ml-1">
-                                          {dayContent.video_minutes}min
-                                        </span>
-                                      )}
-                                    </span>
-                                  </Button>
-                                )}
-                                
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className={`${phase.phase_number === 2 ? 'w-auto px-6' : 'flex-1'} justify-center min-h-[44px] ${
-                                    !isLocked 
-                                      ? 'bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200' 
-                                      : ''
-                                  }`}
-                                  onClick={() => {
-                                    if (!isLocked || isAdmin) {
-                                      handleMediaOpen(day, 'hypnosis');
-                                    }
-                                  }}
-                                  disabled={isLocked && !isAdmin}
-                                >
-                                  <Headphones className="h-3.5 w-3.5 mr-1.5" />
-                                  <span className="text-xs">
-                                    Hipnose
-                                    {dayContent.hypnosis_minutes && (
-                                      <span className="text-[10px] opacity-70 ml-1">
-                                        {dayContent.hypnosis_minutes}min
-                                      </span>
-                                    )}
-                                  </span>
-                                </Button>
-                              </div>
-                              
-                              {/* Progress Message - for current day (in progress) or completed day with countdown */}
-                              {(() => {
-                                const videoProgress = getDayProgress(day, 'video');
-                                const hypnosisProgress = getDayProgress(day, 'hypnosis');
-                                const videoCompleted = videoProgress.completed;
-                                const hypnosisCompleted = hypnosisProgress.completed;
-                                const hasStarted = videoProgress.started || hypnosisProgress.started;
-                                const bothCompleted = videoCompleted && hypnosisCompleted;
-                                
-                                // For Phase 2, only hypnosis is required
-                                const isPhase2 = phase.phase_number === 2;
-                                const allRequired = isPhase2 ? hypnosisCompleted : bothCompleted;
-                                
-                                // Calculate countdown for THIS specific completed day
-                                // Show on completed days where the NEXT day is still time-locked
-                                if (isCompleted && day < 21) {
-                                  const completionTime = getDayCompletionTime(day);
-                                  
-                                  if (completionTime) {
-                                    const unlockTime = new Date(completionTime.getTime() + 6 * 60 * 60 * 1000);
-                                    const msRemaining = unlockTime.getTime() - Date.now();
-                                    
-                                    if (msRemaining > 0) {
-                                      const hours = Math.floor(msRemaining / (1000 * 60 * 60));
-                                      const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                                      const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                                      
-                                      return (
-                                        <div className="mt-3 text-center h-5">
-                                          <p className="text-xs text-primary font-medium">
-                                            Próximo dia em {timeStr}
-                                          </p>
-                                        </div>
-                                      );
-                                    }
-                                  }
-                                }
-                                
-                                // Show progress message for current day (not for admins, not if next day is already unlocked)
-                                if (isCurrent && !isLocked && !isAdmin) {
-                                  const nextDayUnlocked = day < 21 && (isDayCompleted(day) || !isDayTimeLocked(day + 1));
-                                  if (hasStarted && !allRequired && !nextDayUnlocked) {
-                                    return (
-                                      <div className="mt-3 text-center h-5">
-                                        <p className="text-xs text-muted-foreground">
-                                          {isPhase2 
-                                            ? "Finalize a hipnose para avançar"
-                                            : "Finalize o vídeo e a hipnose para avançar"
-                                          }
-                                        </p>
-                                      </div>
-                                    );
-                                  }
-                                }
-                                
-                                // Show "Concluído" for completed days (hide for admin)
-                                if (isCompleted && !isAdmin) {
-                                  return (
-                                    <div className="mt-3 text-center h-5">
-                                      <p className="text-xs text-primary font-medium">Concluído</p>
-                                    </div>
-                                  );
-                                }
-                                
-                                // Placeholder to maintain consistent card height
-                                return <div className="mt-3 h-5" />;
-                              })()}
-                            </div>
-                          </div>
-                        </CarouselItem>
-                      );
-                    })}
-                  </CarouselContent>
-                  {phase.days.length > 1 && (
-                    <>
-                      <CarouselPrevious className="-left-4 md:-left-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
-                      <CarouselNext className="-right-4 md:-right-6 bg-white/80 hover:bg-white border-primary/20 text-primary shadow-lg" />
-                    </>
-                  )}
-                </Carousel>
-                )}
-              </div>
-            );
-          })}
+        {/* Phase badge */}
+        <div className="flex justify-center mt-6">
+          <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-[hsl(258_80%_95%)] text-[hsl(258_60%_45%)]">
+            Fase {phaseNumber} • {phaseNumber === 1 ? "Despertar" : "Libertar"}
+          </span>
         </div>
 
-        {/* SOS Button - Inside card matching phase containers */}
-        {(currentDay >= 8 || isAdmin) && (
-          <div className="mt-8 rounded-2xl bg-card/50 backdrop-blur-sm border-0 shadow-lg p-4 md:p-6">
-            <div 
-              className="flex items-center gap-4 cursor-pointer touch-manipulation"
-              onClick={() => {
-                const sos = getSosHypnosis();
-                setSelectedMedia({
-                  title: sos.title,
-                  fileUrl: sos.fileUrl,
-                  contentType: 'hypnosis',
-                });
-              }}
+        {/* Day title */}
+        <div className="text-center mt-3">
+          <h1 className="text-3xl font-bold text-[hsl(220_50%_25%)]">
+            Dia {phaseDayIndex} <span className="text-base font-normal text-muted-foreground">de 7</span>
+          </h1>
+          {dayContent?.title && (
+            <p className="text-sm font-semibold bg-gradient-to-r from-[hsl(230_85%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent mt-1">
+              {dayContent.title}
+            </p>
+          )}
+        </div>
+
+        {/* Brain progress */}
+        <div className="mt-6">
+          <ProgressBrain progress={progressPct} locked={dayLocked} />
+          <div className="text-center -mt-1">
+            <p className="text-3xl font-bold text-[hsl(220_50%_25%)]">
+              {progressPct}<span className="text-lg">%</span>
+            </p>
+            {motivational && (
+              <p className="text-sm text-muted-foreground mt-1">{motivational}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Content cards */}
+        <div className={`grid gap-3 mt-6 ${phaseNumber === 2 ? "grid-cols-1" : "grid-cols-2"}`}>
+          {phaseNumber === 1 && (
+            <button
+              onClick={() => openMedia("video")}
+              disabled={dayLocked}
+              className={`relative rounded-2xl bg-white/70 backdrop-blur-sm border border-white/60 p-4 text-center shadow-[0_6px_20px_-12px_hsl(258_70%_50%/0.3)] transition-transform active:scale-95 ${
+                dayLocked ? "opacity-50" : "hover:shadow-[0_10px_30px_-12px_hsl(258_70%_50%/0.4)]"
+              }`}
             >
-              <button
-                className="w-16 h-16 rounded-full bg-rose-50 dark:bg-rose-950/30 border-0 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-95 transition-all duration-200 shadow-md touch-manipulation flex-shrink-0"
-              >
-                <span className="text-rose-400 font-bold text-lg select-none">SOS</span>
-              </button>
-              <div>
-                <h4 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">A vontade está forte?</h4>
-                <p className="text-muted-foreground text-sm">
-                  Toque no botão<br />e acalme seu cérebro em minutos.
+              <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-br from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)] flex items-center justify-center shadow-md">
+                <Play className="h-5 w-5 text-white fill-white" />
+              </div>
+              <p className="mt-2 font-semibold text-sm text-foreground">Vídeo</p>
+              <p className="text-xs text-muted-foreground">{dayContent?.video_minutes || 10} min</p>
+              <p className="text-[11px] text-muted-foreground mt-1">Entenda e transforme sua mente.</p>
+            </button>
+          )}
+          <button
+            onClick={() => openMedia("hypnosis")}
+            disabled={dayLocked}
+            className={`relative rounded-2xl bg-white/70 backdrop-blur-sm border border-white/60 p-4 text-center shadow-[0_6px_20px_-12px_hsl(258_70%_50%/0.3)] transition-transform active:scale-95 ${
+              dayLocked ? "opacity-50" : "hover:shadow-[0_10px_30px_-12px_hsl(258_70%_50%/0.4)]"
+            }`}
+          >
+            <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-md">
+              <Headphones className="h-5 w-5 text-white" />
+            </div>
+            <p className="mt-2 font-semibold text-sm text-foreground">Hipnose</p>
+            <p className="text-xs text-muted-foreground">{dayContent?.hypnosis_minutes || 15} min</p>
+            <p className="text-[11px] text-muted-foreground mt-1">Reprograme seu cérebro em profundidade.</p>
+          </button>
+        </div>
+
+        {/* Unlock info */}
+        <div className="mt-4 flex items-center justify-center gap-2 text-center">
+          <Timer className="h-4 w-4 text-muted-foreground" />
+          {dayLocked && lockCountdown ? (
+            <p className="text-xs text-muted-foreground">
+              Será liberado em <span className="font-semibold text-foreground">{lockCountdown}</span>
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Após concluir todo o conteúdo do dia, o próximo será liberado em <span className="font-semibold">6h</span>.
+            </p>
+          )}
+        </div>
+
+        {/* Last cigarette date card (Phase 2, no date yet) */}
+        {showLastCigCard && (
+          <Card className="mt-6 p-5 bg-white/70 backdrop-blur-sm border border-[hsl(258_70%_88%)] shadow-[0_8px_30px_-12px_hsl(258_70%_50%/0.3)] rounded-2xl">
+            <div className="flex items-start gap-3">
+              <div className="h-10 w-10 rounded-xl bg-[hsl(258_80%_95%)] flex items-center justify-center flex-shrink-0">
+                <CalendarIcon className="h-5 w-5 text-[hsl(258_60%_50%)]" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground">Qual foi a data do seu último cigarro?</h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Essa informação é <span className="text-[hsl(258_60%_50%)] font-medium">essencial</span> para acompanhar sua evolução e <span className="text-[hsl(258_60%_50%)] font-medium">celebrar cada conquista</span>.
+                </p>
+                <input
+                  type="date"
+                  max={new Date().toISOString().slice(0, 10)}
+                  onChange={(e) => e.target.value && saveLastCigDate(e.target.value)}
+                  disabled={savingDate}
+                  className="mt-3 w-full rounded-xl border border-[hsl(258_70%_88%)] bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)]"
+                />
+                <p className="text-[11px] text-muted-foreground mt-2 flex items-center gap-1">
+                  <Lock className="h-3 w-3" />
+                  Você poderá editar a data depois, se necessário.
                 </p>
               </div>
             </div>
-          </div>
+          </Card>
         )}
 
+        {/* Progress / savings card */}
+        <Card className="mt-6 p-5 bg-white/70 backdrop-blur-sm border border-white/70 shadow-[0_8px_30px_-12px_hsl(258_70%_50%/0.25)] rounded-2xl">
+          <h3 className="font-semibold text-foreground">Você está no caminho certo</h3>
 
-        </TabsContent>
-
-          <TabsContent value="support" className="mt-0">
-            {/* Support Hypnosis Tab */}
-            <div className="space-y-6">
-              {/* Seção 1 - Sempre disponível */}
-              <div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {Array.isArray(triggers) && triggers.filter(t => t.section === 'initial').map((trigger) => (
-                    <Card
-                      key={trigger.id}
-                      className="overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 group cursor-pointer touch-manipulation"
-                      onClick={() =>
-                        setSelectedMedia({
-                          title: trigger.title,
-                          fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/${trigger.file_name}`,
-                          contentType: 'hypnosis',
-                        })
-                      }
-                    >
-                      <div className="p-3">
-                        <div className="flex items-start gap-2 mb-2">
-                          <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                            <Headphones className="h-3.5 w-3.5 text-primary" />
-                          </div>
-                          <h3 className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
-                            {trigger.title}
-                          </h3>
-                        </div>
-                        
-                        <p className="text-[11px] text-muted-foreground mb-2 line-clamp-2 leading-tight">
-                          {trigger.description}
-                        </p>
-
-                        <div className="flex items-center justify-between text-[11px]">
-                          {trigger.duration_minutes && (
-                            <span className="font-medium text-muted-foreground">
-                              {trigger.duration_minutes}min
-                            </span>
-                          )}
-                          <div className="flex items-center text-primary ml-auto font-medium">
-                            <Play className="h-3 w-3 mr-0.5" />
-                            Ouvir
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-
-              {/* Seção 2 - Pós último cigarro */}
-              <div>
-                <div className="mb-4">
-                  {currentDay < 8 && !isAdmin && (
-                    <p className="text-sm font-semibold text-accent mb-2">
-                      Ficará disponível após finalizar a Fase 1
-                    </p>
-                  )}
-                  <h3 className="text-lg font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-2">Controle dos Gatilhos</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Hipnoses rápidas para estabilizar a mente e o corpo após parar de fumar
-                  </p>
-                </div>
-                
-                <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ${currentDay < 8 && !isAdmin ? 'opacity-50' : ''}`}>
-                  {Array.isArray(triggers) && triggers.filter(t => t.section === 'post_cigarette').map((trigger) => (
-                    <Card
-                      key={trigger.id}
-                      className={`overflow-hidden border-0 bg-accent/30 backdrop-blur-sm shadow-md transition-all duration-300 group touch-manipulation ${
-                        currentDay >= 8 || isAdmin ? 'hover:shadow-lg cursor-pointer' : 'cursor-not-allowed'
-                      }`}
-                      onClick={() => {
-                        if (currentDay >= 8 || isAdmin) {
-                          setSelectedMedia({
-                            title: trigger.title,
-                            fileUrl: `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis/${trigger.file_name}`,
-                            contentType: 'hypnosis',
-                          });
-                        }
-                      }}
-                    >
-                      <div className="p-3 relative">
-                        {currentDay < 8 && !isAdmin && (
-                          <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] flex items-center justify-center z-10">
-                            <Lock className="h-5 w-5 text-muted-foreground" />
-                          </div>
-                        )}
-                        <div className="flex items-start gap-2 mb-2">
-                          <div className="w-7 h-7 rounded-md bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                            <Headphones className="h-3.5 w-3.5 text-primary" />
-                          </div>
-                          <h3 className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
-                            {trigger.title}
-                          </h3>
-                        </div>
-                        
-                        <p className="text-[11px] text-muted-foreground mb-2 line-clamp-2 leading-tight">
-                          {trigger.description}
-                        </p>
-
-                        <div className="flex items-center justify-between text-[11px]">
-                          {trigger.duration_minutes && (
-                            <span className="font-medium text-muted-foreground">
-                              {trigger.duration_minutes}min
-                            </span>
-                          )}
-                          <div className="flex items-center text-primary ml-auto font-medium">
-                            <Play className="h-3 w-3 mr-0.5" />
-                            Ouvir
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-
+          {phaseNumber === 1 ? (
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <SavingsBlock
+                icon={<Cigarette className="h-4 w-4" />}
+                label={"Cigarros que você\nnão vai fumar"}
+                rows={[
+                  { label: "por mês", value: phase1Stats.cigsMonth.toLocaleString("pt-BR") },
+                  { label: "por ano", value: phase1Stats.cigsYear.toLocaleString("pt-BR") },
+                ]}
+              />
+              <SavingsBlock
+                icon={<DollarSign className="h-4 w-4" />}
+                label={"Dinheiro que você\nvai economizar"}
+                rows={[
+                  { label: "por mês", value: formatBRL(phase1Stats.moneyMonth) },
+                  { label: "por ano", value: formatBRL(phase1Stats.moneyYear) },
+                ]}
+              />
             </div>
-          </TabsContent>
-        </Tabs>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <SavingsBlock
+                  icon={<Cigarette className="h-4 w-4" />}
+                  label="Cigarros que você evitou"
+                  rows={[{ label: "", value: phase2Stats.cigs.toLocaleString("pt-BR") }]}
+                />
+                <SavingsBlock
+                  icon={<DollarSign className="h-4 w-4" />}
+                  label="Dinheiro que você economizou"
+                  rows={[{ label: "", value: formatBRL(phase2Stats.money) }]}
+                />
+              </div>
+              {lastCigDate && (
+                <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground bg-[hsl(258_80%_97%)] rounded-lg px-3 py-2">
+                  <span>
+                    O dia da sua mudança de vida foi{" "}
+                    <strong className="text-foreground">{format(lastCigDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}</strong>
+                  </span>
+                  <button
+                    onClick={() => {
+                      const v = window.prompt(
+                        "Atualizar data do último cigarro (AAAA-MM-DD):",
+                        lastCigDate.toISOString().slice(0, 10),
+                      );
+                      if (v && /^\d{4}-\d{2}-\d{2}$/.test(v)) saveLastCigDate(v);
+                    }}
+                    className="text-[hsl(258_60%_50%)] hover:underline flex items-center gap-1"
+                  >
+                    <Pencil className="h-3 w-3" />
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Benefits row */}
+          <div className="grid grid-cols-4 gap-2 mt-5 pt-4 border-t border-[hsl(258_30%_92%)]">
+            <Benefit icon={<Zap className="h-5 w-5" />} label="Mais energia" />
+            <Benefit icon={<Target className="h-5 w-5" />} label="Mais foco" />
+            <Benefit icon={<Flower2 className="h-5 w-5" />} label="Mais calma" />
+            <Benefit icon={<HeartPulse className="h-5 w-5" />} label="Mais saúde" />
+          </div>
+        </Card>
       </div>
 
-      {/* Media Player */}
+      <BottomNav />
+
       {selectedMedia && (
         <MediaPlayer
           title={selectedMedia.title}
@@ -1024,105 +454,50 @@ const Dashboard = () => {
           interactionType={selectedMedia.interactionType}
           onClose={() => {
             setSelectedMedia(null);
-            setCurrentTrackingId(null);
-            lastReportedProgressRef.current = 0;
+            setTrackingId(null);
           }}
-          onProgress={handleMediaProgress}
-          onComplete={handleMediaComplete}
-          onCloseWithProgress={handleCloseWithProgress}
+          onProgress={handleProgress}
+          onComplete={handleComplete}
         />
       )}
-
-      {/* Start Here Story */}
-      {showStartHere && (
-        <StartHereStory onClose={() => setShowStartHere(false)} />
-      )}
-
-      {/* Expired Subscription Dialog */}
-      <AlertDialog open={showExpiredDialog} onOpenChange={setShowExpiredDialog}>
-        <AlertDialogContent className="max-w-md">
-          <AlertDialogHeader>
-            <div className="flex justify-center mb-4">
-              <Crown className="w-12 h-12 text-accent" />
-            </div>
-            <AlertDialogTitle className="text-center">
-              Sua assinatura expirou
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-center">
-              Seu acesso premium expirou. Renove sua assinatura para continuar acessando todo o conteúdo.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
-            <AlertDialogAction 
-              onClick={() => {
-                setShowExpiredDialog(false);
-                navigate('/paywall');
-              }}
-              className="w-full bg-accent hover:bg-accent/90"
-            >
-              Renovar assinatura
-            </AlertDialogAction>
-            <Button 
-              onClick={() => setShowExpiredDialog(false)}
-              className="w-full"
-              variant="outline"
-            >
-              Fechar
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Day 14 Completion Congratulations Dialog */}
-      <AlertDialog open={showDay14Congrats} onOpenChange={setShowDay14Congrats}>
-        <AlertDialogContent className="max-w-md">
-          <AlertDialogHeader>
-            <div className="flex justify-center mb-4">
-              <div className="relative">
-                <div className="absolute inset-0 animate-ping bg-accent/30 rounded-full" />
-                <div className="relative bg-gradient-to-br from-accent to-primary p-4 rounded-full">
-                  <PartyPopper className="w-12 h-12 text-white" />
-                </div>
-              </div>
-            </div>
-            <AlertDialogTitle className="text-center text-2xl">
-              🎉 Parabéns!
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-center space-y-3">
-              <p className="text-base">
-                Você completou os <strong>14 dias de conteúdo</strong> da sua jornada de transformação!
-              </p>
-              <p>
-                Este é um marco incrível. Continue praticando as técnicas aprendidas e acompanhando seu progresso.
-              </p>
-              <div className="bg-muted/50 rounded-lg p-3 mt-4">
-                <p className="text-xs text-muted-foreground">
-                  💡 Lembre-se: sua assinatura é recorrente.{' '}
-                  <button 
-                    onClick={() => {
-                      setShowDay14Congrats(false);
-                      navigate('/cancel-subscription');
-                    }}
-                    className="text-primary hover:underline font-medium"
-                  >
-                    Veja como gerenciar sua assinatura aqui
-                  </button>
-                </p>
-              </div>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction 
-              onClick={() => setShowDay14Congrats(false)}
-              className="w-full bg-accent hover:bg-accent/90"
-            >
-              Continuar minha jornada
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
-};
+}
 
-export default Dashboard;
+function SavingsBlock({
+  icon,
+  label,
+  rows,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  rows: { label: string; value: string }[];
+}) {
+  return (
+    <div>
+      <div className="flex items-start gap-2">
+        <div className="h-8 w-8 rounded-lg bg-[hsl(258_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center flex-shrink-0">
+          {icon}
+        </div>
+        <p className="text-xs text-muted-foreground whitespace-pre-line leading-tight">{label}</p>
+      </div>
+      <div className="mt-2 grid grid-cols-2 gap-1">
+        {rows.map((r, i) => (
+          <div key={i}>
+            {r.label && <p className="text-[10px] text-muted-foreground">{r.label}</p>}
+            <p className="text-sm font-bold text-[hsl(258_60%_45%)]">{r.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Benefit({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <div className="flex flex-col items-center gap-1 text-[hsl(258_60%_50%)]">
+      {icon}
+      <span className="text-[10px] text-muted-foreground">{label}</span>
+    </div>
+  );
+}

@@ -51,6 +51,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/jornada" element={<Jornada />} />
+              <Route path="/controle" element={<Controle />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/paywall" element={<Paywall />} />
               <Route path="/settings" element={<Settings />} />
