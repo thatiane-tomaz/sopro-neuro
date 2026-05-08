@@ -8,6 +8,8 @@ import { ErrorLoggerProvider } from "@/components/ErrorLoggerProvider";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Jornada from "./pages/Jornada";
+import Controle from "./pages/Controle";
 import Onboarding from "./pages/Onboarding";
 import Paywall from "./pages/Paywall";
 import Settings from "./pages/Settings";
@@ -51,6 +53,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/jornada" element={<Jornada />} />
+              <Route path="/controle" element={<Controle />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/paywall" element={<Paywall />} />
               <Route path="/settings" element={<Settings />} />
