@@ -6,6 +6,10 @@ interface OnboardingResponse {
   id: string;
   user_id: string;
   weekly_cost: string | null;
+  weekly_cost_value: number | null;
+  cigarettes_per_day: number | null;
+  vapes_per_week: number | null;
+  last_cigarette_date: string | null;
   age: string | null;
   gender: string | null;
   smoking_frequency: string | null;
