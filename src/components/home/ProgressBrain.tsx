@@ -14,10 +14,10 @@ interface Props {
 export default function ProgressBrain({ progress, locked }: Props) {
   const clamped = Math.max(0, Math.min(100, progress));
 
-  const size = 500;
+  const size = 580;
   const cx = size / 2;
   const cy = size / 2;
-  const radius = 220;
+  const radius = 255;
 
   // Open-bottom arc: gap of ~70° at the bottom.
   // Start angle = 125° (bottom-left), sweep clockwise to 55° (bottom-right) → 290° total.
@@ -77,7 +77,7 @@ export default function ProgressBrain({ progress, locked }: Props) {
 
       {/* Soft glow behind brain */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] rounded-full"
         style={{ background: "var(--gradient-brain-glow)" }}
         aria-hidden="true"
       />
@@ -87,10 +87,10 @@ export default function ProgressBrain({ progress, locked }: Props) {
         <img
           src={brainImg}
           alt="Cérebro"
-          width={450}
-          height={450}
+          width={600}
+          height={600}
           loading="eager"
-          className={`w-[450px] h-[450px] object-contain animate-pulse-glow ${
+          className={`w-[600px] h-[600px] object-contain animate-pulse-glow ${
             locked ? "grayscale opacity-60" : ""
           }`}
         />
