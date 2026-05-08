@@ -1,4 +1,4 @@
-import brainImg from "@/assets/brain-3d.png";
+import brainImg from "@/assets/brain-user.png";
 import { Lock } from "lucide-react";
 
 interface Props {
