@@ -34,6 +34,16 @@ All colors MUST be HSL.
     --accent-foreground: 0 0% 98%;
     --accent-light: 180 50% 58%;
 
+    /* Lilás/Roxo (nova tela inicial) */
+    --lilac: 258 70% 65%;
+    --lilac-light: 258 80% 88%;
+    --lilac-soft: 258 80% 95%;
+    --electric-blue: 230 85% 60%;
+
+    /* Gradient ondas tela inicial */
+    --gradient-waves: linear-gradient(180deg, hsl(210 50% 98%) 0%, hsl(220 60% 96%) 40%, hsl(258 60% 96%) 100%);
+    --gradient-brain-glow: radial-gradient(circle, hsl(258 70% 75% / 0.35), transparent 70%);
+
     --muted: 210 18% 93%;
     --muted-foreground: 215 18% 45%;
 
