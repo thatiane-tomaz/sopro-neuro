@@ -375,8 +375,8 @@ export default function Dashboard() {
         )}
 
         {/* Progress / savings card */}
-        <Card className="mt-6 p-5 bg-white/70 backdrop-blur-sm border border-white/70 shadow-[0_8px_30px_-12px_hsl(258_70%_50%/0.25)] rounded-2xl">
-          <h3 className="font-semibold text-foreground">Você está no caminho certo</h3>
+        <Card className="mt-6 p-5 bg-white/85 backdrop-blur-md border border-[hsl(220_50%_92%)] shadow-[0_10px_40px_-12px_hsl(230_60%_50%/0.18)] rounded-3xl">
+          <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
 
           {phaseNumber === 1 ? (
             <div className="grid grid-cols-2 gap-4 mt-4">
@@ -435,7 +435,7 @@ export default function Dashboard() {
           )}
 
           {/* Benefits row */}
-          <div className="grid grid-cols-4 gap-2 mt-5 pt-4 border-t border-[hsl(258_30%_92%)]">
+          <div className="grid grid-cols-4 gap-2 mt-5 pt-4 border-t border-[hsl(220_40%_92%)]">
             <Benefit icon={<Zap className="h-5 w-5" />} label="Mais energia" />
             <Benefit icon={<Target className="h-5 w-5" />} label="Mais foco" />
             <Benefit icon={<Flower2 className="h-5 w-5" />} label="Mais calma" />
