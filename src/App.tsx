@@ -8,6 +8,8 @@ import { ErrorLoggerProvider } from "@/components/ErrorLoggerProvider";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Jornada from "./pages/Jornada";
+import Controle from "./pages/Controle";
 import Onboarding from "./pages/Onboarding";
 import Paywall from "./pages/Paywall";
 import Settings from "./pages/Settings";
