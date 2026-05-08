@@ -77,7 +77,7 @@ export default function ProgressBrain({ progress, locked }: Props) {
 
       {/* Soft glow behind brain */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[230px] h-[230px] rounded-full"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[270px] h-[270px] rounded-full"
         style={{ background: "var(--gradient-brain-glow)" }}
         aria-hidden="true"
       />
@@ -87,10 +87,10 @@ export default function ProgressBrain({ progress, locked }: Props) {
         <img
           src={brainImg}
           alt="Cérebro"
-          width={220}
-          height={220}
+          width={280}
+          height={280}
           loading="eager"
-          className={`w-[220px] h-[220px] object-contain animate-pulse-glow ${
+          className={`w-[280px] h-[280px] object-contain animate-pulse-glow ${
             locked ? "grayscale opacity-60" : ""
           }`}
         />
