@@ -87,10 +87,10 @@ export default function ProgressBrain({ progress, locked }: Props) {
         <img
           src={brainImg}
           alt="Cérebro"
-          width={460}
-          height={460}
+          width={400}
+          height={400}
           loading="eager"
-          className={`w-[460px] h-[460px] object-contain animate-pulse-glow ${
+          className={`w-[400px] h-[400px] object-contain animate-pulse-glow ${
             locked ? "grayscale opacity-60" : ""
           }`}
         />
