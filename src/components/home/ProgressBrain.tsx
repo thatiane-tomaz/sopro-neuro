@@ -83,14 +83,14 @@ export default function ProgressBrain({ progress, locked }: Props) {
       />
 
       {/* Brain centered, sized to fill the arc */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex items-center justify-center" style={{ transform: "translateY(18px)" }}>
         <img
           src={brainImg}
           alt="Cérebro"
-          width={380}
-          height={380}
+          width={460}
+          height={460}
           loading="eager"
-          className={`w-[380px] h-[380px] object-contain animate-pulse-glow ${
+          className={`w-[460px] h-[460px] object-contain animate-pulse-glow ${
             locked ? "grayscale opacity-60" : ""
           }`}
         />
