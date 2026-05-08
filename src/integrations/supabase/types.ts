@@ -263,39 +263,51 @@ export type Database = {
       onboarding_responses: {
         Row: {
           age: string | null
+          cigarettes_per_day: number | null
           completed_at: string
           gender: string | null
           id: string
+          last_cigarette_date: string | null
           smoking_fears: string[] | null
           smoking_frequency: string | null
           smoking_reasons: string[] | null
           smoking_types: string[] | null
           user_id: string
+          vapes_per_week: number | null
           weekly_cost: string | null
+          weekly_cost_value: number | null
         }
         Insert: {
           age?: string | null
+          cigarettes_per_day?: number | null
           completed_at?: string
           gender?: string | null
           id?: string
+          last_cigarette_date?: string | null
           smoking_fears?: string[] | null
           smoking_frequency?: string | null
           smoking_reasons?: string[] | null
           smoking_types?: string[] | null
           user_id: string
+          vapes_per_week?: number | null
           weekly_cost?: string | null
+          weekly_cost_value?: number | null
         }
         Update: {
           age?: string | null
+          cigarettes_per_day?: number | null
           completed_at?: string
           gender?: string | null
           id?: string
+          last_cigarette_date?: string | null
           smoking_fears?: string[] | null
           smoking_frequency?: string | null
           smoking_reasons?: string[] | null
           smoking_types?: string[] | null
           user_id?: string
+          vapes_per_week?: number | null
           weekly_cost?: string | null
+          weekly_cost_value?: number | null
         }
         Relationships: []
       }
