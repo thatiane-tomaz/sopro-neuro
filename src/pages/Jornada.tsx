@@ -79,7 +79,6 @@ export default function Jornada() {
   );
 
   const getStatus = (day: number): DayStatus => {
-    if (isAdmin) return day < currentDay ? "completed" : day === currentDay ? "current" : "current";
     if (isDayCompleted(day)) return "completed";
     if (day < currentDay) return "completed";
     if (day === currentDay && !isDayTimeLocked(day)) return "current";
