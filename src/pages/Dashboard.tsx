@@ -113,6 +113,24 @@ export default function Dashboard() {
 
   const dayLocked = isDayTimeLocked(currentDay) && !isAdmin;
 
+  // Trigger paywall once Day 1 is completed and user is not premium/admin
+  useEffect(() => {
+    if (adminLoading || subLoading || trackingLoading) return;
+    if (isAdmin || isPremium || isExpired) return;
+    if (isDayCompleted(1)) {
+      navigate("/paywall");
+    }
+  }, [
+    adminLoading,
+    subLoading,
+    trackingLoading,
+    isAdmin,
+    isPremium,
+    isExpired,
+    isDayCompleted,
+    navigate,
+  ]);
+
   const dayContent = dailyContent?.find((d) => d.day_number === currentDay);
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
