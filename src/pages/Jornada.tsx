@@ -333,7 +333,9 @@ function PhaseCard({
           <h2 className="text-lg">
             <span className={`font-semibold ${colors.phaseLabel}`}>Fase {phaseNumber}</span>
             <span className="text-foreground/30 mx-1.5">•</span>
-            <span className="font-bold text-[hsl(220_30%_25%)]">{name}</span>
+            <span className="font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
+              {name}
+            </span>
           </h2>
         </div>
         <span
