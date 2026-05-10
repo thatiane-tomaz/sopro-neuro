@@ -7,6 +7,7 @@ import { useDailyContent } from "@/hooks/useDailyContent";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useOnboardingData } from "@/hooks/useOnboardingData";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -70,6 +71,7 @@ export default function Dashboard() {
   } = useJourneyTracking();
   const { data: onboarding, refetch: refetchOnboarding } = useOnboardingData();
   const { loading: subLoading, isPremium, isExpired } = useSubscription();
+  const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { toast } = useToast();
 
   const [tick, setTick] = useState(0);
@@ -113,10 +115,10 @@ export default function Dashboard() {
 
   const dayLocked = isDayTimeLocked(currentDay) && !isAdmin;
 
-  // Trigger paywall once Day 1 is completed and user is not premium/admin
+  // Trigger paywall once Day 1 is completed and user has no access
   useEffect(() => {
-    if (adminLoading || subLoading || trackingLoading) return;
-    if (isAdmin || isPremium || isExpired) return;
+    if (adminLoading || subLoading || trackingLoading || freelistLoading) return;
+    if (isAdmin || isPremium || isExpired || isFreelist) return;
     if (isDayCompleted(1)) {
       navigate("/paywall");
     }
@@ -124,9 +126,11 @@ export default function Dashboard() {
     adminLoading,
     subLoading,
     trackingLoading,
+    freelistLoading,
     isAdmin,
     isPremium,
     isExpired,
+    isFreelist,
     isDayCompleted,
     navigate,
   ]);
@@ -194,7 +198,7 @@ export default function Dashboard() {
   const openMedia = async (type: "video" | "hypnosis") => {
     if (dayLocked) return;
     // Day 2+ requires active subscription (admins bypass)
-    if (!isAdmin && currentDay >= 2 && !isPremium) {
+    if (!isAdmin && !isFreelist && currentDay >= 2 && !isPremium) {
       navigate("/paywall");
       return;
     }

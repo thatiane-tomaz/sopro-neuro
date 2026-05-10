@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useSosHypnosis } from "@/hooks/useSosHypnosis";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,6 +56,7 @@ export default function Controle() {
   const { profile, loading: profileLoading } = useUserProfile();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { isPremium, loading: subLoading } = useSubscription();
+  const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { getSosHypnosis } = useSosHypnosis();
   const { startTracking, updateProgress, isLoading: trackingLoading } =
     useJourneyTracking();
@@ -82,7 +84,7 @@ export default function Controle() {
     refetchOnWindowFocus: false,
   });
 
-  const canPlay = isAdmin || isPremium;
+  const canPlay = isAdmin || isPremium || isFreelist;
 
   const ensureAccess = () => {
     if (canPlay) return true;
@@ -144,6 +146,7 @@ export default function Controle() {
     profileLoading ||
     adminLoading ||
     subLoading ||
+    freelistLoading ||
     trackingLoading ||
     triggersLoading
   ) {
