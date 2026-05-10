@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import MediaPlayer from "@/components/MediaPlayer";
 import BottomNav from "@/components/home/BottomNav";
+import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
 import soproLogo from "@/assets/sopro-logo.png";
 
@@ -150,16 +151,12 @@ export default function Controle() {
     trackingLoading ||
     triggersLoading
   ) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    );
+    return <PageLoader />;
   }
   if (!user) return <Navigate to="/login" replace />;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden pb-32">
+    <div className="relative min-h-screen overflow-x-hidden pb-32 animate-page-in">
       <WaveBackground />
 
       <div className="mx-auto max-w-md px-5 pt-[env(safe-area-inset-top)]">
