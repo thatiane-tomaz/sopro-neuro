@@ -311,6 +311,7 @@ const Login = () => {
 
   // Show reset password form when user clicks the recovery link
   if (showResetPassword) {
+    return (
       <AuthShell>
         <AuthHeader
           title="Redefinir senha"
