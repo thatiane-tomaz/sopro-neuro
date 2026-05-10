@@ -475,6 +475,8 @@ export default function Dashboard() {
           onComplete={handleComplete}
         />
       )}
+
+      {showStartHere && <StartHereStory onClose={handleCloseStartHere} />}
     </div>
   );
 }
