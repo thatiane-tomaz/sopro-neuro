@@ -275,7 +275,7 @@ export default function Dashboard() {
 
         {/* Day title */}
         <div className="text-center mt-3">
-          <h1 className="text-3xl font-bold text-[hsl(220_50%_25%)]">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(230_85%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
             Dia {phaseDayIndex} <span className="text-base font-normal text-muted-foreground">de 7</span>
           </h1>
           {dayContent?.title && (
@@ -289,7 +289,7 @@ export default function Dashboard() {
         <div className="mt-6">
           <ProgressBrain progress={progressPct} locked={dayLocked} />
           <div className="text-center -mt-1">
-            <p className="text-3xl font-bold text-[hsl(220_50%_25%)]">
+            <p className="text-3xl font-bold bg-gradient-to-r from-[hsl(230_85%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
               {progressPct}<span className="text-lg">%</span>
             </p>
             {motivational && (

@@ -199,7 +199,9 @@ export default function Jornada() {
 
         {/* Page title */}
         <div className="mt-6">
-          <h1 className="text-3xl font-bold text-[hsl(220_50%_25%)]">Jornada</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(230_85%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
+            Jornada
+          </h1>
           <p className="text-sm text-muted-foreground mt-1">
             Seu plano de 14 dias para a liberdade.
           </p>
@@ -331,7 +333,7 @@ function PhaseCard({
           <h2 className="text-lg">
             <span className={`font-semibold ${colors.phaseLabel}`}>Fase {phaseNumber}</span>
             <span className="text-foreground/30 mx-1.5">•</span>
-            <span className="font-bold text-foreground">{name}</span>
+            <span className="font-bold text-[hsl(220_30%_25%)]">{name}</span>
           </h2>
         </div>
         <span
