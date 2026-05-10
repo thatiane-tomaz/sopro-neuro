@@ -82,18 +82,18 @@ export default function Dashboard() {
   const [trackingId, setTrackingId] = useState<string | null>(null);
   const [savingDate, setSavingDate] = useState(false);
   const [showStartHere, setShowStartHere] = useState(false);
+  const [startHereSeen, setStartHereSeen] = useState(true);
 
   useEffect(() => {
     if (!user) return;
     const key = `start_here_seen_${user.id}`;
-    if (!localStorage.getItem(key)) {
-      setShowStartHere(true);
-    }
+    setStartHereSeen(!!localStorage.getItem(key));
   }, [user]);
 
   const handleCloseStartHere = () => {
     if (user) localStorage.setItem(`start_here_seen_${user.id}`, "1");
     setShowStartHere(false);
+    setStartHereSeen(true);
   };
 
   const currentDay = getCurrentDay();
