@@ -6,6 +6,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useDailyContent } from "@/hooks/useDailyContent";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -48,6 +49,7 @@ export default function Jornada() {
   const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { isPremium, isExpired, loading: subLoading } = useSubscription();
+  const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const {
     getCurrentDay,
     isDayCompleted,
@@ -86,7 +88,7 @@ export default function Jornada() {
   };
 
   const canOpen = (day: number) => {
-    if (isAdmin) return true;
+    if (isAdmin || isFreelist) return true;
     if (!hasAccessToDay(day)) return false;
     const s = getStatus(day);
     return s === "current" || s === "completed";
@@ -101,7 +103,7 @@ export default function Jornada() {
 
   const openMedia = async (day: number, type: "video" | "hypnosis", title: string) => {
     if (!canOpen(day)) {
-      if (!isAdmin && day >= 2 && !isPremium && !isExpired) {
+      if (!isAdmin && !isFreelist && day >= 2 && !isPremium && !isExpired) {
         navigate("/paywall");
         return;
       }
@@ -149,7 +151,8 @@ export default function Jornada() {
     adminLoading ||
     contentLoading ||
     trackingLoading ||
-    subLoading
+    subLoading ||
+    freelistLoading
   ) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
