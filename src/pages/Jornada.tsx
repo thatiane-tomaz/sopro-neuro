@@ -64,6 +64,7 @@ export default function Jornada() {
 
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [trackingId, setTrackingId] = useState<string | null>(null);
+  const [showStartHere, setShowStartHere] = useState(false);
 
   const currentDay = getCurrentDay();
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
