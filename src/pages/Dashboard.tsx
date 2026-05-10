@@ -514,9 +514,11 @@ function SavingsBlock({
 
 function Benefit({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 text-[hsl(258_60%_50%)]">
-      {icon}
-      <span className="text-[10px] text-muted-foreground">{label}</span>
+    <div className="flex flex-col items-center gap-1.5">
+      <div className="h-10 w-10 rounded-xl bg-[hsl(258_80%_96%)] text-[hsl(258_60%_50%)] flex items-center justify-center">
+        {icon}
+      </div>
+      <span className="text-[11px] font-medium text-foreground/80">{label}</span>
     </div>
   );
 }
