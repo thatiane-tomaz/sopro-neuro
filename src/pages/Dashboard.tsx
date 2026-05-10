@@ -247,7 +247,7 @@ export default function Dashboard() {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="h-10 w-10 rounded-full bg-white/70 backdrop-blur border border-white/60 flex items-center justify-center shadow-sm">
+                <button className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
                   <User className="h-5 w-5 text-primary" />
                 </button>
               </DropdownMenuTrigger>
@@ -304,8 +304,8 @@ export default function Dashboard() {
             <button
               onClick={() => openMedia("video")}
               disabled={dayLocked}
-              className={`relative rounded-2xl bg-white/70 backdrop-blur-sm border border-white/60 p-4 text-center shadow-[0_6px_20px_-12px_hsl(258_70%_50%/0.3)] transition-transform active:scale-95 ${
-                dayLocked ? "opacity-50" : "hover:shadow-[0_10px_30px_-12px_hsl(258_70%_50%/0.4)]"
+            className={`relative rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-center shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-95 ${
+              dayLocked ? "opacity-50" : "hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)]"
               }`}
             >
               <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-br from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)] flex items-center justify-center shadow-md">
@@ -319,8 +319,8 @@ export default function Dashboard() {
           <button
             onClick={() => openMedia("hypnosis")}
             disabled={dayLocked}
-            className={`relative rounded-2xl bg-white/70 backdrop-blur-sm border border-white/60 p-4 text-center shadow-[0_6px_20px_-12px_hsl(258_70%_50%/0.3)] transition-transform active:scale-95 ${
-              dayLocked ? "opacity-50" : "hover:shadow-[0_10px_30px_-12px_hsl(258_70%_50%/0.4)]"
+            className={`relative rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-center shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-95 ${
+              dayLocked ? "opacity-50" : "hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)]"
             }`}
           >
             <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-md">
@@ -348,7 +348,7 @@ export default function Dashboard() {
 
         {/* Last cigarette date card (Phase 2, no date yet) */}
         {showLastCigCard && (
-          <Card className="mt-6 p-5 bg-white/70 backdrop-blur-sm border border-[hsl(258_70%_88%)] shadow-[0_8px_30px_-12px_hsl(258_70%_50%/0.3)] rounded-2xl">
+          <Card className="mt-6 p-5 bg-white/85 backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.3)] ring-1 ring-black/[0.03] rounded-2xl">
             <div className="flex items-start gap-3">
               <div className="h-10 w-10 rounded-xl bg-[hsl(258_80%_95%)] flex items-center justify-center flex-shrink-0">
                 <CalendarIcon className="h-5 w-5 text-[hsl(258_60%_50%)]" />
@@ -363,7 +363,7 @@ export default function Dashboard() {
                   max={new Date().toISOString().slice(0, 10)}
                   onChange={(e) => e.target.value && saveLastCigDate(e.target.value)}
                   disabled={savingDate}
-                  className="mt-3 w-full rounded-xl border border-[hsl(258_70%_88%)] bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)]"
+                  className="mt-3 w-full rounded-xl bg-white px-3 py-2.5 text-sm shadow-[inset_0_0_0_1px_hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)]"
                 />
                 <p className="text-[11px] text-muted-foreground mt-2 flex items-center gap-1">
                   <Lock className="h-3 w-3" />
@@ -375,7 +375,7 @@ export default function Dashboard() {
         )}
 
         {/* Progress / savings card */}
-        <Card className="mt-6 p-5 bg-white/85 backdrop-blur-md border border-[hsl(220_50%_92%)] shadow-[0_10px_40px_-12px_hsl(230_60%_50%/0.18)] rounded-3xl">
+        <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
           <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
 
           {phaseNumber === 1 ? (
@@ -435,7 +435,7 @@ export default function Dashboard() {
           )}
 
           {/* Benefits row */}
-          <div className="grid grid-cols-4 gap-2 mt-5 pt-4 border-t border-[hsl(220_40%_92%)]">
+          <div className="grid grid-cols-4 gap-2 mt-5 pt-4 border-t border-[hsl(220_30%_94%)]">
             <Benefit icon={<Zap className="h-5 w-5" />} label="Mais energia" />
             <Benefit icon={<Target className="h-5 w-5" />} label="Mais foco" />
             <Benefit icon={<Flower2 className="h-5 w-5" />} label="Mais calma" />
@@ -475,7 +475,7 @@ function SavingsBlock({
 }) {
   const isSingle = rows.length === 1;
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] border border-[hsl(258_60%_92%)] p-3.5">
+    <div className="rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-3.5 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.03]">
       <div className="flex items-center gap-2">
         <div className="h-8 w-8 rounded-lg bg-white text-[hsl(258_60%_50%)] flex items-center justify-center flex-shrink-0 shadow-sm">
           {icon}
@@ -486,7 +486,7 @@ function SavingsBlock({
         {rows.map((r, i) => (
           <div
             key={i}
-            className="rounded-xl bg-white/80 px-3 py-2 border border-white"
+            className="rounded-xl bg-white px-3 py-2 shadow-[0_2px_8px_-4px_hsl(258_60%_40%/0.12)]"
           >
             {r.label && (
               <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">
