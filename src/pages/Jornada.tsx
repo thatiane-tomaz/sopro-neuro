@@ -163,10 +163,10 @@ export default function Jornada() {
   if (!user) return <Navigate to="/login" replace />;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden pb-32 animate-page-in">
+    <div className="relative min-h-screen overflow-x-hidden pb-32">
       <WaveBackground />
 
-      <div className="mx-auto max-w-md px-5 pt-[env(safe-area-inset-top)]">
+      <div className="mx-auto max-w-md animate-page-in px-5 pt-[env(safe-area-inset-top)]">
         {/* Header (matches Dashboard) */}
         <header className="flex items-center justify-between pt-4">
           <img src={soproLogo} alt="Sopro Neuro" className="h-10 w-auto" />
