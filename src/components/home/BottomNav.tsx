@@ -30,7 +30,7 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-0 inset-x-0 z-50 pb-[env(safe-area-inset-bottom)]">
       <div className="mx-auto max-w-md px-4 pb-3">
-        <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_-10px_hsl(258_70%_50%/0.25)] border border-white/60 flex items-center px-3 h-16">
+        <div className="relative bg-white/85 backdrop-blur-xl rounded-3xl shadow-[0_16px_40px_-14px_hsl(258_70%_45%/0.3)] ring-1 ring-black/[0.03] flex items-center px-3 h-16">
           <Item label="Jornada" icon={Compass} to="/jornada" active={pathname === "/jornada"} />
           <div className="w-20" />
           <Item label="Controle" icon={ShieldCheck} to="/controle" active={pathname === "/controle"} />
