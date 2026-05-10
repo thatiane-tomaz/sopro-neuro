@@ -26,11 +26,13 @@ import {
   HelpCircle,
   Brain,
   ShieldCheck,
+  Info,
 } from "lucide-react";
 import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
+import StartHereStory from "@/components/StartHereStory";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const getGreeting = () => {
