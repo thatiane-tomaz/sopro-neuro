@@ -126,9 +126,12 @@ const Login = () => {
 
   // Don't redirect if showing reset password form
   if (user && !showResetPassword) {
-    return <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-      <div className="text-gray-700">Carregando...</div>
-    </div>;
+    return (
+      <div className="relative min-h-screen flex items-center justify-center">
+        <WaveBackground />
+        <div className="text-foreground/70 text-sm">Carregando...</div>
+      </div>
+    );
   }
 
   const handleResetPassword = async (e: React.FormEvent) => {
