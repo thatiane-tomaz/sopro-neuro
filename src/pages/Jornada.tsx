@@ -401,7 +401,7 @@ function DayRow({
       );
     }
     return (
-      <div className="h-9 w-9 rounded-full flex items-center justify-center text-muted-foreground text-sm font-semibold bg-white border border-[hsl(220_30%_90%)]">
+      <div className="h-9 w-9 rounded-full flex items-center justify-center text-[hsl(220_20%_55%)] text-sm font-semibold bg-white border border-[hsl(220_30%_88%)] shadow-sm">
         {day}
       </div>
     );
