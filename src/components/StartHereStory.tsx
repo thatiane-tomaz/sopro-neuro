@@ -196,8 +196,8 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                 className="animate-fade-in max-w-lg w-full mx-auto"
                 style={{ transform: `scale(${contentScale})`, transformOrigin: 'top center' }}
               >
-            {/* Story-level phase badge */}
-            {stories[currentStory].phase && (
+                {/* Story-level phase badge */}
+                {stories[currentStory].phase && (
               <div className="flex justify-center mb-2">
                 <span className="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">
                   {stories[currentStory].phase}
@@ -205,17 +205,17 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
               </div>
             )}
             
-            <h2 className="text-lg md:text-2xl font-bold text-white mb-2">
+                <h2 className="text-lg md:text-2xl font-bold text-white mb-2">
               {stories[currentStory].title}
             </h2>
             
-            {stories[currentStory].description && (
+                {stories[currentStory].description && (
               <p className="text-sm md:text-base text-white/90 mb-3">
                 {stories[currentStory].description}
               </p>
             )}
 
-            {stories[currentStory].highlights && (
+                {stories[currentStory].highlights && (
               <div className="space-y-2 text-left" key={`highlights-${currentStory}`}>
                 {stories[currentStory].highlights.map((highlight, index) => {
                   const itemKey = `story-${currentStory}-item-${index}`;
@@ -285,7 +285,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
               </div>
             )}
 
-            {stories[currentStory].footer && (
+                {stories[currentStory].footer && (
               <div className="mt-3 bg-white/15 backdrop-blur-sm rounded-lg p-2.5 text-center">
                 <p className="text-sm md:text-base text-white font-medium leading-snug">
                   {renderBoldText(stories[currentStory].footer)}
