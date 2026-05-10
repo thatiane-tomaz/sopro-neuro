@@ -150,23 +150,23 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
       {/* Story content */}
       <div className="relative w-full max-w-md h-full md:h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
-        <div className="absolute inset-0 flex flex-col items-center p-6 pb-32 text-center overflow-y-auto" style={{ paddingTop: 'calc(env(safe-area-inset-top, 12px) + 48px)' }}>
-          <div className="animate-fade-in max-w-lg w-full pb-8">
+        <div className="absolute inset-0 flex flex-col items-center p-5 pb-24 text-center overflow-y-auto" style={{ paddingTop: 'calc(env(safe-area-inset-top, 12px) + 44px)' }}>
+          <div className="animate-fade-in max-w-lg w-full">
             {/* Story-level phase badge */}
             {stories[currentStory].phase && (
-              <div className="flex justify-center mb-3">
-                <span className="bg-white/20 text-white text-sm font-semibold px-4 py-1 rounded-full">
+              <div className="flex justify-center mb-2">
+                <span className="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">
                   {stories[currentStory].phase}
                 </span>
               </div>
             )}
             
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-3">
               {stories[currentStory].title}
             </h2>
             
             {stories[currentStory].description && (
-              <p className="text-lg text-white/90 mb-6">
+              <p className="text-base text-white/90 mb-4">
                 {stories[currentStory].description}
               </p>
             )}
