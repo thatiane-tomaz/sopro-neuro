@@ -377,14 +377,15 @@ function DayRow({
   const isCompleted = status === "completed";
   const isCurrent = status === "current";
 
-  const accentColor = accent === "blue" ? "hsl(230_85%_55%)" : "hsl(258_70%_55%)";
+  const accentFrom = accent === "blue" ? "hsl(230, 85%, 55%)" : "hsl(258, 70%, 55%)";
+  const accentTo = accent === "blue" ? "hsl(258, 80%, 60%)" : "hsl(280, 70%, 60%)";
 
   const numberCircle = (() => {
     if (isCompleted) {
       return (
         <div
           className="h-9 w-9 rounded-full flex items-center justify-center text-white shadow-md"
-          style={{ background: `linear-gradient(135deg, ${accentColor}, hsl(258_80%_60%))` }}
+          style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
           <Check className="h-4 w-4" strokeWidth={3} />
         </div>
@@ -394,7 +395,7 @@ function DayRow({
       return (
         <div
           className="h-9 w-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md ring-4 ring-white"
-          style={{ background: `linear-gradient(135deg, ${accentColor}, hsl(258_80%_60%))` }}
+          style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
           {day}
         </div>
@@ -409,13 +410,19 @@ function DayRow({
 
   return (
     <div className="relative">
-      {/* timeline connector */}
+      {/* timeline connector — continuous "path" */}
       {!isLast && (
         <div
-          className={`absolute left-[18px] top-9 bottom-0 w-px ${
-            isCompleted || isCurrent ? "bg-[hsl(220_30%_85%)]" : "border-l border-dashed border-[hsl(220_30%_88%)] w-0"
-          }`}
           aria-hidden
+          className="absolute left-[17px] top-10 bottom-0 w-0.5 rounded-full"
+          style={{
+            background: isCompleted
+              ? `linear-gradient(to bottom, ${accentFrom}, ${accentTo})`
+              : isCurrent
+              ? `linear-gradient(to bottom, ${accentFrom}, hsl(220, 30%, 88%))`
+              : "hsl(220, 30%, 90%)",
+            opacity: isLocked ? 0.6 : 1,
+          }}
         />
       )}
 
