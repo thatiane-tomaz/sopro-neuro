@@ -93,7 +93,6 @@ export default function ProgressBrain({ progress, locked }: Props) {
           className={`w-[340px] h-[340px] object-contain animate-pulse-glow ${
             locked ? "grayscale opacity-60" : ""
           }`}
-          style={{ mixBlendMode: "multiply" }}
         />
         {locked && (
           <div className="absolute inset-0 flex items-center justify-center">
