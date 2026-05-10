@@ -268,10 +268,10 @@ export default function Dashboard() {
   const showLastCigCard = phaseNumber === 2 && !lastCigDate;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden pb-32 animate-page-in">
+    <div className="relative min-h-screen overflow-x-hidden pb-32">
       <WaveBackground />
 
-      <div className="mx-auto max-w-md px-5 pt-[env(safe-area-inset-top)]">
+      <div className="mx-auto max-w-md animate-page-in px-5 pt-[env(safe-area-inset-top)]">
         {/* Header */}
         <header className="flex items-center justify-between pt-4">
           <img src={soproLogo} alt="Sopro Neuro" className="h-10 w-auto" />
