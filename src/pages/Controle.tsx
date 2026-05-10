@@ -235,7 +235,7 @@ export default function Controle() {
           <h2 className="text-lg font-bold text-foreground">
             Hipnoses para gatilhos específicos
           </h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
             Fortaleça sua mente para enfrentar momentos desafiadores.
           </p>
         </div>
