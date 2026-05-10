@@ -196,7 +196,7 @@ export default function Controle() {
 
         {/* Title */}
         <div className="mt-6">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
             Controle dos gatilhos
           </h1>
         </div>
@@ -210,15 +210,15 @@ export default function Controle() {
               "linear-gradient(135deg, hsl(220, 90%, 55%), hsl(258, 70%, 55%))",
           }}
         >
-          <div className="flex items-center gap-4">
-            <div className="h-16 w-16 flex-shrink-0 rounded-full bg-white/15 backdrop-blur flex items-center justify-center ring-1 ring-white/20">
-              <Zap className="h-7 w-7 text-white" strokeWidth={2.5} fill="white" />
+          <div className="flex items-center gap-3">
+            <div className="h-14 w-14 flex-shrink-0 rounded-full bg-white/15 backdrop-blur flex items-center justify-center ring-1 ring-white/20">
+              <Zap className="h-6 w-6 text-white" strokeWidth={2.5} fill="white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white text-lg font-bold leading-tight">
+              <p className="text-white text-base font-bold leading-tight whitespace-nowrap">
                 Vontade de fumar agora?
               </p>
-              <p className="text-white/85 text-sm leading-snug mt-1">
+              <p className="text-white/85 text-xs leading-snug mt-1 whitespace-nowrap">
                 Hipnose rápida para alívio imediato.
               </p>
             </div>
