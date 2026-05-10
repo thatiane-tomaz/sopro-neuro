@@ -281,6 +281,22 @@ export default function Dashboard() {
           </div>
         </header>
 
+        {/* Comece aqui (first-time only) */}
+        {!startHereSeen && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => setShowStartHere(true)}
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_28px_-10px_hsl(230_70%_40%/0.55)] active:scale-95 transition-transform"
+              style={{
+                background:
+                  "linear-gradient(135deg, hsl(220, 90%, 55%), hsl(258, 70%, 55%))",
+              }}
+            >
+              ✨ Comece aqui
+            </button>
+          </div>
+        )}
+
         {/* Phase badge */}
         <div className="flex justify-center mt-6">
           <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-[hsl(258_80%_95%)] text-[hsl(258_60%_45%)]">
