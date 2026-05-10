@@ -269,7 +269,7 @@ export default function Dashboard() {
         {/* Phase badge */}
         <div className="flex justify-center mt-6">
           <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-[hsl(258_80%_95%)] text-[hsl(258_60%_45%)]">
-            Fase {phaseNumber} • {phaseNumber === 1 ? "Despertar" : "Libertar"}
+            {phaseNumber === 1 ? "Preparação" : `Fase ${phaseNumber} • Libertar`}
           </span>
         </div>
 
@@ -376,12 +376,7 @@ export default function Dashboard() {
 
         {/* Progress / savings card */}
         <Card className="mt-6 p-5 bg-white/85 backdrop-blur-md border border-[hsl(220_50%_92%)] shadow-[0_10px_40px_-12px_hsl(230_60%_50%/0.18)] rounded-3xl">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-[hsl(258_60%_50%)] bg-[hsl(258_80%_95%)] rounded-full px-2.5 py-1">
-              {phaseNumber === 1 ? "Projeção" : "Conquistas"}
-            </span>
-          </div>
+          <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
 
           {phaseNumber === 1 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
@@ -514,11 +509,13 @@ function SavingsBlock({
 
 function Benefit({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-1.5">
+    <div className="flex flex-col items-center gap-1.5 text-center">
       <div className="h-10 w-10 rounded-xl bg-[hsl(258_80%_96%)] text-[hsl(258_60%_50%)] flex items-center justify-center">
         {icon}
       </div>
-      <span className="text-[11px] font-medium text-foreground/80">{label}</span>
+      <span className="text-[10px] font-medium text-foreground/80 leading-tight whitespace-nowrap">
+        {label}
+      </span>
     </div>
   );
 }
