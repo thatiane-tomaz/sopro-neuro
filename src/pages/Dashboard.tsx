@@ -82,18 +82,18 @@ export default function Dashboard() {
   const [trackingId, setTrackingId] = useState<string | null>(null);
   const [savingDate, setSavingDate] = useState(false);
   const [showStartHere, setShowStartHere] = useState(false);
+  const [startHereSeen, setStartHereSeen] = useState(true);
 
   useEffect(() => {
     if (!user) return;
     const key = `start_here_seen_${user.id}`;
-    if (!localStorage.getItem(key)) {
-      setShowStartHere(true);
-    }
+    setStartHereSeen(!!localStorage.getItem(key));
   }, [user]);
 
   const handleCloseStartHere = () => {
     if (user) localStorage.setItem(`start_here_seen_${user.id}`, "1");
     setShowStartHere(false);
+    setStartHereSeen(true);
   };
 
   const currentDay = getCurrentDay();
@@ -280,6 +280,22 @@ export default function Dashboard() {
             </DropdownMenu>
           </div>
         </header>
+
+        {/* Comece aqui (first-time only) */}
+        {!startHereSeen && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => setShowStartHere(true)}
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_28px_-10px_hsl(230_70%_40%/0.55)] active:scale-95 transition-transform"
+              style={{
+                background:
+                  "linear-gradient(135deg, hsl(220, 90%, 55%), hsl(258, 70%, 55%))",
+              }}
+            >
+              ✨ Comece aqui
+            </button>
+          </div>
+        )}
 
         {/* Phase badge */}
         <div className="flex justify-center mt-6">
