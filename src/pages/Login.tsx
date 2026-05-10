@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useIsNativeIOS } from "@/hooks/useIsNativeIOS";
 import soproLogo from "@/assets/sopro-logo.png";
+import WaveBackground from "@/components/home/WaveBackground";
 import { loginSchema, signupSchema } from "@/lib/validations";
 
 const Login = () => {
@@ -125,9 +126,12 @@ const Login = () => {
 
   // Don't redirect if showing reset password form
   if (user && !showResetPassword) {
-    return <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-      <div className="text-gray-700">Carregando...</div>
-    </div>;
+    return (
+      <div className="relative min-h-screen flex items-center justify-center">
+        <WaveBackground />
+        <div className="text-foreground/70 text-sm">Carregando...</div>
+      </div>
+    );
   }
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -308,335 +312,388 @@ const Login = () => {
   // Show reset password form when user clicks the recovery link
   if (showResetPassword) {
     return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
-        <div className="w-full max-w-md space-y-6">
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-4">
-              <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
-            </div>
-            <p className="text-slate-500 text-lg font-medium">Redefinir senha</p>
-            <p className="text-slate-400 text-sm mt-2">
-              Digite sua nova senha abaixo
-            </p>
-          </div>
-
-          <form onSubmit={handleResetPassword} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="new-password" className="text-slate-500">Nova senha</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input 
-                  id="new-password" 
-                  type={showNewPassword ? "text" : "password"} 
-                  placeholder="Mínimo 6 caracteres" 
-                  className="pl-10 pr-10"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required 
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                >
-                  {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirm-new-password" className="text-slate-500">Confirmar nova senha</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input 
-                  id="confirm-new-password" 
-                  type={showConfirmNewPassword ? "text" : "password"} 
-                  placeholder="Repita a nova senha" 
-                  className="pl-10 pr-10"
-                  value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
-                  required 
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                >
-                  {showConfirmNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-            <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
-              {isLoading ? "Salvando..." : "Salvar nova senha"}
-            </Button>
-          </form>
-        </div>
-      </div>
+      <AuthShell>
+        <AuthHeader
+          title="Redefinir senha"
+          subtitle="Digite sua nova senha abaixo para continuar."
+        />
+        <form onSubmit={handleResetPassword} className="space-y-4 mt-6">
+          <FieldPassword
+            id="new-password"
+            label="Nova senha"
+            placeholder="Mínimo 6 caracteres"
+            value={newPassword}
+            onChange={setNewPassword}
+            visible={showNewPassword}
+            toggle={() => setShowNewPassword(!showNewPassword)}
+          />
+          <FieldPassword
+            id="confirm-new-password"
+            label="Confirmar nova senha"
+            placeholder="Repita a nova senha"
+            value={confirmNewPassword}
+            onChange={setConfirmNewPassword}
+            visible={showConfirmNewPassword}
+            toggle={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+          />
+          <PrimaryButton loading={isLoading} loadingLabel="Salvando...">
+            Salvar nova senha
+          </PrimaryButton>
+        </form>
+      </AuthShell>
     );
   }
 
   if (showForgotPassword) {
     return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
-        <div className="w-full max-w-md space-y-6">
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-4">
-              <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
-            </div>
-            <p className="text-slate-500 text-lg font-medium">Recuperar senha</p>
-            <p className="text-slate-400 text-sm mt-2">
-              Digite seu email e enviaremos um link para redefinir sua senha
-            </p>
-          </div>
-
-          <form onSubmit={handleForgotPassword} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="forgot-email" className="text-slate-500">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input 
-                  id="forgot-email" 
-                  type="email" 
-                  placeholder="seu@email.com" 
-                  className="pl-10"
-                  value={forgotEmail}
-                  onChange={(e) => setForgotEmail(e.target.value)}
-                  required 
-                />
-              </div>
-            </div>
-            <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
-              {isLoading ? "Enviando..." : "Enviar link de recuperação"}
-            </Button>
-            <Button 
-              type="button" 
-              variant="ghost" 
-              className="w-full text-slate-500 hover:text-slate-600 hover:bg-white/10" 
-              onClick={() => setShowForgotPassword(false)}
-            >
-              Voltar ao login
-            </Button>
-          </form>
-        </div>
-      </div>
+      <AuthShell>
+        <button
+          type="button"
+          onClick={() => setShowForgotPassword(false)}
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-2"
+        >
+          <ArrowLeft className="h-4 w-4" /> Voltar
+        </button>
+        <AuthHeader
+          title="Recuperar senha"
+          subtitle="Digite seu email e enviaremos um link para redefinir sua senha."
+        />
+        <form onSubmit={handleForgotPassword} className="space-y-4 mt-6">
+          <Field
+            id="forgot-email"
+            label="Email"
+            type="email"
+            placeholder="seu@email.com"
+            icon={<Mail className="h-4 w-4" />}
+            value={forgotEmail}
+            onChange={setForgotEmail}
+          />
+          <PrimaryButton loading={isLoading} loadingLabel="Enviando...">
+            Enviar link de recuperação
+          </PrimaryButton>
+        </form>
+      </AuthShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <div className="flex items-center justify-center mb-4">
-            <img src={soproLogo} alt="Sopro" className="h-12 w-auto object-contain" />
-          </div>
-          <p className="text-slate-500">Entre na sua jornada de transformação</p>
-        </div>
+    <AuthShell>
+      <AuthHeader
+        title="Bem-vindo"
+        subtitle="Entre na sua jornada de transformação."
+      />
 
-        <Tabs defaultValue="login" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6 bg-white/20 border-0">
-            <TabsTrigger value="login" className="text-slate-500 data-[state=active]:bg-white data-[state=active]:text-primary">Entrar</TabsTrigger>
-            <TabsTrigger value="register" className="text-slate-500 data-[state=active]:bg-white data-[state=active]:text-primary">Cadastrar</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="login">
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-slate-500">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    placeholder="seu@email.com" 
-                    className="pl-10"
-                    value={loginData.email}
-                    onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                    required 
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-slate-500">Senha</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input 
-                    id="password" 
-                    type={showLoginPassword ? "text" : "password"} 
-                    placeholder="••••••" 
-                    className="pl-10 pr-10"
-                    value={loginData.password}
-                    onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                    required 
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowLoginPassword(!showLoginPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                  >
-                    {showLoginPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-              {showLoginResendLink && (
-                <div className="text-center">
-                  <button
-                    type="button"
-                    onClick={handleResendFromLogin}
-                    className="text-sm text-slate-500 hover:text-slate-600 hover:underline"
-                  >
-                    Reenviar email de confirmação de cadastro
-                  </button>
-                </div>
-              )}
-              {showNeedsSignup && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-center">
-                  <p className="text-sm text-amber-800 font-medium mb-1">
-                    📧 Este email possui assinatura ativa!
-                  </p>
-                  <p className="text-xs text-amber-700">
-                    Mas ainda não tem conta cadastrada. Vá para a aba{' '}
-                    <span className="font-semibold">"Cadastrar"</span> para criar sua conta.
-                  </p>
-                </div>
-              )}
-              <div className="text-right">
-                <button
-                  type="button"
-                  onClick={() => setShowForgotPassword(true)}
-                  className="text-sm text-slate-500 hover:text-slate-600 hover:underline"
-                >
-                  Esqueceu a senha?
-                </button>
-              </div>
-              <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
-                {isLoading ? "Entrando..." : "Entrar"}
-              </Button>
-            </form>
-          </TabsContent>
-          
-          <TabsContent value="register">
-            <form onSubmit={handleSignup} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-slate-500">Nome completo</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input 
-                    id="name" 
-                    type="text" 
-                    placeholder="Seu nome" 
-                    className="pl-10"
-                    value={signupData.name}
-                    onChange={(e) => setSignupData(prev => ({ ...prev, name: e.target.value }))}
-                    required 
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="register-email" className="text-slate-500">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input 
-                    id="register-email" 
-                    type="email" 
-                    placeholder="seu@email.com" 
-                    className="pl-10"
-                    value={signupData.email}
-                    onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
-                    required 
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="register-password" className="text-slate-500">Criar Senha</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input 
-                    id="register-password" 
-                    type={showSignupPassword ? "text" : "password"} 
-                    placeholder="6 caracteres com letras e números" 
-                    className="pl-10 pr-10"
-                    value={signupData.password}
-                    onChange={(e) => setSignupData(prev => ({ ...prev, password: e.target.value }))}
-                    required 
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowSignupPassword(!showSignupPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                  >
-                    {showSignupPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password" className="text-slate-500">Repetir Senha</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input 
-                    id="confirm-password" 
-                    type={showConfirmPassword ? "text" : "password"} 
-                    placeholder="••••••" 
-                    className="pl-10 pr-10"
-                    value={signupData.confirmPassword}
-                    onChange={(e) => setSignupData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                    required 
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                  >
-                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-              <Button type="submit" className="w-full bg-white text-primary hover:bg-white/90 shadow-lg font-semibold" disabled={isLoading}>
-                {isLoading ? "Criando conta..." : "Criar conta"}
-              </Button>
+      <Tabs defaultValue="login" className="w-full mt-6">
+        <TabsList className="grid w-full grid-cols-2 mb-5 bg-[hsl(220_30%_94%)] rounded-xl p-1 h-11">
+          <TabsTrigger
+            value="login"
+            className="rounded-lg text-sm font-semibold text-muted-foreground data-[state=active]:bg-white data-[state=active]:text-[hsl(230_85%_50%)] data-[state=active]:shadow-sm transition-all"
+          >
+            Entrar
+          </TabsTrigger>
+          <TabsTrigger
+            value="register"
+            className="rounded-lg text-sm font-semibold text-muted-foreground data-[state=active]:bg-white data-[state=active]:text-[hsl(230_85%_50%)] data-[state=active]:shadow-sm transition-all"
+          >
+            Cadastrar
+          </TabsTrigger>
+        </TabsList>
 
-              {showSignupConfirmationMsg && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
-                  <p className="text-sm text-green-700 font-medium">
-                    📩 Após confirmar seu email, acesse sua conta em "Entrar"
-                  </p>
-                </div>
-              )}
+        <TabsContent value="login">
+          <form onSubmit={handleLogin} className="space-y-4">
+            <Field
+              id="email"
+              label="Email"
+              type="email"
+              placeholder="seu@email.com"
+              icon={<Mail className="h-4 w-4" />}
+              value={loginData.email}
+              onChange={(v) => setLoginData((p) => ({ ...p, email: v }))}
+            />
+            <FieldPassword
+              id="password"
+              label="Senha"
+              placeholder="••••••"
+              value={loginData.password}
+              onChange={(v) => setLoginData((p) => ({ ...p, password: v }))}
+              visible={showLoginPassword}
+              toggle={() => setShowLoginPassword(!showLoginPassword)}
+            />
 
+            {showLoginResendLink && (
               <div className="text-center">
                 <button
                   type="button"
-                  onClick={handleResendFromSignup}
-                  className="text-sm text-slate-500 hover:text-slate-600 hover:underline"
+                  onClick={handleResendFromLogin}
+                  className="text-sm text-[hsl(230_85%_50%)] hover:underline font-medium"
                 >
                   Reenviar email de confirmação de cadastro
                 </button>
               </div>
+            )}
 
-              {/* Error message */}
-              {signupError && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
-                  <p className="text-sm text-red-600">{signupError}</p>
-                </div>
-              )}
+            {showNeedsSignup && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center">
+                <p className="text-sm text-amber-800 font-medium mb-1">
+                  📧 Este email possui assinatura ativa!
+                </p>
+                <p className="text-xs text-amber-700">
+                  Mas ainda não tem conta cadastrada. Vá para a aba{" "}
+                  <span className="font-semibold">"Cadastrar"</span> para criar sua conta.
+                </p>
+              </div>
+            )}
 
-            </form>
-          </TabsContent>
-        </Tabs>
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => setShowForgotPassword(true)}
+                className="text-sm text-muted-foreground hover:text-[hsl(230_85%_50%)] font-medium transition-colors"
+              >
+                Esqueceu a senha?
+              </button>
+            </div>
 
-        <div className="text-center text-sm">
-          <p className="text-slate-400 font-medium mb-1">Ao cadastrar, você concorda com nossos</p>
-          <p>
-            <a href="https://soproneuro.com.br/terms" target="_blank" rel="noopener noreferrer" className="text-slate-500 font-semibold hover:underline">
-              Termos de Uso
-            </a>
-            {" e "}
-            <a href="https://soproneuro.com.br/privacy" target="_blank" rel="noopener noreferrer" className="text-slate-500 font-semibold hover:underline">
-              Política de Privacidade
-            </a>
-          </p>
-        </div>
+            <PrimaryButton loading={isLoading} loadingLabel="Entrando...">
+              Entrar
+            </PrimaryButton>
+          </form>
+        </TabsContent>
+
+        <TabsContent value="register">
+          <form onSubmit={handleSignup} className="space-y-4">
+            <Field
+              id="name"
+              label="Nome completo"
+              type="text"
+              placeholder="Seu nome"
+              icon={<User className="h-4 w-4" />}
+              value={signupData.name}
+              onChange={(v) => setSignupData((p) => ({ ...p, name: v }))}
+            />
+            <Field
+              id="register-email"
+              label="Email"
+              type="email"
+              placeholder="seu@email.com"
+              icon={<Mail className="h-4 w-4" />}
+              value={signupData.email}
+              onChange={(v) => setSignupData((p) => ({ ...p, email: v }))}
+            />
+            <FieldPassword
+              id="register-password"
+              label="Criar senha"
+              placeholder="6 caracteres com letras e números"
+              value={signupData.password}
+              onChange={(v) => setSignupData((p) => ({ ...p, password: v }))}
+              visible={showSignupPassword}
+              toggle={() => setShowSignupPassword(!showSignupPassword)}
+            />
+            <FieldPassword
+              id="confirm-password"
+              label="Repetir senha"
+              placeholder="••••••"
+              value={signupData.confirmPassword}
+              onChange={(v) => setSignupData((p) => ({ ...p, confirmPassword: v }))}
+              visible={showConfirmPassword}
+              toggle={() => setShowConfirmPassword(!showConfirmPassword)}
+            />
+
+            <PrimaryButton loading={isLoading} loadingLabel="Criando conta...">
+              Criar conta
+            </PrimaryButton>
+
+            {showSignupConfirmationMsg && (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-center">
+                <p className="text-sm text-emerald-700 font-medium">
+                  📩 Após confirmar seu email, acesse sua conta em "Entrar"
+                </p>
+              </div>
+            )}
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={handleResendFromSignup}
+                className="text-sm text-muted-foreground hover:text-[hsl(230_85%_50%)] font-medium"
+              >
+                Reenviar email de confirmação de cadastro
+              </button>
+            </div>
+
+            {signupError && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-center">
+                <p className="text-sm text-red-600">{signupError}</p>
+              </div>
+            )}
+          </form>
+        </TabsContent>
+      </Tabs>
+
+      <div className="text-center text-xs mt-6 pt-5 border-t border-[hsl(220_30%_94%)]">
+        <p className="text-muted-foreground mb-1">Ao cadastrar, você concorda com nossos</p>
+        <p>
+          <a
+            href="https://soproneuro.com.br/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[hsl(230_85%_50%)] font-semibold hover:underline"
+          >
+            Termos de Uso
+          </a>
+          <span className="text-muted-foreground"> e </span>
+          <a
+            href="https://soproneuro.com.br/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[hsl(230_85%_50%)] font-semibold hover:underline"
+          >
+            Política de Privacidade
+          </a>
+        </p>
+      </div>
+    </AuthShell>
+  );
+};
+
+/* ---------- Shared sub-components ---------- */
+
+function AuthShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative min-h-screen flex items-center justify-center p-4 animate-page-in">
+      <WaveBackground />
+      <div
+        className="w-full max-w-md rounded-3xl bg-white/90 backdrop-blur-md border-0 shadow-[0_24px_60px_-20px_hsl(230_60%_40%/0.28)] ring-1 ring-black/[0.04] p-6 sm:p-7"
+        style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 1.5rem)" }}
+      >
+        {children}
       </div>
     </div>
   );
-};
+}
+
+function AuthHeader({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div className="text-center">
+      <div className="flex items-center justify-center mb-3">
+        <img src={soproLogo} alt="Sopro Neuro" className="h-11 w-auto object-contain" />
+      </div>
+      <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
+        {title}
+      </h1>
+      <p className="text-sm text-muted-foreground mt-1.5 leading-snug">{subtitle}</p>
+    </div>
+  );
+}
+
+function Field({
+  id,
+  label,
+  type,
+  placeholder,
+  icon,
+  value,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  type: string;
+  placeholder: string;
+  icon: React.ReactNode;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={id} className="text-xs font-semibold text-foreground/80">
+        {label}
+      </Label>
+      <div className="relative">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground">
+          {icon}
+        </span>
+        <Input
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required
+          className="pl-10 h-11 rounded-xl bg-white border-[hsl(220_30%_92%)] focus-visible:ring-2 focus-visible:ring-[hsl(230_85%_60%)] focus-visible:border-transparent"
+        />
+      </div>
+    </div>
+  );
+}
+
+function FieldPassword({
+  id,
+  label,
+  placeholder,
+  value,
+  onChange,
+  visible,
+  toggle,
+}: {
+  id: string;
+  label: string;
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+  visible: boolean;
+  toggle: () => void;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={id} className="text-xs font-semibold text-foreground/80">
+        {label}
+      </Label>
+      <div className="relative">
+        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          id={id}
+          type={visible ? "text" : "password"}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required
+          className="pl-10 pr-10 h-11 rounded-xl bg-white border-[hsl(220_30%_92%)] focus-visible:ring-2 focus-visible:ring-[hsl(230_85%_60%)] focus-visible:border-transparent"
+        />
+        <button
+          type="button"
+          onClick={toggle}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
+          aria-label={visible ? "Esconder senha" : "Mostrar senha"}
+        >
+          {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PrimaryButton({
+  children,
+  loading,
+  loadingLabel,
+}: {
+  children: React.ReactNode;
+  loading?: boolean;
+  loadingLabel?: string;
+}) {
+  return (
+    <button
+      type="submit"
+      disabled={loading}
+      className="w-full h-12 rounded-xl text-white font-bold text-base shadow-[0_12px_28px_-10px_hsl(230_70%_40%/0.55)] active:scale-[0.98] transition-transform disabled:opacity-60 disabled:active:scale-100"
+      style={{
+        background:
+          "linear-gradient(135deg, hsl(220, 90%, 55%), hsl(258, 70%, 55%))",
+      }}
+    >
+      {loading ? loadingLabel || "Carregando..." : children}
+    </button>
+  );
+}
 
 export default Login;
