@@ -133,6 +133,30 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const scrollY = window.scrollY;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalBodyPosition = document.body.style.position;
+    const originalBodyTop = document.body.style.top;
+    const originalBodyWidth = document.body.style.width;
+
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+
+    return () => {
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.overflow = originalBodyOverflow;
+      document.body.style.position = originalBodyPosition;
+      document.body.style.top = originalBodyTop;
+      document.body.style.width = originalBodyWidth;
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
+  useEffect(() => {
     const updateScale = () => {
       const viewport = viewportRef.current;
       const content = contentRef.current;
@@ -193,7 +217,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
   const current = stories[currentStory];
 
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-primary via-primary/90 to-accent">
+    <div className="fixed inset-0 z-50 overflow-hidden overscroll-none bg-gradient-to-br from-primary via-primary/90 to-accent touch-none">
       <div className="absolute left-0 right-0 top-0 z-10 flex gap-1 p-2" style={{ paddingTop: 'calc(env(safe-area-inset-top, 8px) + 8px)' }}>
         {stories.map((_, index) => (
           <div key={index} className="h-1 flex-1 overflow-hidden rounded-full bg-white/30">
