@@ -41,6 +41,7 @@ import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
 import ProgressBrain from "@/components/home/ProgressBrain";
 import BottomNav from "@/components/home/BottomNav";
+import PageLoader from "@/components/home/PageLoader";
 import StartHereStory from "@/components/StartHereStory";
 import soproLogo from "@/assets/sopro-logo.png";
 
@@ -246,11 +247,7 @@ export default function Dashboard() {
   };
 
   if (authLoading || profileLoading || adminLoading || contentLoading || trackingLoading || subLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    );
+    return <PageLoader />;
   }
   if (!user) return <Navigate to="/login" replace />;
 

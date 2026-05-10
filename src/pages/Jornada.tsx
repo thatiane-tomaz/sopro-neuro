@@ -30,6 +30,7 @@ import {
 import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
 import BottomNav from "@/components/home/BottomNav";
+import PageLoader from "@/components/home/PageLoader";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const getGreeting = () => {
@@ -154,11 +155,7 @@ export default function Jornada() {
     subLoading ||
     freelistLoading
   ) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    );
+    return <PageLoader />;
   }
   if (!user) return <Navigate to="/login" replace />;
 
