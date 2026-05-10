@@ -69,7 +69,7 @@ export default function Dashboard() {
     isLoading: trackingLoading,
   } = useJourneyTracking();
   const { data: onboarding, refetch: refetchOnboarding } = useOnboardingData();
-  const { loading: subLoading } = useSubscription();
+  const { loading: subLoading, isPremium, isExpired } = useSubscription();
   const { toast } = useToast();
 
   const [tick, setTick] = useState(0);
@@ -112,6 +112,24 @@ export default function Dashboard() {
   const progressPct = Math.round((completedInPhase / 7) * 100);
 
   const dayLocked = isDayTimeLocked(currentDay) && !isAdmin;
+
+  // Trigger paywall once Day 1 is completed and user is not premium/admin
+  useEffect(() => {
+    if (adminLoading || subLoading || trackingLoading) return;
+    if (isAdmin || isPremium || isExpired) return;
+    if (isDayCompleted(1)) {
+      navigate("/paywall");
+    }
+  }, [
+    adminLoading,
+    subLoading,
+    trackingLoading,
+    isAdmin,
+    isPremium,
+    isExpired,
+    isDayCompleted,
+    navigate,
+  ]);
 
   const dayContent = dailyContent?.find((d) => d.day_number === currentDay);
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
@@ -175,6 +193,11 @@ export default function Dashboard() {
 
   const openMedia = async (type: "video" | "hypnosis") => {
     if (dayLocked) return;
+    // Day 2+ requires active subscription (admins bypass)
+    if (!isAdmin && currentDay >= 2 && !isPremium) {
+      navigate("/paywall");
+      return;
+    }
     const interactionType = `${type === "video" ? "video" : "hipnose"}_dia_${currentDay}`;
     setSelectedMedia({
       title: dayContent?.title || `Dia ${currentDay}`,
