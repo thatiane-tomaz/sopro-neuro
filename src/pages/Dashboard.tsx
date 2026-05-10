@@ -239,7 +239,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-2">
             <div className="text-right">
               <p className="text-sm font-semibold text-foreground leading-tight">
-                {getGreeting()}{firstName ? `, ${firstName}!` : "!"} 👋
+                {getGreeting()}{firstName ? `, ${firstName}!` : "!"}
               </p>
               <p className="text-[11px] text-muted-foreground leading-tight">
                 Seu cérebro está aprendendo<br />uma nova forma de viver.
