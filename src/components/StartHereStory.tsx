@@ -149,9 +149,9 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
       </button>
 
       {/* Story content */}
-      <div className="relative w-full max-w-md h-full md:h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
-        <div className="h-full overflow-y-auto px-5 text-center flex flex-col" style={{ paddingTop: 'calc(env(safe-area-inset-top, 12px) + 44px)', paddingBottom: 'calc(env(safe-area-inset-bottom, 12px) + 20px)' }}>
-          <div className="animate-fade-in max-w-lg w-full mx-auto my-auto">
+      <div className="relative w-full max-w-md max-h-full md:max-h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
+        <div className="max-h-screen overflow-y-auto px-5 text-center" style={{ paddingTop: 'calc(env(safe-area-inset-top, 12px) + 44px)', paddingBottom: 'calc(env(safe-area-inset-bottom, 12px) + 20px)' }}>
+          <div className="animate-fade-in max-w-lg w-full mx-auto">
             {/* Story-level phase badge */}
             {stories[currentStory].phase && (
               <div className="flex justify-center mb-2">
