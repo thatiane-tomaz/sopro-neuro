@@ -376,13 +376,18 @@ export default function Dashboard() {
 
         {/* Progress / savings card */}
         <Card className="mt-6 p-5 bg-white/85 backdrop-blur-md border border-[hsl(220_50%_92%)] shadow-[0_10px_40px_-12px_hsl(230_60%_50%/0.18)] rounded-3xl">
-          <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-[hsl(258_60%_50%)] bg-[hsl(258_80%_95%)] rounded-full px-2.5 py-1">
+              {phaseNumber === 1 ? "Projeção" : "Conquistas"}
+            </span>
+          </div>
 
           {phaseNumber === 1 ? (
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
               <SavingsBlock
                 icon={<Cigarette className="h-4 w-4" />}
-                label={"Cigarros que\ndeixará de fumar"}
+                label="Cigarros que deixará de fumar"
                 rows={[
                   { label: "por mês", value: phase1Stats.cigsMonth.toLocaleString("pt-BR") },
                   { label: "por ano", value: phase1Stats.cigsYear.toLocaleString("pt-BR") },
@@ -390,7 +395,7 @@ export default function Dashboard() {
               />
               <SavingsBlock
                 icon={<DollarSign className="h-4 w-4" />}
-                label={"Dinheiro que\nirá economizar"}
+                label="Dinheiro que irá economizar"
                 rows={[
                   { label: "por mês", value: formatBRL(phase1Stats.moneyMonth) },
                   { label: "por ano", value: formatBRL(phase1Stats.moneyYear) },
@@ -399,16 +404,16 @@ export default function Dashboard() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 <SavingsBlock
                   icon={<Cigarette className="h-4 w-4" />}
                   label="Cigarros que você evitou"
-                  rows={[{ label: "", value: phase2Stats.cigs.toLocaleString("pt-BR") }]}
+                  rows={[{ label: "total", value: phase2Stats.cigs.toLocaleString("pt-BR") }]}
                 />
                 <SavingsBlock
                   icon={<DollarSign className="h-4 w-4" />}
                   label="Dinheiro que você economizou"
-                  rows={[{ label: "", value: formatBRL(phase2Stats.money) }]}
+                  rows={[{ label: "total", value: formatBRL(phase2Stats.money) }]}
                 />
               </div>
               {lastCigDate && (
@@ -473,19 +478,33 @@ function SavingsBlock({
   label: string;
   rows: { label: string; value: string }[];
 }) {
+  const isSingle = rows.length === 1;
   return (
-    <div>
-      <div className="flex items-start gap-2">
-        <div className="h-8 w-8 rounded-lg bg-[hsl(258_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center flex-shrink-0">
+    <div className="rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] border border-[hsl(258_60%_92%)] p-3.5">
+      <div className="flex items-center gap-2">
+        <div className="h-8 w-8 rounded-lg bg-white text-[hsl(258_60%_50%)] flex items-center justify-center flex-shrink-0 shadow-sm">
           {icon}
         </div>
-        <p className="text-xs text-muted-foreground whitespace-pre-line leading-tight">{label}</p>
+        <p className="text-xs font-medium text-foreground leading-tight">{label}</p>
       </div>
-      <div className="mt-2 grid grid-cols-2 gap-1">
+      <div className={`mt-3 grid ${isSingle ? "grid-cols-1" : "grid-cols-2"} gap-2`}>
         {rows.map((r, i) => (
-          <div key={i}>
-            {r.label && <p className="text-[10px] text-muted-foreground">{r.label}</p>}
-            <p className="text-sm font-bold text-[hsl(258_60%_45%)]">{r.value}</p>
+          <div
+            key={i}
+            className="rounded-xl bg-white/80 px-3 py-2 border border-white"
+          >
+            {r.label && (
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">
+                {r.label}
+              </p>
+            )}
+            <p
+              className={`font-bold text-[hsl(258_60%_45%)] tabular-nums ${
+                isSingle ? "text-2xl" : "text-base"
+              }`}
+            >
+              {r.value}
+            </p>
           </div>
         ))}
       </div>
@@ -495,9 +514,11 @@ function SavingsBlock({
 
 function Benefit({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 text-[hsl(258_60%_50%)]">
-      {icon}
-      <span className="text-[10px] text-muted-foreground">{label}</span>
+    <div className="flex flex-col items-center gap-1.5">
+      <div className="h-10 w-10 rounded-xl bg-[hsl(258_80%_96%)] text-[hsl(258_60%_50%)] flex items-center justify-center">
+        {icon}
+      </div>
+      <span className="text-[11px] font-medium text-foreground/80">{label}</span>
     </div>
   );
 }
