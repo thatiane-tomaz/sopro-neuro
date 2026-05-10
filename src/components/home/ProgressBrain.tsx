@@ -83,7 +83,7 @@ export default function ProgressBrain({ progress, locked }: Props) {
       />
 
       {/* Brain centered, sized to fill the arc */}
-      <div className="absolute inset-0 flex items-center justify-center" style={{ transform: "translateY(18px)" }}>
+      <div className="absolute inset-0 flex items-center justify-center" style={{ transform: "translateY(-6px)" }}>
         <img
           src={brainImg}
           alt="Cérebro"
