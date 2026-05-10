@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, Play, Brain, Wind, Heart, Sparkles, Headphones, Check, RefreshCw, Armchair, Clock, PlayCircle, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -107,6 +107,44 @@ const renderBoldText = (text: string) => {
 
 const StartHereStory = ({ onClose }: StartHereStoryProps) => {
   const [currentStory, setCurrentStory] = useState(0);
+  const [contentScale, setContentScale] = useState(1);
+  const bodyContainerRef = useRef<HTMLDivElement>(null);
+  const bodyContentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const measureContent = () => {
+      const container = bodyContainerRef.current;
+      const content = bodyContentRef.current;
+
+      if (!container || !content) return;
+
+      const availableHeight = container.clientHeight;
+      const naturalHeight = content.scrollHeight;
+
+      if (!availableHeight || !naturalHeight) {
+        setContentScale(1);
+        return;
+      }
+
+      const nextScale = naturalHeight > availableHeight
+        ? Math.max(availableHeight / naturalHeight, 0.78)
+        : 1;
+
+      setContentScale(nextScale);
+    };
+
+    const frame = requestAnimationFrame(() => {
+      measureContent();
+      requestAnimationFrame(measureContent);
+    });
+
+    window.addEventListener('resize', measureContent);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('resize', measureContent);
+    };
+  }, [currentStory]);
 
   const nextStory = () => {
     if (currentStory < stories.length - 1) {
@@ -149,9 +187,15 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
       </button>
 
       {/* Story content */}
-      <div className="relative w-full max-w-md max-h-full md:max-h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
-        <div className="max-h-screen overflow-y-auto px-5 text-center" style={{ paddingTop: 'calc(env(safe-area-inset-top, 12px) + 44px)', paddingBottom: 'calc(env(safe-area-inset-bottom, 12px) + 20px)' }}>
-          <div className="animate-fade-in max-w-lg w-full mx-auto">
+      <div className="relative w-full max-w-md h-[100dvh] md:h-auto md:max-h-[90dvh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
+        <div className="flex h-full flex-col px-4 text-center" style={{ paddingTop: 'calc(env(safe-area-inset-top, 12px) + 44px)', paddingBottom: 'calc(env(safe-area-inset-bottom, 12px) + 16px)' }}>
+          <div ref={bodyContainerRef} className="flex-1 min-h-0 overflow-hidden">
+            <div className="flex h-full items-start justify-center">
+              <div
+                ref={bodyContentRef}
+                className="animate-fade-in max-w-lg w-full mx-auto"
+                style={{ transform: `scale(${contentScale})`, transformOrigin: 'top center' }}
+              >
             {/* Story-level phase badge */}
             {stories[currentStory].phase && (
               <div className="flex justify-center mb-2">
@@ -161,26 +205,26 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
               </div>
             )}
             
-            <h2 className="text-xl md:text-2xl font-bold text-white mb-3">
+            <h2 className="text-lg md:text-2xl font-bold text-white mb-2">
               {stories[currentStory].title}
             </h2>
             
             {stories[currentStory].description && (
-              <p className="text-base text-white/90 mb-4">
+              <p className="text-sm md:text-base text-white/90 mb-3">
                 {stories[currentStory].description}
               </p>
             )}
 
             {stories[currentStory].highlights && (
-              <div className="space-y-3 text-left" key={`highlights-${currentStory}`}>
+              <div className="space-y-2 text-left" key={`highlights-${currentStory}`}>
                 {stories[currentStory].highlights.map((highlight, index) => {
                   const itemKey = `story-${currentStory}-item-${index}`;
                   // Special case for sparkles-special - render without card
                   if (highlight.icon === 'sparkles-special') {
                     return (
-                      <div key={itemKey} className="flex flex-col items-center gap-2 py-3">
-                        <Sparkles className="w-8 h-8 text-white" />
-                        <div className="text-white font-semibold text-base text-center">
+                      <div key={itemKey} className="flex flex-col items-center gap-1.5 py-2">
+                        <Sparkles className="w-7 h-7 text-white" />
+                        <div className="text-white font-semibold text-sm md:text-base text-center leading-snug">
                           {highlight.text.split('\n').map((line, i) => (
                             <p key={i}>{line}</p>
                           ))}
@@ -195,39 +239,39 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   const description = parts[1];
                   
                   return (
-                    <div key={itemKey} className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+                    <div key={itemKey} className="bg-white/10 backdrop-blur-sm rounded-lg p-2.5">
                       {/* Phase badge */}
                       {highlight.phase && (
-                        <div className="mb-1.5">
+                        <div className="mb-1">
                           <span className="bg-white/20 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
                             {highlight.phase}
                           </span>
                         </div>
                       )}
                       
-                      <div className="flex items-start gap-2.5 mb-1.5">
-                        <div className="flex-shrink-0 w-5 h-5 mt-0.5">
-                          {highlight.icon === 'brain' && <Brain className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'wind' && <Wind className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'heart' && <Heart className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'video' && <Play className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'headphones' && <Headphones className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'check' && <Check className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'apple' && <Sparkles className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'repeat' && <RefreshCw className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'armchair' && <Armchair className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'clock' && <Clock className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'play-circle' && <PlayCircle className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'calendar' && <Calendar className="w-5 h-5 text-white" />}
-                          {highlight.icon === 'number-1' && <span className="w-5 h-5 bg-white/30 rounded-full flex items-center justify-center text-white font-bold text-xs">1</span>}
-                          {highlight.icon === 'number-2' && <span className="w-5 h-5 bg-white/30 rounded-full flex items-center justify-center text-white font-bold text-xs">2</span>}
+                      <div className="flex items-start gap-2 mb-1">
+                        <div className="flex-shrink-0 w-4 h-4 mt-0.5">
+                          {highlight.icon === 'brain' && <Brain className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'wind' && <Wind className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'heart' && <Heart className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'video' && <Play className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'headphones' && <Headphones className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'check' && <Check className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'apple' && <Sparkles className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'repeat' && <RefreshCw className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'armchair' && <Armchair className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'clock' && <Clock className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'play-circle' && <PlayCircle className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'calendar' && <Calendar className="w-4 h-4 text-white" />}
+                          {highlight.icon === 'number-1' && <span className="w-4 h-4 bg-white/30 rounded-full flex items-center justify-center text-white font-bold text-[10px]">1</span>}
+                          {highlight.icon === 'number-2' && <span className="w-4 h-4 bg-white/30 rounded-full flex items-center justify-center text-white font-bold text-[10px]">2</span>}
                         </div>
-                        <h3 className="text-white font-bold text-base flex-1 leading-snug">
+                        <h3 className="text-white font-bold text-sm md:text-base flex-1 leading-snug">
                           {title}
                         </h3>
                       </div>
                       {description && (
-                        <div className="text-white/90 text-sm leading-relaxed ml-8">
+                        <div className="text-white/90 text-xs md:text-sm leading-snug ml-6">
                           {description.split('\n').map((line, i) => (
                             <p key={i} className="mb-0.5">
                               {renderBoldText(line)}
@@ -242,29 +286,31 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
             )}
 
             {stories[currentStory].footer && (
-              <div className="mt-4 bg-white/15 backdrop-blur-sm rounded-lg p-3 text-center">
-                <p className="text-base text-white font-medium leading-relaxed">
+              <div className="mt-3 bg-white/15 backdrop-blur-sm rounded-lg p-2.5 text-center">
+                <p className="text-sm md:text-base text-white font-medium leading-snug">
                   {renderBoldText(stories[currentStory].footer)}
                 </p>
               </div>
             )}
+              </div>
+            </div>
+          </div>
 
-            {/* Start button on last story */}
+          <div className="pt-3">
             {currentStory === stories.length - 1 && (
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
                   onClose();
                 }}
-                className="mt-5 bg-white text-primary hover:bg-white/90 font-semibold px-8 py-5 text-base"
+                className="w-full bg-white text-primary hover:bg-white/90 font-semibold px-8 py-4 text-base"
                 size="lg"
               >
                 Vamos Começar
               </Button>
             )}
 
-            {/* Navigation arrows */}
-            <div className="mt-5 flex justify-center gap-8 pb-2">
+            <div className={`flex justify-center gap-8 pb-1 ${currentStory === stories.length - 1 ? 'mt-3' : 'mt-1'}`}>
               <button
                 onClick={prevStory}
                 disabled={currentStory === 0}
