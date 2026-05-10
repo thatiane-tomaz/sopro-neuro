@@ -150,8 +150,8 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
       {/* Story content */}
       <div className="relative w-full max-w-md h-full md:h-[90vh] md:rounded-2xl overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-accent">
-        <div className="absolute inset-0 flex flex-col items-center p-5 pb-24 text-center overflow-y-auto" style={{ paddingTop: 'calc(env(safe-area-inset-top, 12px) + 44px)' }}>
-          <div className="animate-fade-in max-w-lg w-full">
+        <div className="h-full overflow-y-auto px-5 text-center" style={{ paddingTop: 'calc(env(safe-area-inset-top, 12px) + 44px)', paddingBottom: 'calc(env(safe-area-inset-bottom, 12px) + 20px)' }}>
+          <div className="animate-fade-in max-w-lg w-full mx-auto">
             {/* Story-level phase badge */}
             {stories[currentStory].phase && (
               <div className="flex justify-center mb-2">
@@ -256,37 +256,37 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   e.stopPropagation();
                   onClose();
                 }}
-                className="mt-6 bg-white text-primary hover:bg-white/90 font-semibold px-8 py-5 text-base"
+                className="mt-5 bg-white text-primary hover:bg-white/90 font-semibold px-8 py-5 text-base"
                 size="lg"
               >
                 Vamos Começar
               </Button>
             )}
-          </div>
-        </div>
 
-        {/* Navigation arrows at bottom */}
-        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-8 z-10">
-          <button
-            onClick={prevStory}
-            disabled={currentStory === 0}
-            className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
-              currentStory === 0 
-                ? 'bg-white/10 text-white/30 cursor-not-allowed' 
-                : 'bg-white/20 text-white hover:bg-white/30'
-            }`}
-            aria-label="Anterior"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          
-          <button
-            onClick={nextStory}
-            className="w-12 h-12 rounded-full bg-white/30 text-white hover:bg-white/40 flex items-center justify-center transition-all"
-            aria-label="Próximo"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
+            {/* Navigation arrows */}
+            <div className="mt-5 flex justify-center gap-8 pb-2">
+              <button
+                onClick={prevStory}
+                disabled={currentStory === 0}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                  currentStory === 0
+                    ? 'bg-white/10 text-white/30 cursor-not-allowed'
+                    : 'bg-white/20 text-white hover:bg-white/30'
+                }`}
+                aria-label="Anterior"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+
+              <button
+                onClick={nextStory}
+                className="w-12 h-12 rounded-full bg-white/30 text-white hover:bg-white/40 flex items-center justify-center transition-all"
+                aria-label="Próximo"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
