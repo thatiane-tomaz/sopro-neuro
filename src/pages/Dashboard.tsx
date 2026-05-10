@@ -376,13 +376,18 @@ export default function Dashboard() {
 
         {/* Progress / savings card */}
         <Card className="mt-6 p-5 bg-white/85 backdrop-blur-md border border-[hsl(220_50%_92%)] shadow-[0_10px_40px_-12px_hsl(230_60%_50%/0.18)] rounded-3xl">
-          <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-[hsl(258_60%_50%)] bg-[hsl(258_80%_95%)] rounded-full px-2.5 py-1">
+              {phaseNumber === 1 ? "Projeção" : "Conquistas"}
+            </span>
+          </div>
 
           {phaseNumber === 1 ? (
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
               <SavingsBlock
                 icon={<Cigarette className="h-4 w-4" />}
-                label={"Cigarros que\ndeixará de fumar"}
+                label="Cigarros que deixará de fumar"
                 rows={[
                   { label: "por mês", value: phase1Stats.cigsMonth.toLocaleString("pt-BR") },
                   { label: "por ano", value: phase1Stats.cigsYear.toLocaleString("pt-BR") },
@@ -390,7 +395,7 @@ export default function Dashboard() {
               />
               <SavingsBlock
                 icon={<DollarSign className="h-4 w-4" />}
-                label={"Dinheiro que\nirá economizar"}
+                label="Dinheiro que irá economizar"
                 rows={[
                   { label: "por mês", value: formatBRL(phase1Stats.moneyMonth) },
                   { label: "por ano", value: formatBRL(phase1Stats.moneyYear) },
@@ -399,16 +404,16 @@ export default function Dashboard() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 <SavingsBlock
                   icon={<Cigarette className="h-4 w-4" />}
                   label="Cigarros que você evitou"
-                  rows={[{ label: "", value: phase2Stats.cigs.toLocaleString("pt-BR") }]}
+                  rows={[{ label: "total", value: phase2Stats.cigs.toLocaleString("pt-BR") }]}
                 />
                 <SavingsBlock
                   icon={<DollarSign className="h-4 w-4" />}
                   label="Dinheiro que você economizou"
-                  rows={[{ label: "", value: formatBRL(phase2Stats.money) }]}
+                  rows={[{ label: "total", value: formatBRL(phase2Stats.money) }]}
                 />
               </div>
               {lastCigDate && (
