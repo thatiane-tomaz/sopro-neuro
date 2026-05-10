@@ -199,7 +199,7 @@ export default function Jornada() {
 
         {/* Page title */}
         <div className="mt-6">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(230_85%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
             Jornada
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
