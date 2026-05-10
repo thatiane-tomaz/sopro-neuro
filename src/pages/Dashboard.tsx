@@ -268,7 +268,7 @@ export default function Dashboard() {
   const showLastCigCard = phaseNumber === 2 && !lastCigDate;
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden pb-32">
+    <div className="relative min-h-screen overflow-x-hidden pb-32 animate-page-in">
       <WaveBackground />
 
       <div className="mx-auto max-w-md px-5 pt-[env(safe-area-inset-top)]">
