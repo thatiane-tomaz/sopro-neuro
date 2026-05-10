@@ -40,6 +40,7 @@ import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
 import ProgressBrain from "@/components/home/ProgressBrain";
 import BottomNav from "@/components/home/BottomNav";
+import StartHereStory from "@/components/StartHereStory";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const getGreeting = () => {
@@ -80,6 +81,20 @@ export default function Dashboard() {
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [trackingId, setTrackingId] = useState<string | null>(null);
   const [savingDate, setSavingDate] = useState(false);
+  const [showStartHere, setShowStartHere] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    const key = `start_here_seen_${user.id}`;
+    if (!localStorage.getItem(key)) {
+      setShowStartHere(true);
+    }
+  }, [user]);
+
+  const handleCloseStartHere = () => {
+    if (user) localStorage.setItem(`start_here_seen_${user.id}`, "1");
+    setShowStartHere(false);
+  };
 
   const currentDay = getCurrentDay();
   const phaseNumber = currentDay <= 7 ? 1 : 2;
@@ -460,6 +475,8 @@ export default function Dashboard() {
           onComplete={handleComplete}
         />
       )}
+
+      {showStartHere && <StartHereStory onClose={handleCloseStartHere} />}
     </div>
   );
 }
