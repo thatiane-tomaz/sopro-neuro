@@ -201,13 +201,22 @@ export default function Jornada() {
         </header>
 
         {/* Page title */}
-        <div className="mt-6">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
-            Jornada
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Seu plano de 14 dias para a liberdade.
-          </p>
+        <div className="mt-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
+              Jornada
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Seu plano de 14 dias para a liberdade.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowStartHere(true)}
+            className="h-9 w-9 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03] active:scale-95 transition-transform"
+            aria-label="Como funciona"
+          >
+            <Info className="h-4 w-4 text-[hsl(230_85%_55%)]" />
+          </button>
         </div>
 
         {/* Phase 1 */}
