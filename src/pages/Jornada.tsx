@@ -295,6 +295,8 @@ export default function Jornada() {
           onComplete={handleComplete}
         />
       )}
+
+      {showStartHere && <StartHereStory onClose={() => setShowStartHere(false)} />}
     </div>
   );
 }
