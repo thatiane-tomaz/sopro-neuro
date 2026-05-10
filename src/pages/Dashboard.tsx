@@ -269,7 +269,7 @@ export default function Dashboard() {
         {/* Phase badge */}
         <div className="flex justify-center mt-6">
           <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-[hsl(258_80%_95%)] text-[hsl(258_60%_45%)]">
-            {phaseNumber === 1 ? "Preparação" : `Fase ${phaseNumber} • Libertar`}
+            {phaseNumber === 1 ? "Fase 1 • Preparação" : "Fase 2 • Libertação"}
           </span>
         </div>
 
