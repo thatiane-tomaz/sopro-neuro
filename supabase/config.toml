@@ -25,3 +25,6 @@ verify_jwt = false
 
 [functions.revenuecat-webhook]
 verify_jwt = false
+
+[functions.chat]
+verify_jwt = false
