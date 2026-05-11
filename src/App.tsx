@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Jornada from "./pages/Jornada";
+import Chat from "./pages/Chat";
 import Controle from "./pages/Controle";
 import Onboarding from "./pages/Onboarding";
 import Paywall from "./pages/Paywall";
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/jornada" element={<Jornada />} />
+              <Route path="/chat" element={<Chat />} />
               <Route path="/controle" element={<Controle />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/paywall" element={<Paywall />} />
