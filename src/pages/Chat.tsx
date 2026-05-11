@@ -24,9 +24,7 @@ export default function Chat() {
   const { toast } = useToast();
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
-  const greeting = firstName
-    ? `Oi ${firstName}! 💙 Sou o seu cérebro aprendendo uma nova forma de viver. Me conta — como você tá se sentindo agora?`
-    : "Oi! 💙 Sou o seu cérebro aprendendo uma nova forma de viver. Me conta — como você tá se sentindo agora?";
+  const greeting = `Olá${firstName ? ` ${firstName}` : ""}! Estou aqui para te ajudar a entender seu cérebro e te guiar na jornada para parar de fumar.\n\nMe conte suas dúvidas e o que está sentindo agora.`;
 
   const [messages, setMessages] = useState<Msg[]>([
     { role: "assistant", content: greeting },
@@ -161,39 +159,25 @@ export default function Chat() {
     <div className="relative min-h-screen overflow-hidden flex flex-col">
       <WaveBackground />
 
-      {/* Header */}
-      <header className="relative z-10 px-5 pt-[env(safe-area-inset-top)]">
-        <div className="mx-auto max-w-md flex items-center gap-3 pt-4 pb-3">
-          <button
-            onClick={() => navigate("/dashboard")}
-            aria-label="Voltar"
-            className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]"
-          >
-            <ArrowLeft className="h-5 w-5 text-primary" />
-          </button>
-          <div className="flex items-center gap-3 flex-1">
-            <div className="h-10 w-10 rounded-full overflow-hidden bg-white/80 flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03]">
-              <img src={brainImg} alt="Cérebro" className="w-full h-full object-contain" />
-            </div>
-            <div className="leading-tight">
-              <p className="text-sm font-bold text-foreground">Seu Cérebro</p>
-              <p className="text-[11px] text-muted-foreground flex items-center gap-1.5">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Sempre por perto 💙
-              </p>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Floating back button (no full header) */}
+      <div className="absolute top-[env(safe-area-inset-top)] left-4 z-20 pt-3">
+        <button
+          onClick={() => navigate("/dashboard")}
+          aria-label="Voltar"
+          className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]"
+        >
+          <ArrowLeft className="h-5 w-5 text-primary" />
+        </button>
+      </div>
 
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="relative z-10 flex-1 overflow-y-auto px-5 pb-2"
+        className="relative z-10 flex-1 overflow-y-auto px-5 pb-2 pt-[calc(env(safe-area-inset-top)+64px)]"
       >
         <div className="mx-auto max-w-md space-y-3 py-2">
           {messages.map((m, i) => (
-            <MessageBubble key={i} role={m.role} content={m.content} />
+            <MessageBubble key={i} role={m.role} content={m.content} showBrain={i === 0 && m.role === "assistant"} />
           ))}
           {isStreaming && messages[messages.length - 1]?.content === "" && (
             <div className="flex justify-start">
@@ -263,7 +247,7 @@ export default function Chat() {
   );
 }
 
-function MessageBubble({ role, content }: Msg) {
+function MessageBubble({ role, content, showBrain }: Msg & { showBrain?: boolean }) {
   if (role === "user") {
     return (
       <div className="flex justify-end">
@@ -274,8 +258,15 @@ function MessageBubble({ role, content }: Msg) {
     );
   }
   return (
-    <div className="flex justify-start">
-      <div className="max-w-[88%] rounded-2xl rounded-tl-sm bg-white/90 backdrop-blur-sm text-foreground px-4 py-2.5 text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.03]">
+    <div className="flex justify-start items-end gap-2">
+      {showBrain && (
+        <img
+          src={brainImg}
+          alt="Cérebro"
+          className="h-14 w-14 flex-shrink-0 object-contain drop-shadow-[0_6px_14px_hsl(258_70%_45%/0.35)] animate-pulse-glow"
+        />
+      )}
+      <div className="max-w-[82%] rounded-2xl rounded-tl-sm bg-white/90 backdrop-blur-sm text-foreground px-4 py-2.5 text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.03] whitespace-pre-wrap">
         <div className="prose prose-sm max-w-none prose-p:my-1.5 prose-p:leading-relaxed prose-ul:my-1.5 prose-ol:my-1.5 prose-strong:text-foreground">
           <ReactMarkdown>{content || "..."}</ReactMarkdown>
         </div>
