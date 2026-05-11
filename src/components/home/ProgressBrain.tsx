@@ -4,6 +4,8 @@ import { Lock } from "lucide-react";
 interface Props {
   progress: number; // 0-100
   locked: boolean;
+  onClick?: () => void;
+  ariaLabel?: string;
 }
 
 /**
@@ -11,7 +13,7 @@ interface Props {
  * The arc starts at bottom-left, goes counter-clockwise across the top,
  * and ends at bottom-right, leaving a gap at the bottom (matches ref).
  */
-export default function ProgressBrain({ progress, locked }: Props) {
+export default function ProgressBrain({ progress, locked, onClick, ariaLabel }: Props) {
   const clamped = Math.max(0, Math.min(100, progress));
 
   const size = 300;
@@ -34,6 +36,8 @@ export default function ProgressBrain({ progress, locked }: Props) {
 
   const arcLen = (sweep / 360) * 2 * Math.PI * radius;
   const dash = (clamped / 100) * arcLen;
+
+  const interactive = typeof onClick === "function";
 
   return (
     <div className="relative mx-auto" style={{ width: size, height: size }}>
@@ -84,7 +88,27 @@ export default function ProgressBrain({ progress, locked }: Props) {
 
       {/* Brain centered, sized to fill the arc */}
       <div className="absolute inset-0 flex items-center justify-center" style={{ transform: "translateY(-6px)" }}>
-        <img
+        {interactive ? (
+          <button
+            type="button"
+            onClick={onClick}
+            aria-label={ariaLabel ?? "Abrir jornada"}
+            className="rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-transform active:scale-95 hover:scale-[1.02]"
+          >
+            <img
+              src={brainImg}
+              alt="Cérebro"
+              width={340}
+              height={340}
+              loading="eager"
+              draggable={false}
+              className={`w-[340px] h-[340px] object-contain animate-pulse-glow pointer-events-none ${
+                locked ? "grayscale opacity-60" : ""
+              }`}
+            />
+          </button>
+        ) : (
+          <img
           src={brainImg}
           alt="Cérebro"
           width={340}
@@ -93,7 +117,8 @@ export default function ProgressBrain({ progress, locked }: Props) {
           className={`w-[340px] h-[340px] object-contain animate-pulse-glow ${
             locked ? "grayscale opacity-60" : ""
           }`}
-        />
+          />
+        )}
         {locked && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-14 h-14 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
