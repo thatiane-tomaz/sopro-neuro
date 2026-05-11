@@ -345,8 +345,8 @@ export default function Dashboard() {
           <ProgressBrain
             progress={progressPct}
             locked={dayLocked}
-            onClick={() => navigate("/jornada")}
-            ariaLabel="Abrir jornada"
+            onClick={() => navigate("/chat")}
+            ariaLabel="Abrir chat com a IA"
           />
           <div className="text-center -mt-1">
             <p className="text-3xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
