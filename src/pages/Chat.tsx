@@ -247,7 +247,7 @@ export default function Chat() {
   );
 }
 
-function MessageBubble({ role, content }: Msg) {
+function MessageBubble({ role, content, showBrain }: Msg & { showBrain?: boolean }) {
   if (role === "user") {
     return (
       <div className="flex justify-end">
