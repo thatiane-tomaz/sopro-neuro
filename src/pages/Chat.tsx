@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, Loader2 } from "lucide-react";
+import { ArrowLeft, Send, Loader2, Mic, Square, Volume2, VolumeX } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import WaveBackground from "@/components/home/WaveBackground";
 import { useAuth } from "@/hooks/useAuth";
@@ -31,8 +31,15 @@ export default function Chat() {
   ]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const audioElRef = useRef<HTMLAudioElement | null>(null);
+  const spokenRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -42,6 +49,103 @@ export default function Chat() {
 
   if (authLoading) return null;
   if (!user) return <Navigate to="/login" replace />;
+
+  const speak = async (text: string) => {
+    if (!voiceEnabled || !text.trim()) return;
+    try {
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/text-to-speech`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ text }),
+      });
+      if (!resp.ok) return;
+      const { audioContent } = await resp.json();
+      if (!audioContent) return;
+      if (audioElRef.current) {
+        audioElRef.current.pause();
+        audioElRef.current = null;
+      }
+      const audio = new Audio(`data:audio/mpeg;base64,${audioContent}`);
+      audioElRef.current = audio;
+      audio.play().catch(() => {});
+    } catch (e) {
+      console.error("TTS error", e);
+    }
+  };
+
+  const toggleVoice = () => {
+    setVoiceEnabled((v) => {
+      if (v && audioElRef.current) {
+        audioElRef.current.pause();
+        audioElRef.current = null;
+      }
+      return !v;
+    });
+  };
+
+  const startRecording = async () => {
+    if (isRecording || isStreaming || isTranscribing) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      mr.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        if (blob.size < 500) return;
+        setIsTranscribing(true);
+        try {
+          const buf = await blob.arrayBuffer();
+          let binary = "";
+          const bytes = new Uint8Array(buf);
+          const chunk = 0x8000;
+          for (let i = 0; i < bytes.length; i += chunk) {
+            binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+          }
+          const base64 = btoa(binary);
+          const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/voice-to-text`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({ audio: base64 }),
+          });
+          const data = await resp.json();
+          const text = (data.text || "").trim();
+          if (text) {
+            send(text);
+          } else {
+            toast({ title: "Não consegui ouvir", description: "Tenta falar de novo.", variant: "destructive" });
+          }
+        } catch (e) {
+          console.error(e);
+          toast({ title: "Erro ao transcrever", description: "Tenta de novo.", variant: "destructive" });
+        } finally {
+          setIsTranscribing(false);
+        }
+      };
+      mediaRecorderRef.current = mr;
+      mr.start();
+      setIsRecording(true);
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Microfone bloqueado", description: "Permita o acesso ao microfone.", variant: "destructive" });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
 
   const send = async (text: string) => {
     const trimmed = text.trim();
@@ -143,6 +247,17 @@ export default function Chat() {
           } catch {}
         }
       }
+
+      // After full response, speak it (once)
+      setMessages((prev) => {
+        const idx = prev.length - 1;
+        const last = prev[idx];
+        if (last?.role === "assistant" && last.content && !spokenRef.current.has(idx)) {
+          spokenRef.current.add(idx);
+          speak(last.content);
+        }
+        return prev;
+      });
     } catch (e: any) {
       if (e?.name !== "AbortError") {
         console.error(e);
@@ -167,6 +282,17 @@ export default function Chat() {
           className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]"
         >
           <ArrowLeft className="h-5 w-5 text-primary" />
+        </button>
+      </div>
+
+      {/* Voice toggle (top right) */}
+      <div className="absolute top-[env(safe-area-inset-top)] right-4 z-20 pt-3">
+        <button
+          onClick={toggleVoice}
+          aria-label={voiceEnabled ? "Silenciar voz" : "Ativar voz"}
+          className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]"
+        >
+          {voiceEnabled ? <Volume2 className="h-5 w-5 text-primary" /> : <VolumeX className="h-5 w-5 text-muted-foreground" />}
         </button>
       </div>
 
@@ -216,6 +342,7 @@ export default function Chat() {
           }}
           className="mx-auto max-w-md flex items-end gap-2"
         >
+          <div className="relative flex-1">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -225,11 +352,31 @@ export default function Chat() {
                 send(input);
               }
             }}
-            placeholder="Fala comigo..."
+            placeholder={isRecording ? "Gravando..." : isTranscribing ? "Transcrevendo..." : "Fala comigo..."}
             rows={1}
-            disabled={isStreaming}
-            className="flex-1 resize-none max-h-32 rounded-2xl bg-white px-4 py-3 text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)] placeholder:text-muted-foreground/70"
+            disabled={isStreaming || isRecording || isTranscribing}
+            className="w-full resize-none max-h-32 rounded-2xl bg-white pl-4 pr-12 py-3 text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)] placeholder:text-muted-foreground/70"
           />
+          <button
+            type="button"
+            onClick={isRecording ? stopRecording : startRecording}
+            disabled={isStreaming || isTranscribing}
+            aria-label={isRecording ? "Parar gravação" : "Gravar áudio"}
+            className={`absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full flex items-center justify-center transition-all active:scale-95 ${
+              isRecording
+                ? "bg-red-500 text-white animate-pulse"
+                : "bg-[hsl(258_70%_95%)] text-[hsl(258_60%_45%)] hover:bg-[hsl(258_70%_90%)]"
+            } disabled:opacity-40`}
+          >
+            {isTranscribing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : isRecording ? (
+              <Square className="h-4 w-4 fill-current" />
+            ) : (
+              <Mic className="h-4 w-4" />
+            )}
+          </button>
+          </div>
           <button
             type="submit"
             disabled={isStreaming || !input.trim()}
