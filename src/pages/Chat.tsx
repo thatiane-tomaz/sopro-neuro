@@ -33,7 +33,7 @@ export default function Chat() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -76,14 +76,43 @@ export default function Chat() {
     }
   };
 
-  const toggleVoice = () => {
-    setVoiceEnabled((v) => {
-      if (v && audioElRef.current) {
+  const handleSpeakerClick = (text: string) => {
+    if (voiceEnabled) {
+      // Disable: stop any audio and turn off autoplay
+      if (audioElRef.current) {
         audioElRef.current.pause();
         audioElRef.current = null;
       }
-      return !v;
-    });
+      setVoiceEnabled(false);
+    } else {
+      // Enable: turn on autoplay and speak current message
+      setVoiceEnabled(true);
+      // Inline speak (bypass voiceEnabled state-not-yet-updated)
+      (async () => {
+        try {
+          const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/text-to-speech`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({ text }),
+          });
+          if (!resp.ok) return;
+          const { audioContent } = await resp.json();
+          if (!audioContent) return;
+          if (audioElRef.current) {
+            audioElRef.current.pause();
+            audioElRef.current = null;
+          }
+          const audio = new Audio(`data:audio/mpeg;base64,${audioContent}`);
+          audioElRef.current = audio;
+          audio.play().catch(() => {});
+        } catch (e) {
+          console.error("TTS error", e);
+        }
+      })();
+    }
   };
 
   const startRecording = async () => {
@@ -285,26 +314,33 @@ export default function Chat() {
         </button>
       </div>
 
-      {/* Voice toggle (top right) */}
-      <div className="absolute top-[env(safe-area-inset-top)] right-4 z-20 pt-3">
-        <button
-          onClick={toggleVoice}
-          aria-label={voiceEnabled ? "Silenciar voz" : "Ativar voz"}
-          className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]"
-        >
-          {voiceEnabled ? <Volume2 className="h-5 w-5 text-primary" /> : <VolumeX className="h-5 w-5 text-muted-foreground" />}
-        </button>
-      </div>
-
       {/* Messages */}
       <div
         ref={scrollRef}
         className="relative z-10 flex-1 overflow-y-auto px-5 pb-2 pt-[calc(env(safe-area-inset-top)+64px)]"
       >
         <div className="mx-auto max-w-md space-y-3 py-2">
-          {messages.map((m, i) => (
-            <MessageBubble key={i} role={m.role} content={m.content} showBrain={i === 0 && m.role === "assistant"} />
-          ))}
+          {messages.map((m, i) => {
+            const lastAssistantIdx = (() => {
+              for (let j = messages.length - 1; j >= 0; j--) {
+                if (messages[j].role === "assistant" && messages[j].content) return j;
+              }
+              return -1;
+            })();
+            const isLastAssistant =
+              m.role === "assistant" && i === lastAssistantIdx && !isStreaming;
+            return (
+              <MessageBubble
+                key={i}
+                role={m.role}
+                content={m.content}
+                showBrain={i === 0 && m.role === "assistant"}
+                showSpeaker={isLastAssistant}
+                voiceEnabled={voiceEnabled}
+                onSpeakerClick={() => handleSpeakerClick(m.content)}
+              />
+            );
+          })}
           {isStreaming && messages[messages.length - 1]?.content === "" && (
             <div className="flex justify-start">
               <div className="rounded-2xl rounded-tl-sm bg-white/90 backdrop-blur-sm px-4 py-3 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.03]">
