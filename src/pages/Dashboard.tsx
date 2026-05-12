@@ -105,7 +105,20 @@ export default function Dashboard() {
         setStartHereSeen(true);
         localStorage.setItem(key, "1");
       } else {
-        setStartHereSeen(false);
+        // If user already has any journey progress, treat as existing user and auto-mark as seen
+        const { count } = await supabase
+          .from("journey_tracking")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        if ((count ?? 0) > 0) {
+          setStartHereSeen(true);
+          localStorage.setItem(key, "1");
+          supabase.rpc("mark_start_here_seen").then(({ error }) => {
+            if (error) console.error("mark_start_here_seen error:", error);
+          });
+        } else {
+          setStartHereSeen(false);
+        }
       }
     })();
   }, [user]);
