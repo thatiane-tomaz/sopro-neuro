@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -79,6 +80,125 @@ Você PODE recomendar ouvir novamente hipnoses já liberadas (repetição fortal
 ESCOPO
 Não responda perguntas totalmente fora do escopo (matemática, programação, política etc). Redirecione gentilmente para a jornada de liberdade da nicotina.`;
 
+// Decode JWT payload without verification (used only to extract user_id;
+// real authorization is enforced by RLS / service-role queries below).
+function getUserIdFromAuthHeader(authHeader: string | null): string | null {
+  if (!authHeader) return null;
+  const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+  const parts = token.split(".");
+  if (parts.length < 2) return null;
+  try {
+    const payload = JSON.parse(
+      atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")),
+    );
+    return payload?.sub ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function daysSince(dateStr: string | null | undefined): number | null {
+  if (!dateStr) return null;
+  const then = new Date(dateStr).getTime();
+  if (isNaN(then)) return null;
+  return Math.floor((Date.now() - then) / (1000 * 60 * 60 * 24));
+}
+
+async function buildUserContext(userId: string): Promise<string> {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !serviceKey) return "";
+
+  const admin = createClient(supabaseUrl, serviceKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+
+  const [profileRes, onboardingRes, progressRes, lastJourneyRes, feedbackRes] =
+    await Promise.all([
+      admin.from("profiles").select("display_name").eq("user_id", userId).maybeSingle(),
+      admin
+        .from("onboarding_responses")
+        .select(
+          "age,gender,smoking_frequency,smoking_types,smoking_reasons,smoking_fears,weekly_cost,cigarettes_per_day,vapes_per_week,last_cigarette_date",
+        )
+        .eq("user_id", userId)
+        .maybeSingle(),
+      admin
+        .from("user_progress_summary")
+        .select("max_unlocked_day")
+        .eq("user_id", userId)
+        .maybeSingle(),
+      admin
+        .from("journey_tracking")
+        .select("interaction_type,finished_at")
+        .eq("user_id", userId)
+        .not("finished_at", "is", null)
+        .gte("progress_percentage", 85)
+        .order("finished_at", { ascending: false })
+        .limit(1),
+      admin
+        .from("feedback_responses")
+        .select("day_number,question_type,rating,response,created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(3),
+    ]);
+
+  const profile = profileRes.data;
+  const onb = onboardingRes.data as any;
+  const progress = progressRes.data;
+  const lastDone = lastJourneyRes.data?.[0];
+  const feedback = feedbackRes.data ?? [];
+
+  const lines: string[] = [];
+  if (profile?.display_name) lines.push(`- Nome: ${profile.display_name}`);
+  if (onb) {
+    if (onb.age) lines.push(`- Faixa etária: ${onb.age}`);
+    if (onb.gender) lines.push(`- Gênero: ${onb.gender}`);
+    if (onb.smoking_frequency) lines.push(`- Frequência: ${onb.smoking_frequency}`);
+    if (onb.smoking_types?.length) lines.push(`- Tipos: ${onb.smoking_types.join(", ")}`);
+    if (onb.cigarettes_per_day) lines.push(`- Cigarros/dia: ${onb.cigarettes_per_day}`);
+    if (onb.vapes_per_week) lines.push(`- Vapes/semana: ${onb.vapes_per_week}`);
+    if (onb.smoking_reasons?.length) lines.push(`- Motivos pra fumar: ${onb.smoking_reasons.join(", ")}`);
+    if (onb.smoking_fears?.length) lines.push(`- Medos de parar: ${onb.smoking_fears.join(", ")}`);
+    if (onb.weekly_cost) lines.push(`- Gasto semanal: ${onb.weekly_cost}`);
+    const dsl = daysSince(onb.last_cigarette_date);
+    if (dsl !== null) {
+      lines.push(
+        dsl === 0
+          ? `- Último cigarro: hoje`
+          : `- Sem fumar há ${dsl} dia(s) (último cigarro em ${onb.last_cigarette_date})`,
+      );
+    }
+  }
+
+  const day = progress?.max_unlocked_day ?? 1;
+  const phase = day <= 7 ? 1 : 2;
+  lines.push(`- Dia atual liberado: ${day} de 14 (Fase ${phase})`);
+
+  if (lastDone?.interaction_type) {
+    lines.push(
+      `- Última interação concluída: ${lastDone.interaction_type} em ${lastDone.finished_at}`,
+    );
+  }
+
+  if (feedback.length) {
+    const fbLines = feedback
+      .map((f: any) => {
+        const parts = [`dia ${f.day_number}`, f.question_type];
+        if (f.rating !== null && f.rating !== undefined) parts.push(`nota ${f.rating}`);
+        if (f.response) parts.push(`"${String(f.response).slice(0, 80)}"`);
+        return `  • ${parts.join(" — ")}`;
+      })
+      .join("\n");
+    lines.push(`- Feedbacks recentes:\n${fbLines}`);
+  }
+
+  if (!lines.length) return "";
+
+  return `\n\nCONTEXTO DO USUÁRIO (use com naturalidade, NUNCA repita literalmente nem liste de volta; adapte o tom ao momento dele):\n${lines.join("\n")}`;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -101,6 +221,17 @@ serve(async (req) => {
     // Keep only last 20 turns to bound token usage
     const trimmed = messages.slice(-20);
 
+    // Build per-user context (best-effort; never blocks the chat on failure)
+    let userContext = "";
+    try {
+      const userId = getUserIdFromAuthHeader(req.headers.get("authorization"));
+      if (userId) {
+        userContext = await buildUserContext(userId);
+      }
+    } catch (ctxErr) {
+      console.error("user context error:", ctxErr);
+    }
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -110,7 +241,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: SYSTEM_PROMPT + userContext },
           ...trimmed,
         ],
         stream: true,
