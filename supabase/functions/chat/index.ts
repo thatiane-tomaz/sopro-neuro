@@ -277,7 +277,7 @@ serve(async (req) => {
       ],
       stream: true,
     };
-    console.log("AI gateway request:", JSON.stringify({ model: requestBody.model, msgCount: requestBody.messages.length, lastMsg: requestBody.messages[requestBody.messages.length - 1] }));
+    console.error("[chat] sending to gateway:", requestBody.model, "msgs=", requestBody.messages.length, "sysLen=", (requestBody.messages[0] as any).content.length);
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
