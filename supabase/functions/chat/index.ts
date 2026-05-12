@@ -80,6 +80,43 @@ Você PODE recomendar ouvir novamente hipnoses já liberadas (repetição fortal
 ESCOPO
 Não responda perguntas totalmente fora do escopo (matemática, programação, política etc). Redirecione gentilmente para a jornada de liberdade da nicotina.`;
 
+// Conteúdo detalhado de cada hipnose (objetivo + conceitos + técnicas).
+// Use para contextualizar a conversa quando o usuário falar de um dia específico,
+// referenciar técnicas já ensinadas ou pedir reforço. NUNCA antecipe dias bloqueados.
+const HYPNOSES_CONTENT = `
+
+CONTEÚDO DAS HIPNOSES (referência interna — não recite literalmente; use para conectar a conversa ao que o usuário já viu/vai ver):
+
+Dia 1 — Iniciar mudança mental e aumentar motivação. Conceitos: processo gradual sem pressão; cigarro é hábito aprendido, não necessidade; fumar aumenta ansiedade e reduz energia; parar é libertação. Técnicas: respiração profunda, relaxamento progressivo, visualização da vida antes do cigarro, afirmações positivas.
+
+Dia 2 — Cigarro rouba energia/vitalidade; parar devolve disposição. Conceitos: cigarro reduz energia física/mental e dopamina; perde "brilho"; parar traz clareza e foco. Técnicas: respiração, contagem regressiva, visualização negativa do cigarro (sem cor, gerando peso) e positiva da vida sem ele, identidade de não fumante.
+
+Dia 3 — Desconstruir crença de que cigarro alivia estresse. Conceitos: cigarro cria ciclo ansiedade→alívio→nova ansiedade; calma vem de dentro; após abstinência inicial mente se estabiliza. Técnicas: relaxamento progressivo, visualização cinematográfica do ciclo, ressignificação do cigarro como fonte do estresse.
+
+Dia 4 — Desassociar cigarro de pausas e momentos sociais. Conceitos: presença e pessoas é que fazem o momento; substituir por água, café, chá; cérebro reaprende prazer sem nicotina. Técnicas: abrir/fechar olhos, comparação visual com/sem cigarro, substituição comportamental.
+
+Dia 5 — Reduzir medo da abstinência. Conceitos: desconfortos são temporários e sinais de recuperação; fissura vem em ondas e passa; respirar, esperar e continuar bastam. Técnicas: respiração, contagem regressiva, metáfora da chuva passageira, observação calma do desconforto.
+
+Dia 6 — Consolidar aprendizados antes do último cigarro. Conceitos: cérebro aprende por repetição; usuário já está preparado; abstinência é curta. Técnicas: escada de aprofundamento, metáfora do "livro das verdades", visualização do futuro como não fumante.
+
+Dia 7 — Preparar emocionalmente para o último cigarro e nova identidade. Conceitos: cigarro = prisão; vida sem ele = liberdade; encerramento consciente de ciclo. Técnicas: visualização simbólica de travessia (ponte/rio), ritual de despedida, associação cigarro=cinza vs vida=brilho.
+
+Dia 8 — Lidar com pensamentos automáticos sobre fumar sem luta. Conceitos: pensamentos são automáticos e temporários, não desejo real; objetivo é indiferença. Técnicas: pensamentos como nuvens passando, associação cigarro=alimento desagradável, ÂNCORA FÍSICA DE CALMA (polegar + indicador), uso do SOS do app.
+
+Dia 9 — Técnica prática de respiração para fissura/ansiedade. Conceitos: respiração regula fisiologicamente. Técnicas: RESPIRAÇÃO 4-2-6 (inspirar 4s, segurar 2s, expirar 6s), reforço da âncora polegar+indicador, foco no presente.
+
+Dia 10 — Atravessar o pico inicial da abstinência. Conceitos: queda de nicotina gera irritabilidade/ansiedade temporárias; corpo está se limpando; fumar reiniciaria o ciclo. Técnicas: visualização de chuva/praia como limpeza, reforço da respiração 4-2-6 e da âncora, pausas conscientes + água + SOS.
+
+Dia 11 — Estabilidade emocional e calma interna. Conceitos: cérebro está se recalibrando; sensibilidade é temporária; calma vem de dentro. Técnicas: visualização do "castelo/fortaleza interna", respiração 4-2-6, âncora polegar+indicador.
+
+Dia 12 — Adaptação à nova rotina sem cigarro. Conceitos: cigarro era pequena parte da rotina; pausas continuam existindo; comidas e cheiros ficam mais prazerosos. Técnicas: visualização de um dia comum como não fumante, ressignificação de pausas, novas associações com trabalho/lazer.
+
+Dia 13 — Hábitos saudáveis que sustentam a nova identidade. Conceitos: parar é amor próprio; alimentação consciente, movimento e sono ajudam o cérebro; mudanças graduais e leves. Técnicas: atenção plena aos sinais de fome/saciedade, visualização de movimento corporal, rotina noturna saudável.
+
+Dia 14 — Celebrar a primeira semana sem fumar e consolidar identidade. Conceitos: parte mais difícil já passou; cigarro perderá importância; futuro com mais energia e paz. Técnicas: contagem regressiva, visualização simbólica de viagem de trem no tempo, conexão com o "eu do futuro".
+
+Âncoras recorrentes que o usuário já conhece a partir do dia em que aparecem: respiração 4-2-6 (dia 9), âncora física polegar+indicador (dia 8), SOS do app, visualização da fortaleza interna (dia 11).`;
+
 // Decode JWT payload without verification (used only to extract user_id;
 // real authorization is enforced by RLS / service-role queries below).
 function getUserIdFromAuthHeader(authHeader: string | null): string | null {
@@ -241,7 +278,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: SYSTEM_PROMPT + userContext },
+          { role: "system", content: SYSTEM_PROMPT + HYPNOSES_CONTENT + userContext },
           ...trimmed,
         ],
         stream: true,
