@@ -430,7 +430,19 @@ export default function Chat() {
   );
 }
 
-function MessageBubble({ role, content, showBrain }: Msg & { showBrain?: boolean }) {
+function MessageBubble({
+  role,
+  content,
+  showBrain,
+  showSpeaker,
+  voiceEnabled,
+  onSpeakerClick,
+}: Msg & {
+  showBrain?: boolean;
+  showSpeaker?: boolean;
+  voiceEnabled?: boolean;
+  onSpeakerClick?: () => void;
+}) {
   if (role === "user") {
     return (
       <div className="flex justify-end">
@@ -453,6 +465,22 @@ function MessageBubble({ role, content, showBrain }: Msg & { showBrain?: boolean
         <div className="prose prose-sm max-w-none prose-p:my-1.5 prose-p:leading-relaxed prose-ul:my-1.5 prose-ol:my-1.5 prose-strong:text-foreground">
           <ReactMarkdown>{content || "..."}</ReactMarkdown>
         </div>
+        {showSpeaker && (
+          <div className="mt-1.5 flex justify-end">
+            <button
+              type="button"
+              onClick={onSpeakerClick}
+              aria-label={voiceEnabled ? "Desativar voz" : "Ouvir mensagem"}
+              className={`h-7 w-7 rounded-full flex items-center justify-center transition-colors active:scale-95 ${
+                voiceEnabled
+                  ? "bg-[hsl(258_70%_55%)] text-white"
+                  : "bg-[hsl(258_70%_95%)] text-[hsl(258_60%_45%)] hover:bg-[hsl(258_70%_90%)]"
+              }`}
+            >
+              {voiceEnabled ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
