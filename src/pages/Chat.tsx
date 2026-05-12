@@ -308,7 +308,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="relative min-h-screen w-full max-w-full overflow-x-hidden overflow-y-hidden flex flex-col">
+    <div className="relative h-[100dvh] w-full max-w-full overflow-x-hidden overflow-y-hidden flex flex-col">
       <WaveBackground />
 
       {/* Floating back button (no full header) */}
