@@ -269,20 +269,22 @@ serve(async (req) => {
       console.error("user context error:", ctxErr);
     }
 
+    const requestBody = {
+      model: "google/gemini-2.5-flash",
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT + HYPNOSES_CONTENT + userContext },
+        ...trimmed.filter((m: any) => m && typeof m.content === "string" && m.content.trim().length > 0),
+      ],
+      stream: true,
+    };
+    console.log("AI gateway request:", JSON.stringify({ model: requestBody.model, msgCount: requestBody.messages.length, lastMsg: requestBody.messages[requestBody.messages.length - 1] }));
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT + HYPNOSES_CONTENT + userContext },
-          ...trimmed,
-        ],
-        stream: true,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
