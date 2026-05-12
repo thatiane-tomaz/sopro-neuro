@@ -5,6 +5,9 @@ import ReactMarkdown from "react-markdown";
 import WaveBackground from "@/components/home/WaveBackground";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useIsFreelist } from "@/hooks/useIsFreelist";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useToast } from "@/hooks/use-toast";
 import brainImg from "@/assets/brain-user.png";
 
@@ -21,6 +24,9 @@ export default function Chat() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { profile } = useUserProfile();
+  const { isPremium, loading: subLoading } = useSubscription();
+  const { isFreelist, loading: freelistLoading } = useIsFreelist();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { toast } = useToast();
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
@@ -49,6 +55,8 @@ export default function Chat() {
 
   if (authLoading) return null;
   if (!user) return <Navigate to="/login" replace />;
+  if (subLoading || freelistLoading || adminLoading) return null;
+  if (!isAdmin && !isFreelist && !isPremium) return <Navigate to="/paywall" replace />;
 
   const speak = async (text: string) => {
     if (!voiceEnabled || !text.trim()) return;
