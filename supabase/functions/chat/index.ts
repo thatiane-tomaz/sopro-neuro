@@ -269,20 +269,21 @@ serve(async (req) => {
       console.error("user context error:", ctxErr);
     }
 
+    const requestBody = {
+      model: "google/gemini-2.5-flash",
+      messages: [
+        { role: "user", content: "diga oi" },
+      ],
+      stream: true,
+    };
+    console.error("[chat] TEST minimal request");
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT + HYPNOSES_CONTENT + userContext },
-          ...trimmed,
-        ],
-        stream: true,
-      }),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
