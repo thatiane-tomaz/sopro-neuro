@@ -272,12 +272,11 @@ serve(async (req) => {
     const requestBody = {
       model: "google/gemini-2.5-flash",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT + HYPNOSES_CONTENT + userContext },
-        ...trimmed.filter((m: any) => m && typeof m.content === "string" && m.content.trim().length > 0),
+        { role: "user", content: "diga oi" },
       ],
       stream: true,
     };
-    console.error("[chat] sending to gateway:", requestBody.model, "msgs=", requestBody.messages.length, "sysLen=", (requestBody.messages[0] as any).content.length);
+    console.error("[chat] TEST minimal request");
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
