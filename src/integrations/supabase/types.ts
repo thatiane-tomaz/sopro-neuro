@@ -346,6 +346,7 @@ export type Database = {
           id: string
           last_push_sent_at: string | null
           onesignal_player_id: string | null
+          start_here_seen: boolean
           subscription_status: string | null
           updated_at: string
           user_id: string
@@ -357,6 +358,7 @@ export type Database = {
           id?: string
           last_push_sent_at?: string | null
           onesignal_player_id?: string | null
+          start_here_seen?: boolean
           subscription_status?: string | null
           updated_at?: string
           user_id: string
@@ -368,6 +370,7 @@ export type Database = {
           id?: string
           last_push_sent_at?: string | null
           onesignal_player_id?: string | null
+          start_here_seen?: boolean
           subscription_status?: string | null
           updated_at?: string
           user_id?: string
@@ -588,6 +591,7 @@ export type Database = {
         Args: { p_day: number; p_user_id: string }
         Returns: boolean
       }
+      mark_start_here_seen: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

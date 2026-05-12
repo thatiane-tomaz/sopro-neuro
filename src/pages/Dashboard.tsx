@@ -90,11 +90,33 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return;
     const key = `start_here_seen_${user.id}`;
-    setStartHereSeen(!!localStorage.getItem(key));
+    // Optimistic local check (legacy)
+    if (localStorage.getItem(key)) {
+      setStartHereSeen(true);
+    }
+    // Source of truth: profiles.start_here_seen
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("start_here_seen")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if ((data as any)?.start_here_seen) {
+        setStartHereSeen(true);
+        localStorage.setItem(key, "1");
+      } else {
+        setStartHereSeen(false);
+      }
+    })();
   }, [user]);
 
   const handleCloseStartHere = () => {
-    if (user) localStorage.setItem(`start_here_seen_${user.id}`, "1");
+    if (user) {
+      localStorage.setItem(`start_here_seen_${user.id}`, "1");
+      supabase.rpc("mark_start_here_seen").then(({ error }) => {
+        if (error) console.error("mark_start_here_seen error:", error);
+      });
+    }
     setShowStartHere(false);
     setStartHereSeen(true);
   };
