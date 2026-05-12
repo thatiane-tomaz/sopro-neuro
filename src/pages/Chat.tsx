@@ -453,15 +453,15 @@ function MessageBubble({
 }) {
   if (role === "user") {
     return (
-      <div className="flex justify-end">
-        <div className="max-w-[82%] rounded-2xl rounded-tr-sm bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] text-white px-4 py-2.5 text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.45)]">
+      <div className="flex justify-end w-full">
+        <div className="max-w-[82%] min-w-0 break-words rounded-2xl rounded-tr-sm bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] text-white px-4 py-2.5 text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.45)]">
           {content}
         </div>
       </div>
     );
   }
   return (
-    <div className="flex justify-start items-end gap-2">
+    <div className="flex justify-start items-end gap-2 w-full min-w-0">
       {showBrain && (
         <img
           src={brainImg}
@@ -469,7 +469,7 @@ function MessageBubble({
           className="h-14 w-14 flex-shrink-0 object-contain drop-shadow-[0_6px_14px_hsl(258_70%_45%/0.35)] animate-pulse-glow"
         />
       )}
-      <div className="max-w-[82%] rounded-2xl rounded-tl-sm bg-white/90 backdrop-blur-sm text-foreground px-4 py-2.5 text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.03] whitespace-pre-wrap">
+      <div className="max-w-[82%] min-w-0 break-words rounded-2xl rounded-tl-sm bg-white/90 backdrop-blur-sm text-foreground px-4 py-2.5 text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.03] whitespace-pre-wrap">
         <div className="prose prose-sm max-w-none prose-p:my-1.5 prose-p:leading-relaxed prose-ul:my-1.5 prose-ol:my-1.5 prose-strong:text-foreground">
           <ReactMarkdown>{content || "..."}</ReactMarkdown>
         </div>
