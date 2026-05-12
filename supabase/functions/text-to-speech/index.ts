@@ -7,8 +7,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// Sarah — feminina BR acolhedora (multilingual v2 fala PT-BR natural)
-const VOICE_ID = "EXAVITQu4vr4xnSDxMaL";
+// Matilda — voz feminina suave e calorosa, soa natural em PT-BR
+// Para trocar: pegue um Voice ID em https://elevenlabs.io/app/voice-library
+const VOICE_ID = "XrExE9yKIg1WjnnlVkGX";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -46,12 +47,13 @@ serve(async (req) => {
         body: JSON.stringify({
           text: clean,
           model_id: "eleven_multilingual_v2",
+          language_code: "pt",
           voice_settings: {
-            stability: 0.55,
-            similarity_boost: 0.8,
-            style: 0.35,
+            stability: 0.75,
+            similarity_boost: 0.85,
+            style: 0.0,
             use_speaker_boost: true,
-            speed: 1.0,
+            speed: 0.95,
           },
         }),
       },
