@@ -105,7 +105,20 @@ export default function Dashboard() {
         setStartHereSeen(true);
         localStorage.setItem(key, "1");
       } else {
-        setStartHereSeen(false);
+        // If user already has any journey progress, treat as existing user and auto-mark as seen
+        const { count } = await supabase
+          .from("journey_tracking")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        if ((count ?? 0) > 0) {
+          setStartHereSeen(true);
+          localStorage.setItem(key, "1");
+          supabase.rpc("mark_start_here_seen").then(({ error }) => {
+            if (error) console.error("mark_start_here_seen error:", error);
+          });
+        } else {
+          setStartHereSeen(false);
+        }
       }
     })();
   }, [user]);
@@ -331,7 +344,16 @@ export default function Dashboard() {
         {!startHereSeen && (
           <div className="flex justify-center mt-6">
             <button
-              onClick={() => setShowStartHere(true)}
+              onClick={() => {
+                setShowStartHere(true);
+                if (user) {
+                  localStorage.setItem(`start_here_seen_${user.id}`, "1");
+                  supabase.rpc("mark_start_here_seen").then(({ error }) => {
+                    if (error) console.error("mark_start_here_seen error:", error);
+                  });
+                  setStartHereSeen(true);
+                }
+              }}
               className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_28px_-10px_hsl(230_70%_40%/0.55)] active:scale-95 transition-transform"
               style={{
                 background:
