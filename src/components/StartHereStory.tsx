@@ -25,7 +25,7 @@ interface Story {
   id: number;
   title: string;
   phase?: string;
-  headerIcon?: 'sparkles' | 'brain' | 'wind' | 'headphones' | 'check' | 'message';
+  headerIcon?: 'sparkles' | 'brain' | 'brain-side' | 'wind' | 'headphones' | 'check' | 'message';
   highlights?: { icon: string; text: string; phase?: string }[];
   description?: string;
   footer?: string;
