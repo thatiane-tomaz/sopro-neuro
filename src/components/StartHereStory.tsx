@@ -35,6 +35,7 @@ const stories: Story[] = [
   {
     id: 1,
     title: '2 Fases de 7 Dias',
+    headerIcon: 'sparkles',
     description: 'Uma jornada completa de 14 dias dividida em:',
     highlights: [
       {
@@ -57,6 +58,7 @@ const stories: Story[] = [
     id: 2,
     phase: 'Fase 1',
     title: 'Transformando Crenças',
+    headerIcon: 'brain',
     description: 'Em cada dia você terá:',
     highlights: [
       { icon: 'number-1', text: 'Vídeo\n\nExplica, de forma rápida e científica, que fumar não traz benefícios reais.' },
@@ -68,6 +70,7 @@ const stories: Story[] = [
     id: 3,
     phase: 'Fase 2',
     title: 'Respire Livre',
+    headerIcon: 'wind',
     description: 'Escute hipnoses diárias que te ajudam a:',
     highlights: [
       { icon: 'check', text: 'Reencontrar equilíbrio durante os sintomas de abstinência' },
@@ -89,6 +92,7 @@ const stories: Story[] = [
   {
     id: 4,
     title: 'Hipnoses de Apoio',
+    headerIcon: 'headphones',
     description: 'Muito importantes após seu último cigarro,\nestas hipnoses te ajudam a:',
     highlights: [
       { icon: 'heart', text: 'Botão SOS para manter a calma durante vontade intensa de fumar.' },
@@ -99,6 +103,7 @@ const stories: Story[] = [
   {
     id: 5,
     title: 'Parar de uma vez é mais eficaz',
+    headerIcon: 'check',
     description: 'A ciência comprova:',
     highlights: [
       { icon: 'check', text: 'Evita passar por múltiplos ciclos de abstinência que acontecem ao reduzir gradualmente' },
@@ -110,6 +115,7 @@ const stories: Story[] = [
   {
     id: 6,
     title: 'Dicas importantes',
+    headerIcon: 'sparkles',
     highlights: [
       { icon: 'play-circle', text: 'Em cada dia, assista ao vídeo e, logo em seguida, escute a hipnose' },
       { icon: 'calendar', text: 'Faça o conteúdo diariamente ou, no máximo, a cada 2 dias' },
