@@ -108,7 +108,7 @@ const stories: Story[] = [
     headerIcon: 'check',
     description: 'A ciência comprova:',
     highlights: [
-      { icon: 'check', text: 'Evita passar por múltiplos ciclos de abstinência que acontecem ao reduzir gradualmente' },
+      { icon: 'check', text: 'Evita passar por múltiplos ciclos de abstinência' },
       { icon: 'check', text: 'Diminui o tempo total que você sentirá os sintomas de abstinência' },
       { icon: 'check', text: 'Evita que você aumente o quanto fuma sem perceber' },
       { icon: 'check', text: 'Remove completamente o cigarro da sua rotina desde o início' },
