@@ -286,34 +286,14 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
             {/* Title with icon accent */}
             <div className={`text-center ${currentStory === 0 ? 'mb-2' : 'mb-3'}`}>
-              {currentStory === 0 && (
-                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Sparkles className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 1 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Brain className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 2 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Wind className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 3 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Headphones className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 4 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Check className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 5 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Sparkles className="h-7 w-7 text-white" />
+              {current.headerIcon && (
+                <div className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20 ${currentStory === 0 ? 'mb-3' : 'mb-4'}`}>
+                  {current.headerIcon === 'sparkles' && <Sparkles className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'brain' && <Brain className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'wind' && <Wind className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'headphones' && <Headphones className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'check' && <Check className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'message' && <MessageCircle className="h-7 w-7 text-white" />}
                 </div>
               )}
               <h2 className="text-xl font-bold leading-tight text-white md:text-2xl">
