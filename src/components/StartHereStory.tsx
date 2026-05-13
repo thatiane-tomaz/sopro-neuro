@@ -57,8 +57,8 @@ const stories: Story[] = [
     highlights: [
       { icon: 'number-1', text: 'Vídeo\n\nExplica, de forma rápida e científica, que fumar não traz benefícios reais.' },
       { icon: 'number-1', text: 'Hipnose\n\nConsolida no subconsciente a nova forma de ver o cigarro.' },
+      { icon: 'sparkles-special', text: 'Momento Especial\n\nApós a Fase 1, faça o ritual do **último cigarro** com a certeza de que será **mais feliz**' },
     ],
-    footer: 'Ao final desta fase, você fumará seu último cigarro **mais confiante** de que **será mais feliz**',
   },
   {
     id: 3,
@@ -67,17 +67,17 @@ const stories: Story[] = [
     description: 'Escute hipnoses diárias que te ajudam a:',
     highlights: [
       { icon: 'check', text: 'Reencontrar equilíbrio durante os sintomas de abstinência' },
-      { icon: 'check', text: 'Dissolver a ansiedade' },
-      { icon: 'check', text: 'Fortalecer sua nova vida como ex-fumante' },
+      { icon: 'check', text: 'Dissolver a ansiedade e estresse' },
+      { icon: 'check', text: 'Fortalecer sua nova vida como\nex-fumante' },
     ],
   },
   {
     id: 4,
     title: 'Hipnoses de Apoio',
-    description: 'Disponíveis após completar a Fase 1, estas hipnoses te ajudam a:',
+    description: 'Muito importantes após seu último cigarro,\nestas hipnoses te ajudam a:',
     highlights: [
-      { icon: 'heart', text: 'Manter a calma e o relaxamento' },
-      { icon: 'check', text: 'Lidar com gatilhos específicos do dia a dia' },
+      { icon: 'heart', text: 'Botão SOS para manter a calma durante vontade intensa de fumar.' },
+      { icon: 'check', text: 'Lidar com gatilhos específicos do\ndia a dia' },
       { icon: 'apple', text: 'Criar hábitos saudáveis para substituir o cigarro' },
     ],
   },
