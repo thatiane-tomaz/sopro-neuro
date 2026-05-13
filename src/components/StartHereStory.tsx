@@ -299,7 +299,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
             {/* Description */}
             {current.description && (
-              <p className="mb-5 text-center text-sm leading-relaxed text-white/80 md:text-base">
+              <p className={`text-center text-sm leading-relaxed text-white/80 md:text-base ${currentStory === 0 ? 'mb-3' : 'mb-5'}`}>
                 {current.description}
               </p>
             )}
