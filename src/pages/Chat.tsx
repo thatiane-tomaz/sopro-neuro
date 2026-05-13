@@ -399,7 +399,7 @@ export default function Chat() {
             placeholder={isRecording ? "Gravando..." : isTranscribing ? "Transcrevendo..." : "Fala comigo..."}
             rows={1}
             disabled={isStreaming || isRecording || isTranscribing}
-            className="w-full resize-none max-h-32 rounded-2xl bg-white pl-4 pr-12 py-3 text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)] placeholder:text-muted-foreground/70"
+            className="w-full resize-none max-h-32 rounded-2xl bg-white pl-4 pr-12 py-3 text-base md:text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)] placeholder:text-muted-foreground/70"
           />
           <button
             type="button"
