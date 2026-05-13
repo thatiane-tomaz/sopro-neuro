@@ -332,7 +332,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
                   return (
                     <div key={itemKey} 
-                      className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm ring-1 ring-white/15"
+                      className={`rounded-2xl bg-white/10 backdrop-blur-sm ring-1 ring-white/15 ${currentStory === 0 ? 'p-3' : 'p-4'}`}
                     >
                       {highlight.phase && (
                         <div className="mb-2">
@@ -342,13 +342,13 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                         </div>
                       )}
 
-                      <div className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20">
+                      <div className={`flex gap-3 ${isSimple ? 'items-center' : 'items-start'}`}>
+                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 ${isSimple ? '' : 'mt-0.5'}`}>
                           {getIconComponent(highlight.icon)}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-bold leading-snug text-white md:text-base">
+                          <h3 className={`text-sm font-bold leading-snug text-white md:text-base ${isSimple ? 'text-center' : ''}`}>
                             {title}
                           </h3>
                           {description && (
