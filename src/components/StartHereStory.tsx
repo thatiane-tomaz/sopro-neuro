@@ -15,6 +15,9 @@ import {
   Clock,
   PlayCircle,
   Calendar,
+  MessageCircle,
+  Lightbulb,
+  HeartHandshake,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -22,6 +25,7 @@ interface Story {
   id: number;
   title: string;
   phase?: string;
+  headerIcon?: 'sparkles' | 'brain' | 'wind' | 'headphones' | 'check' | 'message';
   highlights?: { icon: string; text: string; phase?: string }[];
   description?: string;
   footer?: string;
@@ -69,6 +73,17 @@ const stories: Story[] = [
       { icon: 'check', text: 'Reencontrar equilíbrio durante os sintomas de abstinência' },
       { icon: 'check', text: 'Dissolver a ansiedade e estresse' },
       { icon: 'check', text: 'Fortalecer sua nova vida como\nex-fumante' },
+    ],
+  },
+  {
+    id: 7,
+    title: 'Converse com a IA',
+    description: 'Um espaço seguro, disponível 24h,\npara apoiar sua jornada:',
+    headerIcon: 'message',
+    highlights: [
+      { icon: 'lightbulb', text: 'Tire dúvidas sobre o programa\ne os exercícios' },
+      { icon: 'message-heart', text: 'Receba acolhimento em momentos de **vontade** ou **ansiedade**' },
+      { icon: 'sparkles-mini', text: 'Conte como você está se sentindo e ganhe **clareza** sobre o processo' },
     ],
   },
   {
