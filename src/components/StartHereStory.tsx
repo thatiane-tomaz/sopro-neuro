@@ -81,12 +81,12 @@ const stories: Story[] = [
   {
     id: 7,
     title: 'Seu guia ao seu lado',
-    description: 'Um apoio carinhoso, disponível 24h,\npara caminhar com você:',
-    headerIcon: 'brain',
+    description: 'Um apoio treinado para ajudar no\nprocesso de parar de fumar',
+    headerIcon: 'brain-side',
     highlights: [
-      { icon: 'message-heart', text: 'Conte como está se sentindo e receba **acolhimento** quando bater a vontade ou a ansiedade' },
-      { icon: 'lightbulb', text: 'Tire dúvidas sobre o programa e ganhe **clareza** sobre cada passo da sua jornada' },
-      { icon: 'sparkles-mini', text: 'Receba **incentivo e orientação** para seguir firme, no seu ritmo' },
+      { icon: 'message-heart', text: 'Receba **suporte** sobre o que pode fazer quando a vontade bater' },
+      { icon: 'lightbulb', text: 'Tire dúvidas sobre a jornada e sobre como a **nicotina** atua no seu corpo e mente' },
+      { icon: 'sparkles-mini', text: 'Receba **incentivo e orientação** para seguir firme' },
     ],
   },
   {
