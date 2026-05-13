@@ -321,7 +321,6 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                       <path d="M34 14v28" />
                     </svg>
                   )}
-                  )}
                 </div>
               )}
               <h2 className="text-xl font-bold leading-tight text-white md:text-2xl">
