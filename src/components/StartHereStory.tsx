@@ -294,6 +294,29 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   {current.headerIcon === 'headphones' && <Headphones className="h-7 w-7 text-white" />}
                   {current.headerIcon === 'check' && <Check className="h-7 w-7 text-white" />}
                   {current.headerIcon === 'message' && <MessageCircle className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'brain-side' && (
+                    <svg
+                      viewBox="0 0 64 64"
+                      className="h-8 w-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden
+                    >
+                      {/* Side-view brain silhouette */}
+                      <path d="M40 12c-3 0-5.5 1.3-7 3.4-1.5-2.1-4-3.4-7-3.4-5 0-9 3.6-9 8.2 0 1.3.3 2.5.9 3.6-3 1.3-5 4.1-5 7.4 0 2.4 1.1 4.5 2.8 6-.5 1-.8 2.2-.8 3.4 0 4 3.4 7.2 7.5 7.2 1.4 0 2.7-.4 3.8-1 .8 3.5 4.1 6.2 8.1 6.2 4.6 0 8.4-3.5 8.4-7.8V20.2c0-4.5-3.4-8.2-8.2-8.2h.5z" />
+                      {/* Inner folds */}
+                      <path d="M33 19c-2 1-3 3-3 5" />
+                      <path d="M28 28c-2 .5-4 2-4 4.5 0 1.5.7 2.8 1.8 3.7" />
+                      <path d="M33 38c-1.5 1-2.5 2.5-2.5 4.5" />
+                      <path d="M37 22c1.5.8 2.5 2.3 2.5 4" />
+                      <path d="M37 32c1.5.5 2.5 1.8 2.5 3.5" />
+                      {/* Brain stem */}
+                      <path d="M33 50v6" />
+                    </svg>
+                  )}
                 </div>
               )}
               <h2 className="text-xl font-bold leading-tight text-white md:text-2xl">
