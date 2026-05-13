@@ -57,8 +57,8 @@ const stories: Story[] = [
     highlights: [
       { icon: 'number-1', text: 'Vídeo\n\nExplica, de forma rápida e científica, que fumar não traz benefícios reais.' },
       { icon: 'number-1', text: 'Hipnose\n\nConsolida no subconsciente a nova forma de ver o cigarro.' },
+      { icon: 'sparkles-special', text: 'Momento Especial\n\nApós a Fase 1, faça o ritual do **último cigarro** com a certeza de que será **mais feliz**' },
     ],
-    footer: 'Ao final desta fase, você fumará seu último cigarro **mais confiante** de que **será mais feliz**',
   },
   {
     id: 3,
@@ -67,17 +67,17 @@ const stories: Story[] = [
     description: 'Escute hipnoses diárias que te ajudam a:',
     highlights: [
       { icon: 'check', text: 'Reencontrar equilíbrio durante os sintomas de abstinência' },
-      { icon: 'check', text: 'Dissolver a ansiedade' },
-      { icon: 'check', text: 'Fortalecer sua nova vida como ex-fumante' },
+      { icon: 'check', text: 'Dissolver a ansiedade e estresse' },
+      { icon: 'check', text: 'Fortalecer sua nova vida como\nex-fumante' },
     ],
   },
   {
     id: 4,
     title: 'Hipnoses de Apoio',
-    description: 'Disponíveis após completar a Fase 1, estas hipnoses te ajudam a:',
+    description: 'Muito importantes após seu último cigarro,\nestas hipnoses te ajudam a:',
     highlights: [
-      { icon: 'heart', text: 'Manter a calma e o relaxamento' },
-      { icon: 'check', text: 'Lidar com gatilhos específicos do dia a dia' },
+      { icon: 'heart', text: 'Botão SOS para manter a calma durante vontade intensa de fumar.' },
+      { icon: 'check', text: 'Lidar com gatilhos específicos do\ndia a dia' },
       { icon: 'apple', text: 'Criar hábitos saudáveis para substituir o cigarro' },
     ],
   },
@@ -261,9 +261,9 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
             )}
 
             {/* Title with icon accent */}
-            <div className="mb-3 text-center">
+            <div className={`text-center ${currentStory === 0 ? 'mb-2' : 'mb-3'}`}>
               {currentStory === 0 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
                   <Sparkles className="h-7 w-7 text-white" />
                 </div>
               )}
@@ -299,21 +299,21 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
             {/* Description */}
             {current.description && (
-              <p className="mb-5 text-center text-sm leading-relaxed text-white/80 md:text-base">
+              <p className={`text-center text-sm leading-relaxed text-white/80 md:text-base ${currentStory === 0 ? 'mb-3' : 'mb-5'}`}>
                 {current.description}
               </p>
             )}
 
             {/* Highlights */}
             {current.highlights && (
-              <div className="space-y-3">
+              <div className={currentStory === 0 ? "space-y-2" : "space-y-3"}>
                 {current.highlights.map((highlight, index) => {
                   const itemKey = `story-${currentStory}-item-${index}`;
 
                   if (highlight.icon === 'sparkles-special') {
                     return (
                       <div key={itemKey} 
-                        className="flex flex-col items-center gap-3 rounded-2xl bg-white/10 p-5 text-center backdrop-blur-sm ring-1 ring-white/15"
+                        className="flex flex-col items-center gap-3 rounded-2xl bg-white/10 p-4 text-center backdrop-blur-sm ring-1 ring-white/15"
                       >
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
                           <Sparkles className="h-6 w-6 text-white" />
@@ -328,10 +328,11 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   }
 
                   const [title, description] = highlight.text.split('\n\n');
+                  const isSimple = !description;
 
                   return (
                     <div key={itemKey} 
-                      className="rounded-2xl bg-white/10 p-4 backdrop-blur-sm ring-1 ring-white/15"
+                      className={`rounded-2xl bg-white/10 backdrop-blur-sm ring-1 ring-white/15 ${currentStory === 0 ? 'p-3' : 'p-4'}`}
                     >
                       {highlight.phase && (
                         <div className="mb-2">
@@ -341,13 +342,13 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                         </div>
                       )}
 
-                      <div className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20">
+                      <div className={`flex gap-3 ${isSimple ? 'items-center' : 'items-start'}`}>
+                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 ${isSimple ? '' : 'mt-0.5'}`}>
                           {getIconComponent(highlight.icon)}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-bold leading-snug text-white md:text-base">
+                          <h3 className={`text-sm font-bold leading-snug text-white md:text-base ${isSimple ? 'text-center' : ''}`}>
                             {title}
                           </h3>
                           {description && (
