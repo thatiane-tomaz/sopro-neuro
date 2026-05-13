@@ -261,9 +261,9 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
             )}
 
             {/* Title with icon accent */}
-            <div className="mb-3 text-center">
+            <div className={`text-center ${currentStory === 0 ? 'mb-2' : 'mb-3'}`}>
               {currentStory === 0 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
                   <Sparkles className="h-7 w-7 text-white" />
                 </div>
               )}
