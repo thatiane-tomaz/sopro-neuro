@@ -84,9 +84,9 @@ const stories: Story[] = [
     description: 'Um apoio treinado para ajudar no\nprocesso de parar de fumar',
     headerIcon: 'brain-side',
     highlights: [
-      { icon: 'message-heart', text: 'Receba **suporte** sobre o que pode fazer quando a vontade bater' },
-      { icon: 'lightbulb', text: 'Tire dúvidas sobre a jornada e sobre como a **nicotina** atua no seu corpo e mente' },
-      { icon: 'sparkles-mini', text: 'Receba **incentivo e orientação** para seguir firme' },
+      { icon: 'message-heart', text: 'Receba **suporte** sobre o que fazer quando a vontade bater' },
+      { icon: 'lightbulb', text: 'Tire dúvidas sobre a jornada e sobre como a **nicotina** atua no seu corpo' },
+      { icon: 'sparkles-mini', text: 'Receba **incentivo e orientação** para seguir firme na jornada' },
     ],
   },
   {
