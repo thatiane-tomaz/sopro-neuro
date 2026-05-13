@@ -313,14 +313,16 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   if (highlight.icon === 'sparkles-special') {
                     return (
                       <div key={itemKey} 
-                        className="flex flex-col items-center gap-3 rounded-2xl bg-white/10 p-4 text-center backdrop-blur-sm ring-1 ring-white/15"
+                        className="flex flex-col items-center gap-2 px-2 py-3 text-center"
                       >
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
-                          <Sparkles className="h-6 w-6 text-white" />
+                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20">
+                          <Sparkles className="h-5 w-5 text-white" />
                         </div>
-                        <div className="text-sm font-semibold leading-snug text-white md:text-base">
+                        <div className="text-sm leading-snug text-white md:text-base">
                           {highlight.text.split('\n').map((line, lineIndex) => (
-                            <p key={lineIndex}>{line}</p>
+                            <p key={lineIndex} className={lineIndex === 0 ? 'font-bold mb-1' : ''}>
+                              {renderBoldText(line)}
+                            </p>
                           ))}
                         </div>
                       </div>
@@ -328,7 +330,6 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   }
 
                   const [title, description] = highlight.text.split('\n\n');
-                  const isSimple = !description;
 
                   return (
                     <div key={itemKey} 
@@ -342,14 +343,16 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                         </div>
                       )}
 
-                      <div className={`flex gap-3 ${isSimple ? 'items-center' : 'items-start'}`}>
-                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 ${isSimple ? '' : 'mt-0.5'}`}>
+                      <div className="flex items-start gap-3">
+                        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20">
                           {getIconComponent(highlight.icon)}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <h3 className={`text-sm font-bold leading-snug text-white md:text-base ${isSimple ? 'text-center' : ''}`}>
-                            {title}
+                          <h3 className="text-sm font-bold leading-snug text-white md:text-base">
+                            {title.split('\n').map((line, lineIndex) => (
+                              <span key={lineIndex} className="block">{line}</span>
+                            ))}
                           </h3>
                           {description && (
                             <div className="mt-1.5 text-xs leading-relaxed text-white/85 md:text-sm">
