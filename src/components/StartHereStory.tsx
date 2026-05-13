@@ -15,6 +15,9 @@ import {
   Clock,
   PlayCircle,
   Calendar,
+  MessageCircle,
+  Lightbulb,
+  HeartHandshake,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -22,6 +25,7 @@ interface Story {
   id: number;
   title: string;
   phase?: string;
+  headerIcon?: 'sparkles' | 'brain' | 'wind' | 'headphones' | 'check' | 'message';
   highlights?: { icon: string; text: string; phase?: string }[];
   description?: string;
   footer?: string;
@@ -31,6 +35,7 @@ const stories: Story[] = [
   {
     id: 1,
     title: '2 Fases de 7 Dias',
+    headerIcon: 'sparkles',
     description: 'Uma jornada completa de 14 dias dividida em:',
     highlights: [
       {
@@ -53,6 +58,7 @@ const stories: Story[] = [
     id: 2,
     phase: 'Fase 1',
     title: 'Transformando Crenças',
+    headerIcon: 'brain',
     description: 'Em cada dia você terá:',
     highlights: [
       { icon: 'number-1', text: 'Vídeo\n\nExplica, de forma rápida e científica, que fumar não traz benefícios reais.' },
@@ -64,6 +70,7 @@ const stories: Story[] = [
     id: 3,
     phase: 'Fase 2',
     title: 'Respire Livre',
+    headerIcon: 'wind',
     description: 'Escute hipnoses diárias que te ajudam a:',
     highlights: [
       { icon: 'check', text: 'Reencontrar equilíbrio durante os sintomas de abstinência' },
@@ -72,8 +79,20 @@ const stories: Story[] = [
     ],
   },
   {
+    id: 7,
+    title: 'Converse com a IA',
+    description: 'Um espaço seguro, disponível 24h,\npara apoiar sua jornada:',
+    headerIcon: 'message',
+    highlights: [
+      { icon: 'lightbulb', text: 'Tire dúvidas sobre o programa\ne os exercícios' },
+      { icon: 'message-heart', text: 'Receba acolhimento em momentos de **vontade** ou **ansiedade**' },
+      { icon: 'sparkles-mini', text: 'Conte como você está se sentindo e ganhe **clareza** sobre o processo' },
+    ],
+  },
+  {
     id: 4,
     title: 'Hipnoses de Apoio',
+    headerIcon: 'headphones',
     description: 'Muito importantes após seu último cigarro,\nestas hipnoses te ajudam a:',
     highlights: [
       { icon: 'heart', text: 'Botão SOS para manter a calma durante vontade intensa de fumar.' },
@@ -84,6 +103,7 @@ const stories: Story[] = [
   {
     id: 5,
     title: 'Parar de uma vez é mais eficaz',
+    headerIcon: 'check',
     description: 'A ciência comprova:',
     highlights: [
       { icon: 'check', text: 'Evita passar por múltiplos ciclos de abstinência que acontecem ao reduzir gradualmente' },
@@ -95,6 +115,7 @@ const stories: Story[] = [
   {
     id: 6,
     title: 'Dicas importantes',
+    headerIcon: 'sparkles',
     highlights: [
       { icon: 'play-circle', text: 'Em cada dia, assista ao vídeo e, logo em seguida, escute a hipnose' },
       { icon: 'calendar', text: 'Faça o conteúdo diariamente ou, no máximo, a cada 2 dias' },
@@ -137,6 +158,9 @@ const getIconComponent = (iconName: string) => {
     case 'clock': return <Clock className={iconClass} />;
     case 'play-circle': return <PlayCircle className={iconClass} />;
     case 'calendar': return <Calendar className={iconClass} />;
+    case 'lightbulb': return <Lightbulb className={iconClass} />;
+    case 'message-heart': return <HeartHandshake className={iconClass} />;
+    case 'sparkles-mini': return <Sparkles className={iconClass} />;
     case 'number-1': return <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/30 text-[10px] font-bold text-white">1</span>;
     case 'number-2': return <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/30 text-[10px] font-bold text-white">2</span>;
     default: return <Sparkles className={iconClass} />;
@@ -262,34 +286,14 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
             {/* Title with icon accent */}
             <div className={`text-center ${currentStory === 0 ? 'mb-2' : 'mb-3'}`}>
-              {currentStory === 0 && (
-                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Sparkles className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 1 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Brain className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 2 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Wind className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 3 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Headphones className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 4 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Check className="h-7 w-7 text-white" />
-                </div>
-              )}
-              {currentStory === 5 && (
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
-                  <Sparkles className="h-7 w-7 text-white" />
+              {current.headerIcon && (
+                <div className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20 ${currentStory === 0 ? 'mb-3' : 'mb-4'}`}>
+                  {current.headerIcon === 'sparkles' && <Sparkles className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'brain' && <Brain className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'wind' && <Wind className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'headphones' && <Headphones className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'check' && <Check className="h-7 w-7 text-white" />}
+                  {current.headerIcon === 'message' && <MessageCircle className="h-7 w-7 text-white" />}
                 </div>
               )}
               <h2 className="text-xl font-bold leading-tight text-white md:text-2xl">
