@@ -301,7 +301,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                       src={brainSideImg}
                       alt=""
                       aria-hidden="true"
-                      className="h-9 w-9 object-contain"
+                      className="h-12 w-12 object-contain"
                     />
                   )}
                 </div>
