@@ -80,13 +80,13 @@ const stories: Story[] = [
   },
   {
     id: 7,
-    title: 'Converse com a IA',
-    description: 'Um espaço seguro, disponível 24h,\npara apoiar sua jornada:',
-    headerIcon: 'message',
+    title: 'Seu guia ao seu lado',
+    description: 'Um apoio carinhoso, disponível 24h,\npara caminhar com você:',
+    headerIcon: 'brain',
     highlights: [
-      { icon: 'lightbulb', text: 'Tire dúvidas sobre o programa\ne os exercícios' },
-      { icon: 'message-heart', text: 'Receba acolhimento em momentos de **vontade** ou **ansiedade**' },
-      { icon: 'sparkles-mini', text: 'Conte como você está se sentindo e ganhe **clareza** sobre o processo' },
+      { icon: 'message-heart', text: 'Conte como está se sentindo e receba **acolhimento** quando bater a vontade ou a ansiedade' },
+      { icon: 'lightbulb', text: 'Tire dúvidas sobre o programa e ganhe **clareza** sobre cada passo da sua jornada' },
+      { icon: 'sparkles-mini', text: 'Receba **incentivo e orientação** para seguir firme, no seu ritmo' },
     ],
   },
   {
@@ -355,7 +355,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm font-bold leading-snug text-white md:text-base">
                             {title.split('\n').map((line, lineIndex) => (
-                              <span key={lineIndex} className="block">{line}</span>
+                              <span key={lineIndex} className="block">{renderBoldText(line)}</span>
                             ))}
                           </h3>
                           {description && (
