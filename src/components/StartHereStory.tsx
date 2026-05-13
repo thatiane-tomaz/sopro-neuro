@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import brainImg from '@/assets/brain-user.png';
+import brainSideImg from '@/assets/brain-side.png';
 
 interface Story {
   id: number;
@@ -296,26 +297,12 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   {current.headerIcon === 'check' && <Check className="h-7 w-7 text-white" />}
                   {current.headerIcon === 'message' && <MessageCircle className="h-7 w-7 text-white" />}
                   {current.headerIcon === 'brain-side' && (
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                    <img
+                      src={brainSideImg}
+                      alt=""
                       aria-hidden="true"
-                      className="h-7 w-7 text-white"
-                    >
-                      {/* Side-view brain silhouette */}
-                      <path d="M16.5 4.5c-1.4 0-2.6.7-3.3 1.7-.7-1-1.9-1.7-3.3-1.7-2 0-3.7 1.4-4.1 3.2-1.3.5-2.3 1.8-2.3 3.3 0 1 .4 1.9 1.1 2.5-.3.5-.5 1.1-.5 1.8 0 1.7 1.3 3 2.9 3.2.3 1.5 1.7 2.7 3.3 2.7 1.1 0 2.1-.5 2.7-1.3.6.8 1.6 1.3 2.7 1.3 1.9 0 3.4-1.5 3.4-3.4V8.5c0-2.2-1.8-4-4-4z" />
-                      {/* Inner gyri (folds) */}
-                      <path d="M13.2 6.2v13.6" />
-                      <path d="M9 9c.8.4 1.6.4 2.4 0" />
-                      <path d="M8.5 13c1 .5 2 .5 3 0" />
-                      <path d="M9 17c.8.4 1.6.4 2.4 0" />
-                      {/* Brain stem */}
-                      <path d="M11 20.5c0 .8.7 1.5 1.5 1.5" />
-                    </svg>
+                      className="h-9 w-9 object-contain"
+                    />
                   )}
                 </div>
               )}
