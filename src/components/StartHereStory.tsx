@@ -152,6 +152,9 @@ const getIconComponent = (iconName: string) => {
     case 'clock': return <Clock className={iconClass} />;
     case 'play-circle': return <PlayCircle className={iconClass} />;
     case 'calendar': return <Calendar className={iconClass} />;
+    case 'lightbulb': return <Lightbulb className={iconClass} />;
+    case 'message-heart': return <HeartHandshake className={iconClass} />;
+    case 'sparkles-mini': return <Sparkles className={iconClass} />;
     case 'number-1': return <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/30 text-[10px] font-bold text-white">1</span>;
     case 'number-2': return <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/30 text-[10px] font-bold text-white">2</span>;
     default: return <Sparkles className={iconClass} />;
