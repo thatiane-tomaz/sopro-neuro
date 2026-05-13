@@ -306,14 +306,14 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
 
             {/* Highlights */}
             {current.highlights && (
-              <div className="space-y-3">
+              <div className={currentStory === 0 ? "space-y-2" : "space-y-3"}>
                 {current.highlights.map((highlight, index) => {
                   const itemKey = `story-${currentStory}-item-${index}`;
 
                   if (highlight.icon === 'sparkles-special') {
                     return (
                       <div key={itemKey} 
-                        className="flex flex-col items-center gap-3 rounded-2xl bg-white/10 p-5 text-center backdrop-blur-sm ring-1 ring-white/15"
+                        className="flex flex-col items-center gap-3 rounded-2xl bg-white/10 p-4 text-center backdrop-blur-sm ring-1 ring-white/15"
                       >
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
                           <Sparkles className="h-6 w-6 text-white" />
@@ -328,6 +328,7 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   }
 
                   const [title, description] = highlight.text.split('\n\n');
+                  const isSimple = !description;
 
                   return (
                     <div key={itemKey} 
