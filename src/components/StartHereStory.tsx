@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import brainImg from '@/assets/brain-user.png';
-import brainSideImg from '@/assets/brain-side.png';
 
 interface Story {
   id: number;
@@ -297,12 +296,31 @@ const StartHereStory = ({ onClose }: StartHereStoryProps) => {
                   {current.headerIcon === 'check' && <Check className="h-7 w-7 text-white" />}
                   {current.headerIcon === 'message' && <MessageCircle className="h-7 w-7 text-white" />}
                   {current.headerIcon === 'brain-side' && (
-                    <img
-                      src={brainSideImg}
-                      alt=""
+                    <svg
+                      viewBox="0 0 64 64"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       aria-hidden="true"
-                      className="h-12 w-12 object-contain"
-                    />
+                      className="h-8 w-8 text-white"
+                    >
+                      {/* Side-view brain silhouette */}
+                      <path d="M48 18c0-5-4-9-9-9-3 0-5.5 1.4-7 3.6C30.5 10.4 28 9 25 9c-5 0-9 4-9 9 0 1-2 2-3 4-1.6 3.2-1 6 1 8-1 2-1 5 1 7 1.5 1.5 3.5 2 5 2 1 3 4 5 7 5 2.5 0 4.5-1 6-2.5V46c0 3 2.5 5 5.5 5s5.5-2 5.5-5v-6c4 0 7-3 7-7 2-1 3-3 3-5s-1-4-3-5c1-2 1-4-2-5z" />
+                      {/* Cerebellum */}
+                      <path d="M44 40c2 1 4 3 4 5 0 3-2 5-5 5" />
+                      <path d="M46 42c1 .5 2 1.5 2 3" />
+                      {/* Brain stem */}
+                      <path d="M40 50v5" />
+                      {/* Inner gyri (folds) */}
+                      <path d="M22 18c2 1 4 1 6 0" />
+                      <path d="M20 24c3 1.5 6 1.5 9 0" />
+                      <path d="M22 30c2 1 5 1 7 0" />
+                      <path d="M24 36c2 1 4 1 6 0" />
+                      <path d="M34 14v28" />
+                    </svg>
+                  )}
                   )}
                 </div>
               )}
