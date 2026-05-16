@@ -81,7 +81,7 @@ const Question5 = ({ data, updateData, onNext, onPrev }: Question5Props) => {
             <div className="space-y-4">
               <div>
                 <Label htmlFor="weeklyCost" className="text-sm font-medium">
-                  Quanto você gasta por semana para fumar?
+                  Quanto você gasta por semana com cigarros/vapes?
                 </Label>
                 <div className="relative mt-2">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
