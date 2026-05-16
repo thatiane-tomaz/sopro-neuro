@@ -8,7 +8,7 @@ interface OnboardingResponse {
   weekly_cost: string | null;
   weekly_cost_value: number | null;
   cigarettes_per_day: number | null;
-  vapes_per_week: number | null;
+  vapes_per_month: number | null;
   last_cigarette_date: string | null;
   age: string | null;
   gender: string | null;

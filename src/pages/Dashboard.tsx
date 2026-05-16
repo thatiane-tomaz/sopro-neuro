@@ -190,9 +190,9 @@ export default function Dashboard() {
 
   // ----- Savings calculations -----
   const cigsPerDay = onboarding?.cigarettes_per_day || 0;
-  const vapesPerWeek = onboarding?.vapes_per_week || 0;
-  // Convert vapes/week to cigarette-equivalents per day (round up)
-  const equivCigsPerDay = cigsPerDay + Math.ceil(vapesPerWeek / 7);
+  const vapesPerMonth = onboarding?.vapes_per_month || 0;
+  // Convert vapes/month to cigarette-equivalents per day (round up)
+  const equivCigsPerDay = cigsPerDay + Math.ceil(vapesPerMonth / 30);
   const weeklyCostNum = (() => {
     const v = onboarding?.weekly_cost_value;
     if (typeof v === "number" && isFinite(v) && v > 0) return v;
