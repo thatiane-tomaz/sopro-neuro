@@ -74,7 +74,7 @@ const Question5 = ({ data, updateData, onNext, onPrev }: Question5Props) => {
         <Card className="border-primary/20 shadow-wellness">
           <CardHeader className="text-center pb-4">
           <CardTitle className="text-xl text-foreground">
-            Quanto você gasta por semana?
+            Quanto você gasta por semana para fumar?
           </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
