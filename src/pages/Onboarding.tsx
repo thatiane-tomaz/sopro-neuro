@@ -17,6 +17,7 @@ export interface OnboardingData {
   age: string;
   gender: string;
   cigarettesPerDay: string;
+  vapesPerMonth: string;
   smokingTypes: string[];
   smokingReasons: string[];
   smokingFears: string[];
@@ -29,6 +30,7 @@ const Onboarding = () => {
     age: "",
     gender: "",
     cigarettesPerDay: "",
+    vapesPerMonth: "",
     smokingTypes: [],
     smokingReasons: [],
     smokingFears: [],
@@ -138,6 +140,7 @@ const Onboarding = () => {
           age: data.age,
           gender: data.gender,
           cigarettes_per_day: data.cigarettesPerDay ? parseInt(data.cigarettesPerDay, 10) : null,
+          vapes_per_month: data.vapesPerMonth ? parseInt(data.vapesPerMonth, 10) : null,
           smoking_types: data.smokingTypes,
           smoking_reasons: data.smokingReasons,
           smoking_fears: data.smokingFears,

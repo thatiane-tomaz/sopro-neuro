@@ -1,0 +1,1 @@
+ALTER TABLE public.onboarding_responses RENAME COLUMN vapes_per_week TO vapes_per_month;

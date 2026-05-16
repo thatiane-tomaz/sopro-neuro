@@ -273,7 +273,7 @@ export type Database = {
           smoking_reasons: string[] | null
           smoking_types: string[] | null
           user_id: string
-          vapes_per_week: number | null
+          vapes_per_month: number | null
           weekly_cost: string | null
           weekly_cost_value: number | null
         }
@@ -289,7 +289,7 @@ export type Database = {
           smoking_reasons?: string[] | null
           smoking_types?: string[] | null
           user_id: string
-          vapes_per_week?: number | null
+          vapes_per_month?: number | null
           weekly_cost?: string | null
           weekly_cost_value?: number | null
         }
@@ -305,7 +305,7 @@ export type Database = {
           smoking_reasons?: string[] | null
           smoking_types?: string[] | null
           user_id?: string
-          vapes_per_week?: number | null
+          vapes_per_month?: number | null
           weekly_cost?: string | null
           weekly_cost_value?: number | null
         }

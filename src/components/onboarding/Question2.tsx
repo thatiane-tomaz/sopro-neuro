@@ -24,6 +24,14 @@ const cigarettesSchema = z.object({
       const num = parseInt(val, 10);
       return !isNaN(num) && num >= 0 && num <= 200;
     }, { message: "Digite um número válido entre 0 e 200" }),
+  vapesPerMonth: z
+    .string()
+    .trim()
+    .nonempty({ message: "Informe quantos vapes você usa por mês" })
+    .refine((val) => {
+      const num = parseInt(val, 10);
+      return !isNaN(num) && num >= 0 && num <= 200;
+    }, { message: "Digite um número válido entre 0 e 200" }),
 });
 
 const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
@@ -34,9 +42,15 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
     updateData({ cigarettesPerDay: sanitized });
   };
 
+  const handleVapesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitized = e.target.value.replace(/\D/g, "");
+    updateData({ vapesPerMonth: sanitized });
+  };
+
   const handleNext = () => {
     const validation = cigarettesSchema.safeParse({
       cigarettesPerDay: data.cigarettesPerDay,
+      vapesPerMonth: data.vapesPerMonth,
     });
 
     if (!validation.success) {
@@ -52,7 +66,9 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
     onNext();
   };
 
-  const canProceed = (data.cigarettesPerDay ?? "").trim() !== "";
+  const canProceed =
+    (data.cigarettesPerDay ?? "").trim() !== "" &&
+    (data.vapesPerMonth ?? "").trim() !== "";
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -70,10 +86,10 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
         <Card className="border-primary/20 shadow-wellness">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl text-foreground">
-              Quantos cigarros você fuma por dia?
+              Quanto você consome?
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-2">
-              Informe o número aproximado de cigarros consumidos diariamente
+              Informe os números aproximados. Use 0 caso não consuma.
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -90,6 +106,23 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
                 value={data.cigarettesPerDay ?? ""}
                 onChange={handleChange}
                 placeholder="Ex: 10"
+                className="mt-2 text-center text-lg font-medium"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="vapesPerMonth" className="text-sm font-medium">
+                Vapes por mês
+              </Label>
+              <Input
+                id="vapesPerMonth"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={200}
+                value={data.vapesPerMonth ?? ""}
+                onChange={handleVapesChange}
+                placeholder="Ex: 2"
                 className="mt-2 text-center text-lg font-medium"
               />
             </div>
