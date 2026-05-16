@@ -16,7 +16,7 @@ import CompletionScreen from "@/components/onboarding/CompletionScreen";
 export interface OnboardingData {
   age: string;
   gender: string;
-  smokingFrequency: string;
+  cigarettesPerDay: string;
   smokingTypes: string[];
   smokingReasons: string[];
   smokingFears: string[];
@@ -28,7 +28,7 @@ const Onboarding = () => {
   const [data, setData] = useState<OnboardingData>({
     age: "",
     gender: "",
-    smokingFrequency: "",
+    cigarettesPerDay: "",
     smokingTypes: [],
     smokingReasons: [],
     smokingFears: [],
@@ -137,7 +137,7 @@ const Onboarding = () => {
           user_id: user.id,
           age: data.age,
           gender: data.gender,
-          smoking_frequency: data.smokingFrequency,
+          cigarettes_per_day: data.cigarettesPerDay ? parseInt(data.cigarettesPerDay, 10) : null,
           smoking_types: data.smokingTypes,
           smoking_reasons: data.smokingReasons,
           smoking_fears: data.smokingFears,
