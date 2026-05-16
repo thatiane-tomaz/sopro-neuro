@@ -518,12 +518,12 @@ export default function Dashboard() {
                 <SavingsBlock
                   icon={<Cigarette className="h-4 w-4" />}
                   label="Cigarros que você evitou"
-                  rows={[{ label: "total", value: phase2Stats.cigs.toLocaleString("pt-BR") }]}
+                  rows={[{ label: "", value: phase2Stats.cigs.toLocaleString("pt-BR") }]}
                 />
                 <SavingsBlock
                   icon={<DollarSign className="h-4 w-4" />}
                   label="Dinheiro que você economizou"
-                  rows={[{ label: "total", value: formatBRL(phase2Stats.money) }]}
+                  rows={[{ label: "", value: formatBRL(phase2Stats.money) }]}
                 />
               </div>
               {lastCigDate && (
