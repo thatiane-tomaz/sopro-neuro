@@ -12,6 +12,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -84,6 +93,8 @@ export default function Dashboard() {
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [trackingId, setTrackingId] = useState<string | null>(null);
   const [savingDate, setSavingDate] = useState(false);
+  const [dateDialogOpen, setDateDialogOpen] = useState(false);
+  const [pendingDate, setPendingDate] = useState<Date | undefined>(undefined);
   const [showStartHere, setShowStartHere] = useState(false);
   const [startHereSeen, setStartHereSeen] = useState(true);
 
@@ -516,22 +527,22 @@ export default function Dashboard() {
                 />
               </div>
               {lastCigDate && (
-                <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground bg-[hsl(258_80%_97%)] rounded-lg px-3 py-2">
-                  <span>
-                    O dia da sua mudança de vida foi{" "}
-                    <strong className="text-foreground">{format(lastCigDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}</strong>
-                  </span>
+                <div className="mt-4 flex items-start justify-between gap-3 text-xs bg-[hsl(258_80%_97%)] rounded-lg px-3 py-2.5">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-muted-foreground">O dia da sua mudança de vida foi</p>
+                    <p className="mt-0.5 text-sm font-semibold text-foreground">
+                      {format(lastCigDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                    </p>
+                  </div>
                   <button
                     onClick={() => {
-                      const v = window.prompt(
-                        "Atualizar data do último cigarro (AAAA-MM-DD):",
-                        lastCigDate.toISOString().slice(0, 10),
-                      );
-                      if (v && /^\d{4}-\d{2}-\d{2}$/.test(v)) saveLastCigDate(v);
+                      setPendingDate(lastCigDate);
+                      setDateDialogOpen(true);
                     }}
-                    className="text-[hsl(258_60%_50%)] hover:underline flex items-center gap-1"
+                    className="flex-shrink-0 h-8 w-8 rounded-full bg-white text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm ring-1 ring-black/[0.03] active:scale-95 transition-transform"
+                    aria-label="Editar data"
                   >
-                    <Pencil className="h-3 w-3" />
+                    <Pencil className="h-3.5 w-3.5" />
                   </button>
                 </div>
               )}
@@ -566,6 +577,67 @@ export default function Dashboard() {
       )}
 
       {showStartHere && <StartHereStory onClose={handleCloseStartHere} />}
+
+      <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
+        <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
+          <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-5 pb-4">
+            <DialogHeader className="text-left space-y-1">
+              <div className="h-10 w-10 rounded-2xl bg-white text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm mb-2">
+                <CalendarIcon className="h-5 w-5" />
+              </div>
+              <DialogTitle className="text-base font-bold text-foreground">
+                Sua data de mudança
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground">
+                Selecione o dia em que você fumou pela última vez.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="px-3 py-3 flex justify-center">
+            <Calendar
+              mode="single"
+              selected={pendingDate}
+              onSelect={setPendingDate}
+              locale={ptBR}
+              disabled={(d) => d > new Date()}
+              initialFocus
+              className="rounded-xl"
+            />
+          </div>
+          {pendingDate && (
+            <div className="mx-5 mb-3 rounded-xl bg-[hsl(258_80%_97%)] px-3 py-2 text-center">
+              <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
+              <p className="text-sm font-semibold text-foreground mt-0.5">
+                {format(pendingDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+              </p>
+            </div>
+          )}
+          <DialogFooter className="px-5 pb-5 pt-1 flex-row gap-2 sm:gap-2">
+            <Button
+              variant="outline"
+              className="flex-1 rounded-xl"
+              onClick={() => setDateDialogOpen(false)}
+              disabled={savingDate}
+            >
+              Cancelar
+            </Button>
+            <Button
+              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+              disabled={!pendingDate || savingDate}
+              onClick={async () => {
+                if (!pendingDate) return;
+                const y = pendingDate.getFullYear();
+                const m = String(pendingDate.getMonth() + 1).padStart(2, "0");
+                const d = String(pendingDate.getDate()).padStart(2, "0");
+                await saveLastCigDate(`${y}-${m}-${d}`);
+                setDateDialogOpen(false);
+              }}
+            >
+              {savingDate ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
