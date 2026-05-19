@@ -491,6 +491,10 @@ export type Database = {
           email: string | null
           id: string
           last_app_access: string
+          last_completed_at: string | null
+          last_completed_day: number | null
+          last_completed_label: string | null
+          last_completed_type: string | null
           max_unlocked_day: number
           updated_at: string
           user_id: string
@@ -500,6 +504,10 @@ export type Database = {
           email?: string | null
           id?: string
           last_app_access?: string
+          last_completed_at?: string | null
+          last_completed_day?: number | null
+          last_completed_label?: string | null
+          last_completed_type?: string | null
           max_unlocked_day?: number
           updated_at?: string
           user_id: string
@@ -509,6 +517,10 @@ export type Database = {
           email?: string | null
           id?: string
           last_app_access?: string
+          last_completed_at?: string | null
+          last_completed_day?: number | null
+          last_completed_label?: string | null
+          last_completed_type?: string | null
           max_unlocked_day?: number
           updated_at?: string
           user_id?: string
