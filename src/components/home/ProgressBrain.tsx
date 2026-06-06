@@ -109,16 +109,16 @@ export default function ProgressBrain({ progress, locked, onClick, ariaLabel }: 
             {!locked && (
               <span className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center -translate-y-1 select-none">
                 <span
-                  className="text-xl font-bold text-white leading-none"
+                  className="text-lg font-bold text-white leading-tight text-center px-4"
                   style={{ textShadow: "0 2px 8px hsl(230 60% 25% / 0.55)" }}
                 >
-                  Olá
+                  Como você está?
                 </span>
                 <span
-                  className="mt-1 text-[10px] uppercase tracking-[0.18em] font-semibold text-white/90"
+                  className="mt-1 text-[10px] font-semibold text-white/90 text-center px-4"
                   style={{ textShadow: "0 1px 4px hsl(230 60% 25% / 0.55)" }}
                 >
-                  chat
+                  Vamos conversar um pouco
                 </span>
               </span>
             )}
