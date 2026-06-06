@@ -10,8 +10,11 @@ const ONESIGNAL_APP_ID = Deno.env.get('ONESIGNAL_APP_ID');
 const ONESIGNAL_REST_API_KEY = Deno.env.get('ONESIGNAL_REST_API_KEY');
 const CRON_SECRET = Deno.env.get('CRON_SECRET');
 
-const INACTIVITY_HOURS = 48;
-const MIN_HOURS_BETWEEN_NOTIFICATIONS = 48;
+const INACTIVITY_HOURS = 72;
+const MIN_HOURS_BETWEEN_NOTIFICATIONS = 72;
+
+const PHASE_1_MESSAGE = "Falta pouco para a sua liberdade! Volte para o Sopro 🫁";
+const PHASE_2_MESSAGE = "Toda onda passa! Respire e siga em frente 🫁";
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -114,23 +117,42 @@ serve(async (req) => {
     }
 
     // Check which users haven't completed all 21 days
-    const usersToNotify: { userId: string; playerId: string }[] = [];
+    const usersPhase1: { userId: string; playerId: string }[] = [];
+    const usersPhase2: { userId: string; playerId: string }[] = [];
 
     for (const profile of eligibleProfiles) {
-      const { data: completed } = await supabase.rpc(
+      // Skip users who already completed day 14 (program done)
+      const { data: day14Done } = await supabase.rpc(
         'is_day_completed',
-        { p_user_id: profile.user_id, p_day: 21 }
+        { p_user_id: profile.user_id, p_day: 14 }
       );
+      if (day14Done) continue;
 
-      if (!completed) {
-        usersToNotify.push({
-          userId: profile.user_id,
-          playerId: profile.onesignal_player_id!,
-        });
+      // Determine phase: find highest completed day (1..13)
+      let lastCompletedDay = 0;
+      for (let d = 13; d >= 1; d--) {
+        const { data: done } = await supabase.rpc(
+          'is_day_completed',
+          { p_user_id: profile.user_id, p_day: d }
+        );
+        if (done) { lastCompletedDay = d; break; }
+      }
+
+      // Phase 1 = days 1-7 (next day to do is 1..7 → last completed 0..6)
+      // Phase 2 = days 8-14 (last completed 7..13)
+      const entry = {
+        userId: profile.user_id,
+        playerId: profile.onesignal_player_id!,
+      };
+      if (lastCompletedDay < 7) {
+        usersPhase1.push(entry);
+      } else {
+        usersPhase2.push(entry);
       }
     }
 
-    console.log(`${usersToNotify.length} users to notify (haven't completed day 21)`);
+    const usersToNotify = [...usersPhase1, ...usersPhase2];
+    console.log(`To notify: ${usersPhase1.length} (Phase 1) + ${usersPhase2.length} (Phase 2) = ${usersToNotify.length}`);
 
     if (usersToNotify.length === 0) {
       return new Response(
@@ -145,30 +167,33 @@ serve(async (req) => {
       );
     }
 
-    // Send notifications via OneSignal
-    const playerIds = usersToNotify.map(u => u.playerId);
-    
-    const notificationResponse = await fetch('https://onesignal.com/api/v1/notifications', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${ONESIGNAL_REST_API_KEY}`,
-      },
-      body: JSON.stringify({
-        app_id: ONESIGNAL_APP_ID,
-        include_player_ids: playerIds,
-        headings: { pt: "Sopro", en: "Sopro" },
-        contents: { 
-          pt: "Um passo de cada vez. Sua jornada segue aqui.",
-          en: "Um passo de cada vez. Sua jornada segue aqui."
+    // Helper: send batch via OneSignal
+    const sendBatch = async (playerIds: string[], message: string, label: string) => {
+      if (playerIds.length === 0) return null;
+      const res = await fetch('https://onesignal.com/api/v1/notifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${ONESIGNAL_REST_API_KEY}`,
         },
-        ios_badgeType: 'Increase',
-        ios_badgeCount: 1,
-      }),
-    });
+        body: JSON.stringify({
+          app_id: ONESIGNAL_APP_ID,
+          include_player_ids: playerIds,
+          headings: { pt: "Sopro", en: "Sopro" },
+          contents: { pt: message, en: message },
+          ios_badgeType: 'Increase',
+          ios_badgeCount: 1,
+        }),
+      });
+      const json = await res.json();
+      console.log(`OneSignal ${label} response:`, json);
+      return json;
+    };
 
-    const notificationResult = await notificationResponse.json();
-    console.log('OneSignal response:', notificationResult);
+    const [phase1Result, phase2Result] = await Promise.all([
+      sendBatch(usersPhase1.map(u => u.playerId), PHASE_1_MESSAGE, 'Phase 1'),
+      sendBatch(usersPhase2.map(u => u.playerId), PHASE_2_MESSAGE, 'Phase 2'),
+    ]);
 
     // Update last_push_sent_at for notified users
     const userIdsToUpdate = usersToNotify.map(u => u.userId);
@@ -189,7 +214,10 @@ serve(async (req) => {
         usersChecked: userLatestSession.size,
         inactiveUsers: inactiveUserIds.length,
         notificationsSent: usersToNotify.length,
-        onesignalResponse: notificationResult,
+        phase1Sent: usersPhase1.length,
+        phase2Sent: usersPhase2.length,
+        phase1Response: phase1Result,
+        phase2Response: phase2Result,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
