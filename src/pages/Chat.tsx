@@ -8,16 +8,24 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useToast } from "@/hooks/use-toast";
 import brainImg from "@/assets/brain-user.png";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const SUGGESTIONS = [
-  "Tô com vontade de fumar agora 😩",
-  "Por que sinto tanta ansiedade?",
-  "Me dá uma força",
-  "O que tá acontecendo no meu cérebro?",
+const SUGGESTIONS_PHASE_1 = [
+  "Por que desta vez será mais fácil? 🌟",
+  "Não estou muito motivado, me ajude 💜",
+  "O que a nicotina faz no meu cérebro? 🧠",
+  "Pausa para refletir 💭",
+];
+
+const SUGGESTIONS_PHASE_2 = [
+  "Tô com vontade de fumar agora, me ajude 💪",
+  "Me sinto estressado e sem paciência 🌿",
+  "Quando a vontade vai passar? 🌤️",
+  "Pausa para refletir 💭",
 ];
 
 export default function Chat() {
@@ -27,7 +35,11 @@ export default function Chat() {
   const { isPremium, loading: subLoading } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
+  const { getCurrentDay } = useJourneyTracking();
   const { toast } = useToast();
+
+  const currentDay = getCurrentDay();
+  const SUGGESTIONS = currentDay <= 7 ? SUGGESTIONS_PHASE_1 : SUGGESTIONS_PHASE_2;
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
   const greeting = `Olá${firstName ? ` ${firstName}` : ""}! Estou aqui para te ajudar a entender seu cérebro e te guiar na jornada para parar de fumar.\n\nMe conte suas dúvidas e o que está sentindo agora.`;
