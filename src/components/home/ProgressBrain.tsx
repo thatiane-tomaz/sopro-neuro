@@ -112,19 +112,13 @@ export default function ProgressBrain({ progress, locked, onClick, ariaLabel }: 
                   className="text-xl font-bold text-white leading-none text-center px-4"
                   style={{ textShadow: "0 2px 8px hsl(230 60% 25% / 0.55)" }}
                 >
-                  Estou aqui
-                </span>
-                <span
-                  className="text-xl font-bold text-white leading-none text-center px-4"
-                  style={{ textShadow: "0 2px 8px hsl(230 60% 25% / 0.55)" }}
-                >
-                  para você
+                  Olá!
                 </span>
                 <span
                   className="mt-1 text-[10px] font-semibold text-white/90 text-center px-4"
                   style={{ textShadow: "0 1px 4px hsl(230 60% 25% / 0.55)" }}
                 >
-                  CHAT
+                  Toque para conversar
                 </span>
               </span>
             )}
