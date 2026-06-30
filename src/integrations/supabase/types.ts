@@ -231,35 +231,44 @@ export type Database = {
         Row: {
           explicacao_desafio: string
           habito_titulo: string
+          hipnose: boolean
           hipnose_nome: string | null
           id: string
+          missao: boolean
           nome_video: string | null
           posição: string | null
           tipo_usuario: string
           titulo_gatilho: string
           updated_at: string | null
+          video: boolean
         }
         Insert: {
           explicacao_desafio: string
           habito_titulo: string
+          hipnose?: boolean
           hipnose_nome?: string | null
           id?: string
+          missao?: boolean
           nome_video?: string | null
           posição?: string | null
           tipo_usuario: string
           titulo_gatilho: string
           updated_at?: string | null
+          video?: boolean
         }
         Update: {
           explicacao_desafio?: string
           habito_titulo?: string
+          hipnose?: boolean
           hipnose_nome?: string | null
           id?: string
+          missao?: boolean
           nome_video?: string | null
           posição?: string | null
           tipo_usuario?: string
           titulo_gatilho?: string
           updated_at?: string | null
+          video?: boolean
         }
         Relationships: []
       }
