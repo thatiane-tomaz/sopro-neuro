@@ -114,7 +114,7 @@ export default function Dashboard() {
         .eq("posicao", 1)
         .order("created_at", { ascending: true })
         .limit(1)
-        .maybeSingle();
+        .maybeSingle() as any;
       if (error) {
         console.error("Erro ao buscar gatilho:", error);
         return null;
