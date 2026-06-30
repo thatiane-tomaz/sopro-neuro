@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -43,6 +44,7 @@ import {
   HelpCircle,
   Pencil,
   Lock,
+  Sparkles,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -71,6 +73,7 @@ export default function Dashboard() {
   const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const {
+    trackingData,
     getCurrentDay,
     isDayCompleted,
     isDayTimeLocked,
@@ -97,6 +100,46 @@ export default function Dashboard() {
   const [pendingDate, setPendingDate] = useState<Date | undefined>(undefined);
   const [showStartHere, setShowStartHere] = useState(false);
   const [startHereSeen, setStartHereSeen] = useState(true);
+  const [missionDialogOpen, setMissionDialogOpen] = useState(false);
+  const [savingMission, setSavingMission] = useState(false);
+
+  // Current "gatilho" / posição of the user. For now everyone starts at posição 1.
+  const { data: gatilho } = useQuery({
+    queryKey: ["gatilho-jornada", 1],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("gatilhos_jornada")
+        .select("*")
+        .eq("posicao", 1)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      if (error) {
+        console.error("Erro ao buscar gatilho:", error);
+        return null;
+      }
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const posicao = (gatilho as any)?.posicao ?? 1;
+  const tituloGatilho: string = (gatilho as any)?.titulo_gatilho ?? "Sua jornada começa aqui";
+  const explicacaoDesafio: string = (gatilho as any)?.explicacao_desafio ?? "";
+
+  const videoInteraction = `video_semana_${posicao}`;
+  const hipnoseInteraction = `hipnose_semana_${posicao}`;
+  const missaoInteraction = `missao_semana_${posicao}`;
+
+  const isInteractionFinished = (type: string) =>
+    !!trackingData?.some((t) => t.interaction_type === type && t.finished_at !== null);
+
+  const weeklyVideoDone = isInteractionFinished(videoInteraction);
+  const weeklyHipnoseDone = isInteractionFinished(hipnoseInteraction);
+  const weeklyMissaoDone = isInteractionFinished(missaoInteraction);
+  const weeklyCompletedCount =
+    Number(weeklyVideoDone) + Number(weeklyHipnoseDone) + Number(weeklyMissaoDone);
+  const weeklyProgressPct = Math.round((weeklyCompletedCount / 3) * 100);
 
   useEffect(() => {
     if (!user) return;
@@ -158,7 +201,7 @@ export default function Dashboard() {
     return n;
   }, [tick, phaseStart, phaseEnd, isDayCompleted]);
 
-  const progressPct = Math.round((completedInPhase / 7) * 100);
+  const progressPct = weeklyProgressPct;
 
   const dayLocked = isDayTimeLocked(currentDay) && !isAdmin;
 
@@ -249,12 +292,12 @@ export default function Dashboard() {
       navigate("/paywall");
       return;
     }
-    const interactionType = `${type === "video" ? "video" : "hipnose"}_dia_${currentDay}`;
+    const interactionType = type === "video" ? videoInteraction : hipnoseInteraction;
     setSelectedMedia({
-      title: dayContent?.title || `Dia ${currentDay}`,
-      fileUrl: getMediaUrl(currentDay, type),
+      title: tituloGatilho,
+      fileUrl: getMediaUrl(posicao, type),
       contentType: type,
-      day: currentDay,
+      day: posicao,
       interactionType,
     });
     try {
@@ -262,6 +305,23 @@ export default function Dashboard() {
       if (r?.id) setTrackingId(r.id);
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const completeMission = async () => {
+    if (savingMission) return;
+    setSavingMission(true);
+    try {
+      const r = await startTracking({ interactionType: missaoInteraction });
+      if (r?.id) {
+        updateProgress({ trackingId: r.id, progressPercentage: 100, finished: true });
+      }
+      toast({ title: "Missão concluída!" });
+      setMissionDialogOpen(false);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setSavingMission(false);
     }
   };
 
@@ -376,23 +436,11 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Phase badge */}
-        <div className="flex justify-center mt-6">
-          <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-[hsl(258_80%_95%)] text-[hsl(258_60%_45%)]">
-            {phaseNumber === 1 ? "Fase 1 • Preparação" : "Fase 2 • Libertação"}
-          </span>
-        </div>
-
-        {/* Day title */}
-        <div className="text-center mt-3">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
-            Dia {phaseDayIndex} <span className="text-base font-normal text-muted-foreground">de 7</span>
+        {/* Gatilho title above brain */}
+        <div className="text-center mt-6 px-2">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
+            {tituloGatilho}
           </h1>
-          {dayContent?.title && (
-            <p className="text-sm font-semibold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent mt-1">
-              {dayContent.title}
-            </p>
-          )}
         </div>
 
         {/* Brain progress */}
@@ -407,58 +455,35 @@ export default function Dashboard() {
             <p className="text-3xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
               {progressPct}<span className="text-lg">%</span>
             </p>
-            {motivational && (
-              <p className="text-sm text-muted-foreground mt-1">{motivational}</p>
-            )}
           </div>
         </div>
 
-        {/* Content cards */}
-        <div className={`grid gap-3 mt-6 ${phaseNumber === 2 ? "grid-cols-1" : "grid-cols-2"}`}>
-          {phaseNumber === 1 && (
-            <button
-              onClick={() => openMedia("video")}
-              disabled={dayLocked}
-            className={`relative rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-center shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-95 ${
-              dayLocked ? "opacity-50" : "hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)]"
-              }`}
-            >
-              <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-br from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)] flex items-center justify-center shadow-md">
-                <Play className="h-5 w-5 text-white fill-white" />
-              </div>
-              <p className="mt-2 font-semibold text-sm text-foreground">Vídeo</p>
-              <p className="text-xs text-muted-foreground">{dayContent?.video_minutes || 10} min</p>
-              <p className="text-[11px] text-muted-foreground mt-1">Entenda e transforme sua mente.</p>
-            </button>
-          )}
-          <button
+        {/* Weekly content cards (stacked) */}
+        <div className="flex flex-col gap-3 mt-6">
+          <WeeklyContentCard
+            title="Vídeo"
+            subtitle="Entenda e transforme sua mente."
+            iconBg="from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)]"
+            icon={<Play className="h-5 w-5 text-white fill-white" />}
+            done={weeklyVideoDone}
+            onClick={() => openMedia("video")}
+          />
+          <WeeklyContentCard
+            title="Hipnose"
+            subtitle="Reprograme seu cérebro em profundidade."
+            iconBg="from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)]"
+            icon={<Headphones className="h-5 w-5 text-white" />}
+            done={weeklyHipnoseDone}
             onClick={() => openMedia("hypnosis")}
-            disabled={dayLocked}
-            className={`relative rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-center shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-95 ${
-              dayLocked ? "opacity-50" : "hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)]"
-            }`}
-          >
-            <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-md">
-              <Headphones className="h-5 w-5 text-white" />
-            </div>
-            <p className="mt-2 font-semibold text-sm text-foreground">Hipnose</p>
-            <p className="text-xs text-muted-foreground">{dayContent?.hypnosis_minutes || 15} min</p>
-            <p className="text-[11px] text-muted-foreground mt-1">Reprograme seu cérebro em profundidade.</p>
-          </button>
-        </div>
-
-        {/* Unlock info */}
-        <div className="mt-4 flex items-center justify-center gap-2 text-center">
-          <Timer className="h-4 w-4 text-muted-foreground" />
-          {dayLocked && lockCountdown ? (
-            <p className="text-xs text-muted-foreground">
-              Será liberado em <span className="font-semibold text-foreground">{lockCountdown}</span>
-            </p>
-          ) : (
-            <p className="text-xs text-muted-foreground">
-              Após concluir todo o conteúdo do dia,<br />o próximo será liberado em <span className="font-semibold">6h</span>.
-            </p>
-          )}
+          />
+          <WeeklyContentCard
+            title="Missão"
+            subtitle="Coloque em prática o seu desafio da semana."
+            iconBg="from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]"
+            icon={<Sparkles className="h-5 w-5 text-white" />}
+            done={weeklyMissaoDone}
+            onClick={() => setMissionDialogOpen(true)}
+          />
         </div>
 
         {/* Last cigarette date card (Phase 2, no date yet) */}
@@ -578,6 +603,45 @@ export default function Dashboard() {
 
       {showStartHere && <StartHereStory onClose={handleCloseStartHere} />}
 
+      <Dialog open={missionDialogOpen} onOpenChange={setMissionDialogOpen}>
+        <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
+          <div className="bg-gradient-to-br from-[hsl(280_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-5 pb-4">
+            <DialogHeader className="text-left space-y-1">
+              <div className="h-10 w-10 rounded-2xl bg-white text-[hsl(280_60%_50%)] flex items-center justify-center shadow-sm mb-2">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <DialogTitle className="text-base font-bold text-foreground">
+                Missão da semana
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground">
+                {tituloGatilho}
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="px-5 py-4">
+            <p className="text-sm text-foreground whitespace-pre-line leading-relaxed">
+              {explicacaoDesafio || "Em breve você receberá o desafio da sua semana."}
+            </p>
+          </div>
+          <DialogFooter className="px-5 pb-5 pt-1 flex-row gap-2 sm:gap-2">
+            <Button
+              variant="outline"
+              className="flex-1 rounded-xl"
+              onClick={() => setMissionDialogOpen(false)}
+            >
+              Fechar
+            </Button>
+            <Button
+              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(280_70%_55%)] to-[hsl(320_70%_60%)] text-white shadow-md"
+              disabled={savingMission || weeklyMissaoDone}
+              onClick={completeMission}
+            >
+              {weeklyMissaoDone ? "Concluída" : savingMission ? "Salvando..." : "Concluir missão"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
         <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
           <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-5 pb-4">
@@ -695,5 +759,43 @@ function Benefit({ icon, label }: { icon: React.ReactNode; label: string }) {
         {label}
       </span>
     </div>
+  );
+}
+
+function WeeklyContentCard({
+  title,
+  subtitle,
+  icon,
+  iconBg,
+  done,
+  onClick,
+}: {
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  iconBg: string;
+  done: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="relative w-full rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-left shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-[0.98] hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)] flex items-center gap-3"
+    >
+      <div
+        className={`h-12 w-12 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md flex-shrink-0`}
+      >
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-sm text-foreground">{title}</p>
+        <p className="text-[11px] text-muted-foreground leading-snug">{subtitle}</p>
+      </div>
+      {done && (
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-[hsl(258_60%_50%)] bg-[hsl(258_80%_96%)] px-2 py-1 rounded-full flex-shrink-0">
+          Concluído
+        </span>
+      )}
+    </button>
   );
 }
