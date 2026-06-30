@@ -45,6 +45,7 @@ import {
   Pencil,
   Lock,
   Sparkles,
+  Check,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
