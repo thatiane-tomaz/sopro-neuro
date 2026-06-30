@@ -229,34 +229,37 @@ export type Database = {
       }
       gatilhos_jornada: {
         Row: {
-          created_at: string
           explicacao_desafio: string
-          gatilho: string
+          habito_titulo: string
+          hipnose_nome: string | null
           id: string
-          posicao: number
+          nome_video: string | null
+          posição: string | null
           tipo_usuario: string
           titulo_gatilho: string
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
-          created_at?: string
           explicacao_desafio: string
-          gatilho: string
+          habito_titulo: string
+          hipnose_nome?: string | null
           id?: string
-          posicao: number
+          nome_video?: string | null
+          posição?: string | null
           tipo_usuario: string
           titulo_gatilho: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
-          created_at?: string
           explicacao_desafio?: string
-          gatilho?: string
+          habito_titulo?: string
+          hipnose_nome?: string | null
           id?: string
-          posicao?: number
+          nome_video?: string | null
+          posição?: string | null
           tipo_usuario?: string
           titulo_gatilho?: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
