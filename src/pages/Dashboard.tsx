@@ -45,6 +45,7 @@ import {
   Pencil,
   Lock,
   Sparkles,
+  Check,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -107,7 +108,7 @@ export default function Dashboard() {
   const { data: gatilho } = useQuery({
     queryKey: ["gatilho-jornada", 1],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("gatilhos_jornada")
         .select("*")
         .eq("posicao", 1)
@@ -783,19 +784,19 @@ function WeeklyContentCard({
       className="relative w-full rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-left shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-[0.98] hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)] flex items-center gap-3"
     >
       <div
-        className={`h-12 w-12 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md flex-shrink-0`}
+        className={`relative h-12 w-12 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md flex-shrink-0`}
       >
         {icon}
+        {done && (
+          <div className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-[hsl(258_70%_55%)] border-2 border-white flex items-center justify-center shadow-sm">
+            <Check className="h-3 w-3 text-white" strokeWidth={3} />
+          </div>
+        )}
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-sm text-foreground">{title}</p>
         <p className="text-[11px] text-muted-foreground leading-snug">{subtitle}</p>
       </div>
-      {done && (
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-[hsl(258_60%_50%)] bg-[hsl(258_80%_96%)] px-2 py-1 rounded-full flex-shrink-0">
-          Concluído
-        </span>
-      )}
     </button>
   );
 }
