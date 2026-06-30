@@ -470,6 +470,7 @@ export default function Dashboard() {
 
         {/* Weekly content cards (stacked) */}
         <div className="flex flex-col gap-3 mt-6">
+          {hasVideo && (
           <WeeklyContentCard
             title="Vídeo"
             subtitle="Entenda e transforme sua mente."
@@ -478,6 +479,8 @@ export default function Dashboard() {
             done={weeklyVideoDone}
             onClick={() => openMedia("video")}
           />
+          )}
+          {hasHipnose && (
           <WeeklyContentCard
             title="Hipnose"
             subtitle="Reprograme seu cérebro em profundidade."
@@ -486,6 +489,8 @@ export default function Dashboard() {
             done={weeklyHipnoseDone}
             onClick={() => openMedia("hypnosis")}
           />
+          )}
+          {hasMissao && (
           <WeeklyContentCard
             title="Missão"
             subtitle="Coloque em prática o seu desafio da semana."
@@ -494,6 +499,7 @@ export default function Dashboard() {
             done={weeklyMissaoDone}
             onClick={() => setMissionDialogOpen(true)}
           />
+          )}
         </div>
 
         {/* Last cigarette date card (Phase 2, no date yet) */}
