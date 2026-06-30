@@ -108,13 +108,13 @@ export default function Dashboard() {
   const { data: gatilho } = useQuery({
     queryKey: ["gatilho-jornada", 1],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("gatilhos_jornada")
         .select("*")
         .eq("posicao", 1)
         .order("created_at", { ascending: true })
         .limit(1)
-        .maybeSingle() as any;
+        .maybeSingle();
       if (error) {
         console.error("Erro ao buscar gatilho:", error);
         return null;
