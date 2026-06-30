@@ -229,7 +229,7 @@ export type Database = {
       }
       habitos_jornada: {
         Row: {
-          explicacao_desafio: string
+          explicacao_desafio: string | null
           habito_titulo: string
           hipnose: boolean
           hipnose_nome: string | null
@@ -237,13 +237,13 @@ export type Database = {
           missao: boolean
           nome_video: string | null
           posição: string | null
-          tipo_usuario: string
-          titulo_gatilho: string
+          tipo_usuario: string | null
+          titulo_gatilho: string | null
           updated_at: string | null
           video: boolean
         }
         Insert: {
-          explicacao_desafio: string
+          explicacao_desafio?: string | null
           habito_titulo: string
           hipnose?: boolean
           hipnose_nome?: string | null
@@ -251,13 +251,13 @@ export type Database = {
           missao?: boolean
           nome_video?: string | null
           posição?: string | null
-          tipo_usuario: string
-          titulo_gatilho: string
+          tipo_usuario?: string | null
+          titulo_gatilho?: string | null
           updated_at?: string | null
           video?: boolean
         }
         Update: {
-          explicacao_desafio?: string
+          explicacao_desafio?: string | null
           habito_titulo?: string
           hipnose?: boolean
           hipnose_nome?: string | null
@@ -265,8 +265,8 @@ export type Database = {
           missao?: boolean
           nome_video?: string | null
           posição?: string | null
-          tipo_usuario?: string
-          titulo_gatilho?: string
+          tipo_usuario?: string | null
+          titulo_gatilho?: string | null
           updated_at?: string | null
           video?: boolean
         }
