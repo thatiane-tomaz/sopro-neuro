@@ -109,7 +109,7 @@ export default function Dashboard() {
     queryKey: ["gatilho-jornada", 1],
     queryFn: async () => {
       const { data, error } = await (supabase as any)
-        .from("gatilhos_jornada")
+        .from("habitos_jornada")
         .select("*")
         .eq("posicao", 1)
         .order("created_at", { ascending: true })
@@ -127,6 +127,9 @@ export default function Dashboard() {
   const posicao = (gatilho as any)?.posicao ?? 1;
   const tituloGatilho: string = (gatilho as any)?.titulo_gatilho ?? "Sua jornada começa aqui";
   const explicacaoDesafio: string = (gatilho as any)?.explicacao_desafio ?? "";
+  const hasVideo: boolean = (gatilho as any)?.video ?? true;
+  const hasHipnose: boolean = (gatilho as any)?.hipnose ?? true;
+  const hasMissao: boolean = (gatilho as any)?.missao ?? true;
 
   const videoInteraction = `video_semana_${posicao}`;
   const hipnoseInteraction = `hipnose_semana_${posicao}`;
@@ -138,9 +141,15 @@ export default function Dashboard() {
   const weeklyVideoDone = isInteractionFinished(videoInteraction);
   const weeklyHipnoseDone = isInteractionFinished(hipnoseInteraction);
   const weeklyMissaoDone = isInteractionFinished(missaoInteraction);
+  const weeklyTotalCount =
+    Number(hasVideo) + Number(hasHipnose) + Number(hasMissao);
   const weeklyCompletedCount =
-    Number(weeklyVideoDone) + Number(weeklyHipnoseDone) + Number(weeklyMissaoDone);
-  const weeklyProgressPct = Math.round((weeklyCompletedCount / 3) * 100);
+    (hasVideo ? Number(weeklyVideoDone) : 0) +
+    (hasHipnose ? Number(weeklyHipnoseDone) : 0) +
+    (hasMissao ? Number(weeklyMissaoDone) : 0);
+  const weeklyProgressPct = weeklyTotalCount > 0
+    ? Math.round((weeklyCompletedCount / weeklyTotalCount) * 100)
+    : 0;
 
   useEffect(() => {
     if (!user) return;
