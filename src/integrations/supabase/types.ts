@@ -238,7 +238,6 @@ export type Database = {
           nome_video: string | null
           posição: string | null
           tipo_usuario: string | null
-          titulo_gatilho: string | null
           updated_at: string | null
           video: boolean
         }
@@ -252,7 +251,6 @@ export type Database = {
           nome_video?: string | null
           posição?: string | null
           tipo_usuario?: string | null
-          titulo_gatilho?: string | null
           updated_at?: string | null
           video?: boolean
         }
@@ -266,7 +264,6 @@ export type Database = {
           nome_video?: string | null
           posição?: string | null
           tipo_usuario?: string | null
-          titulo_gatilho?: string | null
           updated_at?: string | null
           video?: boolean
         }
