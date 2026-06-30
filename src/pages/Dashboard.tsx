@@ -761,3 +761,41 @@ function Benefit({ icon, label }: { icon: React.ReactNode; label: string }) {
     </div>
   );
 }
+
+function WeeklyContentCard({
+  title,
+  subtitle,
+  icon,
+  iconBg,
+  done,
+  onClick,
+}: {
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  iconBg: string;
+  done: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="relative w-full rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-left shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-[0.98] hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)] flex items-center gap-3"
+    >
+      <div
+        className={`h-12 w-12 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md flex-shrink-0`}
+      >
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-sm text-foreground">{title}</p>
+        <p className="text-[11px] text-muted-foreground leading-snug">{subtitle}</p>
+      </div>
+      {done && (
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-[hsl(258_60%_50%)] bg-[hsl(258_80%_96%)] px-2 py-1 rounded-full flex-shrink-0">
+          Concluído
+        </span>
+      )}
+    </button>
+  );
+}
