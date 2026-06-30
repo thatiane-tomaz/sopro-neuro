@@ -227,6 +227,39 @@ export type Database = {
         }
         Relationships: []
       }
+      gatilhos_jornada: {
+        Row: {
+          created_at: string
+          explicacao_desafio: string
+          gatilho: string
+          id: string
+          posicao: number
+          tipo_usuario: string
+          titulo_gatilho: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          explicacao_desafio: string
+          gatilho: string
+          id?: string
+          posicao: number
+          tipo_usuario: string
+          titulo_gatilho: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          explicacao_desafio?: string
+          gatilho?: string
+          id?: string
+          posicao?: number
+          tipo_usuario?: string
+          titulo_gatilho?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       journey_tracking: {
         Row: {
           created_at: string
