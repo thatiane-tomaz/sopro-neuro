@@ -227,7 +227,7 @@ export type Database = {
         }
         Relationships: []
       }
-      gatilhos_jornada: {
+      habitos_jornada: {
         Row: {
           explicacao_desafio: string
           habito_titulo: string
