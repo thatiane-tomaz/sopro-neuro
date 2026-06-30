@@ -469,38 +469,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* CTA — Decidir parar de fumar */}
-        {showQuitCTA && (
-          <Card className="mt-6 p-5 bg-[hsl(45_80%_97%)] backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.04] rounded-2xl overflow-hidden relative">
-            <div className="relative z-10">
-              <h3 className="text-base font-bold text-foreground leading-snug">
-                Pronto para seu próximo passo?
-              </h3>
-              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                Quando você se sentir pronto para viver completamente sem cigarro, estaremos aqui para te apoiar.
-              </p>
-              <button
-                onClick={() => {
-                  setPendingDate(new Date());
-                  setDateDialogOpen(true);
-                }}
-                className="mt-4 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold text-white shadow-[0_10px_28px_-10px_hsl(258_70%_40%/0.55)] active:scale-95 transition-transform"
-                style={{
-                  background: "linear-gradient(135deg, hsl(258, 70%, 55%), hsl(280, 65%, 55%))",
-                }}
-              >
-                Estou pronto para meu último cigarro
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-            {/* Decorative seedling illustration placeholder */}
-            <div className="absolute right-3 bottom-3 opacity-20 pointer-events-none">
-              <Flower2 className="h-16 w-16 text-[hsl(140_60%_45%)]" />
-            </div>
-          </Card>
-        )}
 
         {/* Weekly content cards (stacked) */}
         <div className="flex flex-col gap-3 mt-6">
