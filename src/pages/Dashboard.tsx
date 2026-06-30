@@ -783,10 +783,14 @@ function WeeklyContentCard({
       onClick={onClick}
       className="relative w-full rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-left shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-[0.98] hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)] flex items-center gap-3"
     >
-      <div
-        className={`relative h-12 w-12 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md flex-shrink-0`}
-      >
-        {icon}
+      <div className="relative flex-shrink-0">
+        <div
+          className={`h-12 w-12 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md ${
+            done ? "opacity-40" : ""
+          }`}
+        >
+          <div className={done ? "opacity-50" : ""}>{icon}</div>
+        </div>
         {done && (
           <div className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-[hsl(258_70%_55%)] border-2 border-white flex items-center justify-center shadow-sm">
             <Check className="h-3 w-3 text-white" strokeWidth={3} />
