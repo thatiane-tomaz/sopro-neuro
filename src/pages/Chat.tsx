@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Send, Loader2, Mic, Square, Volume2, VolumeX } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import WaveBackground from "@/components/home/WaveBackground";
@@ -10,9 +10,20 @@ import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import brainImg from "@/assets/brain-user.png";
 
 type Msg = { role: "user" | "assistant"; content: string };
+
+type MissionContext = {
+  habitoId: string;
+  habitoTitulo: string;
+  explicacaoDesafio: string;
+  objetivoChatMissao?: string | null;
+  interactionType: string;
+};
+
+const MISSION_END_RE = /\[MISSION_END\](\{[\s\S]*?\})\[\/MISSION_END\]/;
 
 const SUGGESTIONS_PHASE_1 = [
   "Por que desta vez será mais fácil? 🌟",
@@ -30,25 +41,34 @@ const SUGGESTIONS_PHASE_2 = [
 
 export default function Chat() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const mission = (location.state as any)?.mission as MissionContext | undefined;
   const { user, loading: authLoading } = useAuth();
   const { profile } = useUserProfile();
   const { isPremium, loading: subLoading } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
-  const { getCurrentDay } = useJourneyTracking();
+  const { getCurrentDay, startTracking, updateProgress } = useJourneyTracking();
   const { toast } = useToast();
 
   const currentDay = getCurrentDay();
-  const SUGGESTIONS = currentDay <= 7 ? SUGGESTIONS_PHASE_1 : SUGGESTIONS_PHASE_2;
+  const SUGGESTIONS = mission
+    ? []
+    : currentDay <= 7
+    ? SUGGESTIONS_PHASE_1
+    : SUGGESTIONS_PHASE_2;
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
-  const greeting = `Olá${firstName ? ` ${firstName}` : ""}! Estou aqui para te ajudar a entender seu cérebro e te guiar na jornada para parar de fumar.\n\nMe conte suas dúvidas e o que está sentindo agora.`;
+  const greeting = mission
+    ? `Oi${firstName ? `, ${firstName}` : ""}!\n\nSua missão foi: ${mission.explicacaoDesafio}\n\nMe conte como foi sua experiência.`
+    : `Olá${firstName ? ` ${firstName}` : ""}! Estou aqui para te ajudar a entender seu cérebro e te guiar na jornada para parar de fumar.\n\nMe conte suas dúvidas e o que está sentindo agora.`;
 
   const [messages, setMessages] = useState<Msg[]>([
     { role: "assistant", content: greeting },
   ]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
+  const [missionCompleted, setMissionCompleted] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
@@ -58,6 +78,35 @@ export default function Chat() {
   const audioChunksRef = useRef<Blob[]>([]);
   const audioElRef = useRef<HTMLAudioElement | null>(null);
   const spokenRef = useRef<Set<number>>(new Set());
+
+  const finalizeMission = async (
+    parsed: { performance?: string; resumo_mural?: string; consentiu_postar?: boolean },
+    transcript: Msg[],
+  ) => {
+    if (!user || !mission || missionCompleted) return;
+    setMissionCompleted(true);
+    try {
+      // Save mission result
+      await (supabase as any).from("resultado_missao_usuario").insert({
+        user_id: user.id,
+        habito_id: mission.habitoId,
+        performance: parsed.performance ?? null,
+        resumo_mural: parsed.resumo_mural ?? null,
+        consentiu_postar: !!parsed.consentiu_postar,
+        postado_no_mural: !!parsed.consentiu_postar,
+        transcript,
+      });
+      // Mark mission finished in journey_tracking
+      const r = await startTracking({ interactionType: mission.interactionType });
+      if (r?.id) {
+        updateProgress({ trackingId: r.id, progressPercentage: 100, finished: true });
+      }
+      toast({ title: "Missão concluída! 🎉" });
+      setTimeout(() => navigate("/dashboard"), 2500);
+    } catch (e) {
+      console.error("finalize mission error:", e);
+    }
+  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
