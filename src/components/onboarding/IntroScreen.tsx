@@ -8,7 +8,7 @@ interface IntroScreenProps {
 
 const IntroScreen = ({ onNext }: IntroScreenProps) => {
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col items-center justify-between px-6 pt-14 pb-10">
+    <div className="min-h-screen relative overflow-hidden flex flex-col items-center px-6 pt-14 pb-10">
       {/* Ambient background gradient (blue -> lilac) */}
       <div
         className="absolute inset-0 -z-20"
@@ -27,7 +27,7 @@ const IntroScreen = ({ onNext }: IntroScreenProps) => {
       </div>
 
       {/* Brain hero */}
-      <div className="relative z-10 flex flex-col items-center animate-fade-in" style={{ animationDelay: "0.05s" }}>
+      <div className="relative z-10 flex flex-col items-center shrink-0 animate-fade-in" style={{ animationDelay: "0.05s" }}>
         <div className="relative w-[300px] h-[300px] flex items-center justify-center">
           <div
             className="absolute inset-0 rounded-full"
@@ -51,7 +51,7 @@ const IntroScreen = ({ onNext }: IntroScreenProps) => {
       </div>
 
       {/* Copy + CTA */}
-      <div className="relative z-10 flex flex-col items-center w-full max-w-sm">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-sm">
         <div className="text-center animate-fade-in" style={{ animationDelay: "0.2s" }}>
           <h1 className="font-playfair text-[1.9rem] font-bold leading-[1.15] tracking-tight bg-gradient-to-br from-[hsl(215_40%_20%)] via-[hsl(230_55%_35%)] to-[hsl(258_70%_50%)] bg-clip-text text-transparent">
             Cada pessoa tem uma história com o cigarro.
