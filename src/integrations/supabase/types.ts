@@ -272,6 +272,27 @@ export type Database = {
         }
         Relationships: []
       }
+      historico_jornada_usuario: {
+        Row: {
+          created_at: string
+          id: string
+          jornada: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          jornada: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          jornada?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       journey_tracking: {
         Row: {
           created_at: string
@@ -353,6 +374,36 @@ export type Database = {
           vapes_per_month?: number | null
           weekly_cost?: string | null
           weekly_cost_value?: number | null
+        }
+        Relationships: []
+      }
+      onboarding_responses_v2: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          jornada_inicial: string
+          respostas: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          jornada_inicial: string
+          respostas?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          jornada_inicial?: string
+          respostas?: Json
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
