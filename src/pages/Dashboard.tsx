@@ -47,6 +47,7 @@ import {
   Sparkles,
   Check,
   Ban,
+  X,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -135,6 +136,7 @@ export default function Dashboard() {
   const videoInteraction = `video_semana_${posicao}`;
   const hipnoseInteraction = `hipnose_semana_${posicao}`;
   const missaoInteraction = `missao_semana_${posicao}`;
+  const missaoStartInteraction = `missao_iniciada_semana_${posicao}`;
 
   const isInteractionFinished = (type: string) =>
     !!trackingData?.some((t) => t.interaction_type === type && t.finished_at !== null);
@@ -142,6 +144,39 @@ export default function Dashboard() {
   const weeklyVideoDone = isInteractionFinished(videoInteraction);
   const weeklyHipnoseDone = isInteractionFinished(hipnoseInteraction);
   const weeklyMissaoDone = isInteractionFinished(missaoInteraction);
+
+  // Mission unlock: 3 days after user first opens the mission dialog.
+  const missaoStartTrack = trackingData?.find(
+    (t) => t.interaction_type === missaoStartInteraction
+  );
+  const missaoStartedAt = missaoStartTrack ? new Date(missaoStartTrack.started_at) : null;
+  const MISSAO_LOCK_MS = 3 * 24 * 60 * 60 * 1000;
+  const missaoUnlockAt = missaoStartedAt
+    ? new Date(missaoStartedAt.getTime() + MISSAO_LOCK_MS)
+    : null;
+  const missaoLocked =
+    !isAdmin && !!missaoUnlockAt && Date.now() < missaoUnlockAt.getTime();
+  const missaoCountdown = useMemo(() => {
+    if (!missaoLocked || !missaoUnlockAt) return null;
+    const ms = missaoUnlockAt.getTime() - Date.now();
+    if (ms <= 0) return null;
+    const d = Math.floor(ms / 86_400_000);
+    const h = Math.floor((ms % 86_400_000) / 3_600_000);
+    const m = Math.floor((ms % 3_600_000) / 60_000);
+    const s = Math.floor((ms % 60_000) / 1000);
+    return `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
+  }, [tick, missaoLocked, missaoUnlockAt]);
+
+  const openMissionDialog = async () => {
+    setMissionDialogOpen(true);
+    if (!missaoStartTrack) {
+      try {
+        await startTracking({ interactionType: missaoStartInteraction });
+      } catch (e) {
+        console.error("Erro ao iniciar missão:", e);
+      }
+    }
+  };
 
   const openMissionChat = () => {
     navigate("/chat", {
@@ -497,7 +532,7 @@ export default function Dashboard() {
             iconBg="from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]"
             icon={<Sparkles className="h-5 w-5 text-white" />}
             done={weeklyMissaoDone}
-            onClick={() => setMissionDialogOpen(true)}
+            onClick={openMissionDialog}
           />
           )}
         </div>
@@ -654,7 +689,14 @@ export default function Dashboard() {
 
       {missionDialogOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[hsl(258_40%_10%/0.55)] px-4 pb-[max(env(safe-area-inset-bottom),16px)] pt-8 backdrop-blur-sm sm:items-center">
-          <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
+          <div className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
+            <button
+              onClick={() => setMissionDialogOpen(false)}
+              aria-label="Fechar"
+              className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] transition hover:text-foreground active:scale-95"
+            >
+              <X className="h-4 w-4" />
+            </button>
             <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-5 pb-5 pt-6">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[hsl(258_65%_52%)] shadow-sm ring-1 ring-black/[0.03]">
                 <Sparkles className="h-7 w-7" />
@@ -674,11 +716,26 @@ export default function Dashboard() {
 
               <button
                 onClick={openMissionChat}
-                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_-12px_hsl(258_70%_40%/0.7)] active:scale-[0.98] transition-transform"
+                disabled={missaoLocked || weeklyMissaoDone}
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_-12px_hsl(258_70%_40%/0.7)] active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
               >
-                <Sparkles className="h-4 w-4" />
-                Conversar sobre a missão
+                {missaoLocked ? (
+                  <>
+                    <Lock className="h-4 w-4" />
+                    Disponível em {missaoCountdown}
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4" />
+                    Conversar sobre a missão
+                  </>
+                )}
               </button>
+              {missaoLocked && (
+                <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
+                  Viva sua missão por 3 dias. Depois desse período, você poderá conversar com o chat sobre a experiência.
+                </p>
+              )}
             </div>
           </div>
         </div>
