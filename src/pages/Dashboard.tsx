@@ -480,25 +480,63 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Gatilho title above brain */}
+        {/* Hábito em foco — hero */}
         <div className="text-center mt-6 px-2">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur px-3 py-1 ring-1 ring-[hsl(258_70%_88%)] shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
+            <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
+            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+              Hábito em foco
+            </span>
+          </div>
+          <h1 className="mt-2.5 text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
             {tituloGatilho}
           </h1>
         </div>
 
         {/* Brain progress */}
-        <div className="mt-6">
+        <div className="mt-5">
           <ProgressBrain
             progress={progressPct}
             locked={dayLocked}
             onClick={() => navigate("/chat")}
             ariaLabel="Abrir chat com a IA"
           />
-          <div className="text-center -mt-1">
-            <p className="text-3xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
-              {progressPct}<span className="text-lg">%</span>
-            </p>
+
+          {/* Progress + instruction — bound together */}
+          <div className="mx-auto -mt-1 max-w-[19rem]">
+            <div className="relative overflow-hidden rounded-2xl bg-white/85 backdrop-blur-md px-4 py-3.5 ring-1 ring-black/[0.04] shadow-[0_14px_36px_-18px_hsl(230_60%_40%/0.28)]">
+              <div className="flex items-center gap-3">
+                <div className="flex flex-col items-center leading-none">
+                  <span className="text-3xl font-extrabold bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_50%)] bg-clip-text text-transparent tabular-nums">
+                    {progressPct}
+                    <span className="text-base align-top">%</span>
+                  </span>
+                  <span className="mt-1 text-[9px] font-bold tracking-wider uppercase text-muted-foreground">
+                    concluído
+                  </span>
+                </div>
+                <div className="h-10 w-px bg-gradient-to-b from-transparent via-[hsl(258_70%_88%)] to-transparent" />
+                <div className="flex-1">
+                  <p className="text-[13px] font-semibold text-foreground leading-snug">
+                    {weeklyProgressPct === 100
+                      ? "Você completou este hábito ✨"
+                      : weeklyProgressPct === 0
+                      ? "Comece pelas práticas abaixo"
+                      : "Continue as práticas abaixo"}
+                  </p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground leading-snug">
+                    Cada passo reprograma seu cérebro.
+                  </p>
+                </div>
+              </div>
+              {/* Progress bar */}
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[hsl(220_30%_94%)]">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] transition-all duration-700"
+                  style={{ width: `${Math.max(4, progressPct)}%` }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
