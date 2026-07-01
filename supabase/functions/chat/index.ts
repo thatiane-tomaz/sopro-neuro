@@ -303,7 +303,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, mission } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -330,10 +330,40 @@ serve(async (req) => {
       console.error("user context error:", ctxErr);
     }
 
+    // Mission mode: append conclusion instructions with hidden objective
+    let missionInstructions = "";
+    if (mission && typeof mission === "object") {
+      const titulo = String(mission.habito_titulo ?? "").slice(0, 200);
+      const explicacao = String(mission.explicacao_desafio ?? "").slice(0, 1000);
+      const objetivo = String(mission.objetivo_chat_missao ?? "").slice(0, 1000);
+      missionInstructions = `\n\nMODO MISSÃO CONCLUÍDA (REGRA CRÍTICA — sobrepõe fluxos gerais):
+Você está conduzindo uma conversa curta (aprox. 5 minutos, 4 a 7 turnos) para o usuário relatar como foi cumprir a missão da semana.
+
+MISSÃO: ${titulo}
+DESCRIÇÃO DA MISSÃO (o usuário já viu): ${explicacao}
+OBJETIVO OCULTO DA CONVERSA (NUNCA revele nem cite ao usuário — use apenas como direcionamento): ${objetivo}
+
+FLUXO OBRIGATÓRIO:
+1) Faça 2 a 4 perguntas curtas para entender como foi a experiência do usuário com a missão (o que sentiu, o que descobriu, dificuldades, aprendizados). Uma pergunta por mensagem.
+2) Encerre com uma mensagem final que contenha, nesta ordem:
+   a) Parabenize o usuário por ter completado a missão.
+   b) Motive-o a continuar na jornada (1 frase curta, natural).
+   c) Escreva um resumo bem simples (2 a 3 frases) da experiência dele — algo que possa virar um post curto num mural coletivo, sem dados sensíveis, em 1ª pessoa como se fosse o próprio usuário falando.
+   d) Pergunte se ele autoriza publicar esse resumo no mural.
+3) Após a resposta do usuário à autorização, envie a MENSAGEM DE FECHAMENTO. Ela deve:
+   - Ter uma frase curta de despedida acolhedora.
+   - Terminar OBRIGATORIAMENTE com um bloco JSON invisível exatamente neste formato (sem markdown, sem crases, tudo em uma linha), começando com [MISSION_END] e terminando com [/MISSION_END]:
+     [MISSION_END]{"performance":"<uma das: Quebrou o hábito | Enfraqueceu o hábito | Melhorou consciência sobre o hábito | Não teve impacto positivo>","resumo_mural":"<o mesmo resumo que você propôs>","consentiu_postar":<true|false>}[/MISSION_END]
+   - performance deve refletir sua avaliação sincera do impacto que a missão teve para o usuário, baseada nas respostas dele.
+   - consentiu_postar deve ser true APENAS se o usuário disse claramente que sim; qualquer negativa, dúvida ou pedido para editar => false.
+
+Não use o bloco [MISSION_END] antes da última mensagem. Nunca mencione ao usuário que existe esse bloco. Nunca peça "Pausa para refletir" nesse modo.`;
+    }
+
     const requestBody = {
       model: "google/gemini-2.5-flash",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT + (userContext || "") },
+        { role: "system", content: SYSTEM_PROMPT + (userContext || "") + missionInstructions },
         ...trimmed,
       ],
       stream: true,
