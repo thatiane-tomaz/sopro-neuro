@@ -16,13 +16,13 @@ const IntroScreen = ({ onNext }: IntroScreenProps) => {
               <Compass className="w-7 h-7 text-white" />
             </div>
             <CardTitle className="text-2xl text-foreground">
-              Seu mapa para parar de fumar
+              Cada pessoa tem uma história com o cigarro.
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4 text-muted-foreground text-[15px] leading-relaxed">
               <p>
-                Algumas perguntas rápidas para entender o que move o seu hábito e montar uma jornada sob medida.
+                Queremos entender a sua para criar uma jornada personalizada que aumente suas chances de se libertar do cigarro.
               </p>
               <div className="flex items-center gap-2 text-sm text-primary font-medium pt-1">
                 <Clock className="w-4 h-4" />
