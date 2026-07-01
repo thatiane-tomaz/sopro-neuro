@@ -659,9 +659,9 @@ export default function Dashboard() {
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[hsl(258_65%_52%)] shadow-sm ring-1 ring-black/[0.03]">
                 <Sparkles className="h-7 w-7" />
               </div>
-              <DialogTitle className="mt-4 text-center text-xl font-bold leading-tight text-foreground">
+              <h2 className="mt-4 text-center text-xl font-bold leading-tight text-foreground">
                 {tituloGatilho}
-              </DialogTitle>
+              </h2>
             </div>
 
             <div className="px-5 py-5">
