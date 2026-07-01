@@ -267,6 +267,15 @@ export default function Chat() {
         },
         body: JSON.stringify({
           messages: next.map((m) => ({ role: m.role, content: m.content })),
+          ...(mission
+            ? {
+                mission: {
+                  habito_titulo: mission.habitoTitulo,
+                  explicacao_desafio: mission.explicacaoDesafio,
+                  objetivo_chat_missao: mission.objetivoChatMissao ?? "",
+                },
+              }
+            : {}),
         }),
         signal: controller.signal,
       });
@@ -297,7 +306,8 @@ export default function Chat() {
         assistantSoFar += chunk;
         setMessages((prev) => {
           const copy = [...prev];
-          copy[copy.length - 1] = { role: "assistant", content: assistantSoFar };
+          const cleaned = assistantSoFar.replace(MISSION_END_RE, "").trim();
+          copy[copy.length - 1] = { role: "assistant", content: cleaned };
           return copy;
         });
       };
@@ -356,6 +366,24 @@ export default function Chat() {
         }
         return prev;
       });
+
+      // Mission end detection
+      if (mission) {
+        const m = assistantSoFar.match(MISSION_END_RE);
+        if (m) {
+          try {
+            const parsed = JSON.parse(m[1]);
+            const cleanedContent = assistantSoFar.replace(MISSION_END_RE, "").trim();
+            const transcript: Msg[] = [
+              ...next,
+              { role: "assistant", content: cleanedContent },
+            ];
+            void finalizeMission(parsed, transcript);
+          } catch (e) {
+            console.error("MISSION_END parse error:", e);
+          }
+        }
+      }
     } catch (e: any) {
       if (e?.name !== "AbortError") {
         console.error(e);
