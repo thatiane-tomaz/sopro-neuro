@@ -51,8 +51,8 @@ const IntroScreen = ({ onNext }: IntroScreenProps) => {
       </div>
 
       {/* Copy + CTA */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-sm">
-        <div className="text-center animate-fade-in -mt-10" style={{ animationDelay: "0.2s" }}>
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-start w-full max-w-sm pt-2">
+        <div className="text-center animate-fade-in" style={{ animationDelay: "0.2s" }}>
           <h1 className="font-playfair text-[1.9rem] font-bold leading-[1.15] tracking-tight bg-gradient-to-br from-[hsl(215_40%_20%)] via-[hsl(230_55%_35%)] to-[hsl(258_70%_50%)] bg-clip-text text-transparent">
             Cada pessoa tem uma história com o cigarro.
           </h1>
@@ -72,7 +72,7 @@ const IntroScreen = ({ onNext }: IntroScreenProps) => {
           </span>
         </div>
 
-        <div className="w-full animate-fade-in" style={{ animationDelay: "0.5s" }}>
+        <div className="w-full mt-auto animate-fade-in" style={{ animationDelay: "0.5s" }}>
           <Button
             onClick={onNext}
             className="w-full h-14 text-base font-semibold rounded-full text-white border-0 shadow-primary group transition-smooth"
