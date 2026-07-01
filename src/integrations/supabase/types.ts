@@ -229,40 +229,43 @@ export type Database = {
       }
       habitos_jornada: {
         Row: {
-          explicacao_desafio: string | null
+          explicacao_missao: string | null
           habito_titulo: string
           hipnose: boolean
           hipnose_nome: string | null
           id: string
           missao: boolean
           nome_video: string | null
-          posição: string | null
+          objetivo_chat_missao: string | null
+          posicao: string | null
           tipo_usuario: string | null
           updated_at: string | null
           video: boolean
         }
         Insert: {
-          explicacao_desafio?: string | null
+          explicacao_missao?: string | null
           habito_titulo: string
           hipnose?: boolean
           hipnose_nome?: string | null
           id?: string
           missao?: boolean
           nome_video?: string | null
-          posição?: string | null
+          objetivo_chat_missao?: string | null
+          posicao?: string | null
           tipo_usuario?: string | null
           updated_at?: string | null
           video?: boolean
         }
         Update: {
-          explicacao_desafio?: string | null
+          explicacao_missao?: string | null
           habito_titulo?: string
           hipnose?: boolean
           hipnose_nome?: string | null
           id?: string
           missao?: boolean
           nome_video?: string | null
-          posição?: string | null
+          objetivo_chat_missao?: string | null
+          posicao?: string | null
           tipo_usuario?: string | null
           updated_at?: string | null
           video?: boolean
