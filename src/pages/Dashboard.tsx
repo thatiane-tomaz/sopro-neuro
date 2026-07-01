@@ -545,7 +545,7 @@ export default function Dashboard() {
             onClick={openMissionDialog}
           />
           )}
-        </div>
+        </div></div>
 
         {/* Last cigarette date card (legacy Phase 2, no date yet) */}
         {phaseNumber === 2 && !lastCigDate && (
