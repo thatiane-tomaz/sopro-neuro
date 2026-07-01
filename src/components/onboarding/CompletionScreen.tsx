@@ -60,8 +60,9 @@ const CompletionScreen = ({ onFinish, isSubmitting }: CompletionScreenProps) => 
               Nada do que você sente é sinal de fraqueza.
             </h1>
             <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-              Parar de fumar envolve mente, corpo e rotina. O{" "}
-              <span className="font-semibold text-foreground">Sopro Neuro</span>{" "}
+              Parar de fumar envolve mente, corpo e rotina.
+              <br />
+              O <span className="font-semibold text-foreground">Sopro Neuro</span>{" "}
               te guia com confiança para viver melhor sem o cigarro.
             </p>
           </div>
