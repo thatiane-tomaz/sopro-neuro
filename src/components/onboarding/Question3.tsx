@@ -63,7 +63,7 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 3 de 6</span>
+            <span>Pergunta 4 de 8</span>
             <span>50%</span>
           </div>
           <Progress value={50} className="h-2" />
