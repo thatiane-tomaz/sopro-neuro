@@ -132,6 +132,28 @@ export default {
 				'pulse-glow': {
 					'0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
 					'50%': { opacity: '1', transform: 'scale(1.04)' }
+				},
+				'orbit': {
+					'0%': { transform: 'rotate(0deg) translateX(152px) rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg) translateX(152px) rotate(-360deg)' }
+				},
+				'orbit-reverse': {
+					'0%': { transform: 'rotate(0deg) translateX(168px) rotate(0deg)' },
+					'100%': { transform: 'rotate(-360deg) translateX(168px) rotate(360deg)' }
+				},
+				'float-particle': {
+					'0%': { transform: 'translateY(0) scale(0.4)', opacity: '0' },
+					'15%': { opacity: '1' },
+					'80%': { opacity: '0.5' },
+					'100%': { transform: 'translateY(-70px) scale(1)', opacity: '0' }
+				},
+				'sparkle': {
+					'0%, 100%': { opacity: '0', transform: 'scale(0)' },
+					'50%': { opacity: '1', transform: 'scale(1)' }
+				},
+				'glow-breathe': {
+					'0%, 100%': { opacity: '0.25', transform: 'scale(1)' },
+					'50%': { opacity: '0.55', transform: 'scale(1.08)' }
 				}
 			},
 			animation: {
