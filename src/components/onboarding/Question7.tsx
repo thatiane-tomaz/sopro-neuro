@@ -43,7 +43,7 @@ const Question7 = ({ data, updateData, onNext, onPrev }: Question7Props) => {
         <Card className="border-primary/20 shadow-wellness">
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-xl text-foreground">
-              Qual momento descreve você hoje?
+              Qual momento descreve você&nbsp;hoje?
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-2">
               Isso define a jornada que vamos construir com você
