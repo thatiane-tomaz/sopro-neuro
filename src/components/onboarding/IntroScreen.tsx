@@ -8,7 +8,7 @@ interface IntroScreenProps {
 
 const IntroScreen = ({ onNext }: IntroScreenProps) => {
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col items-center px-6 pt-14 pb-10">
+    <div className="min-h-screen relative overflow-hidden flex flex-col items-center px-6 pt-14 pb-6">
       {/* Ambient background gradient (blue -> lilac) */}
       <div
         className="absolute inset-0 -z-20"
