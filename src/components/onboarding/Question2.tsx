@@ -1,12 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { ChevronLeft } from "lucide-react";
 import { OnboardingData } from "@/pages/Onboarding";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import OnboardingLayout from "./OnboardingLayout";
 
 interface Question2Props {
   data: OnboardingData;
@@ -71,83 +68,49 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
     (data.vapesPerMonth ?? "").trim() !== "";
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Progress */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 2 de 8</span>
-            <span>25%</span>
-          </div>
-          <Progress value={25} className="h-2" />
-        </div>
-
-        {/* Question Card */}
-        <Card className="border-primary/20 shadow-wellness">
-          <CardHeader className="text-center pb-4">
-            <CardTitle className="text-xl text-foreground">
-              Quanto você consome?
-            </CardTitle>
-            <p className="text-sm text-muted-foreground mt-2">
-              Informe os números aproximados. Use 0 caso não consuma.
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <Label htmlFor="cigarettesPerDay" className="text-sm font-medium">
-                Cigarros por dia
-              </Label>
-              <Input
-                id="cigarettesPerDay"
-                type="number"
-                inputMode="numeric"
-                min={0}
-                max={200}
-                value={data.cigarettesPerDay ?? ""}
-                onChange={handleChange}
-                placeholder="Ex: 10"
-                className="mt-2 text-center text-lg font-medium"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="vapesPerMonth" className="text-sm font-medium">
-                Vapes por mês
-              </Label>
-              <Input
-                id="vapesPerMonth"
-                type="number"
-                inputMode="numeric"
-                min={0}
-                max={200}
-                value={data.vapesPerMonth ?? ""}
-                onChange={handleVapesChange}
-                placeholder="Ex: 2"
-                className="mt-2 text-center text-lg font-medium"
-              />
-            </div>
-
-            <div className="flex gap-3">
-              <Button 
-                variant="outline" 
-                onClick={onPrev}
-                className="rounded-full border-primary/30 hover:bg-primary/10"
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Voltar
-              </Button>
-              <Button 
-                onClick={handleNext} 
-                disabled={!canProceed}
-                className="flex-1 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-              >
-                Próxima
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+    <OnboardingLayout
+      step={2}
+      total={8}
+      title="Quanto você consome?"
+      subtitle="Use 0 caso não consuma"
+      onNext={handleNext}
+      onPrev={onPrev}
+      canProceed={canProceed}
+    >
+      <div>
+        <Label htmlFor="cigarettesPerDay" className="text-sm font-medium text-foreground/80">
+          Cigarros por dia
+        </Label>
+        <Input
+          id="cigarettesPerDay"
+          type="number"
+          inputMode="numeric"
+          min={0}
+          max={200}
+          value={data.cigarettesPerDay ?? ""}
+          onChange={handleChange}
+          placeholder="Ex: 10"
+          className="mt-2 h-12 rounded-xl bg-white/80 border-white text-center text-lg font-medium"
+        />
       </div>
-    </div>
+
+      <div>
+        <Label htmlFor="vapesPerMonth" className="text-sm font-medium text-foreground/80">
+          Vapes por mês
+        </Label>
+        <Input
+          id="vapesPerMonth"
+          type="number"
+          inputMode="numeric"
+          min={0}
+          max={200}
+          value={data.vapesPerMonth ?? ""}
+          onChange={handleVapesChange}
+          placeholder="Ex: 2"
+          className="mt-2 h-12 rounded-xl bg-white/80 border-white text-center text-lg font-medium"
+        />
+      </div>
+    </OnboardingLayout>
   );
 };
 
