@@ -102,8 +102,6 @@ export default function Dashboard() {
   const [pendingDate, setPendingDate] = useState<Date | undefined>(undefined);
   const [showStartHere, setShowStartHere] = useState(false);
   const [startHereSeen, setStartHereSeen] = useState(true);
-  const [missionDialogOpen, setMissionDialogOpen] = useState(false);
-  const [savingMission, setSavingMission] = useState(false);
 
   // Current "gatilho" / posição of the user. For now everyone starts at posição 1.
   const { data: gatilho } = useQuery({
@@ -143,44 +141,20 @@ export default function Dashboard() {
   const weeklyHipnoseDone = isInteractionFinished(hipnoseInteraction);
   const weeklyMissaoDone = isInteractionFinished(missaoInteraction);
 
-  // Earliest started_at for the mission (first time the user opened the mission dialog)
-  const missaoStartedAt: Date | null = (() => {
-    const rows = (trackingData || []).filter((t) => t.interaction_type === missaoInteraction);
-    if (rows.length === 0) return null;
-    const earliest = rows.reduce((min, r) =>
-      new Date(r.started_at) < new Date(min.started_at) ? r : min
-    );
-    return new Date(earliest.started_at);
-  })();
-  const missaoUnlockAt: Date | null = missaoStartedAt
-    ? new Date(missaoStartedAt.getTime() + 3 * 24 * 60 * 60 * 1000)
-    : null;
-  const [nowTick, setNowTick] = useState<number>(Date.now());
-  useEffect(() => {
-    if (!missionDialogOpen || !missaoUnlockAt) return;
-    if (Date.now() >= missaoUnlockAt.getTime()) return;
-    const id = setInterval(() => setNowTick(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [missionDialogOpen, missaoUnlockAt?.getTime()]);
-  const missaoMsLeft = missaoUnlockAt ? missaoUnlockAt.getTime() - nowTick : 0;
-  const missaoTimeLocked = !!missaoUnlockAt && missaoMsLeft > 0;
-  const formatCountdown = (ms: number) => {
-    const s = Math.max(0, Math.floor(ms / 1000));
-    const d = Math.floor(s / 86400);
-    const h = Math.floor((s % 86400) / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-    return `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(sec).padStart(2, "0")}s`;
+  const openMissionChat = () => {
+    if (!gatilho) return;
+    navigate("/chat", {
+      state: {
+        mission: {
+          habitoId: (gatilho as any).id,
+          habitoTitulo: (gatilho as any).habito_titulo ?? tituloGatilho,
+          explicacaoDesafio: explicacaoDesafio,
+          objetivoChatMissao: (gatilho as any).objetivo_chat_missao ?? "",
+          interactionType: missaoInteraction,
+        },
+      },
+    });
   };
-
-  // When the mission dialog opens, record the start time (if not already recorded)
-  useEffect(() => {
-    if (!missionDialogOpen) return;
-    if (missaoStartedAt) return;
-    startTracking({ interactionType: missaoInteraction }).catch((e) =>
-      console.error("Erro ao iniciar missão:", e)
-    );
-  }, [missionDialogOpen, missaoStartedAt, missaoInteraction]);
 
   const weeklyTotalCount =
     Number(hasVideo) + Number(hasHipnose) + Number(hasMissao);
@@ -359,23 +333,6 @@ export default function Dashboard() {
     }
   };
 
-  const completeMission = async () => {
-    if (savingMission) return;
-    setSavingMission(true);
-    try {
-      const r = await startTracking({ interactionType: missaoInteraction });
-      if (r?.id) {
-        updateProgress({ trackingId: r.id, progressPercentage: 100, finished: true });
-      }
-      toast({ title: "Missão concluída!" });
-      setMissionDialogOpen(false);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setSavingMission(false);
-    }
-  };
-
   const handleProgress = (p: number) => {
     if (!trackingId) return;
     updateProgress({ trackingId, progressPercentage: p, finished: p >= 85 });
@@ -539,7 +496,7 @@ export default function Dashboard() {
             iconBg="from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]"
             icon={<Sparkles className="h-5 w-5 text-white" />}
             done={weeklyMissaoDone}
-            onClick={() => setMissionDialogOpen(true)}
+            onClick={openMissionChat}
           />
           )}
         </div>
@@ -693,57 +650,6 @@ export default function Dashboard() {
       )}
 
       {showStartHere && <StartHereStory onClose={handleCloseStartHere} />}
-
-      <Dialog open={missionDialogOpen} onOpenChange={setMissionDialogOpen}>
-        <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
-          <div className="bg-gradient-to-br from-[hsl(280_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-5 pb-4">
-            <DialogHeader className="text-left space-y-1">
-              <div className="h-10 w-10 rounded-2xl bg-white text-[hsl(280_60%_50%)] flex items-center justify-center shadow-sm mb-2">
-                <Sparkles className="h-5 w-5" />
-              </div>
-              <DialogTitle className="text-base font-bold text-foreground">
-                Missão da semana
-              </DialogTitle>
-            </DialogHeader>
-          </div>
-          <div className="px-5 py-4">
-            <p className="text-sm text-foreground whitespace-pre-line leading-relaxed">
-              {explicacaoDesafio || "Em breve você receberá o desafio da sua semana."}
-            </p>
-            {!weeklyMissaoDone && missaoTimeLocked && (
-              <div className="mt-4 rounded-2xl bg-gradient-to-br from-[hsl(280_80%_97%)] to-[hsl(220_80%_97%)] p-4 text-center ring-1 ring-[hsl(280_60%_90%)]">
-                <div className="flex items-center justify-center gap-1.5 text-[hsl(280_60%_45%)] mb-1">
-                  <Timer className="h-4 w-4" />
-                  <span className="text-[11px] font-semibold uppercase tracking-wide">
-                    Tempo para concluir
-                  </span>
-                </div>
-                <p className="text-lg font-bold tabular-nums text-foreground">
-                  {formatCountdown(missaoMsLeft)}
-                </p>
-                <p className="text-[11px] text-muted-foreground mt-1">
-                  Viva a missão por 3 dias antes de concluir.
-                </p>
-              </div>
-            )}
-          </div>
-          <DialogFooter className="px-5 pb-5 pt-1 flex-row gap-2 sm:gap-2">
-            <Button
-              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(280_70%_55%)] to-[hsl(320_70%_60%)] text-white shadow-md disabled:opacity-60"
-              disabled={savingMission || weeklyMissaoDone || missaoTimeLocked}
-              onClick={completeMission}
-            >
-              {weeklyMissaoDone
-                ? "Concluída"
-                : savingMission
-                ? "Salvando..."
-                : missaoTimeLocked
-                ? "Aguarde 3 dias"
-                : "Concluir missão"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
         <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">

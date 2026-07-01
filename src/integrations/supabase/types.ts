@@ -422,6 +422,53 @@ export type Database = {
         }
         Relationships: []
       }
+      resultado_missao_usuario: {
+        Row: {
+          consentiu_postar: boolean
+          created_at: string
+          habito_id: string
+          id: string
+          performance: Database["public"]["Enums"]["missao_performance"] | null
+          postado_no_mural: boolean
+          resumo_mural: string | null
+          transcript: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          consentiu_postar?: boolean
+          created_at?: string
+          habito_id: string
+          id?: string
+          performance?: Database["public"]["Enums"]["missao_performance"] | null
+          postado_no_mural?: boolean
+          resumo_mural?: string | null
+          transcript?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          consentiu_postar?: boolean
+          created_at?: string
+          habito_id?: string
+          id?: string
+          performance?: Database["public"]["Enums"]["missao_performance"] | null
+          postado_no_mural?: boolean
+          resumo_mural?: string | null
+          transcript?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resultado_missao_usuario_habito_id_fkey"
+            columns: ["habito_id"]
+            isOneToOne: false
+            referencedRelation: "habitos_jornada"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           amount_paid: number | null
@@ -659,6 +706,11 @@ export type Database = {
         | "upgrade"
         | "downgrade"
         | "admin_action"
+      missao_performance:
+        | "Quebrou o hábito"
+        | "Enfraqueceu o hábito"
+        | "Melhorou consciência sobre o hábito"
+        | "Não teve impacto positivo"
       subscription_status: "free" | "premium" | "cancelled" | "expired"
     }
     CompositeTypes: {
@@ -795,6 +847,12 @@ export const Constants = {
         "upgrade",
         "downgrade",
         "admin_action",
+      ],
+      missao_performance: [
+        "Quebrou o hábito",
+        "Enfraqueceu o hábito",
+        "Melhorou consciência sobre o hábito",
+        "Não teve impacto positivo",
       ],
       subscription_status: ["free", "premium", "cancelled", "expired"],
     },
