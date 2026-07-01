@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 interface OnboardingLayoutProps {
   step: number;
   total: number;
-  title: string;
+  title: ReactNode;
   subtitle?: string;
   children: ReactNode;
   onNext?: () => void;
