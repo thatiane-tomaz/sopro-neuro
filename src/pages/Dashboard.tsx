@@ -102,6 +102,7 @@ export default function Dashboard() {
   const [pendingDate, setPendingDate] = useState<Date | undefined>(undefined);
   const [showStartHere, setShowStartHere] = useState(false);
   const [startHereSeen, setStartHereSeen] = useState(true);
+  const [missionDialogOpen, setMissionDialogOpen] = useState(false);
 
   // Current "gatilho" / posição of the user. For now everyone starts at posição 1.
   const { data: gatilho } = useQuery({
@@ -124,7 +125,9 @@ export default function Dashboard() {
 
   const posicao = (gatilho as any)?.posicao ?? 1;
   const tituloGatilho: string = (gatilho as any)?.habito_titulo ?? "Sua jornada começa aqui";
-  const explicacaoDesafio: string = (gatilho as any)?.explicacao_missao ?? "";
+  const explicacaoDesafio: string =
+    (gatilho as any)?.explicacao_missao ||
+    "Observe esse hábito nos próximos dias: em quais momentos ele aparece, o que você sente antes e o que muda depois. Anote mentalmente os padrões para conversarmos sobre sua experiência.";
   const hasVideo: boolean = (gatilho as any)?.video ?? true;
   const hasHipnose: boolean = (gatilho as any)?.hipnose ?? true;
   const hasMissao: boolean = (gatilho as any)?.missao ?? true;
@@ -141,11 +144,10 @@ export default function Dashboard() {
   const weeklyMissaoDone = isInteractionFinished(missaoInteraction);
 
   const openMissionChat = () => {
-    if (!gatilho) return;
     navigate("/chat", {
       state: {
         mission: {
-          habitoId: (gatilho as any).id,
+          habitoId: (gatilho as any)?.id,
           habitoTitulo: (gatilho as any).habito_titulo ?? tituloGatilho,
           explicacaoDesafio: explicacaoDesafio,
           objetivoChatMissao: (gatilho as any).objetivo_chat_missao ?? "",
@@ -495,7 +497,7 @@ export default function Dashboard() {
             iconBg="from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]"
             icon={<Sparkles className="h-5 w-5 text-white" />}
             done={weeklyMissaoDone}
-            onClick={openMissionChat}
+            onClick={() => setMissionDialogOpen(true)}
           />
           )}
         </div>
@@ -649,6 +651,38 @@ export default function Dashboard() {
       )}
 
       {showStartHere && <StartHereStory onClose={handleCloseStartHere} />}
+
+      {missionDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[hsl(258_40%_10%/0.55)] px-4 pb-[max(env(safe-area-inset-bottom),16px)] pt-8 backdrop-blur-sm sm:items-center">
+          <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
+            <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-5 pb-5 pt-6">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[hsl(258_65%_52%)] shadow-sm ring-1 ring-black/[0.03]">
+                <Sparkles className="h-7 w-7" />
+              </div>
+              <h2 className="mt-4 text-center text-xl font-bold leading-tight text-foreground">
+                {tituloGatilho}
+              </h2>
+            </div>
+
+            <div className="px-5 py-5">
+              <div className="rounded-2xl bg-[hsl(258_80%_97%)] px-4 py-4 ring-1 ring-[hsl(258_70%_92%)]">
+                <p className="text-sm font-semibold text-[hsl(258_60%_42%)]">Sua missão</p>
+                <p className="mt-2 text-sm leading-relaxed text-foreground/85">
+                  {explicacaoDesafio}
+                </p>
+              </div>
+
+              <button
+                onClick={openMissionChat}
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_-12px_hsl(258_70%_40%/0.7)] active:scale-[0.98] transition-transform"
+              >
+                <Sparkles className="h-4 w-4" />
+                Conversar sobre a missão
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
         <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
