@@ -142,6 +142,46 @@ export default function Dashboard() {
   const weeklyVideoDone = isInteractionFinished(videoInteraction);
   const weeklyHipnoseDone = isInteractionFinished(hipnoseInteraction);
   const weeklyMissaoDone = isInteractionFinished(missaoInteraction);
+
+  // Earliest started_at for the mission (first time the user opened the mission dialog)
+  const missaoStartedAt: Date | null = (() => {
+    const rows = (trackingData || []).filter((t) => t.interaction_type === missaoInteraction);
+    if (rows.length === 0) return null;
+    const earliest = rows.reduce((min, r) =>
+      new Date(r.started_at) < new Date(min.started_at) ? r : min
+    );
+    return new Date(earliest.started_at);
+  })();
+  const missaoUnlockAt: Date | null = missaoStartedAt
+    ? new Date(missaoStartedAt.getTime() + 3 * 24 * 60 * 60 * 1000)
+    : null;
+  const [nowTick, setNowTick] = useState<number>(Date.now());
+  useEffect(() => {
+    if (!missionDialogOpen || !missaoUnlockAt) return;
+    if (Date.now() >= missaoUnlockAt.getTime()) return;
+    const id = setInterval(() => setNowTick(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [missionDialogOpen, missaoUnlockAt?.getTime()]);
+  const missaoMsLeft = missaoUnlockAt ? missaoUnlockAt.getTime() - nowTick : 0;
+  const missaoTimeLocked = !!missaoUnlockAt && missaoMsLeft > 0;
+  const formatCountdown = (ms: number) => {
+    const s = Math.max(0, Math.floor(ms / 1000));
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(sec).padStart(2, "0")}s`;
+  };
+
+  // When the mission dialog opens, record the start time (if not already recorded)
+  useEffect(() => {
+    if (!missionDialogOpen) return;
+    if (missaoStartedAt) return;
+    startTracking({ interactionType: missaoInteraction }).catch((e) =>
+      console.error("Erro ao iniciar missão:", e)
+    );
+  }, [missionDialogOpen, missaoStartedAt, missaoInteraction]);
+
   const weeklyTotalCount =
     Number(hasVideo) + Number(hasHipnose) + Number(hasMissao);
   const weeklyCompletedCount =
