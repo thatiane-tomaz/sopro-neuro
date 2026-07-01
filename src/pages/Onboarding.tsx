@@ -8,11 +8,10 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import Question1 from "@/components/onboarding/Question1";
 import Question2 from "@/components/onboarding/Question2";
 import Question3 from "@/components/onboarding/Question3";
-import Question4 from "@/components/onboarding/Question4";
 import Question5 from "@/components/onboarding/Question5";
-import Question6 from "@/components/onboarding/Question6";
 import Question7 from "@/components/onboarding/Question7";
 import HabitCheckboxQuestion from "@/components/onboarding/HabitCheckboxQuestion";
+import IntroScreen from "@/components/onboarding/IntroScreen";
 import {
   EMOTION_OPTIONS,
   MOMENT_OPTIONS,
@@ -122,7 +121,7 @@ const Onboarding = () => {
   };
 
   const nextQuestion = () => {
-    if (currentQuestion < 11) {
+    if (currentQuestion < 10) {
       setCurrentQuestion(prev => prev + 1);
     }
   };
@@ -223,26 +222,25 @@ const Onboarding = () => {
   };
 
   const questionComponents = {
-    1: <Question1 data={data} updateData={updateData} onNext={nextQuestion} />,
-    2: <Question2 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    3: <Question3 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    1: <IntroScreen onNext={nextQuestion} />,
+    2: <Question1 data={data} updateData={updateData} onNext={nextQuestion} />,
+    3: <Question2 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     4: <Question5 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    5: <Question4 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    6: <Question6 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    7: (
+    5: <Question3 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    6: (
       <HabitCheckboxQuestion
-        title="Em quais emoções você costuma fumar?"
+        title="Em quais dessas situações você costuma fumar?"
         subtitle="Selecione todas que se aplicam"
         options={EMOTION_OPTIONS}
         selected={data.habitEmotions}
         onChange={(v) => updateData({ habitEmotions: v })}
         onNext={nextQuestion}
         onPrev={prevQuestion}
-        step={7}
-        total={10}
+        step={5}
+        total={8}
       />
     ),
-    8: (
+    7: (
       <HabitCheckboxQuestion
         title="Em quais momentos você costuma fumar?"
         subtitle="Selecione todos que se aplicam"
@@ -251,11 +249,11 @@ const Onboarding = () => {
         onChange={(v) => updateData({ habitMoments: v })}
         onNext={nextQuestion}
         onPrev={prevQuestion}
-        step={8}
-        total={10}
+        step={6}
+        total={8}
       />
     ),
-    9: (
+    8: (
       <HabitCheckboxQuestion
         title="Com quais substâncias você costuma fumar junto?"
         subtitle="Selecione todas que se aplicam"
@@ -264,12 +262,12 @@ const Onboarding = () => {
         onChange={(v) => updateData({ habitSubstances: v })}
         onNext={nextQuestion}
         onPrev={prevQuestion}
-        step={9}
-        total={10}
+        step={7}
+        total={8}
       />
     ),
-    10: <Question7 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    11: <CompletionScreen onFinish={finishOnboarding} isSubmitting={isSubmitting} />
+    9: <Question7 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    10: <CompletionScreen onFinish={finishOnboarding} isSubmitting={isSubmitting} />
   };
 
   return (
