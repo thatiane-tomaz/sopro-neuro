@@ -11,6 +11,7 @@ import Question3 from "@/components/onboarding/Question3";
 import Question4 from "@/components/onboarding/Question4";
 import Question5 from "@/components/onboarding/Question5";
 import Question6 from "@/components/onboarding/Question6";
+import Question7 from "@/components/onboarding/Question7";
 import CompletionScreen from "@/components/onboarding/CompletionScreen";
 
 export interface OnboardingData {
@@ -22,6 +23,7 @@ export interface OnboardingData {
   smokingReasons: string[];
   smokingFears: string[];
   weeklyCost: string;
+  journeyType: "reducao" | "abstinencia" | "";
 }
 
 const Onboarding = () => {
@@ -34,7 +36,8 @@ const Onboarding = () => {
     smokingTypes: [],
     smokingReasons: [],
     smokingFears: [],
-    weeklyCost: ""
+    weeklyCost: "",
+    journeyType: ""
   });
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,7 +109,7 @@ const Onboarding = () => {
   };
 
   const nextQuestion = () => {
-    if (currentQuestion < 7) {
+    if (currentQuestion < 8) {
       setCurrentQuestion(prev => prev + 1);
     }
   };
@@ -148,6 +151,36 @@ const Onboarding = () => {
         } as any);
 
       if (error) throw error;
+
+      // v2: guarda respostas completas + jornada inicial
+      const jornada = data.journeyType === "abstinencia" ? "abstinencia" : "reducao";
+      const { error: v2Error } = await supabase
+        .from('onboarding_responses_v2')
+        .insert({
+          user_id: user.id,
+          email: user.email ?? null,
+          respostas: {
+            age: data.age,
+            gender: data.gender,
+            cigarettesPerDay: data.cigarettesPerDay,
+            vapesPerMonth: data.vapesPerMonth,
+            smokingTypes: data.smokingTypes,
+            smokingReasons: data.smokingReasons,
+            smokingFears: data.smokingFears,
+            weeklyCost: data.weeklyCost,
+          },
+          jornada_inicial: jornada,
+        } as any);
+      if (v2Error) console.error('Error saving onboarding v2:', v2Error);
+
+      // Cria primeira linha de histórico de jornada
+      const { error: histError } = await supabase
+        .from('historico_jornada_usuario')
+        .insert({
+          user_id: user.id,
+          jornada,
+        } as any);
+      if (histError) console.error('Error saving journey history:', histError);
       
       toast({
         title: "Onboarding concluído",
@@ -174,7 +207,8 @@ const Onboarding = () => {
     4: <Question5 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     5: <Question4 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     6: <Question6 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    7: <CompletionScreen onFinish={finishOnboarding} isSubmitting={isSubmitting} />
+    7: <Question7 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    8: <CompletionScreen onFinish={finishOnboarding} isSubmitting={isSubmitting} />
   };
 
   return (
