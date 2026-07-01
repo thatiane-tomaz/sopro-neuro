@@ -27,7 +27,7 @@ const IntroScreen = ({ onNext }: IntroScreenProps) => {
       </div>
 
       {/* Brain hero */}
-      <div className="relative z-10 flex flex-col items-center animate-fade-in" style={{ animationDelay: "0.05s" }}>
+      <div className="relative z-10 flex flex-col items-center shrink-0 animate-fade-in" style={{ animationDelay: "0.05s" }}>
         <div className="relative w-[300px] h-[300px] flex items-center justify-center">
           <div
             className="absolute inset-0 rounded-full"
