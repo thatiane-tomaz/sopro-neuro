@@ -110,8 +110,7 @@ export default function Dashboard() {
       const { data, error } = await (supabase as any)
         .from("habitos_jornada")
         .select("*")
-        .eq("posicao", 1)
-        .order("created_at", { ascending: true })
+        .eq("posicao", "1")
         .limit(1)
         .maybeSingle();
       if (error) {
@@ -124,8 +123,8 @@ export default function Dashboard() {
   });
 
   const posicao = (gatilho as any)?.posicao ?? 1;
-  const tituloGatilho: string = (gatilho as any)?.titulo_gatilho ?? "Sua jornada começa aqui";
-  const explicacaoDesafio: string = (gatilho as any)?.explicacao_desafio ?? "";
+  const tituloGatilho: string = (gatilho as any)?.habito_titulo ?? "Sua jornada começa aqui";
+  const explicacaoDesafio: string = (gatilho as any)?.explicacao_missao ?? "";
   const hasVideo: boolean = (gatilho as any)?.video ?? true;
   const hasHipnose: boolean = (gatilho as any)?.hipnose ?? true;
   const hasMissao: boolean = (gatilho as any)?.missao ?? true;
