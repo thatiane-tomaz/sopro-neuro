@@ -501,12 +501,20 @@ export default function Dashboard() {
             onClick={() => navigate("/chat")}
             ariaLabel="Abrir chat com a IA"
           />
-
+          {progressPct > 0 && (
+            <div className="flex justify-center -mt-4 relative z-10">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur px-3 py-1 shadow-[0_4px_12px_-4px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_88%)]">
+                <span className="text-xs font-bold text-[hsl(258_65%_52%)]">{progressPct}%</span>
+                <span className="text-[10px] text-muted-foreground font-medium">completo</span>
+              </div>
+            </div>
+          )}
         </div>
 
-
         {/* Weekly content cards (stacked) */}
-        <div className="flex flex-col gap-3 mt-6">
+        <div className="mt-6">
+          <p className="text-sm font-bold text-foreground/80 mb-3 px-1">Continue sua jornada</p>
+          <div className="flex flex-col gap-3">
           {hasVideo && (
           <WeeklyContentCard
             title="Vídeo"
