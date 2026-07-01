@@ -704,30 +704,42 @@ export default function Dashboard() {
               <DialogTitle className="text-base font-bold text-foreground">
                 Missão da semana
               </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground">
-                {tituloGatilho}
-              </DialogDescription>
             </DialogHeader>
           </div>
           <div className="px-5 py-4">
             <p className="text-sm text-foreground whitespace-pre-line leading-relaxed">
               {explicacaoDesafio || "Em breve você receberá o desafio da sua semana."}
             </p>
+            {!weeklyMissaoDone && missaoTimeLocked && (
+              <div className="mt-4 rounded-2xl bg-gradient-to-br from-[hsl(280_80%_97%)] to-[hsl(220_80%_97%)] p-4 text-center ring-1 ring-[hsl(280_60%_90%)]">
+                <div className="flex items-center justify-center gap-1.5 text-[hsl(280_60%_45%)] mb-1">
+                  <Timer className="h-4 w-4" />
+                  <span className="text-[11px] font-semibold uppercase tracking-wide">
+                    Tempo para concluir
+                  </span>
+                </div>
+                <p className="text-lg font-bold tabular-nums text-foreground">
+                  {formatCountdown(missaoMsLeft)}
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Viva a missão por 3 dias antes de concluir.
+                </p>
+              </div>
+            )}
           </div>
           <DialogFooter className="px-5 pb-5 pt-1 flex-row gap-2 sm:gap-2">
             <Button
-              variant="outline"
-              className="flex-1 rounded-xl"
-              onClick={() => setMissionDialogOpen(false)}
-            >
-              Fechar
-            </Button>
-            <Button
-              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(280_70%_55%)] to-[hsl(320_70%_60%)] text-white shadow-md"
-              disabled={savingMission || weeklyMissaoDone}
+              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(280_70%_55%)] to-[hsl(320_70%_60%)] text-white shadow-md disabled:opacity-60"
+              disabled={savingMission || weeklyMissaoDone || missaoTimeLocked}
               onClick={completeMission}
             >
-              {weeklyMissaoDone ? "Concluída" : savingMission ? "Salvando..." : "Concluir missão"}
+              {weeklyMissaoDone
+                ? "Concluída"
+                : savingMission
+                ? "Salvando..."
+                : missaoTimeLocked
+                ? "Aguarde 3 dias"
+                : "Concluir missão"}
             </Button>
           </DialogFooter>
         </DialogContent>
