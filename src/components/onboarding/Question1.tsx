@@ -60,10 +60,10 @@ const Question1 = ({ data, updateData, onNext }: Question1Props) => {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 1 de 6</span>
-            <span>17%</span>
+            <span>Pergunta 1 de 8</span>
+            <span>13%</span>
           </div>
-          <Progress value={17} className="h-2" />
+          <Progress value={13} className="h-2" />
         </div>
 
         {/* Question Card */}
