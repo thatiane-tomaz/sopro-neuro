@@ -68,10 +68,10 @@ const Question6 = ({ data, updateData, onNext, onPrev }: Question6Props) => {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 6 de 6</span>
-            <span>100%</span>
+            <span>Pergunta 6 de 7</span>
+            <span>86%</span>
           </div>
-          <Progress value={100} className="h-2" />
+          <Progress value={86} className="h-2" />
         </div>
 
         {/* Question Card */}
