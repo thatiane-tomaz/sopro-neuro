@@ -12,6 +12,13 @@ import Question4 from "@/components/onboarding/Question4";
 import Question5 from "@/components/onboarding/Question5";
 import Question6 from "@/components/onboarding/Question6";
 import Question7 from "@/components/onboarding/Question7";
+import HabitCheckboxQuestion from "@/components/onboarding/HabitCheckboxQuestion";
+import {
+  EMOTION_OPTIONS,
+  MOMENT_OPTIONS,
+  SUBSTANCE_OPTIONS,
+  selectedHabitos,
+} from "@/components/onboarding/habitOptions";
 import CompletionScreen from "@/components/onboarding/CompletionScreen";
 
 export interface OnboardingData {
@@ -23,6 +30,9 @@ export interface OnboardingData {
   smokingReasons: string[];
   smokingFears: string[];
   weeklyCost: string;
+  habitEmotions: string[];
+  habitMoments: string[];
+  habitSubstances: string[];
   journeyType: "reducao" | "abstinencia" | "";
 }
 
@@ -37,6 +47,9 @@ const Onboarding = () => {
     smokingReasons: [],
     smokingFears: [],
     weeklyCost: "",
+    habitEmotions: [],
+    habitMoments: [],
+    habitSubstances: [],
     journeyType: ""
   });
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
@@ -109,7 +122,7 @@ const Onboarding = () => {
   };
 
   const nextQuestion = () => {
-    if (currentQuestion < 8) {
+    if (currentQuestion < 11) {
       setCurrentQuestion(prev => prev + 1);
     }
   };
@@ -154,6 +167,11 @@ const Onboarding = () => {
 
       // v2: guarda respostas completas + jornada inicial
       const jornada = data.journeyType === "abstinencia" ? "abstinencia" : "reducao";
+      const habitos_selecionados = selectedHabitos(
+        data.habitEmotions,
+        data.habitMoments,
+        data.habitSubstances
+      );
       const { error: v2Error } = await supabase
         .from('onboarding_responses_v2')
         .insert({
@@ -168,6 +186,10 @@ const Onboarding = () => {
             smokingReasons: data.smokingReasons,
             smokingFears: data.smokingFears,
             weeklyCost: data.weeklyCost,
+            habitEmotions: data.habitEmotions,
+            habitMoments: data.habitMoments,
+            habitSubstances: data.habitSubstances,
+            habitosSelecionados: habitos_selecionados,
           },
           jornada_inicial: jornada,
         } as any);
@@ -207,8 +229,47 @@ const Onboarding = () => {
     4: <Question5 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     5: <Question4 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
     6: <Question6 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    7: <Question7 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    8: <CompletionScreen onFinish={finishOnboarding} isSubmitting={isSubmitting} />
+    7: (
+      <HabitCheckboxQuestion
+        title="Em quais emoções você costuma fumar?"
+        subtitle="Selecione todas que se aplicam"
+        options={EMOTION_OPTIONS}
+        selected={data.habitEmotions}
+        onChange={(v) => updateData({ habitEmotions: v })}
+        onNext={nextQuestion}
+        onPrev={prevQuestion}
+        step={7}
+        total={10}
+      />
+    ),
+    8: (
+      <HabitCheckboxQuestion
+        title="Em quais momentos você costuma fumar?"
+        subtitle="Selecione todos que se aplicam"
+        options={MOMENT_OPTIONS}
+        selected={data.habitMoments}
+        onChange={(v) => updateData({ habitMoments: v })}
+        onNext={nextQuestion}
+        onPrev={prevQuestion}
+        step={8}
+        total={10}
+      />
+    ),
+    9: (
+      <HabitCheckboxQuestion
+        title="Com quais substâncias você costuma fumar junto?"
+        subtitle="Selecione todas que se aplicam"
+        options={SUBSTANCE_OPTIONS}
+        selected={data.habitSubstances}
+        onChange={(v) => updateData({ habitSubstances: v })}
+        onNext={nextQuestion}
+        onPrev={prevQuestion}
+        step={9}
+        total={10}
+      />
+    ),
+    10: <Question7 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
+    11: <CompletionScreen onFinish={finishOnboarding} isSubmitting={isSubmitting} />
   };
 
   return (
