@@ -46,7 +46,7 @@ const Question7 = ({ data, updateData, onNext, onPrev }: Question7Props) => {
               Qual momento descreve você&nbsp;hoje?
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-2">
-              Isso define a jornada que vamos construir com você
+              Isso define a jornada que vamos construir
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
