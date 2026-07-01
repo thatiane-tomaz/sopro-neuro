@@ -71,8 +71,8 @@ const Question2 = ({ data, updateData, onNext, onPrev }: Question2Props) => {
     <OnboardingLayout
       step={2}
       total={8}
-      title="Quanto você consome?"
-      subtitle="Use 0 caso não consuma"
+      title="Quanto você fuma?"
+      subtitle="Use 0 caso já tenha parado"
       onNext={handleNext}
       onPrev={onPrev}
       canProceed={canProceed}

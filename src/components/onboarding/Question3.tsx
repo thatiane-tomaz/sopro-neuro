@@ -58,7 +58,7 @@ const Question3 = ({ data, updateData, onNext, onPrev }: Question3Props) => {
     <OnboardingLayout
       step={4}
       total={8}
-      title="O que você costuma fumar?"
+      title={<>O que você<br/>costuma fumar?</>}
       subtitle="Selecione todos que se aplicam"
       onNext={handleNext}
       onPrev={onPrev}

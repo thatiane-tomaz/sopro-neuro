@@ -56,8 +56,7 @@ const Question1 = ({ data, updateData, onNext }: Question1Props) => {
     <OnboardingLayout
       step={1}
       total={8}
-      title="Vamos nos conhecer melhor"
-      subtitle="Poucas informações para começar"
+      title={<>Vamos nos<br/>conhecer melhor</>}
       onNext={handleNext}
       canProceed={canProceed}
     >

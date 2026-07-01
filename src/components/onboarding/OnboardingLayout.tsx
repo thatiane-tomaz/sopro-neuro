@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 interface OnboardingLayoutProps {
   step: number;
   total: number;
-  title: string;
+  title: ReactNode;
   subtitle?: string;
   children: ReactNode;
   onNext?: () => void;
@@ -50,7 +50,7 @@ const OnboardingLayout = ({
       {/* Progress */}
       <div className="w-full max-w-md mx-auto space-y-2 animate-fade-in">
         <div className="flex justify-between text-xs font-medium text-muted-foreground">
-          <span>Passo {step} de {total}</span>
+          <span>{step} de {total}</span>
           <span>{pct}%</span>
         </div>
         <Progress value={pct} className="h-1.5" />
