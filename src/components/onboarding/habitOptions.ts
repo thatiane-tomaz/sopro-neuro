@@ -8,6 +8,7 @@ export const EMOTION_OPTIONS: { label: string; habito: string }[] = [
   { label: "Quando preciso me concentrar / focar", habito: "Fumar quando precisa focar" },
   { label: "Quando preciso ser produtivo(a)", habito: "Fumar quando precisa ser produtivo" },
   { label: "Para relaxar / descansar", habito: "Fumar para descansar" },
+  { label: "Quando quero uma pausa no trabalho", habito: "Fumar para descansar" },
   { label: "Antes de encarar uma tarefa difícil", habito: "Fumar antes de tarefas" },
 ];
 
@@ -16,7 +17,6 @@ export const MOMENT_OPTIONS: { label: string; habito: string }[] = [
   { label: "Antes de dormir", habito: "Fumar antes de dormir" },
   { label: "Dirigindo", habito: "Fumar dirigindo" },
   { label: "Enquanto trabalho", habito: "Fumar enquanto trabalha" },
-  { label: "No intervalo do trabalho", habito: "Fumar no intervalo do trabalho" },
   { label: "Em festas ou eventos sociais", habito: "Fumar durante festas" },
   { label: "Vendo TV / séries / filmes", habito: "Fumar vendo TV" },
   { label: "Jogando (videogame, celular)", habito: "Fumar jogando" },
