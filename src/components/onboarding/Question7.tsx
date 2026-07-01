@@ -34,7 +34,7 @@ const Question7 = ({ data, updateData, onNext, onPrev }: Question7Props) => {
       <div className="w-full max-w-md space-y-6">
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 10 de 10</span>
+            <span>Pergunta 8 de 8</span>
             <span>100%</span>
           </div>
           <Progress value={100} className="h-2" />
