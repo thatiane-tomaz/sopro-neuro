@@ -162,8 +162,14 @@ export default {
 				'fade-in': 'fade-in 0.6s ease-out',
 				'breathe': 'breathe 3s ease-in-out infinite',
 				'float': 'float 6s ease-in-out infinite',
-				'wave-slow': 'wave-slow 12s ease-in-out infinite',
-				'pulse-glow': 'pulse-glow 4s ease-in-out infinite'
+			'wave-slow': 'wave-slow 12s ease-in-out infinite',
+			'pulse-glow': 'pulse-glow 4s ease-in-out infinite',
+			'orbit': 'orbit 14s linear infinite',
+			'orbit-slow': 'orbit 22s linear infinite',
+			'orbit-reverse': 'orbit-reverse 18s linear infinite',
+			'float-particle': 'float-particle 5s ease-in-out infinite',
+			'sparkle': 'sparkle 2.5s ease-in-out infinite',
+			'glow-breathe': 'glow-breathe 4s ease-in-out infinite'
 			}
 		}
 	},
