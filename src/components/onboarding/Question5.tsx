@@ -1,13 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { OnboardingData } from "@/pages/Onboarding";
-import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { useState } from "react";
+import OnboardingLayout from "./OnboardingLayout";
 
 interface Question5Props {
   data: OnboardingData;
@@ -59,73 +56,39 @@ const Question5 = ({ data, updateData, onNext, onPrev }: Question5Props) => {
   const canProceed = inputValue.trim() !== "";
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Progress */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Pergunta 3 de 8</span>
-            <span>38%</span>
-          </div>
-          <Progress value={38} className="h-2" />
+    <OnboardingLayout
+      step={3}
+      total={8}
+      title="Quanto você gasta por semana para fumar?"
+      onNext={handleNext}
+      onPrev={onPrev}
+      canProceed={canProceed}
+    >
+      <div>
+        <Label htmlFor="weeklyCost" className="text-sm font-medium text-foreground/80">
+          Valor semanal com cigarros/vapes
+        </Label>
+        <div className="relative mt-2">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
+            R$
+          </span>
+          <Input
+            id="weeklyCost"
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            placeholder="0"
+            className="pl-14 pr-14 h-14 rounded-xl bg-white/80 border-white text-center text-2xl font-semibold"
+          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
+            ,00
+          </span>
         </div>
-
-        {/* Question Card */}
-        <Card className="border-primary/20 shadow-wellness">
-          <CardHeader className="text-center pb-4">
-          <CardTitle className="text-xl text-foreground">
-            Quanto você gasta por semana para fumar?
-          </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="weeklyCost" className="text-sm font-medium">
-                  Quanto você gasta por semana com cigarros/vapes?
-                </Label>
-                <div className="relative mt-2">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
-                    R$
-                  </span>
-                  <Input
-                    id="weeklyCost"
-                    type="text"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    placeholder="0"
-                    className="pl-12 pr-12 text-center text-lg font-medium"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
-                    ,00
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Digite o valor sem centavos
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <Button
-                variant="outline"
-                onClick={onPrev}
-                className="flex-1"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar
-              </Button>
-              <Button
-                onClick={handleNext}
-                disabled={!canProceed}
-                className="flex-1"
-              >
-                Próxima
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <p className="text-xs text-muted-foreground mt-2 text-center">
+          Digite o valor sem centavos
+        </p>
       </div>
-    </div>
+    </OnboardingLayout>
   );
 };
 
