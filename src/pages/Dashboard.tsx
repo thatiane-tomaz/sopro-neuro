@@ -57,6 +57,9 @@ import ProgressBrain from "@/components/home/ProgressBrain";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import StartHereStory from "@/components/StartHereStory";
+import SmokingLogDialog from "@/components/SmokingLogDialog";
+import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
+import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const getGreeting = () => {
