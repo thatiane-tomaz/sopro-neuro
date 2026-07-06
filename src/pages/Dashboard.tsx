@@ -107,6 +107,31 @@ export default function Dashboard() {
   const [showStartHere, setShowStartHere] = useState(false);
   const [startHereSeen, setStartHereSeen] = useState(true);
   const [missionDialogOpen, setMissionDialogOpen] = useState(false);
+  const [smokingDialogOpen, setSmokingDialogOpen] = useState(false);
+
+  const { logs: smokingLogs, isLoading: smokingLogsLoading } = useSmokingLogs();
+
+  // Prompt the user for yesterday's cigarette count once per session
+  // (only if they haven't logged it yet).
+  useEffect(() => {
+    if (!user || authLoading || smokingLogsLoading) return;
+    const key = `smoking_prompt_shown_${user.id}_${yesterdayStr()}`;
+    if (sessionStorage.getItem(key)) return;
+    const alreadyLogged = smokingLogs.some((l) => l.log_date === yesterdayStr());
+    if (alreadyLogged) return;
+    // Small delay so it doesn't overlap with page load animations
+    const t = setTimeout(() => {
+      setSmokingDialogOpen(true);
+      sessionStorage.setItem(key, "1");
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [user, authLoading, smokingLogsLoading, smokingLogs]);
+
+  // Schedule the daily "how many yesterday?" local notification on native.
+  useEffect(() => {
+    if (!user) return;
+    scheduleDailySmokingReminder();
+  }, [user]);
 
   // Current "gatilho" / posição of the user. For now everyone starts at posição 1.
   const { data: gatilho } = useQuery({
