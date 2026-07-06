@@ -92,9 +92,15 @@ export default function Progresso() {
     moneyYear: weeklyCostNum * 52,
   }), [equivCigsPerDay, weeklyCostNum]);
 
-  const startDateStr: string | undefined =
-    onboarding?.completed_at?.slice(0, 10) ??
-    (logs.length ? logs[0].log_date : undefined);
+  // Start from the earliest of: onboarding completion date OR earliest log.
+  // This guarantees any logged day is inside the timeline, even if the log
+  // predates completed_at (timezone edge cases, backfills, etc.).
+  const startDateStr: string | undefined = (() => {
+    const onbDate = onboarding?.completed_at?.slice(0, 10) as string | undefined;
+    const firstLog = logs.length ? logs[0].log_date : undefined;
+    if (onbDate && firstLog) return onbDate < firstLog ? onbDate : firstLog;
+    return onbDate ?? firstLog;
+  })();
 
   // Build a continuous timeline from onboarding date to today
   const chartData = useMemo(() => {
@@ -105,16 +111,17 @@ export default function Progresso() {
     const days: { date: string; label: string; count: number | null; baseline: number }[] = [];
     const logsByDate = new Map(logs.map((l) => [l.log_date, l.cigarettes_count]));
 
-    let cursor = new Date(start);
+    const cursor = new Date(start);
     let i = 0;
-    // Cap at 90 days for perf
-    while (cursor <= today && i < 90) {
+    // Cap at 180 days for perf
+    while (cursor <= today && i < 180) {
       const ds = toLocalDateStr(cursor);
       const inLog = logsByDate.get(ds);
       days.push({
         date: ds,
         label: format(cursor, "dd/MM"),
-        count: i === 0 ? baseline : inLog ?? null,
+        // Day 0 shows baseline as anchor UNLESS the user logged that day.
+        count: inLog ?? (i === 0 ? baseline : null),
         baseline,
       });
       cursor.setDate(cursor.getDate() + 1);
@@ -123,26 +130,42 @@ export default function Progresso() {
     return days;
   }, [startDateStr, logs, baseline]);
 
-  // Compute stats
+  // Compute stats considering the WHOLE period between onboarding and yesterday.
+  // For days without a log we carry forward the user's last known daily count
+  // (before any log this defaults to the baseline), so gaps don't wipe out
+  // legitimate reductions on either side.
   const stats = useMemo(() => {
     let avoided = 0;
     let daysWithLog = 0;
     let totalSmoked = 0;
-    for (const d of chartData) {
-      if (d.count === null) continue;
-      if (d === chartData[0]) continue; // skip baseline seed
-      daysWithLog += 1;
-      totalSmoked += d.count;
-      avoided += Math.max(0, baseline - d.count);
+    let sumLoggedForAvg = 0;
+
+    const logsByDate = new Map(logs.map((l) => [l.log_date, l.cigarettes_count]));
+    const todayStr = toLocalDateStr(new Date());
+
+    let carry = baseline;
+    // Skip the very first day (day the user set the baseline)
+    for (let idx = 1; idx < chartData.length; idx++) {
+      const d = chartData[idx];
+      if (d.date === todayStr) continue; // today isn't complete yet
+      const logged = logsByDate.get(d.date);
+      if (logged !== undefined) {
+        carry = logged;
+        daysWithLog += 1;
+        sumLoggedForAvg += logged;
+      }
+      totalSmoked += carry;
+      avoided += Math.max(0, baseline - carry);
     }
+
     return {
       avoided,
       money: avoided * costPerCig,
       daysWithLog,
       totalSmoked,
-      avgPerDay: daysWithLog > 0 ? totalSmoked / daysWithLog : 0,
+      avgPerDay: daysWithLog > 0 ? sumLoggedForAvg / daysWithLog : 0,
     };
-  }, [chartData, baseline, costPerCig]);
+  }, [chartData, baseline, costPerCig, logs]);
 
   // Missing days (between onboarding and yesterday, excluding today)
   const missingDays = useMemo(() => {
