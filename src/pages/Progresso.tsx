@@ -156,7 +156,6 @@ export default function Progresso() {
     let avoided = 0;
     let daysWithLog = 0;
     let totalSmoked = 0;
-    let sumLoggedForAvg = 0;
 
     const logsByDate = new Map(logs.map((l) => [l.log_date, l.cigarettes_count]));
     const todayStr = toLocalDateStr(new Date());
@@ -170,18 +169,26 @@ export default function Progresso() {
       if (logged !== undefined) {
         carry = logged;
         daysWithLog += 1;
-        sumLoggedForAvg += logged;
       }
       totalSmoked += carry;
       avoided += Math.max(0, baseline - carry);
     }
+
+    // Average of the last 3 logged days
+    const last3 = [...logs]
+      .sort((a, b) => a.log_date.localeCompare(b.log_date))
+      .slice(-3);
+    const avgPerDay =
+      last3.length > 0
+        ? last3.reduce((sum, l) => sum + l.cigarettes_count, 0) / last3.length
+        : 0;
 
     return {
       avoided,
       money: avoided * costPerCig,
       daysWithLog,
       totalSmoked,
-      avgPerDay: daysWithLog > 0 ? sumLoggedForAvg / daysWithLog : 0,
+      avgPerDay,
     };
   }, [chartData, baseline, costPerCig, logs]);
 
