@@ -131,7 +131,9 @@ export default function Progresso() {
     const cursor = new Date(start);
     let i = 0;
     let carry = baseline;
-    while (cursor <= today && i < 180) {
+    // Hard safety cap to avoid runaway loops on corrupt dates; 5 years is more
+    // than enough for the program and won't clip real usage.
+    while (cursor <= today && i < 1830) {
       const ds = toLocalDateStr(cursor);
       const inLog = logsByDate.get(ds);
       if (inLog !== undefined) carry = inLog;
@@ -175,19 +177,33 @@ export default function Progresso() {
     }
 
     // Average of the last 3 calendar days ending on the most-recent logged day.
-    // Days without a real log use the carried-forward value so gaps don’t
-    // break the rolling window.
+    // Computed directly from `logs` (with carry-forward) so it doesn't depend
+    // on the chart window and always reflects the latest entry.
     const sortedLogs = [...logs].sort((a, b) =>
       a.log_date.localeCompare(b.log_date),
     );
     const lastLog = sortedLogs[sortedLogs.length - 1];
     let avgPerDay = 0;
-    if (lastLog && chartData.length > 0) {
-      const lastIdx = chartData.findIndex((d) => d.date === lastLog.log_date);
-      const startIdx = Math.max(0, lastIdx - 2);
-      const windowDays = chartData.slice(startIdx, lastIdx + 1);
-      avgPerDay =
-        windowDays.reduce((sum, d) => sum + d.count, 0) / windowDays.length;
+    if (lastLog) {
+      const end = new Date(lastLog.log_date + "T00:00:00");
+      const values: number[] = [];
+      let carryAvg = baseline;
+      // Walk from earliest log day up to lastLog, keeping carry-forward, then
+      // take the last 3 days of that walk.
+      const walkStart = new Date(sortedLogs[0].log_date + "T00:00:00");
+      const walkCursor = new Date(walkStart);
+      const walkLogs = new Map(sortedLogs.map((l) => [l.log_date, l.cigarettes_count]));
+      while (walkCursor <= end) {
+        const ds = toLocalDateStr(walkCursor);
+        const v = walkLogs.get(ds);
+        if (v !== undefined) carryAvg = v;
+        values.push(carryAvg);
+        walkCursor.setDate(walkCursor.getDate() + 1);
+      }
+      const last3 = values.slice(-3);
+      if (last3.length > 0) {
+        avgPerDay = last3.reduce((s, n) => s + n, 0) / last3.length;
+      }
     }
 
     return {
