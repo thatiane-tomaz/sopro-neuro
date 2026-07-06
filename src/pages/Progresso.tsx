@@ -1,0 +1,426 @@
+import { useMemo, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import {
+  ChevronRight,
+  Cigarette,
+  DollarSign,
+  HelpCircle,
+  LogOut,
+  Pencil,
+  Plus,
+  TrendingDown,
+  User,
+} from "lucide-react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ReferenceLine,
+} from "recharts";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useOnboardingData } from "@/hooks/useOnboardingData";
+import {
+  useSmokingLogs,
+  toLocalDateStr,
+  yesterdayStr,
+} from "@/hooks/useSmokingLogs";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Card } from "@/components/ui/card";
+import BottomNav from "@/components/home/BottomNav";
+import PageLoader from "@/components/home/PageLoader";
+import WaveBackground from "@/components/home/WaveBackground";
+import SmokingLogDialog from "@/components/SmokingLogDialog";
+import soproLogo from "@/assets/sopro-logo.png";
+
+const getGreeting = () => {
+  const h = new Date().getHours();
+  if (h < 12) return "Bom dia";
+  if (h < 18) return "Boa tarde";
+  return "Boa noite";
+};
+
+const formatBRL = (n: number) =>
+  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+export default function Progresso() {
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const { profile, loading: profileLoading } = useUserProfile();
+  const { data: onboarding, isLoading: onbLoading } = useOnboardingData() as any;
+  const { logs, isLoading: logsLoading } = useSmokingLogs();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogDate, setDialogDate] = useState<string | undefined>();
+
+  const firstName = (profile?.display_name || "").split(" ")[0] || "";
+
+  // Baseline (from onboarding, excluding vape)
+  const baseline = onboarding?.cigarettes_per_day ?? 0;
+  const weeklyCostNum = (() => {
+    const v = onboarding?.weekly_cost_value;
+    if (typeof v === "number" && isFinite(v) && v > 0) return v;
+    const txt = onboarding?.weekly_cost;
+    if (!txt) return 0;
+    const parsed = parseFloat(String(txt).replace(",", "."));
+    return isFinite(parsed) && parsed > 0 ? parsed : 0;
+  })();
+  const costPerCig = baseline > 0 ? weeklyCostNum / 7 / baseline : 0;
+
+  const startDateStr: string | undefined =
+    onboarding?.completed_at?.slice(0, 10) ??
+    (logs.length ? logs[0].log_date : undefined);
+
+  // Build a continuous timeline from onboarding date to today
+  const chartData = useMemo(() => {
+    if (!startDateStr) return [] as { date: string; label: string; count: number | null; baseline: number }[];
+    const start = new Date(startDateStr + "T00:00:00");
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const days: { date: string; label: string; count: number | null; baseline: number }[] = [];
+    const logsByDate = new Map(logs.map((l) => [l.log_date, l.cigarettes_count]));
+
+    let cursor = new Date(start);
+    let i = 0;
+    // Cap at 90 days for perf
+    while (cursor <= today && i < 90) {
+      const ds = toLocalDateStr(cursor);
+      const inLog = logsByDate.get(ds);
+      days.push({
+        date: ds,
+        label: format(cursor, "dd/MM"),
+        count: i === 0 ? baseline : inLog ?? null,
+        baseline,
+      });
+      cursor.setDate(cursor.getDate() + 1);
+      i++;
+    }
+    return days;
+  }, [startDateStr, logs, baseline]);
+
+  // Compute stats
+  const stats = useMemo(() => {
+    let avoided = 0;
+    let daysWithLog = 0;
+    let totalSmoked = 0;
+    for (const d of chartData) {
+      if (d.count === null) continue;
+      if (d === chartData[0]) continue; // skip baseline seed
+      daysWithLog += 1;
+      totalSmoked += d.count;
+      avoided += Math.max(0, baseline - d.count);
+    }
+    return {
+      avoided,
+      money: avoided * costPerCig,
+      daysWithLog,
+      totalSmoked,
+      avgPerDay: daysWithLog > 0 ? totalSmoked / daysWithLog : 0,
+    };
+  }, [chartData, baseline, costPerCig]);
+
+  // Missing days (between onboarding and yesterday, excluding today)
+  const missingDays = useMemo(() => {
+    if (!startDateStr) return [] as string[];
+    const set = new Set(logs.map((l) => l.log_date));
+    const start = new Date(startDateStr + "T00:00:00");
+    const yest = new Date();
+    yest.setDate(yest.getDate() - 1);
+    yest.setHours(0, 0, 0, 0);
+    const out: string[] = [];
+    const cursor = new Date(start);
+    // Skip the very first day (baseline day)
+    cursor.setDate(cursor.getDate() + 1);
+    let i = 0;
+    while (cursor <= yest && i < 60) {
+      const ds = toLocalDateStr(cursor);
+      if (!set.has(ds)) out.push(ds);
+      cursor.setDate(cursor.getDate() + 1);
+      i++;
+    }
+    return out.slice(-7); // show last 7 missing
+  }, [startDateStr, logs]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
+  const openDialog = (date?: string) => {
+    setDialogDate(date);
+    setDialogOpen(true);
+  };
+
+  if (authLoading || profileLoading || onbLoading || logsLoading) {
+    return <PageLoader />;
+  }
+  if (!user) return <Navigate to="/login" replace />;
+
+  return (
+    <div className="relative min-h-screen overflow-x-hidden pb-32">
+      <WaveBackground />
+
+      <div className="mx-auto max-w-md animate-page-in px-5 pt-[env(safe-area-inset-top)]">
+        {/* Header */}
+        <header className="flex items-center justify-between pt-4">
+          <img src={soproLogo} alt="Sopro Neuro" className="h-10 w-auto" />
+          <div className="flex items-center gap-2">
+            <div className="text-right">
+              <p className="text-sm font-semibold text-foreground leading-tight">
+                {getGreeting()}
+                {firstName ? `, ${firstName}!` : "!"}
+              </p>
+              <p className="text-[11px] text-muted-foreground leading-tight">
+                Cada registro é um<br />passo de consciência.
+              </p>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
+                  <User className="h-5 w-5 text-primary" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => navigate("/settings")}>
+                  <User className="h-4 w-4 mr-2" /> Conta
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/faq")}>
+                  <HelpCircle className="h-4 w-4 mr-2" /> Ajuda
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-2" /> Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </header>
+
+        {/* Title */}
+        <div className="mt-6">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
+            Seu progresso
+          </h1>
+          <p className="text-xs text-muted-foreground mt-1">
+            Acompanhe a redução do seu consumo dia após dia.
+          </p>
+        </div>
+
+        {/* Savings — cigs avoided + money saved */}
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <StatCard
+            icon={<Cigarette className="h-4 w-4" />}
+            label="Cigarros evitados"
+            value={stats.avoided.toLocaleString("pt-BR")}
+          />
+          <StatCard
+            icon={<DollarSign className="h-4 w-4" />}
+            label="Dinheiro economizado"
+            value={formatBRL(stats.money)}
+          />
+        </div>
+
+        {/* Register CTA */}
+        <button
+          onClick={() => openDialog(yesterdayStr())}
+          className="mt-4 w-full rounded-2xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-4 text-left text-white shadow-[0_14px_38px_-14px_hsl(258_70%_45%/0.55)] active:scale-[0.99] transition-transform flex items-center gap-3"
+        >
+          <div className="h-11 w-11 rounded-full bg-white/20 flex items-center justify-center backdrop-blur">
+            <Plus className="h-5 w-5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold leading-tight">
+              Registrar ontem
+            </p>
+            <p className="text-[11px] text-white/85 leading-snug mt-0.5">
+              Quantos cigarros você fumou ontem?
+            </p>
+          </div>
+          <ChevronRight className="h-5 w-5 opacity-80" />
+        </button>
+
+        {/* Chart */}
+        <Card className="mt-5 p-4 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-foreground text-sm">
+                Cigarros por dia
+              </h3>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                Início: {baseline}/dia
+                {stats.avgPerDay > 0 && (
+                  <>
+                    {" · "}Média atual:{" "}
+                    <span className="font-semibold text-[hsl(258_60%_50%)]">
+                      {stats.avgPerDay.toFixed(1)}/dia
+                    </span>
+                  </>
+                )}
+              </p>
+            </div>
+            {stats.avoided > 0 && (
+              <div className="flex items-center gap-1 rounded-full bg-[hsl(140_60%_95%)] px-2.5 py-1 text-[11px] font-semibold text-[hsl(140_50%_35%)]">
+                <TrendingDown className="h-3 w-3" />
+                em queda
+              </div>
+            )}
+          </div>
+
+          <div className="mt-3 h-52 -mx-2">
+            {chartData.length === 0 ? (
+              <div className="h-full flex items-center justify-center text-xs text-muted-foreground">
+                Complete o onboarding para começar o acompanhamento.
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={chartData}
+                  margin={{ top: 5, right: 12, bottom: 0, left: -10 }}
+                >
+                  <defs>
+                    <linearGradient id="cigFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(258 80% 60%)" stopOpacity={0.4} />
+                      <stop offset="100%" stopColor="hsl(258 80% 60%)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 30% 92%)" vertical={false} />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fontSize: 10, fill: "hsl(220 15% 55%)" }}
+                    tickLine={false}
+                    axisLine={false}
+                    interval="preserveStartEnd"
+                    minTickGap={20}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 10, fill: "hsl(220 15% 55%)" }}
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                    width={30}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: 12,
+                      border: "1px solid hsl(258 70% 92%)",
+                      fontSize: 12,
+                    }}
+                    formatter={(v: any) =>
+                      v === null || v === undefined ? ["—", "cigarros"] : [v, "cigarros"]
+                    }
+                    labelFormatter={(l) => `Dia ${l}`}
+                  />
+                  {baseline > 0 && (
+                    <ReferenceLine
+                      y={baseline}
+                      stroke="hsl(220 15% 65%)"
+                      strokeDasharray="4 4"
+                      label={{
+                        value: "Início",
+                        position: "insideTopRight",
+                        fill: "hsl(220 15% 55%)",
+                        fontSize: 10,
+                      }}
+                    />
+                  )}
+                  <Area
+                    type="monotone"
+                    dataKey="count"
+                    stroke="hsl(258 80% 55%)"
+                    strokeWidth={2.5}
+                    fill="url(#cigFill)"
+                    connectNulls
+                    dot={{ r: 3, fill: "hsl(258 80% 55%)" }}
+                    activeDot={{ r: 5 }}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          {/* Backfill missing days */}
+          {missingDays.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-[hsl(220_30%_94%)]">
+              <div className="flex items-center gap-2">
+                <Pencil className="h-3.5 w-3.5 text-[hsl(258_60%_50%)]" />
+                <p className="text-xs font-semibold text-foreground">
+                  Preencher dias em aberto
+                </p>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                Toque em uma data para registrar quantos cigarros você fumou.
+              </p>
+              <div className="mt-2.5 flex flex-wrap gap-2">
+                {missingDays.map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => openDialog(d)}
+                    className="rounded-full bg-[hsl(258_80%_97%)] px-3 py-1.5 text-[11px] font-semibold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_92%)] active:scale-95 transition-transform"
+                  >
+                    {format(new Date(d + "T00:00:00"), "dd 'de' MMM", { locale: ptBR })}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </Card>
+
+        {!startDateStr && (
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            Complete o onboarding para começar seu acompanhamento diário.
+          </p>
+        )}
+      </div>
+
+      <BottomNav />
+
+      <SmokingLogDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        logDate={dialogDate}
+        title={
+          dialogDate && dialogDate !== yesterdayStr()
+            ? `Quantos cigarros em ${format(new Date(dialogDate + "T00:00:00"), "dd/MM")}?`
+            : undefined
+        }
+      />
+    </div>
+  );
+}
+
+function StatCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-3.5 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.03]">
+      <div className="flex items-center gap-2">
+        <div className="h-8 w-8 rounded-lg bg-white text-[hsl(258_60%_50%)] flex items-center justify-center flex-shrink-0 shadow-sm">
+          {icon}
+        </div>
+        <p className="text-[11px] font-medium text-foreground leading-tight">
+          {label}
+        </p>
+      </div>
+      <p className="mt-2 text-xl font-bold text-[hsl(258_60%_45%)] tabular-nums">
+        {value}
+      </p>
+    </div>
+  );
+}

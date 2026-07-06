@@ -57,6 +57,9 @@ import ProgressBrain from "@/components/home/ProgressBrain";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import StartHereStory from "@/components/StartHereStory";
+import SmokingLogDialog from "@/components/SmokingLogDialog";
+import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
+import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const getGreeting = () => {
@@ -104,6 +107,31 @@ export default function Dashboard() {
   const [showStartHere, setShowStartHere] = useState(false);
   const [startHereSeen, setStartHereSeen] = useState(true);
   const [missionDialogOpen, setMissionDialogOpen] = useState(false);
+  const [smokingDialogOpen, setSmokingDialogOpen] = useState(false);
+
+  const { logs: smokingLogs, isLoading: smokingLogsLoading } = useSmokingLogs();
+
+  // Prompt the user for yesterday's cigarette count once per session
+  // (only if they haven't logged it yet).
+  useEffect(() => {
+    if (!user || authLoading || smokingLogsLoading) return;
+    const key = `smoking_prompt_shown_${user.id}_${yesterdayStr()}`;
+    if (sessionStorage.getItem(key)) return;
+    const alreadyLogged = smokingLogs.some((l) => l.log_date === yesterdayStr());
+    if (alreadyLogged) return;
+    // Small delay so it doesn't overlap with page load animations
+    const t = setTimeout(() => {
+      setSmokingDialogOpen(true);
+      sessionStorage.setItem(key, "1");
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [user, authLoading, smokingLogsLoading, smokingLogs]);
+
+  // Schedule the daily "how many yesterday?" local notification on native.
+  useEffect(() => {
+    if (!user) return;
+    scheduleDailySmokingReminder();
+  }, [user]);
 
   // Current "gatilho" / posição of the user. For now everyone starts at posição 1.
   const { data: gatilho } = useQuery({
@@ -579,60 +607,43 @@ export default function Dashboard() {
         <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
           <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
 
-          {phaseNumber === 1 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-              <SavingsBlock
-                icon={<Cigarette className="h-4 w-4" />}
-                label="Cigarros que deixará de fumar"
-                rows={[
-                  { label: "por mês", value: phase1Stats.cigsMonth.toLocaleString("pt-BR") },
-                  { label: "por ano", value: phase1Stats.cigsYear.toLocaleString("pt-BR") },
-                ]}
-              />
-              <SavingsBlock
-                icon={<DollarSign className="h-4 w-4" />}
-                label="Dinheiro que irá economizar"
-                rows={[
-                  { label: "por mês", value: formatBRL(phase1Stats.moneyMonth) },
-                  { label: "por ano", value: formatBRL(phase1Stats.moneyYear) },
-                ]}
-              />
+          <button
+            onClick={() => navigate("/progresso")}
+            className="mt-4 w-full text-left rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-4 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] active:scale-[0.99] transition-transform flex items-center gap-3"
+          >
+            <div className="h-11 w-11 rounded-full bg-white flex items-center justify-center text-[hsl(258_60%_50%)] shadow-sm flex-shrink-0">
+              <Cigarette className="h-5 w-5" />
             </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                <SavingsBlock
-                  icon={<Cigarette className="h-4 w-4" />}
-                  label="Cigarros que você evitou"
-                  rows={[{ label: "", value: phase2Stats.cigs.toLocaleString("pt-BR") }]}
-                />
-                <SavingsBlock
-                  icon={<DollarSign className="h-4 w-4" />}
-                  label="Dinheiro que você economizou"
-                  rows={[{ label: "", value: formatBRL(phase2Stats.money) }]}
-                />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-foreground leading-tight">
+                Acompanhe cigarros evitados e economia
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                Veja seu gráfico e registre o consumo do dia.
+              </p>
+            </div>
+            <div className="text-[hsl(258_60%_50%)] text-lg font-bold">→</div>
+          </button>
+
+          {phaseNumber !== 1 && lastCigDate && (
+            <div className="mt-4 flex items-start justify-between gap-3 text-xs bg-[hsl(258_80%_97%)] rounded-lg px-3 py-2.5">
+              <div className="flex-1 min-w-0">
+                <p className="text-muted-foreground">O dia da sua mudança de vida foi</p>
+                <p className="mt-0.5 text-sm font-semibold text-foreground">
+                  {format(lastCigDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                </p>
               </div>
-              {lastCigDate && (
-                <div className="mt-4 flex items-start justify-between gap-3 text-xs bg-[hsl(258_80%_97%)] rounded-lg px-3 py-2.5">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-muted-foreground">O dia da sua mudança de vida foi</p>
-                    <p className="mt-0.5 text-sm font-semibold text-foreground">
-                      {format(lastCigDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setPendingDate(lastCigDate);
-                      setDateDialogOpen(true);
-                    }}
-                    className="flex-shrink-0 h-8 w-8 rounded-full bg-white text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm ring-1 ring-black/[0.03] active:scale-95 transition-transform"
-                    aria-label="Editar data"
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              )}
-            </>
+              <button
+                onClick={() => {
+                  setPendingDate(lastCigDate);
+                  setDateDialogOpen(true);
+                }}
+                className="flex-shrink-0 h-8 w-8 rounded-full bg-white text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm ring-1 ring-black/[0.03] active:scale-95 transition-transform"
+                aria-label="Editar data"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+            </div>
           )}
 
           {/* Benefits row */}
@@ -696,6 +707,11 @@ export default function Dashboard() {
       )}
 
       {showStartHere && <StartHereStory onClose={handleCloseStartHere} />}
+
+      <SmokingLogDialog
+        open={smokingDialogOpen}
+        onOpenChange={setSmokingDialogOpen}
+      />
 
       {missionDialogOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[hsl(258_40%_10%/0.55)] px-4 pb-[max(env(safe-area-inset-bottom),16px)] pt-8 backdrop-blur-sm sm:items-center">

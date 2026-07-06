@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Jornada from "./pages/Jornada";
 import Chat from "./pages/Chat";
 import Controle from "./pages/Controle";
+import Progresso from "./pages/Progresso";
 import Onboarding from "./pages/Onboarding";
 import Paywall from "./pages/Paywall";
 import Settings from "./pages/Settings";
@@ -57,6 +58,7 @@ const App = () => (
               <Route path="/jornada" element={<Jornada />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/controle" element={<Controle />} />
+              <Route path="/progresso" element={<Progresso />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/paywall" element={<Paywall />} />
               <Route path="/settings" element={<Settings />} />

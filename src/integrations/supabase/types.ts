@@ -149,6 +149,33 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_smoking_logs: {
+        Row: {
+          cigarettes_count: number
+          created_at: string
+          id: string
+          log_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cigarettes_count: number
+          created_at?: string
+          id?: string
+          log_date: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cigarettes_count?: number
+          created_at?: string
+          id?: string
+          log_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       deleted_accounts: {
         Row: {
           deleted_at: string
