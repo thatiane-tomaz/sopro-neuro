@@ -93,10 +93,14 @@ export default function Progresso() {
   }), [equivCigsPerDay, weeklyCostNum]);
 
   // Start from the onboarding completion date (the user's declared "início").
-  // Logs before that date are ignored on the timeline.
-  const startDateStr: string | undefined =
-    (onboarding?.completed_at?.slice(0, 10) as string | undefined) ??
-    (logs.length ? logs[0].log_date : undefined);
+  // Convert the UTC timestamp stored in Supabase to the user's local date so
+  // the graph starts on the correct calendar day.
+  const startDateStr: string | undefined = (() => {
+    if (onboarding?.completed_at) {
+      return toLocalDateStr(new Date(onboarding.completed_at));
+    }
+    return logs.length ? logs[0].log_date : undefined;
+  })();
 
   // Build a continuous timeline from onboarding date to today.
   // `count` is always filled (carry forward last known log; baseline before
