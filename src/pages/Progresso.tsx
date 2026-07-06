@@ -102,6 +102,13 @@ export default function Progresso() {
     return logs.length ? logs[0].log_date : undefined;
   })();
 
+  // Ignore registros antigos quando o usuário refez o onboarding: o gráfico e
+  // as métricas precisam refletir a jornada iniciada na última resposta.
+  const activeLogs = useMemo(
+    () => (startDateStr ? logs.filter((l) => l.log_date >= startDateStr) : logs),
+    [logs, startDateStr],
+  );
+
   // Build a continuous timeline from onboarding date to today.
   // `count` is always filled (carry forward last known log; baseline before
   // the first log) so the chart line is never broken. `logged` marks whether
@@ -126,7 +133,7 @@ export default function Progresso() {
       logged: boolean;
       baseline: number;
     }[] = [];
-    const logsByDate = new Map(logs.map((l) => [l.log_date, l.cigarettes_count]));
+    const logsByDate = new Map(activeLogs.map((l) => [l.log_date, l.cigarettes_count]));
 
     const cursor = new Date(start);
     let i = 0;
@@ -148,7 +155,7 @@ export default function Progresso() {
       i++;
     }
     return days;
-  }, [startDateStr, logs, baseline]);
+  }, [startDateStr, activeLogs, baseline]);
 
   // Compute stats considering the WHOLE period between onboarding and yesterday.
   // For days without a log we carry forward the user's last known daily count
@@ -159,7 +166,7 @@ export default function Progresso() {
     let daysWithLog = 0;
     let totalSmoked = 0;
 
-    const logsByDate = new Map(logs.map((l) => [l.log_date, l.cigarettes_count]));
+    const logsByDate = new Map(activeLogs.map((l) => [l.log_date, l.cigarettes_count]));
     const todayStr = toLocalDateStr(new Date());
 
     let carry = baseline;
@@ -179,7 +186,7 @@ export default function Progresso() {
     // Average of the last 3 calendar days ending on the most-recent logged day.
     // Computed directly from `logs` (with carry-forward) so it doesn't depend
     // on the chart window and always reflects the latest entry.
-    const sortedLogs = [...logs].sort((a, b) =>
+    const sortedLogs = [...activeLogs].sort((a, b) =>
       a.log_date.localeCompare(b.log_date),
     );
     const lastLog = sortedLogs[sortedLogs.length - 1];
@@ -213,12 +220,12 @@ export default function Progresso() {
       totalSmoked,
       avgPerDay,
     };
-  }, [chartData, baseline, costPerCig, logs]);
+  }, [chartData, baseline, costPerCig, activeLogs]);
 
   // Has the user already logged yesterday?
   const yesterdayLogged = useMemo(
-    () => logs.some((l) => l.log_date === yesterdayStr()),
-    [logs],
+    () => activeLogs.some((l) => l.log_date === yesterdayStr()),
+    [activeLogs],
   );
 
   // Date-picker bounds for the "pick any past day" flow
