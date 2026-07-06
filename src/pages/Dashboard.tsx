@@ -708,6 +708,11 @@ export default function Dashboard() {
 
       {showStartHere && <StartHereStory onClose={handleCloseStartHere} />}
 
+      <SmokingLogDialog
+        open={smokingDialogOpen}
+        onOpenChange={setSmokingDialogOpen}
+      />
+
       {missionDialogOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[hsl(258_40%_10%/0.55)] px-4 pb-[max(env(safe-area-inset-bottom),16px)] pt-8 backdrop-blur-sm sm:items-center">
           <div className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
