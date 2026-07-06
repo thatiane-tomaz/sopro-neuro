@@ -135,16 +135,6 @@ const Onboarding = () => {
   const finishOnboarding = async () => {
     if (!user) return;
 
-    // Admin preview mode: don't save, just redirect back
-    if (isAdmin) {
-      toast({
-        title: "Modo visualização",
-        description: "Respostas não foram salvas (modo admin)."
-      });
-      window.location.href = "/dashboard";
-      return;
-    }
-
     setIsSubmitting(true);
     
     try {
