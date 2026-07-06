@@ -92,15 +92,11 @@ export default function Progresso() {
     moneyYear: weeklyCostNum * 52,
   }), [equivCigsPerDay, weeklyCostNum]);
 
-  // Start from the earliest of: onboarding completion date OR earliest log.
-  // This guarantees any logged day is inside the timeline, even if the log
-  // predates completed_at (timezone edge cases, backfills, etc.).
-  const startDateStr: string | undefined = (() => {
-    const onbDate = onboarding?.completed_at?.slice(0, 10) as string | undefined;
-    const firstLog = logs.length ? logs[0].log_date : undefined;
-    if (onbDate && firstLog) return onbDate < firstLog ? onbDate : firstLog;
-    return onbDate ?? firstLog;
-  })();
+  // Start from the onboarding completion date (the user's declared "início").
+  // Logs before that date are ignored on the timeline.
+  const startDateStr: string | undefined =
+    (onboarding?.completed_at?.slice(0, 10) as string | undefined) ??
+    (logs.length ? logs[0].log_date : undefined);
 
   // Build a continuous timeline from onboarding date to today.
   // `count` is always filled (carry forward last known log; baseline before
