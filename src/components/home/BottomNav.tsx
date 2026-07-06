@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Compass, ShieldCheck, Waves } from "lucide-react";
+import { Compass, LineChart, Waves } from "lucide-react";
 
 export default function BottomNav() {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function BottomNav() {
         <div className="relative bg-white/85 backdrop-blur-xl rounded-[26px] shadow-[0_16px_40px_-14px_hsl(258_70%_45%/0.28)] ring-1 ring-black/[0.04] flex items-center px-3 h-16">
           <Item label="Jornada" icon={Compass} to="/jornada" active={pathname === "/jornada"} />
           <div className="w-20" />
-          <Item label="Controle" icon={ShieldCheck} to="/controle" active={pathname === "/controle"} />
+          <Item label="Progresso" icon={LineChart} to="/progresso" active={pathname === "/progresso"} />
 
           <button
             aria-label="Início"
