@@ -102,26 +102,44 @@ export default function Progresso() {
     return onbDate ?? firstLog;
   })();
 
-  // Build a continuous timeline from onboarding date to today
+  // Build a continuous timeline from onboarding date to today.
+  // `count` is always filled (carry forward last known log; baseline before
+  // the first log) so the chart line is never broken. `logged` marks whether
+  // the value came from a real user log — used to render dots only on those
+  // days.
   const chartData = useMemo(() => {
-    if (!startDateStr) return [] as { date: string; label: string; count: number | null; baseline: number }[];
+    if (!startDateStr)
+      return [] as {
+        date: string;
+        label: string;
+        count: number;
+        logged: boolean;
+        baseline: number;
+      }[];
     const start = new Date(startDateStr + "T00:00:00");
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const days: { date: string; label: string; count: number | null; baseline: number }[] = [];
+    const days: {
+      date: string;
+      label: string;
+      count: number;
+      logged: boolean;
+      baseline: number;
+    }[] = [];
     const logsByDate = new Map(logs.map((l) => [l.log_date, l.cigarettes_count]));
 
     const cursor = new Date(start);
     let i = 0;
-    // Cap at 180 days for perf
+    let carry = baseline;
     while (cursor <= today && i < 180) {
       const ds = toLocalDateStr(cursor);
       const inLog = logsByDate.get(ds);
+      if (inLog !== undefined) carry = inLog;
       days.push({
         date: ds,
         label: format(cursor, "dd/MM"),
-        // Day 0 shows baseline as anchor UNLESS the user logged that day.
-        count: inLog ?? (i === 0 ? baseline : null),
+        count: carry,
+        logged: inLog !== undefined || i === 0,
         baseline,
       });
       cursor.setDate(cursor.getDate() + 1);
@@ -167,27 +185,16 @@ export default function Progresso() {
     };
   }, [chartData, baseline, costPerCig, logs]);
 
-  // Missing days (between onboarding and yesterday, excluding today)
-  const missingDays = useMemo(() => {
-    if (!startDateStr) return [] as string[];
-    const set = new Set(logs.map((l) => l.log_date));
-    const start = new Date(startDateStr + "T00:00:00");
-    const yest = new Date();
-    yest.setDate(yest.getDate() - 1);
-    yest.setHours(0, 0, 0, 0);
-    const out: string[] = [];
-    const cursor = new Date(start);
-    // Skip the very first day (baseline day)
-    cursor.setDate(cursor.getDate() + 1);
-    let i = 0;
-    while (cursor <= yest && i < 60) {
-      const ds = toLocalDateStr(cursor);
-      if (!set.has(ds)) out.push(ds);
-      cursor.setDate(cursor.getDate() + 1);
-      i++;
-    }
-    return out.slice(-7); // show last 7 missing
-  }, [startDateStr, logs]);
+  // Has the user already logged yesterday?
+  const yesterdayLogged = useMemo(
+    () => logs.some((l) => l.log_date === yesterdayStr()),
+    [logs],
+  );
+
+  // Date-picker bounds for the "pick any past day" flow
+  const pickerMin = startDateStr ?? "";
+  const pickerMax = yesterdayStr();
+  const [customDate, setCustomDate] = useState<string>("");
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -267,64 +274,24 @@ export default function Progresso() {
           />
         </div>
 
-        {/* Potencial ao parar de fumar */}
-        {equivCigsPerDay > 0 && (
-          <Card className="mt-4 p-4 bg-white/90 backdrop-blur-md border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-                <TrendingDown className="h-4 w-4" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground text-sm leading-tight">
-                  Seu potencial ao parar de fumar
-                </h3>
-                <p className="text-[11px] text-muted-foreground leading-tight">
-                  O quanto você deixa de fumar e economiza.
-                </p>
-              </div>
+        {/* Register CTA — only when yesterday hasn't been logged */}
+        {!yesterdayLogged && (
+          <button
+            onClick={() => openDialog(yesterdayStr())}
+            className="mt-4 w-full rounded-2xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-4 text-left text-white shadow-[0_14px_38px_-14px_hsl(258_70%_45%/0.55)] active:scale-[0.99] transition-transform flex items-center gap-3"
+          >
+            <div className="h-11 w-11 rounded-full bg-white/20 flex items-center justify-center backdrop-blur">
+              <Plus className="h-5 w-5" />
             </div>
-
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <PotentialTile
-                label="Cigarros / mês"
-                value={potential.cigsMonth.toLocaleString("pt-BR")}
-              />
-              <PotentialTile
-                label="Cigarros / ano"
-                value={potential.cigsYear.toLocaleString("pt-BR")}
-              />
-              <PotentialTile
-                label="Economia / mês"
-                value={formatBRLCompact(potential.moneyMonth)}
-                accent
-              />
-              <PotentialTile
-                label="Economia / ano"
-                value={formatBRLCompact(potential.moneyYear)}
-                accent
-              />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold leading-tight">Registrar ontem</p>
+              <p className="text-[11px] text-white/85 leading-snug mt-0.5">
+                Quantos cigarros você fumou ontem?
+              </p>
             </div>
-          </Card>
+            <ChevronRight className="h-5 w-5 opacity-80" />
+          </button>
         )}
-
-        {/* Register CTA */}
-        <button
-          onClick={() => openDialog(yesterdayStr())}
-          className="mt-4 w-full rounded-2xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-4 text-left text-white shadow-[0_14px_38px_-14px_hsl(258_70%_45%/0.55)] active:scale-[0.99] transition-transform flex items-center gap-3"
-        >
-          <div className="h-11 w-11 rounded-full bg-white/20 flex items-center justify-center backdrop-blur">
-            <Plus className="h-5 w-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold leading-tight">
-              Registrar ontem
-            </p>
-            <p className="text-[11px] text-white/85 leading-snug mt-0.5">
-              Quantos cigarros você fumou ontem?
-            </p>
-          </div>
-          <ChevronRight className="h-5 w-5 opacity-80" />
-        </button>
 
         {/* Chart */}
         <Card className="mt-5 p-4 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
@@ -417,7 +384,19 @@ export default function Progresso() {
                     strokeWidth={2.5}
                     fill="url(#cigFill)"
                     connectNulls
-                    dot={{ r: 3, fill: "hsl(258 80% 55%)" }}
+                    dot={(props: any) => {
+                      const { cx, cy, payload, index } = props;
+                      if (cx == null || cy == null) return <g key={`d-${index}`} />;
+                      return (
+                        <circle
+                          key={`d-${index}`}
+                          cx={cx}
+                          cy={cy}
+                          r={payload?.logged ? 3.5 : 0}
+                          fill="hsl(258 80% 55%)"
+                        />
+                      );
+                    }}
                     activeDot={{ r: 5 }}
                   />
                 </AreaChart>
@@ -425,32 +404,82 @@ export default function Progresso() {
             )}
           </div>
 
-          {/* Backfill missing days */}
-          {missingDays.length > 0 && (
+          {/* Backfill any past day — open date picker */}
+          {startDateStr && (
             <div className="mt-4 pt-4 border-t border-[hsl(220_30%_94%)]">
               <div className="flex items-center gap-2">
                 <Pencil className="h-3.5 w-3.5 text-[hsl(258_60%_50%)]" />
                 <p className="text-xs font-semibold text-foreground">
-                  Preencher dias em aberto
+                  Registrar outro dia
                 </p>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Toque em uma data para registrar quantos cigarros você fumou.
+                Escolha qualquer data para registrar quantos cigarros você fumou.
               </p>
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {missingDays.map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => openDialog(d)}
-                    className="rounded-full bg-[hsl(258_80%_97%)] px-3 py-1.5 text-[11px] font-semibold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_92%)] active:scale-95 transition-transform"
-                  >
-                    {format(new Date(d + "T00:00:00"), "dd 'de' MMM", { locale: ptBR })}
-                  </button>
-                ))}
+              <div className="mt-2.5 flex items-stretch gap-2">
+                <input
+                  type="date"
+                  value={customDate}
+                  min={pickerMin}
+                  max={pickerMax}
+                  onChange={(e) => setCustomDate(e.target.value)}
+                  className="flex-1 min-w-0 rounded-xl bg-white px-3 py-2.5 text-sm shadow-[inset_0_0_0_1px_hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)]"
+                />
+                <button
+                  disabled={!customDate}
+                  onClick={() => {
+                    if (!customDate) return;
+                    openDialog(customDate);
+                    setCustomDate("");
+                  }}
+                  className="rounded-xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] px-4 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_hsl(258_70%_45%/0.6)] active:scale-95 transition-transform disabled:opacity-50 disabled:active:scale-100"
+                >
+                  Registrar
+                </button>
               </div>
             </div>
           )}
         </Card>
+
+        {/* Potencial ao parar de fumar — moved to the end */}
+        {equivCigsPerDay > 0 && (
+          <Card className="mt-5 p-4 bg-white/90 backdrop-blur-md border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                <TrendingDown className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground text-sm leading-tight">
+                  Seu potencial ao parar de fumar
+                </h3>
+                <p className="text-[11px] text-muted-foreground leading-tight">
+                  O quanto você deixa de fumar e economiza.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <PotentialTile
+                label="Cigarros / mês"
+                value={potential.cigsMonth.toLocaleString("pt-BR")}
+              />
+              <PotentialTile
+                label="Cigarros / ano"
+                value={potential.cigsYear.toLocaleString("pt-BR")}
+              />
+              <PotentialTile
+                label="Economia / mês"
+                value={formatBRLCompact(potential.moneyMonth)}
+                accent
+              />
+              <PotentialTile
+                label="Economia / ano"
+                value={formatBRLCompact(potential.moneyYear)}
+                accent
+              />
+            </div>
+          </Card>
+        )}
 
         {!startDateStr && (
           <p className="mt-4 text-center text-xs text-muted-foreground">
