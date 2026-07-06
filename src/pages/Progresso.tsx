@@ -310,28 +310,33 @@ export default function Progresso() {
         {/* Chart */}
         <Card className="mt-5 p-4 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
           <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-foreground text-sm">
-                Cigarros por dia
-              </h3>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Início: {baseline}/dia
-                {stats.avgPerDay > 0 && (
-                  <>
-                    {" · "}Média atual:{" "}
-                    <span className="font-semibold text-[hsl(258_60%_50%)]">
-                      {stats.avgPerDay.toFixed(1)}/dia
-                    </span>
-                  </>
-                )}
-              </p>
-            </div>
+            <h3 className="font-semibold text-foreground text-sm">
+              Cigarros por dia
+            </h3>
             {stats.avoided > 0 && (
               <div className="flex items-center gap-1 rounded-full bg-[hsl(140_60%_95%)] px-2.5 py-1 text-[11px] font-semibold text-[hsl(140_50%_35%)]">
                 <TrendingDown className="h-3 w-3" />
                 em queda
               </div>
             )}
+          </div>
+
+          {/* Start & current average stats — prominently placed right above the chart */}
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <div className="rounded-2xl bg-[hsl(220_30%_97%)] p-3 text-center ring-1 ring-black/[0.03]">
+              <p className="text-[11px] text-muted-foreground">Início</p>
+              <p className="text-lg font-bold text-foreground leading-tight mt-0.5">
+                {baseline}
+                <span className="text-xs font-medium text-muted-foreground">/dia</span>
+              </p>
+            </div>
+            <div className="rounded-2xl bg-[hsl(258_70%_97%)] p-3 text-center ring-1 ring-black/[0.03]">
+              <p className="text-[11px] text-[hsl(258_50%_40%)]">Média atual (3 dias)</p>
+              <p className="text-lg font-bold text-[hsl(258_60%_40%)] leading-tight mt-0.5">
+                {stats.avgPerDay > 0 ? stats.avgPerDay.toFixed(1) : "—"}
+                <span className="text-xs font-medium text-[hsl(258_40%_50%)]">/dia</span>
+              </p>
+            </div>
           </div>
 
           <div className="mt-3 h-52 -mx-2">
