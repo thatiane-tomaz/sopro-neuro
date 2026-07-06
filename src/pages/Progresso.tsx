@@ -55,6 +55,9 @@ const getGreeting = () => {
 const formatBRL = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
+const formatBRLCompact = (n: number) =>
+  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+
 export default function Progresso() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -67,8 +70,11 @@ export default function Progresso() {
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
-  // Baseline (from onboarding, excluding vape)
+  // Baseline (from onboarding, excluding vape) — used for the chart line
   const baseline = onboarding?.cigarettes_per_day ?? 0;
+  // For potential savings we include vape equivalents (same math as Dashboard)
+  const vapesPerMonth = onboarding?.vapes_per_month ?? 0;
+  const equivCigsPerDay = baseline + Math.ceil(vapesPerMonth / 30);
   const weeklyCostNum = (() => {
     const v = onboarding?.weekly_cost_value;
     if (typeof v === "number" && isFinite(v) && v > 0) return v;
@@ -78,6 +84,13 @@ export default function Progresso() {
     return isFinite(parsed) && parsed > 0 ? parsed : 0;
   })();
   const costPerCig = baseline > 0 ? weeklyCostNum / 7 / baseline : 0;
+
+  const potential = useMemo(() => ({
+    cigsMonth: equivCigsPerDay * 30,
+    cigsYear: equivCigsPerDay * 365,
+    moneyMonth: weeklyCostNum * 4,
+    moneyYear: weeklyCostNum * 52,
+  }), [equivCigsPerDay, weeklyCostNum]);
 
   const startDateStr: string | undefined =
     onboarding?.completed_at?.slice(0, 10) ??
@@ -230,6 +243,46 @@ export default function Progresso() {
             value={formatBRL(stats.money)}
           />
         </div>
+
+        {/* Potencial ao parar de fumar */}
+        {equivCigsPerDay > 0 && (
+          <Card className="mt-4 p-4 bg-white/90 backdrop-blur-md border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                <TrendingDown className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground text-sm leading-tight">
+                  Seu potencial ao parar de fumar
+                </h3>
+                <p className="text-[11px] text-muted-foreground leading-tight">
+                  O quanto você deixa de fumar e economiza.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <PotentialTile
+                label="Cigarros / mês"
+                value={potential.cigsMonth.toLocaleString("pt-BR")}
+              />
+              <PotentialTile
+                label="Cigarros / ano"
+                value={potential.cigsYear.toLocaleString("pt-BR")}
+              />
+              <PotentialTile
+                label="Economia / mês"
+                value={formatBRLCompact(potential.moneyMonth)}
+                accent
+              />
+              <PotentialTile
+                label="Economia / ano"
+                value={formatBRLCompact(potential.moneyYear)}
+                accent
+              />
+            </div>
+          </Card>
+        )}
 
         {/* Register CTA */}
         <button
@@ -419,6 +472,38 @@ function StatCard({
         </p>
       </div>
       <p className="mt-2 text-xl font-bold text-[hsl(258_60%_45%)] tabular-nums">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function PotentialTile({
+  label,
+  value,
+  accent = false,
+}: {
+  label: string;
+  value: string;
+  accent?: boolean;
+}) {
+  return (
+    <div
+      className={
+        accent
+          ? "rounded-xl bg-gradient-to-br from-[hsl(140_65%_96%)] to-[hsl(160_70%_96%)] px-3 py-2.5 ring-1 ring-[hsl(140_50%_88%)]"
+          : "rounded-xl bg-[hsl(258_80%_98%)] px-3 py-2.5 ring-1 ring-[hsl(258_70%_92%)]"
+      }
+    >
+      <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </p>
+      <p
+        className={
+          "mt-1 text-lg font-bold tabular-nums " +
+          (accent ? "text-[hsl(140_50%_32%)]" : "text-[hsl(258_60%_45%)]")
+        }
+      >
         {value}
       </p>
     </div>
