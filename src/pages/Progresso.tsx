@@ -174,14 +174,21 @@ export default function Progresso() {
       avoided += Math.max(0, baseline - carry);
     }
 
-    // Average of the last 3 logged days
-    const last3 = [...logs]
-      .sort((a, b) => a.log_date.localeCompare(b.log_date))
-      .slice(-3);
-    const avgPerDay =
-      last3.length > 0
-        ? last3.reduce((sum, l) => sum + l.cigarettes_count, 0) / last3.length
-        : 0;
+    // Average of the last 3 calendar days ending on the most-recent logged day.
+    // Days without a real log use the carried-forward value so gaps don’t
+    // break the rolling window.
+    const sortedLogs = [...logs].sort((a, b) =>
+      a.log_date.localeCompare(b.log_date),
+    );
+    const lastLog = sortedLogs[sortedLogs.length - 1];
+    let avgPerDay = 0;
+    if (lastLog && chartData.length > 0) {
+      const lastIdx = chartData.findIndex((d) => d.date === lastLog.log_date);
+      const startIdx = Math.max(0, lastIdx - 2);
+      const windowDays = chartData.slice(startIdx, lastIdx + 1);
+      avgPerDay =
+        windowDays.reduce((sum, d) => sum + d.count, 0) / windowDays.length;
+    }
 
     return {
       avoided,
