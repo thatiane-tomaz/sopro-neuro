@@ -134,14 +134,45 @@ export default function Dashboard() {
     scheduleDailySmokingReminder();
   }, [user]);
 
+  // Determine journey type (redução/abstinência) — latest historico wins,
+  // then onboarding v2, then default to "reducao".
+  const { data: jornadaType } = useQuery({
+    queryKey: ["jornada-type", user?.id],
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const [hist, onb] = await Promise.all([
+        (supabase as any)
+          .from("historico_jornada_usuario")
+          .select("jornada")
+          .eq("user_id", user!.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        (supabase as any)
+          .from("onboarding_responses_v2")
+          .select("jornada_inicial")
+          .eq("user_id", user!.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ]);
+      const raw =
+        hist?.data?.jornada ?? onb?.data?.jornada_inicial ?? "reducao";
+      return raw === "abstinencia" ? "abstinência" : "redução";
+    },
+  });
+
   // Current "gatilho" / posição of the user. For now everyone starts at posição 1.
   const { data: gatilho } = useQuery({
-    queryKey: ["gatilho-jornada", 1],
+    queryKey: ["gatilho-jornada", 1, jornadaType],
+    enabled: !!jornadaType,
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("habitos_jornada")
         .select("*")
         .eq("posicao", "1")
+        .eq("tipo_usuario", jornadaType)
         .limit(1)
         .maybeSingle();
       if (error) {
