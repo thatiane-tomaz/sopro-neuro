@@ -25,6 +25,7 @@ import Install from "./pages/Install";
 import FeedbackPreview from "./pages/FeedbackPreview";
 import EmailConfirmed from "./pages/EmailConfirmed";
 import ErrorLogs from "./pages/ErrorLogs";
+import Mural from "./pages/Mural";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -70,6 +71,7 @@ const App = () => (
               <Route path="/cancel-subscription" element={<CancelSubscription />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/error-logs" element={<ErrorLogs />} />
+              <Route path="/mural" element={<Mural />} />
               <Route path="/feedback-preview" element={<FeedbackPreview />} />
               <Route path="/404" element={<NotFound />} />
               <Route path="*" element={<Navigate to="/404" replace />} />
