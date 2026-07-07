@@ -135,17 +135,25 @@ export default function Jornada() {
   // ---- Build ordered list ----
   const items = useMemo<JornadaItem[]>(() => {
     if (!allHabitos || allHabitos.length === 0) return [];
-    const intro = allHabitos.find((h) => Number(h.posicao) === 1);
+    // Fixed themes appear for every user, ordered by posicao
+    const fixed = allHabitos
+      .filter((h) => h.tema_fixo === true)
+      .sort((a, b) => {
+        const pa = a.posicao != null ? Number(a.posicao) : Infinity;
+        const pb = b.posicao != null ? Number(b.posicao) : Infinity;
+        return pa - pb;
+      });
+    const fixedIds = new Set(fixed.map((h) => h.id));
     const byTitle = new Map<string, any>();
     allHabitos.forEach((h) => byTitle.set(h.habito_titulo, h));
 
-    // Selected habits (user chose in onboarding), dedup, exclude intro
+    // Selected habits (user chose in onboarding), dedup, exclude fixed
     const seen = new Set<string>();
     const selected: any[] = [];
     habitosSelecionados.forEach((t) => {
       if (seen.has(t)) return;
       const h = byTitle.get(t);
-      if (h && (!intro || h.habito_titulo !== intro.habito_titulo)) {
+      if (h && !fixedIds.has(h.id)) {
         selected.push(h);
         seen.add(t);
       }
@@ -159,13 +167,13 @@ export default function Jornada() {
       return 0;
     });
 
-    // Remaining habits (not selected) — appear as future/locked so the user
-    // sees the full journey ahead.
+    // Remaining habits (not fixed and not selected) — appear as future/locked
+    // so the user sees the full journey ahead.
     const selectedIds = new Set(selected.map((h) => h.id));
     const rest = allHabitos
       .filter(
         (h) =>
-          h.id !== intro?.id &&
+          !fixedIds.has(h.id) &&
           !selectedIds.has(h.id),
       )
       .sort((a, b) => {
@@ -176,7 +184,7 @@ export default function Jornada() {
       });
 
     const ordered = [
-      ...(intro ? [intro] : []),
+      ...fixed,
       ...selected,
       ...rest,
     ];
@@ -189,8 +197,8 @@ export default function Jornada() {
       hipnose_nome: h.hipnose_nome ?? null,
       hasVideo: h.video !== false,
       hasHipnose: h.hipnose !== false,
-      isIntro: !!(intro && h.id === intro.id),
-      isSelected: !!(intro && h.id === intro.id) || selectedIds.has(h.id),
+      isIntro: fixedIds.has(h.id),
+      isSelected: fixedIds.has(h.id) || selectedIds.has(h.id),
     }));
   }, [allHabitos, habitosSelecionados]);
 
@@ -357,7 +365,7 @@ export default function Jornada() {
               Jornada
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Um tema por vez, no seu ritmo, até a liberdade.
+              Uma jornada montada para você, um tema por vez.
             </p>
           </div>
           <button

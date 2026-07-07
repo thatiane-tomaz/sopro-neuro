@@ -265,6 +265,7 @@ export type Database = {
           nome_video: string | null
           objetivo_chat_missao: string | null
           posicao: string | null
+          tema_fixo: boolean | null
           tipo_usuario: string | null
           updated_at: string | null
           video: boolean
@@ -279,6 +280,7 @@ export type Database = {
           nome_video?: string | null
           objetivo_chat_missao?: string | null
           posicao?: string | null
+          tema_fixo?: boolean | null
           tipo_usuario?: string | null
           updated_at?: string | null
           video?: boolean
@@ -293,6 +295,7 @@ export type Database = {
           nome_video?: string | null
           objetivo_chat_missao?: string | null
           posicao?: string | null
+          tema_fixo?: boolean | null
           tipo_usuario?: string | null
           updated_at?: string | null
           video?: boolean
