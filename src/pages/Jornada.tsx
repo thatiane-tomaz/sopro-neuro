@@ -335,6 +335,7 @@ export default function Jornada() {
     subLoading ||
     freelistLoading ||
     onbLoading ||
+    histLoading ||
     habitosLoading
   ) {
     return <PageLoader />;
