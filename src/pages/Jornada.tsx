@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { useDailyContent } from "@/hooks/useDailyContent";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
@@ -20,13 +20,12 @@ import {
   Headphones,
   Lock,
   Check,
-  Sparkles,
   User,
   LogOut,
   HelpCircle,
-  Brain,
-  ShieldCheck,
+  MessageCircleHeart,
   Info,
+  Sparkles,
 } from "lucide-react";
 import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
@@ -44,19 +43,33 @@ const getGreeting = () => {
 
 type DayStatus = "completed" | "current" | "locked";
 
+type JornadaItem = {
+  id: string;
+  seq: number; // 1..N — used for interaction & media file mapping
+  habito_titulo: string;
+  posicao_original: number | null;
+  nome_video: string | null;
+  hipnose_nome: string | null;
+  hasVideo: boolean;
+  hasHipnose: boolean;
+  isIntro: boolean;
+};
+
+const JORNADA_MAP: Record<string, string> = {
+  abstinencia: "abstinência",
+  reducao: "redução",
+};
+
 export default function Jornada() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
-  const { profile, loading: profileLoading, hasAccessToDay } = useUserProfile();
+  const { profile, loading: profileLoading } = useUserProfile();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
-  const { data: dailyContent, isLoading: contentLoading } = useDailyContent();
   const { isPremium, isExpired, loading: subLoading } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const {
-    getCurrentDay,
-    isDayCompleted,
-    isDayTimeLocked,
+    trackingData,
     startTracking,
     updateProgress,
     isLoading: trackingLoading,
@@ -66,64 +79,165 @@ export default function Jornada() {
   const [trackingId, setTrackingId] = useState<string | null>(null);
   const [showStartHere, setShowStartHere] = useState(false);
 
-  const currentDay = getCurrentDay();
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
-  const phase1Days = useMemo(
+
+  // ---- Load user's onboarding (habits chosen + jornada) ----
+  const { data: onboardingV2, isLoading: onbLoading } = useQuery({
+    queryKey: ["onboarding-v2-jornada", user?.id],
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("onboarding_responses_v2")
+        .select("respostas, jornada_inicial")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) {
+        console.error("onboarding v2 error", error);
+        return null;
+      }
+      return data as { respostas: any; jornada_inicial: string } | null;
+    },
+  });
+
+  const tipoUsuario =
+    JORNADA_MAP[onboardingV2?.jornada_inicial ?? "abstinencia"] ?? "abstinência";
+  const habitosSelecionados: string[] = useMemo(
     () =>
-      (dailyContent || [])
-        .filter((d) => d.day_number >= 1 && d.day_number <= 7)
-        .sort((a, b) => a.day_number - b.day_number),
-    [dailyContent],
-  );
-  const phase2Days = useMemo(
-    () =>
-      (dailyContent || [])
-        .filter((d) => d.day_number >= 8 && d.day_number <= 14)
-        .sort((a, b) => a.day_number - b.day_number),
-    [dailyContent],
+      Array.isArray(onboardingV2?.respostas?.habitosSelecionados)
+        ? (onboardingV2!.respostas.habitosSelecionados as string[])
+        : [],
+    [onboardingV2],
   );
 
-  const getStatus = (day: number): DayStatus => {
-    if (isDayCompleted(day)) return "completed";
-    if (day < currentDay) return "completed";
-    if (day === currentDay && !isDayTimeLocked(day)) return "current";
-    return "locked";
+  // ---- Load habitos_jornada for this journey type ----
+  const { data: allHabitos, isLoading: habitosLoading } = useQuery({
+    queryKey: ["habitos-jornada", tipoUsuario],
+    enabled: !!tipoUsuario,
+    staleTime: 10 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("habitos_jornada")
+        .select("*")
+        .eq("tipo_usuario", tipoUsuario);
+      if (error) {
+        console.error("habitos error", error);
+        return [];
+      }
+      return (data as any[]) || [];
+    },
+  });
+
+  // ---- Build ordered list ----
+  const items = useMemo<JornadaItem[]>(() => {
+    if (!allHabitos || allHabitos.length === 0) return [];
+    const intro = allHabitos.find((h) => Number(h.posicao) === 1);
+    const byTitle = new Map<string, any>();
+    allHabitos.forEach((h) => byTitle.set(h.habito_titulo, h));
+
+    // Selected habits, dedup, exclude intro
+    const seen = new Set<string>();
+    const selected: any[] = [];
+    habitosSelecionados.forEach((t) => {
+      if (seen.has(t)) return;
+      const h = byTitle.get(t);
+      if (h && (!intro || h.habito_titulo !== intro.habito_titulo)) {
+        selected.push(h);
+        seen.add(t);
+      }
+    });
+
+    // Sort selected: numeric posicao asc first, nulls preserve user's selection order
+    selected.sort((a, b) => {
+      const pa = a.posicao != null ? Number(a.posicao) : Infinity;
+      const pb = b.posicao != null ? Number(b.posicao) : Infinity;
+      if (pa !== pb) return pa - pb;
+      return 0;
+    });
+
+    const ordered = intro ? [intro, ...selected] : selected;
+    return ordered.map((h, idx) => ({
+      id: h.id,
+      seq: idx + 1,
+      habito_titulo: h.habito_titulo,
+      posicao_original: h.posicao != null ? Number(h.posicao) : null,
+      nome_video: h.nome_video ?? null,
+      hipnose_nome: h.hipnose_nome ?? null,
+      hasVideo: h.video !== false,
+      hasHipnose: h.hipnose !== false,
+      isIntro: !!(intro && h.id === intro.id),
+    }));
+  }, [allHabitos, habitosSelecionados]);
+
+  // ---- Progress helpers ----
+  const isFinished = (interactionType: string) =>
+    !!trackingData?.some((t) => t.interaction_type === interactionType && t.finished_at !== null);
+
+  const itemCompleted = (it: JornadaItem) => {
+    const needsVideo = it.hasVideo;
+    const needsHip = it.hasHipnose;
+    const v = needsVideo ? isFinished(`video_semana_${it.seq}`) : true;
+    const h = needsHip ? isFinished(`hipnose_semana_${it.seq}`) : true;
+    return v && h;
   };
 
-  const canOpen = (day: number) => {
+  const statusForIndex = (idx: number): DayStatus => {
+    if (isAdmin || isFreelist) {
+      return itemCompleted(items[idx]) ? "completed" : "current";
+    }
+    if (itemCompleted(items[idx])) return "completed";
+    // current if all previous items are completed
+    for (let i = 0; i < idx; i++) {
+      if (!itemCompleted(items[i])) return "locked";
+    }
+    return "current";
+  };
+
+  const canOpen = (idx: number) => {
     if (isAdmin || isFreelist) return true;
-    if (!hasAccessToDay(day)) return false;
-    const s = getStatus(day);
+    const s = statusForIndex(idx);
     return s === "current" || s === "completed";
   };
 
-  const getMediaUrl = (day: number, type: "video" | "hypnosis") => {
-    const bucket = type === "video" ? "videos" : "hypnosis";
-    const ext = type === "video" ? "mp4" : day >= 8 ? "MP3" : "mp3";
-    const file = type === "video" ? `video_${day}.${ext}` : `hipnose_${day}.${ext}`;
-    return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${file}`;
+  // ---- Media ----
+  const publicUrl = (bucket: string, file: string) =>
+    `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${file}`;
+
+  const getMediaUrl = (it: JornadaItem, type: "video" | "hypnosis") => {
+    if (type === "video") {
+      if (it.nome_video) return publicUrl("videos", it.nome_video);
+      return publicUrl("videos", `video_${it.seq}.mp4`);
+    }
+    if (it.hipnose_nome) return publicUrl("hypnosis", it.hipnose_nome);
+    const ext = it.seq >= 8 ? "MP3" : "mp3";
+    return publicUrl("hypnosis", `hipnose_${it.seq}.${ext}`);
   };
 
-  const openMedia = async (day: number, type: "video" | "hypnosis", title: string) => {
-    if (!canOpen(day)) {
-      if (!isAdmin && !isFreelist && day >= 2 && !isPremium && !isExpired) {
+  const openMedia = async (idx: number, type: "video" | "hypnosis") => {
+    const it = items[idx];
+    if (!it) return;
+    if (!canOpen(idx)) {
+      if (!isAdmin && !isFreelist && idx >= 1 && !isPremium && !isExpired) {
         navigate("/paywall");
         return;
       }
       toast({
-        title: "Conteúdo bloqueado",
-        description: "Complete o dia anterior para desbloquear",
+        title: "Tema bloqueado",
+        description: "Complete o tema anterior para desbloquear este.",
         variant: "destructive",
       });
       return;
     }
-    const interactionType = `${type === "video" ? "video" : "hipnose"}_dia_${day}`;
+    const interactionType =
+      type === "video" ? `video_semana_${it.seq}` : `hipnose_semana_${it.seq}`;
     setSelectedMedia({
-      title,
-      fileUrl: getMediaUrl(day, type),
+      title: it.habito_titulo,
+      fileUrl: getMediaUrl(it, type),
       contentType: type,
-      day,
+      day: it.seq,
       interactionType,
     });
     try {
@@ -132,6 +246,20 @@ export default function Jornada() {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const openMural = (idx: number) => {
+    const it = items[idx];
+    if (!it) return;
+    if (!canOpen(idx)) {
+      toast({
+        title: "Tema bloqueado",
+        description: "Complete o tema anterior para acessar o mural deste.",
+        variant: "destructive",
+      });
+      return;
+    }
+    navigate(`/mural?tema=${encodeURIComponent(it.habito_titulo)}`);
   };
 
   const handleProgress = (p: number) => {
@@ -153,14 +281,17 @@ export default function Jornada() {
     authLoading ||
     profileLoading ||
     adminLoading ||
-    contentLoading ||
     trackingLoading ||
     subLoading ||
-    freelistLoading
+    freelistLoading ||
+    onbLoading ||
+    habitosLoading
   ) {
     return <PageLoader />;
   }
   if (!user) return <Navigate to="/login" replace />;
+
+  const totalDone = items.filter((_, i) => statusForIndex(i) === "completed").length;
 
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-32">
@@ -207,7 +338,7 @@ export default function Jornada() {
               Jornada
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Seu plano de 14 dias para a liberdade.
+              Um tema por vez — no seu ritmo, até a liberdade.
             </p>
           </div>
           <button
@@ -219,64 +350,50 @@ export default function Jornada() {
           </button>
         </div>
 
-        {/* Phase 1 */}
-        <PhaseCard
-          phaseNumber={1}
-          name="Preparação"
-          rangeLabel="Dias 1 a 7"
-          accent="blue"
-          icon={<Brain className="h-5 w-5" />}
-        >
-          <div className="relative">
-            {phase1Days.map((d, i) => (
-              <DayRow
-                key={d.id}
+        {/* Progress chip */}
+        {items.length > 0 && (
+          <div className="mt-4 rounded-2xl bg-white/85 backdrop-blur ring-1 ring-black/[0.04] shadow-[0_10px_30px_-16px_hsl(230_60%_40%/0.25)] px-4 py-3 flex items-center gap-3">
+            <div className="h-9 w-9 rounded-2xl bg-[hsl(220_85%_96%)] flex items-center justify-center text-[hsl(230_85%_55%)]">
+              <Sparkles className="h-4 w-4" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[13px] font-semibold text-foreground leading-tight">
+                {totalDone} de {items.length} temas concluídos
+              </p>
+              <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                Assista, ouça e compartilhe no mural de cada tema.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Themes list */}
+        <section className="mt-5 rounded-3xl bg-white/85 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] p-4">
+          {items.length === 0 ? (
+            <div className="py-10 text-center">
+              <p className="text-sm text-muted-foreground">
+                Complete o onboarding para ver seus temas.
+              </p>
+            </div>
+          ) : (
+            items.map((it, i) => (
+              <ThemeRow
+                key={it.id}
                 index={i}
-                isLast={i === phase1Days.length - 1}
-                day={d.day_number}
-                title={d.title}
-                videoMin={d.video_minutes ?? undefined}
-                hypnosisMin={d.hypnosis_minutes ?? undefined}
-                showVideo
-                status={getStatus(d.day_number)}
-                onVideo={() => openMedia(d.day_number, "video", d.title)}
-                onHypnosis={() => openMedia(d.day_number, "hypnosis", d.title)}
-                accent="blue"
+                isLast={i === items.length - 1}
+                seq={it.seq}
+                title={it.habito_titulo}
+                isIntro={it.isIntro}
+                status={statusForIndex(i)}
+                hasVideo={it.hasVideo}
+                hasHipnose={it.hasHipnose}
+                onVideo={() => openMedia(i, "video")}
+                onHypnosis={() => openMedia(i, "hypnosis")}
+                onMural={() => openMural(i)}
               />
-            ))}
-          </div>
-
-          <div className="mt-4 flex items-center gap-2 rounded-xl bg-[hsl(220_85%_97%)] px-3 py-2.5">
-            <Sparkles className="h-4 w-4 text-[hsl(230_85%_55%)] flex-shrink-0" />
-            <p className="text-xs text-[hsl(220_50%_30%)] leading-snug">
-              Ao final do Dia 7, você dará adeus ao cigarro e começará a Fase 2.
-            </p>
-          </div>
-        </PhaseCard>
-
-        {/* Phase 2 */}
-        <PhaseCard
-          phaseNumber={2}
-          name="Libertação"
-          rangeLabel="Dias 8 a 14"
-          accent="purple"
-          icon={<ShieldCheck className="h-5 w-5" />}
-        >
-          {phase2Days.map((d, i) => (
-            <DayRow
-              key={d.id}
-              index={i}
-              isLast={i === phase2Days.length - 1}
-              day={d.day_number}
-              title={d.title}
-              hypnosisMin={d.hypnosis_minutes ?? undefined}
-              status={getStatus(d.day_number)}
-              onHypnosis={() => openMedia(d.day_number, "hypnosis", d.title)}
-              accent="purple"
-              compact
-            />
-          ))}
-        </PhaseCard>
+            ))
+          )}
+        </section>
       </div>
 
       <BottomNav />
@@ -303,100 +420,37 @@ export default function Jornada() {
 
 /* ---------- Sub-components ---------- */
 
-function PhaseCard({
-  phaseNumber,
-  name,
-  rangeLabel,
-  accent,
-  icon,
-  children,
-}: {
-  phaseNumber: number;
-  name: string;
-  rangeLabel: string;
-  accent: "blue" | "purple";
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  const colors =
-    accent === "blue"
-      ? {
-          iconBg: "bg-[hsl(220_85%_96%)]",
-          iconColor: "text-[hsl(230_85%_55%)]",
-          phaseLabel: "text-[hsl(230_85%_55%)]",
-          chipBg: "bg-[hsl(220_85%_96%)]",
-          chipText: "text-[hsl(230_85%_50%)]",
-        }
-      : {
-          iconBg: "bg-[hsl(258_80%_96%)]",
-          iconColor: "text-[hsl(258_70%_55%)]",
-          phaseLabel: "text-[hsl(258_70%_55%)]",
-          chipBg: "bg-[hsl(258_80%_96%)]",
-          chipText: "text-[hsl(258_70%_50%)]",
-        };
-
-  return (
-    <section className="mt-6 rounded-3xl bg-white/85 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] p-4">
-      <header className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div
-            className={`h-10 w-10 rounded-2xl ${colors.iconBg} ${colors.iconColor} flex items-center justify-center shadow-sm`}
-          >
-            {icon}
-          </div>
-          <h2 className="text-lg">
-            <span className={`font-semibold ${colors.phaseLabel}`}>Fase {phaseNumber}</span>
-            <span className="text-foreground/30 mx-1.5">•</span>
-            <span className="font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
-              {name}
-            </span>
-          </h2>
-        </div>
-        <span
-          className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${colors.chipBg} ${colors.chipText}`}
-        >
-          {rangeLabel}
-        </span>
-      </header>
-
-      <div className="mt-3 border-t border-[hsl(220_30%_94%)] pt-1">{children}</div>
-    </section>
-  );
-}
-
-function DayRow({
+function ThemeRow({
   index,
   isLast,
-  day,
+  seq,
   title,
-  videoMin,
-  hypnosisMin,
-  showVideo,
+  isIntro,
   status,
+  hasVideo,
+  hasHipnose,
   onVideo,
   onHypnosis,
-  accent,
-  compact,
+  onMural,
 }: {
   index: number;
   isLast: boolean;
-  day: number;
+  seq: number;
   title: string;
-  videoMin?: number;
-  hypnosisMin?: number;
-  showVideo?: boolean;
+  isIntro: boolean;
   status: DayStatus;
-  onVideo?: () => void;
-  onHypnosis?: () => void;
-  accent: "blue" | "purple";
-  compact?: boolean;
+  hasVideo: boolean;
+  hasHipnose: boolean;
+  onVideo: () => void;
+  onHypnosis: () => void;
+  onMural: () => void;
 }) {
   const isLocked = status === "locked";
   const isCompleted = status === "completed";
   const isCurrent = status === "current";
 
-  const accentFrom = accent === "blue" ? "hsl(230, 85%, 55%)" : "hsl(258, 70%, 55%)";
-  const accentTo = accent === "blue" ? "hsl(258, 80%, 60%)" : "hsl(280, 70%, 60%)";
+  const accentFrom = isIntro ? "hsl(220, 90%, 55%)" : "hsl(230, 85%, 55%)";
+  const accentTo = isIntro ? "hsl(258, 80%, 60%)" : "hsl(258, 80%, 60%)";
 
   const numberCircle = (() => {
     if (isCompleted) {
@@ -415,20 +469,19 @@ function DayRow({
           className="h-9 w-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md ring-4 ring-white"
           style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
-          {day}
+          {seq}
         </div>
       );
     }
     return (
       <div className="h-9 w-9 rounded-full flex items-center justify-center text-[hsl(220_20%_55%)] text-sm font-semibold bg-white border border-[hsl(220_30%_88%)] shadow-sm">
-        {day}
+        {seq}
       </div>
     );
   })();
 
   return (
     <div className="relative">
-      {/* timeline connector — continuous "path" */}
       {!isLast && (
         <div
           aria-hidden
@@ -444,43 +497,58 @@ function DayRow({
         />
       )}
 
-      <div className={`flex items-center gap-3 py-3 ${index === 0 ? "pt-3" : ""}`}>
-        <div className="flex-shrink-0 z-10">{numberCircle}</div>
+      <div className={`flex flex-col gap-2 py-3 ${index === 0 ? "pt-3" : ""}`}>
+        <div className="flex items-center gap-3">
+          <div className="flex-shrink-0 z-10">{numberCircle}</div>
+          <div className="flex-1 min-w-0">
+            <p
+              className={`text-sm leading-tight ${
+                isLocked
+                  ? "text-muted-foreground"
+                  : isCurrent
+                  ? "font-semibold text-foreground"
+                  : "text-foreground"
+              }`}
+            >
+              {title}
+            </p>
+            {isIntro && (
+              <p className="text-[10px] uppercase tracking-wider text-[hsl(230_85%_55%)] font-semibold mt-0.5">
+                Comece por aqui
+              </p>
+            )}
+          </div>
+          {isLocked && (
+            <Lock className="h-4 w-4 text-muted-foreground/60" aria-label="Bloqueado" />
+          )}
+        </div>
 
-        <p
-          className={`flex-1 text-sm leading-tight ${
-            isLocked
-              ? "text-muted-foreground"
-              : isCurrent
-              ? "font-semibold text-foreground"
-              : "text-foreground"
-          }`}
-        >
-          {title}
-        </p>
-
-        <div className="flex items-center gap-2.5 flex-shrink-0">
-          {showVideo && (
-            <MediaIconButton
-              type="video"
-              minutes={videoMin}
+        <div className="pl-12 flex items-center gap-2">
+          {hasVideo && (
+            <ActionChip
+              icon={<Play className={`h-3.5 w-3.5 ${!isLocked ? "fill-current" : ""}`} />}
+              label="Vídeo"
               disabled={isLocked}
-              active={!isLocked}
-              accent={accent}
+              variant="video"
               onClick={onVideo}
             />
           )}
-          <MediaIconButton
-            type="hypnosis"
-            minutes={hypnosisMin}
-            disabled={isLocked}
-            active={!isLocked}
-            accent={accent}
-            onClick={onHypnosis}
-          />
-          {isLocked && (
-            <Lock className="h-4 w-4 text-muted-foreground/60 ml-0.5" aria-label="Bloqueado" />
+          {hasHipnose && (
+            <ActionChip
+              icon={<Headphones className="h-3.5 w-3.5" />}
+              label="Hipnose"
+              disabled={isLocked}
+              variant="hipnose"
+              onClick={onHypnosis}
+            />
           )}
+          <ActionChip
+            icon={<MessageCircleHeart className="h-3.5 w-3.5" />}
+            label="Mural"
+            disabled={isLocked}
+            variant="mural"
+            onClick={onMural}
+          />
         </div>
       </div>
 
@@ -489,55 +557,44 @@ function DayRow({
   );
 }
 
-function MediaIconButton({
-  type,
-  minutes,
+function ActionChip({
+  icon,
+  label,
   disabled,
-  active,
-  accent,
+  variant,
   onClick,
 }: {
-  type: "video" | "hypnosis";
-  minutes?: number;
+  icon: React.ReactNode;
+  label: string;
   disabled?: boolean;
-  active?: boolean;
-  accent: "blue" | "purple";
-  onClick?: () => void;
+  variant: "video" | "hipnose" | "mural";
+  onClick: () => void;
 }) {
-  const Icon = type === "video" ? Play : Headphones;
-  const label = type === "video" ? "Vídeo" : "Hipnose";
-
-  const activeBg =
-    accent === "blue"
-      ? "bg-gradient-to-br from-[hsl(220_85%_60%)] to-[hsl(230_85%_55%)]"
-      : "bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_60%)]";
-  const activeText =
-    accent === "blue" ? "text-[hsl(230_85%_50%)]" : "text-[hsl(258_70%_50%)]";
+  const styles = {
+    video: {
+      bg: "bg-gradient-to-br from-[hsl(220_85%_60%)] to-[hsl(230_85%_55%)]",
+      text: "text-white",
+    },
+    hipnose: {
+      bg: "bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_60%)]",
+      text: "text-white",
+    },
+    mural: {
+      bg: "bg-white ring-1 ring-[hsl(258_70%_88%)]",
+      text: "text-[hsl(258_60%_45%)]",
+    },
+  }[variant];
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`flex flex-col items-center gap-0.5 transition-transform active:scale-95 ${
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold shadow-sm active:scale-95 transition-transform ${styles.bg} ${styles.text} ${
         disabled ? "opacity-40 cursor-not-allowed" : ""
       }`}
     >
-      <div
-        className={`h-9 w-9 rounded-full flex items-center justify-center ${
-          active
-            ? `${activeBg} shadow-md`
-            : "bg-white border border-[hsl(220_30%_90%)]"
-        }`}
-      >
-        <Icon
-          className={`h-4 w-4 ${active ? "text-white" : "text-muted-foreground"} ${
-            type === "video" && active ? "fill-white" : ""
-          }`}
-        />
-      </div>
-      <span className={`text-[10px] font-medium ${active ? activeText : "text-muted-foreground"}`}>
-        {label}
-      </span>
+      {icon}
+      {label}
     </button>
   );
 }

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, MessageCircleHeart, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -78,9 +78,11 @@ function PostCard({
 
 export default function Mural() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const tema = searchParams.get("tema");
   const { user, loading: authLoading } = useAuth();
   const { profile } = useUserProfile();
-  const { data: posts, isLoading } = useMuralPosts();
+  const { data: posts, isLoading } = useMuralPosts(tema);
   const createPost = useCreateMuralPost();
   const deletePost = useDeleteMuralPost();
   const { toast } = useToast();
@@ -115,6 +117,7 @@ export default function Mural() {
       await createPost.mutateAsync({
         content: text,
         authorName: anonymous ? null : (name.trim() || displayName || null),
+        habitoTitulo: tema,
       });
       toast({ title: "Publicado no mural ✨", description: "Obrigado por compartilhar sua experiência." });
       setOpen(false);
@@ -158,11 +161,21 @@ export default function Mural() {
 
         <div className="text-center mt-5 px-2">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
-            Um espaço para dividir a jornada
+            {tema ? tema : "Um espaço para dividir a jornada"}
           </h1>
           <p className="text-[13px] text-muted-foreground mt-2 leading-relaxed">
-            Leia experiências de outras pessoas e, quando quiser, compartilhe a sua.
+            {tema
+              ? "Veja o que outras pessoas viveram nesse tema — e some a sua experiência."
+              : "Leia experiências de outras pessoas e, quando quiser, compartilhe a sua."}
           </p>
+          {tema && (
+            <button
+              onClick={() => navigate("/mural")}
+              className="mt-3 text-[12px] font-semibold text-[hsl(258_65%_52%)] underline underline-offset-2"
+            >
+              Ver todos os temas
+            </button>
+          )}
         </div>
 
         <button

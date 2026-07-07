@@ -12,18 +12,21 @@ export type MuralPost = {
   color_hue: number;
   created_at: string;
   approved_at: string | null;
+  habito_titulo: string | null;
 };
 
-export function useMuralPosts() {
+export function useMuralPosts(habitoTitulo?: string | null) {
   return useQuery({
-    queryKey: ["mural-posts"],
+    queryKey: ["mural-posts", habitoTitulo ?? "all"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      let q: any = (supabase as any)
         .from("mural_posts")
         .select("*")
         .eq("status", "approved")
         .order("created_at", { ascending: false })
         .limit(60);
+      if (habitoTitulo) q = q.eq("habito_titulo", habitoTitulo);
+      const { data, error } = await q;
       if (error) throw error;
       return (data ?? []) as MuralPost[];
     },
@@ -39,10 +42,12 @@ export function useCreateMuralPost() {
       content,
       authorName,
       dayNumber,
+      habitoTitulo,
     }: {
       content: string;
       authorName?: string | null;
       dayNumber?: number | null;
+      habitoTitulo?: string | null;
     }) => {
       if (!user) throw new Error("Não autenticado");
       const hue = Math.floor(Math.random() * 360);
@@ -54,6 +59,7 @@ export function useCreateMuralPost() {
           author_name: authorName?.trim() || null,
           day_number: dayNumber ?? null,
           color_hue: hue,
+          habito_titulo: habitoTitulo ?? null,
         })
         .select()
         .single();

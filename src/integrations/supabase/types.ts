@@ -361,6 +361,7 @@ export type Database = {
           content: string
           created_at: string
           day_number: number | null
+          habito_titulo: string | null
           id: string
           status: string
           user_id: string
@@ -372,6 +373,7 @@ export type Database = {
           content: string
           created_at?: string
           day_number?: number | null
+          habito_titulo?: string | null
           id?: string
           status?: string
           user_id: string
@@ -383,6 +385,7 @@ export type Database = {
           content?: string
           created_at?: string
           day_number?: number | null
+          habito_titulo?: string | null
           id?: string
           status?: string
           user_id?: string
