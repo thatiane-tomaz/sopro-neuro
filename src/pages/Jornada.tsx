@@ -53,6 +53,7 @@ type JornadaItem = {
   hasVideo: boolean;
   hasHipnose: boolean;
   isIntro: boolean;
+  isSelected: boolean;
 };
 
 const JORNADA_MAP: Record<string, string> = {
