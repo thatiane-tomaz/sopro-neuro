@@ -365,7 +365,7 @@ export default function Jornada() {
               Jornada
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Uma jornada montada para você, um tema por vez.
+              Uma jornada montada para você.
             </p>
           </div>
           <button
@@ -539,11 +539,6 @@ function ThemeRow({
             >
               {title}
             </p>
-            {isIntro && (
-              <p className="text-[10px] uppercase tracking-wider text-[hsl(230_85%_55%)] font-semibold mt-0.5">
-                Comece por aqui
-              </p>
-            )}
           </div>
           {isLocked && (
             <Lock className="h-4 w-4 text-muted-foreground/60" aria-label="Bloqueado" />
