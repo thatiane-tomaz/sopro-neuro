@@ -357,7 +357,7 @@ export default function Jornada() {
               Jornada
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Um tema por vez — no seu ritmo, até a liberdade.
+              Um tema por vez, no seu ritmo, até a liberdade.
             </p>
           </div>
           <button
