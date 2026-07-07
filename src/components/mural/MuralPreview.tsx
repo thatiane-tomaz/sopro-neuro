@@ -70,8 +70,8 @@ export default function MuralPreview() {
         <h3 className="mt-3 text-[15px] font-bold text-foreground leading-snug">
           Você não está sozinho nessa
         </h3>
-        <p className="mt-1 text-[12px] text-foreground/70 leading-snug">
-          Veja as experiências de quem já passou por esse momento
+        <p className="mt-1 text-[12px] text-foreground/70 leading-snug whitespace-nowrap">
+          Veja quem já passou por isso
         </p>
 
         <div className="mt-4 rounded-2xl bg-white/85 backdrop-blur-sm p-3.5 ring-1 ring-white/70 shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
@@ -114,7 +114,7 @@ export default function MuralPreview() {
 
         <div className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-semibold text-foreground/70">
           <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
-          Seus desafios e vitórias também podem ajudar alguém
+          Sua vitória pode ajudar alguém
         </div>
       </div>
     </button>
