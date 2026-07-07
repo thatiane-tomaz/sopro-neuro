@@ -53,6 +53,7 @@ type JornadaItem = {
   hasVideo: boolean;
   hasHipnose: boolean;
   isIntro: boolean;
+  isSelected: boolean;
 };
 
 const JORNADA_MAP: Record<string, string> = {
@@ -138,7 +139,7 @@ export default function Jornada() {
     const byTitle = new Map<string, any>();
     allHabitos.forEach((h) => byTitle.set(h.habito_titulo, h));
 
-    // Selected habits, dedup, exclude intro
+    // Selected habits (user chose in onboarding), dedup, exclude intro
     const seen = new Set<string>();
     const selected: any[] = [];
     habitosSelecionados.forEach((t) => {
@@ -158,7 +159,27 @@ export default function Jornada() {
       return 0;
     });
 
-    const ordered = intro ? [intro, ...selected] : selected;
+    // Remaining habits (not selected) — appear as future/locked so the user
+    // sees the full journey ahead.
+    const selectedIds = new Set(selected.map((h) => h.id));
+    const rest = allHabitos
+      .filter(
+        (h) =>
+          h.id !== intro?.id &&
+          !selectedIds.has(h.id),
+      )
+      .sort((a, b) => {
+        const pa = a.posicao != null ? Number(a.posicao) : Infinity;
+        const pb = b.posicao != null ? Number(b.posicao) : Infinity;
+        if (pa !== pb) return pa - pb;
+        return String(a.habito_titulo).localeCompare(String(b.habito_titulo), "pt-BR");
+      });
+
+    const ordered = [
+      ...(intro ? [intro] : []),
+      ...selected,
+      ...rest,
+    ];
     return ordered.map((h, idx) => ({
       id: h.id,
       seq: idx + 1,
@@ -169,6 +190,7 @@ export default function Jornada() {
       hasVideo: h.video !== false,
       hasHipnose: h.hipnose !== false,
       isIntro: !!(intro && h.id === intro.id),
+      isSelected: !!(intro && h.id === intro.id) || selectedIds.has(h.id),
     }));
   }, [allHabitos, habitosSelecionados]);
 
