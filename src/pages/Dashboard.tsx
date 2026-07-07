@@ -58,6 +58,7 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import StartHereStory from "@/components/StartHereStory";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
+import MuralPreview from "@/components/mural/MuralPreview";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
 import soproLogo from "@/assets/sopro-logo.png";
@@ -574,6 +575,9 @@ export default function Dashboard() {
           />
           )}
         </div></div>
+
+        {/* Mural — experiências compartilhadas */}
+        <MuralPreview />
 
         {/* Last cigarette date card (legacy Phase 2, no date yet) */}
         {phaseNumber === 2 && !lastCigDate && (
