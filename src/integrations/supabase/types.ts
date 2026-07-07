@@ -353,6 +353,42 @@ export type Database = {
         }
         Relationships: []
       }
+      mural_posts: {
+        Row: {
+          approved_at: string | null
+          author_name: string | null
+          color_hue: number
+          content: string
+          created_at: string
+          day_number: number | null
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          author_name?: string | null
+          color_hue?: number
+          content: string
+          created_at?: string
+          day_number?: number | null
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          author_name?: string | null
+          color_hue?: number
+          content?: string
+          created_at?: string
+          day_number?: number | null
+          id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       onboarding_responses: {
         Row: {
           age: string | null
