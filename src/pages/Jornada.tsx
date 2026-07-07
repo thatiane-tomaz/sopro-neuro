@@ -83,6 +83,27 @@ export default function Jornada() {
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
 
+  // ---- Load latest jornada type from historico (source of truth) ----
+  const { data: historicoJornada, isLoading: histLoading } = useQuery({
+    queryKey: ["historico-jornada", user?.id],
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("historico_jornada_usuario")
+        .select("jornada, created_at")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) {
+        console.error("historico jornada error", error);
+        return null;
+      }
+      return data as { jornada: string; created_at: string } | null;
+    },
+  });
+
   // ---- Load user's onboarding (habits chosen + jornada) ----
   const { data: onboardingV2, isLoading: onbLoading } = useQuery({
     queryKey: ["onboarding-v2-jornada", user?.id],
@@ -104,8 +125,10 @@ export default function Jornada() {
     },
   });
 
-  const tipoUsuario =
-    JORNADA_MAP[onboardingV2?.jornada_inicial ?? "abstinencia"] ?? "abstinência";
+  // Priority: latest historico entry → onboarding v2 initial → default "reducao".
+  const jornadaRaw =
+    historicoJornada?.jornada ?? onboardingV2?.jornada_inicial ?? "reducao";
+  const tipoUsuario = JORNADA_MAP[jornadaRaw] ?? "redução";
   const habitosSelecionados: string[] = useMemo(
     () =>
       Array.isArray(onboardingV2?.respostas?.habitosSelecionados)
@@ -312,6 +335,7 @@ export default function Jornada() {
     subLoading ||
     freelistLoading ||
     onbLoading ||
+    histLoading ||
     habitosLoading
   ) {
     return <PageLoader />;
