@@ -716,10 +716,6 @@ export default function Dashboard() {
                 Estou pronto para meu último cigarro
               </button>
             </div>
-            {/* Decorative seedling illustration placeholder */}
-            <div className="absolute right-3 bottom-3 opacity-20 pointer-events-none">
-              <Flower2 className="h-16 w-16 text-[hsl(140_60%_45%)]" />
-            </div>
           </Card>
         )}
       </div>
