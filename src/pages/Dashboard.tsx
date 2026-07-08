@@ -704,7 +704,7 @@ export default function Dashboard() {
                   setPendingDate(new Date());
                   setDateDialogOpen(true);
                 }}
-                className="mt-4 inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-bold text-white shadow-[0_10px_28px_-10px_hsl(258_70%_40%/0.55)] active:scale-95 transition-transform whitespace-nowrap"
+                className="mt-4 w-full flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-bold text-white shadow-[0_10px_28px_-10px_hsl(258_70%_40%/0.55)] active:scale-95 transition-transform text-center leading-tight"
                 style={{
                   background: "linear-gradient(135deg, hsl(258, 70%, 55%), hsl(280, 65%, 55%))",
                 }}
