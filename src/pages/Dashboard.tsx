@@ -631,6 +631,9 @@ export default function Dashboard() {
           )}
         </div></div>
 
+        {/* Extras da jornada de abstinência: SOS + gatilhos (a lista abaixo termina com "voltar para redução") */}
+        {isAbstinencia && <AbstinenceExtras />}
+
         {/* Mural — experiências compartilhadas */}
         <MuralPreview />
 
