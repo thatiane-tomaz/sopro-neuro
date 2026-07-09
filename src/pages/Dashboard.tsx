@@ -199,10 +199,13 @@ export default function Dashboard() {
   const hasHipnose: boolean = (gatilho as any)?.hipnose ?? true;
   const hasMissao: boolean = (gatilho as any)?.missao ?? true;
 
-  const videoInteraction = `video_semana_${posicao}`;
-  const hipnoseInteraction = `hipnose_semana_${posicao}`;
-  const missaoInteraction = `missao_semana_${posicao}`;
-  const missaoStartInteraction = `missao_iniciada_semana_${posicao}`;
+  // Keep interaction keys unique per journey type so completions in "redução"
+  // don't count as done in "abstinência" (and vice-versa).
+  const journeyKey = jornadaType === "abstinência" ? "abst_" : "";
+  const videoInteraction = `${journeyKey}video_semana_${posicao}`;
+  const hipnoseInteraction = `${journeyKey}hipnose_semana_${posicao}`;
+  const missaoInteraction = `${journeyKey}missao_semana_${posicao}`;
+  const missaoStartInteraction = `${journeyKey}missao_iniciada_semana_${posicao}`;
 
   const isInteractionFinished = (type: string) =>
     !!trackingData?.some((t) => t.interaction_type === type && t.finished_at !== null);
@@ -500,6 +503,8 @@ export default function Dashboard() {
 
   const isAbstinencia = jornadaType === "abstinência";
   const showQuitCTA = !lastCigDate && !isAbstinencia;
+  // Bloqueio: abstinência sem data do último cigarro precisa escolher antes de acessar a jornada.
+  const abstinenciaBloqueada = isAbstinencia && !lastCigDate;
 
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-32">
@@ -539,8 +544,99 @@ export default function Dashboard() {
           </div>
         </header>
 
+        {/* Bloqueio da jornada de abstinência até definir a data */}
+        {abstinenciaBloqueada && (
+          <Card className="mt-6 p-5 bg-white/95 backdrop-blur-md border-0 shadow-[0_20px_60px_-18px_hsl(258_70%_45%/0.35)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[hsl(258_80%_95%)] to-[hsl(220_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
+                <CalendarIcon className="h-6 w-6" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(258_80%_96%)] px-2 py-0.5 ring-1 ring-[hsl(258_70%_90%)]">
+                  <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
+                  <span className="text-[9px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+                    Jornada de abstinência
+                  </span>
+                </div>
+                <h3 className="mt-1.5 text-base font-bold text-foreground leading-tight text-balance">
+                  {showQuitDatePicker
+                    ? "Escolha a data do seu último cigarro"
+                    : "Defina a data para desbloquear sua jornada"}
+                </h3>
+              </div>
+            </div>
+
+            {!showQuitDatePicker ? (
+              <>
+                <p className="mt-3 text-[12px] text-muted-foreground leading-relaxed text-pretty">
+                  Assim que você viver o ritual do último cigarro, informe a data aqui para liberar os conteúdos da sua nova fase.
+                </p>
+                <Button
+                  className="mt-4 w-full rounded-xl bg-gradient-to-br from-[hsl(200_75%_48%)] to-[hsl(210_75%_55%)] text-primary-foreground shadow-md"
+                  onClick={() => {
+                    setQuitPickerDate(new Date());
+                    setShowQuitDatePicker(true);
+                  }}
+                >
+                  Informar data do último cigarro
+                </Button>
+              </>
+            ) : (
+              <>
+                <div className="mt-4 flex justify-center pointer-events-auto">
+                  <Calendar
+                    mode="single"
+                    selected={quitPickerDate}
+                    onSelect={setQuitPickerDate}
+                    locale={ptBR}
+                    disabled={(d) => d > new Date()}
+                    className="rounded-xl pointer-events-auto"
+                  />
+                </div>
+                {quitPickerDate && (
+                  <div className="mt-2 rounded-xl bg-[hsl(258_80%_97%)] px-3 py-2 text-center">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
+                    <p className="text-sm font-semibold text-foreground mt-0.5">
+                      {format(quitPickerDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                    </p>
+                  </div>
+                )}
+                <div className="mt-3 flex gap-2">
+                  <Button
+                    variant="outline"
+                    className="flex-1 rounded-xl"
+                    onClick={() => setShowQuitDatePicker(false)}
+                    disabled={savingDate}
+                  >
+                    Voltar
+                  </Button>
+                  <Button
+                    className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+                    disabled={!quitPickerDate || savingDate}
+                    onClick={async () => {
+                      if (!quitPickerDate) return;
+                      const y = quitPickerDate.getFullYear();
+                      const m = String(quitPickerDate.getMonth() + 1).padStart(2, "0");
+                      const d = String(quitPickerDate.getDate()).padStart(2, "0");
+                      await saveLastCigDate(`${y}-${m}-${d}`);
+                      setShowQuitDatePicker(false);
+                    }}
+                  >
+                    {savingDate ? "Salvando..." : "Confirmar"}
+                  </Button>
+                </div>
+              </>
+            )}
+
+            <p className="mt-3 text-[11px] text-muted-foreground text-center flex items-center justify-center gap-1">
+              <Lock className="h-3 w-3" />
+              Conteúdos da jornada liberam após confirmar a data.
+            </p>
+          </Card>
+        )}
+
         {/* Comece aqui (first-time only) */}
-        {!startHereSeen && (
+        {!abstinenciaBloqueada && !startHereSeen && (
           <div className="flex justify-center mt-6">
             <button
               onClick={() => {
@@ -564,6 +660,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {!abstinenciaBloqueada && (<>
         {/* Hábito em foco — hero */}
         <div className="text-center mt-6 px-2">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur px-3 py-1 ring-1 ring-[hsl(258_70%_88%)] shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
@@ -744,8 +841,8 @@ export default function Dashboard() {
           </Card>
         )}
 
-        {/* Inline date picker (after ritual explanation) */}
-        {showQuitDatePicker && !lastCigDate && (
+        {/* Inline date picker (fallback — usado apenas para redução) */}
+        {showQuitDatePicker && !lastCigDate && !isAbstinencia && (
           <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-2xl bg-[hsl(258_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
@@ -804,6 +901,7 @@ export default function Dashboard() {
             </div>
           </Card>
         )}
+        </>)}
       </div>
 
       <BottomNav />
@@ -881,6 +979,7 @@ export default function Dashboard() {
                 setRitualDialogOpen(false);
                 setQuitPickerDate(new Date());
                 setShowQuitDatePicker(true);
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             >
               🎉 Já fumei meu último cigarro
@@ -892,6 +991,8 @@ export default function Dashboard() {
                 const ok = await switchToAbstinencia();
                 if (!ok) return;
                 setRitualDialogOpen(false);
+                setShowQuitDatePicker(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             >
               🗓️ Vou fazer o ritual em breve
