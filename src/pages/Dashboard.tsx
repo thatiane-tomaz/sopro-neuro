@@ -558,7 +558,7 @@ export default function Dashboard() {
                     Ritual do último cigarro
                   </span>
                 </div>
-                <h3 className="mt-1.5 text-base font-bold text-foreground leading-tight text-balance">
+                <h3 className="mt-1.5 text-base font-bold text-[hsl(258_60%_35%)] leading-tight text-balance">
                   {showQuitDatePicker
                     ? "Quando foi seu último cigarro?"
                     : "Parabéns por dar esse passo!"}
