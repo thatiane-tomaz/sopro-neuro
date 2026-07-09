@@ -874,20 +874,28 @@ export default function Dashboard() {
           <DialogFooter className="px-5 pb-5 pt-3 flex-row gap-2 sm:gap-2">
             <Button
               variant="outline"
-              className="flex-1 rounded-xl"
-              onClick={() => setRitualDialogOpen(false)}
+              className="flex-1 rounded-xl h-auto py-3 whitespace-normal text-[12px] leading-tight"
+              disabled={switchingJornada}
+              onClick={async () => {
+                const ok = await switchToAbstinencia();
+                if (!ok) return;
+                setRitualDialogOpen(false);
+              }}
             >
-              Agora não
+              Ok, farei o ritual do último cigarro
             </Button>
             <Button
-              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
-              onClick={() => {
+              className="flex-1 rounded-xl h-auto py-3 whitespace-normal text-[12px] leading-tight bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+              disabled={switchingJornada}
+              onClick={async () => {
+                const ok = await switchToAbstinencia();
+                if (!ok) return;
                 setRitualDialogOpen(false);
                 setQuitPickerDate(new Date());
                 setShowQuitDatePicker(true);
               }}
             >
-              Escolher a data
+              🎉 Já fumei meu último cigarro
             </Button>
           </DialogFooter>
         </DialogContent>
