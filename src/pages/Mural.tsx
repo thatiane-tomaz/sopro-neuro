@@ -166,7 +166,7 @@ export default function Mural() {
           <p className="text-[13px] text-muted-foreground mt-2 leading-relaxed">
             {tema
               ? "Veja o que outras pessoas viveram nesse tema — e some a sua experiência."
-              : "Leia experiências de outras pessoas e, quando quiser, compartilhe a sua."}
+              : "Você não está sozinho!"}
           </p>
           {tema && (
             <button
