@@ -841,11 +841,11 @@ export default function Dashboard() {
               </span>
             </div>
             <DialogHeader className="mt-4 space-y-1 text-center">
-              <DialogTitle className="text-lg font-bold text-foreground text-center">
+              <DialogTitle className="text-lg font-bold text-foreground text-center text-balance">
                 O ritual do último cigarro
               </DialogTitle>
-              <DialogDescription className="text-[12px] text-muted-foreground text-center">
-                Um momento simbólico que marca uma virada real no seu cérebro.
+              <DialogDescription className="text-[12px] text-muted-foreground text-center text-balance px-2">
+                Um gesto simbólico que marca uma virada real na sua mente.
               </DialogDescription>
             </DialogHeader>
           </div>
