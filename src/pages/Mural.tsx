@@ -161,7 +161,7 @@ export default function Mural() {
 
         <div className="text-center mt-5 px-2">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
-            {tema ? tema : "Um espaço para dividir a jornada"}
+            {tema ? tema : (<>Um espaço para<br />compartilhar a jornada</>)}
           </h1>
           <p className="text-[13px] text-muted-foreground mt-2 leading-relaxed">
             {tema
