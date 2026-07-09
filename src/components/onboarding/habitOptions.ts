@@ -3,10 +3,10 @@
 
 export const EMOTION_OPTIONS: { label: string; habito: string }[] = [
   { label: "Quando estou ansioso(a)", habito: "Fumar quando está ansioso" },
-  { label: "Quando estou estressado(a)", habito: "Fumar quando está estressado" },
+  { label: "Quando estou estressado(a)", habito: "Fumar quando está ansioso" },
   { label: "Quando estou com tédio", habito: "Fumar quando está com tédio" },
-  { label: "Quando preciso me concentrar / focar", habito: "Fumar quando precisa focar" },
-  { label: "Quando preciso ser produtivo(a)", habito: "Fumar quando precisa ser produtivo" },
+  { label: "Quando preciso me concentrar / focar", habito: "Fumar para focar" },
+  { label: "Quando preciso ser produtivo(a)", habito: "Fumar para focar" },
   { label: "Para relaxar / descansar", habito: "Fumar para descansar" },
   { label: "Quando quero uma pausa no trabalho", habito: "Fumar para descansar" },
   { label: "Antes de encarar uma tarefa difícil", habito: "Fumar antes de tarefas" },
@@ -14,17 +14,17 @@ export const EMOTION_OPTIONS: { label: string; habito: string }[] = [
 
 export const MOMENT_OPTIONS: { label: string; habito: string }[] = [
   { label: "Ao acordar", habito: "Fumar ao acordar" },
-  { label: "Antes de dormir", habito: "Fumar antes de dormir" },
-  { label: "Dirigindo", habito: "Fumar dirigindo" },
-  { label: "Enquanto trabalho", habito: "Fumar enquanto trabalha" },
-  { label: "Em festas ou eventos sociais", habito: "Fumar durante festas" },
-  { label: "Vendo TV / séries / filmes", habito: "Fumar vendo TV" },
-  { label: "Jogando (videogame, celular)", habito: "Fumar jogando" },
-  { label: "Falando ao telefone", habito: "Fumar falando ao telefone" },
+  { label: "Antes de dormir", habito: "Gatilhos automáticos do dia a dia" },
+  { label: "Dirigindo", habito: "Gatilhos automáticos do dia a dia" },
+  { label: "Enquanto trabalho", habito: "Fumar durante o trabalho" },
+  { label: "Em festas ou eventos sociais", habito: "Fumar em situações sociais" },
+  { label: "Vendo TV / séries / filmes", habito: "Gatilhos automáticos do dia a dia" },
+  { label: "Jogando (videogame, celular)", habito: "Gatilhos automáticos do dia a dia" },
+  { label: "Falando ao telefone", habito: "Gatilhos automáticos do dia a dia" },
 ];
 
 export const SUBSTANCE_OPTIONS: { label: string; habito: string }[] = [
-  { label: "Bebendo álcool", habito: "Fumar enquanto bebe álcool" },
+  { label: "Bebendo álcool", habito: "Fumar em situações sociais" },
   { label: "Tomando café", habito: "Fumar após o café" },
   { label: "Depois das refeições", habito: "Fumar após as refeições" },
 ];
