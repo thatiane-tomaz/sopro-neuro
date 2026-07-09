@@ -90,7 +90,7 @@ export default function MuralPreview() {
               </p>
               {current.author_name && (
                 <p className="mt-1.5 text-[11px] font-semibold text-[hsl(258_60%_45%)]">
-                  — {current.author_name}
+                  {current.author_name}
                 </p>
               )}
             </div>

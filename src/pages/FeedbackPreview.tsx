@@ -18,7 +18,7 @@ const FeedbackPreview = () => {
       {feedbackQuestions.map((question) => (
         <Card key={question.day} className="border-primary/20 bg-card/50 backdrop-blur max-w-md mx-auto">
           <CardHeader>
-            <p className="text-xs font-semibold text-primary">Dia {question.day} — {question.type}</p>
+            <p className="text-xs font-semibold text-primary">Dia {question.day} · {question.type}</p>
             <CardDescription className="text-base">{question.question}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
