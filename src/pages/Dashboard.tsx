@@ -716,6 +716,7 @@ export default function Dashboard() {
             <Benefit icon={<HeartPulse className="h-5 w-5" />} label="Mais saúde" />
           </div>
         </Card>
+        {isAbstinencia && <AbstinenceExtras mode="return" />}
         {/* CTA — Decidir parar de fumar */}
         {showQuitCTA && !showQuitDatePicker && (
           <Card className="mt-6 p-5 bg-[hsl(45_80%_97%)] backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.04] rounded-2xl overflow-hidden relative">
