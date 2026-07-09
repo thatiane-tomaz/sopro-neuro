@@ -805,6 +805,69 @@ export default function Dashboard() {
         onOpenChange={setSmokingDialogOpen}
       />
 
+      {/* Ritual do último cigarro */}
+      <Dialog open={ritualDialogOpen} onOpenChange={setRitualDialogOpen}>
+        <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
+          <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-6 pb-5 text-center">
+            <div className="mx-auto h-14 w-14 rounded-2xl bg-white text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
+              <span className="relative inline-flex items-center justify-center">
+                <Cigarette className="h-6 w-6" />
+                <Ban className="h-6 w-6 absolute text-[hsl(258_60%_50%)]" strokeWidth={2.5} />
+              </span>
+            </div>
+            <DialogHeader className="mt-4 space-y-1 text-center">
+              <DialogTitle className="text-lg font-bold text-foreground text-center">
+                O ritual do último cigarro
+              </DialogTitle>
+              <DialogDescription className="text-[12px] text-muted-foreground text-center">
+                Um momento simbólico que marca uma virada real no seu cérebro.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="px-5 pt-4 pb-2 space-y-3">
+            <div className="rounded-2xl bg-[hsl(258_80%_97%)] px-4 py-3.5 ring-1 ring-[hsl(258_70%_92%)]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_60%_45%)]">
+                Faça o ritual
+              </p>
+              <p className="mt-1 text-[13px] leading-relaxed text-foreground/85">
+                Escolha um lugar tranquilo, respire fundo e viva conscientemente esse último cigarro.
+                Repare no cheiro, no gosto, no que você sente. Depois, diga em voz alta:
+                <span className="font-semibold text-foreground"> “esse é o meu último”</span>.
+                Esse gesto simples reforça a mudança e ajuda seu cérebro a fechar esse ciclo.
+              </p>
+            </div>
+            <div className="rounded-2xl bg-[hsl(220_80%_97%)] px-4 py-3.5 ring-1 ring-[hsl(220_70%_92%)]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(220_60%_45%)]">
+                Sua jornada vai mudar
+              </p>
+              <p className="mt-1 text-[13px] leading-relaxed text-foreground/85">
+                A partir dessa data, o app vai focar em te ajudar nos primeiros dias de abstinência —
+                com conteúdos, hábitos e missões pensados para atravessar as fissuras e sustentar sua nova identidade.
+              </p>
+            </div>
+          </div>
+          <DialogFooter className="px-5 pb-5 pt-3 flex-row gap-2 sm:gap-2">
+            <Button
+              variant="outline"
+              className="flex-1 rounded-xl"
+              onClick={() => setRitualDialogOpen(false)}
+            >
+              Agora não
+            </Button>
+            <Button
+              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+              onClick={() => {
+                setRitualDialogOpen(false);
+                setQuitPickerDate(new Date());
+                setShowQuitDatePicker(true);
+              }}
+            >
+              Escolher a data
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {missionDialogOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 backdrop-blur-sm sm:items-center sm:pt-8">
           <div className="relative my-auto w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
