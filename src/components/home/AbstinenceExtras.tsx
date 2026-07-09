@@ -33,7 +33,11 @@ interface TriggerItem {
   display_order: number | null;
 }
 
-export default function AbstinenceExtras() {
+export default function AbstinenceExtras({
+  mode = "extras",
+}: {
+  mode?: "extras" | "return";
+}) {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -127,6 +131,8 @@ export default function AbstinenceExtras() {
 
   return (
     <>
+      {mode === "extras" && (
+        <>
       {/* SOS */}
       <button
         onClick={handleSos}
@@ -204,9 +210,11 @@ export default function AbstinenceExtras() {
           onComplete={handleComplete}
         />
       )}
+        </>
+      )}
 
-      {/* Return to redução */}
-      <div className="mt-8">
+      {mode === "return" && (
+        <div className="mt-8">
         <button
           onClick={() => setConfirmOpen(true)}
           className="w-full flex items-center justify-center gap-2 rounded-2xl bg-white/70 backdrop-blur px-4 py-3 text-xs font-semibold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_90%)] shadow-sm active:scale-[0.98] transition-transform"
@@ -214,7 +222,8 @@ export default function AbstinenceExtras() {
           <RotateCcw className="h-4 w-4" />
           Voltei a fumar, quero retornar à jornada de redução
         </button>
-      </div>
+        </div>
+      )}
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent className="max-w-sm rounded-3xl border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
