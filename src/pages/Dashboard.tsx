@@ -660,6 +660,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {!abstinenciaBloqueada && (<>
         {/* Hábito em foco — hero */}
         <div className="text-center mt-6 px-2">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur px-3 py-1 ring-1 ring-[hsl(258_70%_88%)] shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
@@ -840,8 +841,8 @@ export default function Dashboard() {
           </Card>
         )}
 
-        {/* Inline date picker (after ritual explanation) */}
-        {showQuitDatePicker && !lastCigDate && (
+        {/* Inline date picker (fallback — usado apenas para redução) */}
+        {showQuitDatePicker && !lastCigDate && !isAbstinencia && (
           <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-2xl bg-[hsl(258_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
