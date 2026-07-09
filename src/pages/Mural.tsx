@@ -165,7 +165,7 @@ export default function Mural() {
           </h1>
           <p className="text-[13px] text-muted-foreground mt-2 leading-relaxed">
             {tema
-              ? "Veja o que outras pessoas viveram nesse tema — e some a sua experiência."
+              ? "Veja o que outras pessoas viveram nesse tema. Some a sua experiência."
               : "Você não está sozinho!"}
           </p>
           {tema && (
@@ -237,7 +237,7 @@ export default function Mural() {
                 Compartilhe no mural
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Uma frase, um insight, uma virada — pode inspirar outra pessoa hoje.
+                Uma frase, um insight, uma virada pode inspirar outra pessoa hoje.
               </DialogDescription>
             </DialogHeader>
           </div>
