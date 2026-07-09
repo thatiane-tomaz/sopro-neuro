@@ -109,6 +109,9 @@ export default function Dashboard() {
   const [startHereSeen, setStartHereSeen] = useState(true);
   const [missionDialogOpen, setMissionDialogOpen] = useState(false);
   const [smokingDialogOpen, setSmokingDialogOpen] = useState(false);
+  const [ritualDialogOpen, setRitualDialogOpen] = useState(false);
+  const [showQuitDatePicker, setShowQuitDatePicker] = useState(false);
+  const [quitPickerDate, setQuitPickerDate] = useState<Date | undefined>(new Date());
 
   const { logs: smokingLogs, isLoading: smokingLogsLoading } = useSmokingLogs();
 
