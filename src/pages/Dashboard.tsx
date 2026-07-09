@@ -745,51 +745,61 @@ export default function Dashboard() {
       />
 
       {missionDialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[hsl(258_40%_10%/0.55)] px-4 pb-[max(env(safe-area-inset-bottom),16px)] pt-8 backdrop-blur-sm sm:items-center">
-          <div className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
+        <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 backdrop-blur-sm sm:items-center sm:pt-8">
+          <div className="relative my-auto w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
             <button
               onClick={() => setMissionDialogOpen(false)}
               aria-label="Fechar"
-              className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] transition hover:text-foreground active:scale-95"
+              className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] transition hover:text-foreground active:scale-95"
             >
               <X className="h-4 w-4" />
             </button>
-            <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-5 pb-5 pt-6">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[hsl(258_65%_52%)] shadow-sm ring-1 ring-black/[0.03]">
-                <Sparkles className="h-7 w-7" />
+            <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-6 pb-7 pt-8">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-[hsl(258_65%_52%)] shadow-sm ring-1 ring-black/[0.03]">
+                <Sparkles className="h-8 w-8" />
               </div>
-              <h2 className="mt-4 text-center text-xl font-bold leading-tight text-foreground">
+              <p className="mt-5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-[hsl(258_50%_55%)]">
+                Sua missão
+              </p>
+              <h2 className="mt-2 text-center text-2xl font-bold leading-tight text-foreground">
                 {tituloGatilho}
               </h2>
             </div>
 
-            <div className="px-5 py-5">
-              <div className="rounded-2xl bg-[hsl(258_80%_97%)] px-4 py-4 ring-1 ring-[hsl(258_70%_92%)]">
-                <p className="text-sm font-semibold text-[hsl(258_60%_42%)]">Sua missão</p>
-                <p className="mt-2 text-sm leading-relaxed text-foreground/85">
+            <div className="px-6 py-6">
+              <div className="rounded-2xl bg-[hsl(258_80%_97%)] px-5 py-5 ring-1 ring-[hsl(258_70%_92%)]">
+                <p className="text-[15px] leading-[1.65] text-foreground/85 whitespace-pre-line">
                   {explicacaoDesafio}
                 </p>
               </div>
 
-              <button
-                onClick={openMissionChat}
-                disabled={missaoLocked || weeklyMissaoDone}
-                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_-12px_hsl(258_70%_40%/0.7)] active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
-              >
-                {missaoLocked ? (
-                  <>
-                    <Lock className="h-4 w-4" />
-                    Disponível em {missaoCountdown}
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4" />
-                    Conversar sobre a missão
-                  </>
-                )}
-              </button>
+              <div className="mt-6 space-y-2.5">
+                <button
+                  onClick={() => setMissionDialogOpen(false)}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3.5 text-sm font-semibold text-[hsl(258_60%_42%)] ring-1 ring-[hsl(258_70%_88%)] shadow-sm active:scale-[0.98] transition-transform"
+                >
+                  Ainda vou viver essa missão
+                </button>
+                <button
+                  onClick={openMissionChat}
+                  disabled={missaoLocked || weeklyMissaoDone}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_-12px_hsl(258_70%_40%/0.7)] active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
+                >
+                  {missaoLocked ? (
+                    <>
+                      <Lock className="h-4 w-4" />
+                      Disponível em {missaoCountdown}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      Concluir a missão
+                    </>
+                  )}
+                </button>
+              </div>
               {missaoLocked && (
-                <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
+                <p className="mt-4 text-center text-[11px] leading-relaxed text-muted-foreground">
                   Viva sua missão por 3 dias. Depois desse período, você poderá conversar com o chat sobre a experiência.
                 </p>
               )}
