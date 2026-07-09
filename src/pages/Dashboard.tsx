@@ -638,7 +638,7 @@ export default function Dashboard() {
         <MuralPreview />
 
         {/* Last cigarette date card (abstinência sem data ainda) */}
-        {isAbstinencia && !lastCigDate && (
+        {isAbstinencia && !lastCigDate && !showQuitDatePicker && (
           <Card className="mt-6 p-5 bg-white/85 backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.3)] ring-1 ring-black/[0.03] rounded-2xl">
             <div className="flex items-start gap-3">
               <div className="h-10 w-10 rounded-xl bg-[hsl(258_80%_95%)] flex items-center justify-center flex-shrink-0">
