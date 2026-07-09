@@ -12,6 +12,14 @@ import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import brainImg from "@/assets/brain-user.png";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -69,6 +77,13 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [missionCompleted, setMissionCompleted] = useState(false);
+  const [pendingMissionEnd, setPendingMissionEnd] = useState<
+    | {
+        parsed: { performance?: string; resumo_mural?: string; consentiu_postar?: boolean };
+        transcript: Msg[];
+      }
+    | null
+  >(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
