@@ -555,7 +555,7 @@ export default function Dashboard() {
                 <div className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(258_80%_96%)] px-2 py-0.5 ring-1 ring-[hsl(258_70%_90%)]">
                   <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
                   <span className="text-[9px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-                    Jornada de abstinência
+                    Ritual do último cigarro
                   </span>
                 </div>
                 <h3 className="mt-1.5 text-base font-bold text-foreground leading-tight text-balance">
@@ -630,7 +630,7 @@ export default function Dashboard() {
 
             <p className="mt-3 text-[11px] text-muted-foreground text-center flex items-center justify-center gap-1">
               <Lock className="h-3 w-3" />
-              Conteúdos da jornada liberam após confirmar a data.
+              Conteúdos serão liberados após informar a data.
             </p>
           </Card>
         )}
