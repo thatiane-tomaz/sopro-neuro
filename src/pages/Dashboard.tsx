@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -59,6 +59,7 @@ import PageLoader from "@/components/home/PageLoader";
 import StartHereStory from "@/components/StartHereStory";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
 import MuralPreview from "@/components/mural/MuralPreview";
+import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
 import soproLogo from "@/assets/sopro-logo.png";
@@ -93,6 +94,7 @@ export default function Dashboard() {
   const { loading: subLoading, isPremium, isExpired } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const [tick, setTick] = useState(0);
   useEffect(() => {
@@ -112,6 +114,7 @@ export default function Dashboard() {
   const [ritualDialogOpen, setRitualDialogOpen] = useState(false);
   const [showQuitDatePicker, setShowQuitDatePicker] = useState(false);
   const [quitPickerDate, setQuitPickerDate] = useState<Date | undefined>(new Date());
+  const [switchingJornada, setSwitchingJornada] = useState(false);
 
   const { logs: smokingLogs, isLoading: smokingLogsLoading } = useSmokingLogs();
 
