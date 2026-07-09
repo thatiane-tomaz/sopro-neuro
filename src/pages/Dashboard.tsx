@@ -560,8 +560,8 @@ export default function Dashboard() {
                 </div>
                 <h3 className="mt-1.5 text-base font-bold text-foreground leading-tight text-balance">
                   {showQuitDatePicker
-                    ? "Escolha a data do seu último cigarro"
-                    : "Defina a data para desbloquear sua jornada"}
+                    ? "Quando foi seu último cigarro?"
+                    : "Parabéns por dar esse passo!"}
                 </h3>
               </div>
             </div>
@@ -569,7 +569,7 @@ export default function Dashboard() {
             {!showQuitDatePicker ? (
               <>
                 <p className="mt-3 text-[12px] text-muted-foreground leading-relaxed text-pretty">
-                  Assim que você viver o ritual do último cigarro, informe a data aqui para liberar os conteúdos da sua nova fase.
+                  Escolher parar de fumar é uma conquista enorme. Registre a data do seu último cigarro para marcar o início da sua nova fase.
                 </p>
                 <Button
                   className="mt-4 w-full rounded-xl bg-gradient-to-br from-[hsl(200_75%_48%)] to-[hsl(210_75%_55%)] text-primary-foreground shadow-md"
