@@ -741,34 +741,6 @@ export default function Dashboard() {
         {/* Mural — experiências compartilhadas */}
         <MuralPreview />
 
-        {/* Last cigarette date card (abstinência sem data ainda) */}
-        {isAbstinencia && !lastCigDate && !showQuitDatePicker && (
-          <Card className="mt-6 p-5 bg-white/85 backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.3)] ring-1 ring-black/[0.03] rounded-2xl">
-            <div className="flex items-start gap-3">
-              <div className="h-10 w-10 rounded-xl bg-[hsl(258_80%_95%)] flex items-center justify-center flex-shrink-0">
-                <CalendarIcon className="h-5 w-5 text-[hsl(258_60%_50%)]" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-foreground">Qual foi a data do seu último cigarro?</h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Essa informação é <span className="text-[hsl(258_60%_50%)] font-medium">essencial</span> para acompanhar sua evolução e <span className="text-[hsl(258_60%_50%)] font-medium">celebrar cada conquista</span>.
-                </p>
-                <input
-                  type="date"
-                  max={new Date().toISOString().slice(0, 10)}
-                  onChange={(e) => e.target.value && saveLastCigDate(e.target.value)}
-                  disabled={savingDate}
-                  className="mt-3 w-full rounded-xl bg-white px-3 py-2.5 text-sm shadow-[inset_0_0_0_1px_hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)]"
-                />
-                <p className="text-[11px] text-muted-foreground mt-2 flex items-center gap-1">
-                  <Lock className="h-3 w-3" />
-                  Você poderá editar a data depois, se necessário.
-                </p>
-              </div>
-            </div>
-          </Card>
-        )}
-
         {/* Progress / savings card */}
         <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
           <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
