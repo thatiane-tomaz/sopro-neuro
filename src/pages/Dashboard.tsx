@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -59,6 +59,7 @@ import PageLoader from "@/components/home/PageLoader";
 import StartHereStory from "@/components/StartHereStory";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
 import MuralPreview from "@/components/mural/MuralPreview";
+import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
 import soproLogo from "@/assets/sopro-logo.png";
@@ -93,6 +94,7 @@ export default function Dashboard() {
   const { loading: subLoading, isPremium, isExpired } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const [tick, setTick] = useState(0);
   useEffect(() => {
@@ -112,6 +114,7 @@ export default function Dashboard() {
   const [ritualDialogOpen, setRitualDialogOpen] = useState(false);
   const [showQuitDatePicker, setShowQuitDatePicker] = useState(false);
   const [quitPickerDate, setQuitPickerDate] = useState<Date | undefined>(new Date());
+  const [switchingJornada, setSwitchingJornada] = useState(false);
 
   const { logs: smokingLogs, isLoading: smokingLogsLoading } = useSmokingLogs();
 
@@ -459,6 +462,23 @@ export default function Dashboard() {
     refetchOnboarding();
   };
 
+  // Switch journey to "abstinência" (insert a new row on historico_jornada_usuario)
+  const switchToAbstinencia = async () => {
+    if (!user) return false;
+    setSwitchingJornada(true);
+    const { error } = await supabase
+      .from("historico_jornada_usuario")
+      .insert({ user_id: user.id, jornada: "abstinencia" } as any);
+    setSwitchingJornada(false);
+    if (error) {
+      toast({ title: "Erro", description: error.message, variant: "destructive" });
+      return false;
+    }
+    await queryClient.invalidateQueries({ queryKey: ["jornada-type"] });
+    await queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
+    return true;
+  };
+
   if (authLoading || profileLoading || adminLoading || contentLoading || trackingLoading || subLoading) {
     return <PageLoader />;
   }
@@ -478,7 +498,8 @@ export default function Dashboard() {
     navigate("/");
   };
 
-  const showQuitCTA = !lastCigDate;
+  const isAbstinencia = jornadaType === "abstinência";
+  const showQuitCTA = !lastCigDate && !isAbstinencia;
 
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-32">
@@ -610,11 +631,14 @@ export default function Dashboard() {
           )}
         </div></div>
 
+        {/* Extras da jornada de abstinência: SOS + gatilhos (a lista abaixo termina com "voltar para redução") */}
+        {isAbstinencia && <AbstinenceExtras />}
+
         {/* Mural — experiências compartilhadas */}
         <MuralPreview />
 
-        {/* Last cigarette date card (legacy Phase 2, no date yet) */}
-        {phaseNumber === 2 && !lastCigDate && (
+        {/* Last cigarette date card (abstinência sem data ainda) */}
+        {isAbstinencia && !lastCigDate && !showQuitDatePicker && (
           <Card className="mt-6 p-5 bg-white/85 backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.3)] ring-1 ring-black/[0.03] rounded-2xl">
             <div className="flex items-start gap-3">
               <div className="h-10 w-10 rounded-xl bg-[hsl(258_80%_95%)] flex items-center justify-center flex-shrink-0">
@@ -692,6 +716,7 @@ export default function Dashboard() {
             <Benefit icon={<HeartPulse className="h-5 w-5" />} label="Mais saúde" />
           </div>
         </Card>
+        {isAbstinencia && <AbstinenceExtras mode="return" />}
         {/* CTA — Decidir parar de fumar */}
         {showQuitCTA && !showQuitDatePicker && (
           <Card className="mt-6 p-5 bg-[hsl(45_80%_97%)] backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.04] rounded-2xl overflow-hidden relative">
@@ -720,7 +745,7 @@ export default function Dashboard() {
         )}
 
         {/* Inline date picker (after ritual explanation) */}
-        {showQuitCTA && showQuitDatePicker && (
+        {showQuitDatePicker && !lastCigDate && (
           <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-2xl bg-[hsl(258_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
@@ -849,20 +874,28 @@ export default function Dashboard() {
           <DialogFooter className="px-5 pb-5 pt-3 flex-row gap-2 sm:gap-2">
             <Button
               variant="outline"
-              className="flex-1 rounded-xl"
-              onClick={() => setRitualDialogOpen(false)}
+              className="flex-1 rounded-xl h-auto py-3 whitespace-normal text-[12px] leading-tight"
+              disabled={switchingJornada}
+              onClick={async () => {
+                const ok = await switchToAbstinencia();
+                if (!ok) return;
+                setRitualDialogOpen(false);
+              }}
             >
-              Agora não
+              Ok, farei o ritual do último cigarro
             </Button>
             <Button
-              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
-              onClick={() => {
+              className="flex-1 rounded-xl h-auto py-3 whitespace-normal text-[12px] leading-tight bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+              disabled={switchingJornada}
+              onClick={async () => {
+                const ok = await switchToAbstinencia();
+                if (!ok) return;
                 setRitualDialogOpen(false);
                 setQuitPickerDate(new Date());
                 setShowQuitDatePicker(true);
               }}
             >
-              Escolher a data
+              🎉 Já fumei meu último cigarro
             </Button>
           </DialogFooter>
         </DialogContent>
