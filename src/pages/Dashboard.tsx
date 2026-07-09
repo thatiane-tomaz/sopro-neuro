@@ -693,7 +693,7 @@ export default function Dashboard() {
           </div>
         </Card>
         {/* CTA — Decidir parar de fumar */}
-        {showQuitCTA && (
+        {showQuitCTA && !showQuitDatePicker && (
           <Card className="mt-6 p-5 bg-[hsl(45_80%_97%)] backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.04] rounded-2xl overflow-hidden relative">
             <div className="relative z-10">
               <h3 className="text-base font-bold text-foreground leading-snug">
@@ -703,10 +703,7 @@ export default function Dashboard() {
                 Quando você se sentir pronto para viver completamente sem cigarro, estaremos aqui para te apoiar.
               </p>
               <button
-                onClick={() => {
-                  setPendingDate(new Date());
-                  setDateDialogOpen(true);
-                }}
+                onClick={() => setRitualDialogOpen(true)}
                 className="mt-4 w-full flex items-center justify-center gap-2 rounded-full px-3 py-3 text-[11px] font-bold text-white shadow-[0_10px_28px_-10px_hsl(258_70%_40%/0.55)] active:scale-95 transition-transform text-center leading-tight whitespace-nowrap"
                 style={{
                   background: "linear-gradient(135deg, hsl(258, 70%, 55%), hsl(280, 65%, 55%))",
@@ -718,6 +715,67 @@ export default function Dashboard() {
                 </span>
                 Estou pronto para meu último cigarro
               </button>
+            </div>
+          </Card>
+        )}
+
+        {/* Inline date picker (after ritual explanation) */}
+        {showQuitCTA && showQuitDatePicker && (
+          <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-2xl bg-[hsl(258_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
+                <CalendarIcon className="h-5 w-5" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-bold text-foreground leading-tight">
+                  Quando foi seu último cigarro?
+                </h3>
+                <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                  Escolha o dia para começarmos sua nova jornada.
+                </p>
+              </div>
+            </div>
+            <div className="mt-3 flex justify-center">
+              <Calendar
+                mode="single"
+                selected={quitPickerDate}
+                onSelect={setQuitPickerDate}
+                locale={ptBR}
+                disabled={(d) => d > new Date()}
+                className="rounded-xl"
+              />
+            </div>
+            {quitPickerDate && (
+              <div className="mt-2 rounded-xl bg-[hsl(258_80%_97%)] px-3 py-2 text-center">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
+                <p className="text-sm font-semibold text-foreground mt-0.5">
+                  {format(quitPickerDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                </p>
+              </div>
+            )}
+            <div className="mt-3 flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1 rounded-xl"
+                onClick={() => setShowQuitDatePicker(false)}
+                disabled={savingDate}
+              >
+                Cancelar
+              </Button>
+              <Button
+                className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+                disabled={!quitPickerDate || savingDate}
+                onClick={async () => {
+                  if (!quitPickerDate) return;
+                  const y = quitPickerDate.getFullYear();
+                  const m = String(quitPickerDate.getMonth() + 1).padStart(2, "0");
+                  const d = String(quitPickerDate.getDate()).padStart(2, "0");
+                  await saveLastCigDate(`${y}-${m}-${d}`);
+                  setShowQuitDatePicker(false);
+                }}
+              >
+                {savingDate ? "Salvando..." : "Confirmar data"}
+              </Button>
             </div>
           </Card>
         )}
