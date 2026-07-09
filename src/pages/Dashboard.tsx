@@ -660,7 +660,14 @@ export default function Dashboard() {
           </div>
         )}
 
-        {!abstinenciaBloqueada && (<>
+        <div
+          className={
+            abstinenciaBloqueada
+              ? "pointer-events-none opacity-50 select-none"
+              : ""
+          }
+          aria-hidden={abstinenciaBloqueada}
+        >
         {/* Hábito em foco — hero */}
         <div className="text-center mt-6 px-2">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur px-3 py-1 ring-1 ring-[hsl(258_70%_88%)] shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
@@ -901,7 +908,7 @@ export default function Dashboard() {
             </div>
           </Card>
         )}
-        </>)}
+        </div>
       </div>
 
       <BottomNav />
