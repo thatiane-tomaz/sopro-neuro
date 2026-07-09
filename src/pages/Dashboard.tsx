@@ -462,6 +462,23 @@ export default function Dashboard() {
     refetchOnboarding();
   };
 
+  // Switch journey to "abstinência" (insert a new row on historico_jornada_usuario)
+  const switchToAbstinencia = async () => {
+    if (!user) return false;
+    setSwitchingJornada(true);
+    const { error } = await supabase
+      .from("historico_jornada_usuario")
+      .insert({ user_id: user.id, jornada: "abstinencia" } as any);
+    setSwitchingJornada(false);
+    if (error) {
+      toast({ title: "Erro", description: error.message, variant: "destructive" });
+      return false;
+    }
+    await queryClient.invalidateQueries({ queryKey: ["jornada-type"] });
+    await queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
+    return true;
+  };
+
   if (authLoading || profileLoading || adminLoading || contentLoading || trackingLoading || subLoading) {
     return <PageLoader />;
   }
