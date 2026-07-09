@@ -871,21 +871,9 @@ export default function Dashboard() {
               </p>
             </div>
           </div>
-          <DialogFooter className="px-5 pb-5 pt-3 flex-row gap-2 sm:gap-2">
+          <DialogFooter className="px-5 pb-5 pt-3 flex-col gap-2 sm:flex-col sm:gap-2">
             <Button
-              variant="outline"
-              className="flex-1 rounded-xl h-auto py-3 whitespace-normal text-[12px] leading-tight"
-              disabled={switchingJornada}
-              onClick={async () => {
-                const ok = await switchToAbstinencia();
-                if (!ok) return;
-                setRitualDialogOpen(false);
-              }}
-            >
-              Ok, farei o ritual do último cigarro
-            </Button>
-            <Button
-              className="flex-1 rounded-xl h-auto py-3 whitespace-normal text-[12px] leading-tight bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+              className="w-full rounded-xl h-auto py-3 whitespace-nowrap text-[13px] leading-none bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
               disabled={switchingJornada}
               onClick={async () => {
                 const ok = await switchToAbstinencia();
@@ -896,6 +884,17 @@ export default function Dashboard() {
               }}
             >
               🎉 Já fumei meu último cigarro
+            </Button>
+            <Button
+              className="w-full rounded-xl h-auto py-3 whitespace-nowrap text-[13px] leading-none bg-gradient-to-br from-[hsl(200_75%_48%)] to-[hsl(210_75%_55%)] text-primary-foreground shadow-md hover:opacity-95"
+              disabled={switchingJornada}
+              onClick={async () => {
+                const ok = await switchToAbstinencia();
+                if (!ok) return;
+                setRitualDialogOpen(false);
+              }}
+            >
+              🗓️ Vou fazer o ritual em breve
             </Button>
           </DialogFooter>
         </DialogContent>
