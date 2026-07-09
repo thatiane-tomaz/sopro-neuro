@@ -199,10 +199,13 @@ export default function Dashboard() {
   const hasHipnose: boolean = (gatilho as any)?.hipnose ?? true;
   const hasMissao: boolean = (gatilho as any)?.missao ?? true;
 
-  const videoInteraction = `video_semana_${posicao}`;
-  const hipnoseInteraction = `hipnose_semana_${posicao}`;
-  const missaoInteraction = `missao_semana_${posicao}`;
-  const missaoStartInteraction = `missao_iniciada_semana_${posicao}`;
+  // Keep interaction keys unique per journey type so completions in "redução"
+  // don't count as done in "abstinência" (and vice-versa).
+  const journeyKey = jornadaType === "abstinência" ? "abst_" : "";
+  const videoInteraction = `${journeyKey}video_semana_${posicao}`;
+  const hipnoseInteraction = `${journeyKey}hipnose_semana_${posicao}`;
+  const missaoInteraction = `${journeyKey}missao_semana_${posicao}`;
+  const missaoStartInteraction = `${journeyKey}missao_iniciada_semana_${posicao}`;
 
   const isInteractionFinished = (type: string) =>
     !!trackingData?.some((t) => t.interaction_type === type && t.finished_at !== null);
