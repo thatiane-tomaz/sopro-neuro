@@ -503,6 +503,8 @@ export default function Dashboard() {
 
   const isAbstinencia = jornadaType === "abstinência";
   const showQuitCTA = !lastCigDate && !isAbstinencia;
+  // Bloqueio: abstinência sem data do último cigarro precisa escolher antes de acessar a jornada.
+  const abstinenciaBloqueada = isAbstinencia && !lastCigDate;
 
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-32">
@@ -884,6 +886,7 @@ export default function Dashboard() {
                 setRitualDialogOpen(false);
                 setQuitPickerDate(new Date());
                 setShowQuitDatePicker(true);
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             >
               🎉 Já fumei meu último cigarro
@@ -895,6 +898,8 @@ export default function Dashboard() {
                 const ok = await switchToAbstinencia();
                 if (!ok) return;
                 setRitualDialogOpen(false);
+                setShowQuitDatePicker(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             >
               🗓️ Vou fazer o ritual em breve
