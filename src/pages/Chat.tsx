@@ -555,6 +555,62 @@ export default function Chat() {
           Sou seu amigo virtual. Em caso de emergência ou crise, ligue 188 (CVV).
         </p>
       </div>
+
+      <Dialog
+        open={!!pendingMissionEnd}
+        onOpenChange={(open) => {
+          if (!open) return; // prevent closing without a choice
+        }}
+      >
+        <DialogContent
+          className="max-w-md rounded-3xl"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle>Concluir missão</DialogTitle>
+            <DialogDescription>
+              Deseja compartilhar um resumo da sua experiência no mural, de forma anônima, para ajudar outras pessoas?
+            </DialogDescription>
+          </DialogHeader>
+          {pendingMissionEnd?.parsed?.resumo_mural && (
+            <div className="rounded-2xl bg-[hsl(258_70%_97%)] ring-1 ring-[hsl(258_70%_90%)] px-4 py-3 text-sm text-foreground/90 whitespace-pre-wrap">
+              {pendingMissionEnd.parsed.resumo_mural}
+            </div>
+          )}
+          <div className="flex flex-col gap-2 pt-2">
+            <Button
+              onClick={() => {
+                if (!pendingMissionEnd) return;
+                const { parsed, transcript } = pendingMissionEnd;
+                setPendingMissionEnd(null);
+                void finalizeMission(
+                  { ...parsed, consentiu_postar: true },
+                  transcript,
+                );
+              }}
+              className="w-full"
+            >
+              Sim, compartilhar no mural
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (!pendingMissionEnd) return;
+                const { parsed, transcript } = pendingMissionEnd;
+                setPendingMissionEnd(null);
+                void finalizeMission(
+                  { ...parsed, consentiu_postar: false },
+                  transcript,
+                );
+              }}
+              className="w-full"
+            >
+              Não, apenas concluir
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
