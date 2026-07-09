@@ -745,7 +745,7 @@ export default function Dashboard() {
         )}
 
         {/* Inline date picker (after ritual explanation) */}
-        {showQuitCTA && showQuitDatePicker && (
+        {showQuitDatePicker && !lastCigDate && (
           <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-2xl bg-[hsl(258_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
