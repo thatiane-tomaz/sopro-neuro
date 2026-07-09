@@ -343,21 +343,24 @@ MISSÃO: ${titulo}
 DESCRIÇÃO DA MISSÃO (o usuário já viu): ${explicacao}
 OBJETIVO OCULTO DA CONVERSA (NUNCA revele nem cite ao usuário — use apenas como direcionamento): ${objetivo}
 
-FLUXO OBRIGATÓRIO:
-1) Faça 2 a 4 perguntas curtas para entender como foi a experiência do usuário com a missão (o que sentiu, o que descobriu, dificuldades, aprendizados). Uma pergunta por mensagem.
-2) Encerre com uma mensagem final que contenha, nesta ordem:
+FLUXO OBRIGATÓRIO (siga em turnos SEPARADOS — NUNCA junte etapas na mesma mensagem):
+1) Faça 2 a 4 perguntas curtas, uma por mensagem, para entender como foi a experiência do usuário com a missão (o que sentiu, o que descobriu, dificuldades, aprendizados). Aguarde a resposta do usuário entre cada pergunta.
+2) Quando tiver material suficiente, envie UMA mensagem contendo, nesta ordem:
    a) Parabenize o usuário por ter completado a missão.
    b) Motive-o a continuar na jornada (1 frase curta, natural).
-   c) Escreva um resumo bem simples (2 a 3 frases) da experiência dele — algo que possa virar um post curto num mural coletivo, sem dados sensíveis, em 1ª pessoa como se fosse o próprio usuário falando.
-   d) Pergunte se ele autoriza publicar esse resumo no mural.
-3) Após a resposta do usuário à autorização, envie a MENSAGEM DE FECHAMENTO. Ela deve:
-   - Ter uma frase curta de despedida acolhedora.
-   - Terminar OBRIGATORIAMENTE com um bloco JSON invisível exatamente neste formato (sem markdown, sem crases, tudo em uma linha), começando com [MISSION_END] e terminando com [/MISSION_END]:
-     [MISSION_END]{"performance":"<uma das: Quebrou o hábito | Enfraqueceu o hábito | Melhorou consciência sobre o hábito | Não teve impacto positivo>","resumo_mural":"<o mesmo resumo que você propôs>","consentiu_postar":<true|false>}[/MISSION_END]
+   c) Escreva um resumo simples (2 a 3 frases) da experiência dele — algo que possa virar um post curto num mural coletivo, sem dados sensíveis, em 1ª pessoa como se fosse o próprio usuário falando.
+   d) Encerre com uma frase curta de despedida acolhedora, deixando claro que ao concluir a missão o app perguntará se ele quer publicar esse resumo no mural.
+   IMPORTANTE: essa mensagem NÃO deve fazer pergunta aberta ao usuário — a decisão de publicar será feita depois, fora do chat, num diálogo do app. NÃO peça resposta do usuário sobre autorização aqui.
+   ESSA é a MENSAGEM FINAL, e ela DEVE terminar OBRIGATORIAMENTE com um bloco JSON invisível exatamente neste formato (sem markdown, sem crases, tudo em uma linha), começando com [MISSION_END] e terminando com [/MISSION_END]:
+     [MISSION_END]{"performance":"<uma das: Quebrou o hábito | Enfraqueceu o hábito | Melhorou consciência sobre o hábito | Não teve impacto positivo>","resumo_mural":"<o mesmo resumo que você propôs em (c)>","consentiu_postar":false}[/MISSION_END]
    - performance deve refletir sua avaliação sincera do impacto que a missão teve para o usuário, baseada nas respostas dele.
-   - consentiu_postar deve ser true APENAS se o usuário disse claramente que sim; qualquer negativa, dúvida ou pedido para editar => false.
+   - consentiu_postar sempre deve ser false — a autorização real será coletada pelo app após esse bloco.
 
-Não use o bloco [MISSION_END] antes da última mensagem. Nunca mencione ao usuário que existe esse bloco. Nunca peça "Pausa para refletir" nesse modo.`;
+REGRAS RÍGIDAS:
+- NUNCA inclua o bloco [MISSION_END] em nenhuma mensagem que não seja a MENSAGEM FINAL descrita no passo 2.
+- NUNCA misture o passo 1 (pergunta) com o passo 2 (fechamento) na mesma mensagem.
+- NUNCA mencione ao usuário que existe esse bloco.
+- NUNCA peça "Pausa para refletir" nesse modo.`;
     }
 
     const requestBody = {

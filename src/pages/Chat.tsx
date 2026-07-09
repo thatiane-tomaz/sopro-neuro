@@ -12,6 +12,14 @@ import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import brainImg from "@/assets/brain-user.png";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -69,6 +77,13 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [missionCompleted, setMissionCompleted] = useState(false);
+  const [pendingMissionEnd, setPendingMissionEnd] = useState<
+    | {
+        parsed: { performance?: string; resumo_mural?: string; consentiu_postar?: boolean };
+        transcript: Msg[];
+      }
+    | null
+  >(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
@@ -374,11 +389,21 @@ export default function Chat() {
           try {
             const parsed = JSON.parse(m[1]);
             const cleanedContent = assistantSoFar.replace(MISSION_END_RE, "").trim();
+            // Strip the tag from the displayed message
+            setMessages((prev) => {
+              const copy = [...prev];
+              const lastIdx = copy.length - 1;
+              if (copy[lastIdx]?.role === "assistant") {
+                copy[lastIdx] = { role: "assistant", content: cleanedContent };
+              }
+              return copy;
+            });
             const transcript: Msg[] = [
               ...next,
               { role: "assistant", content: cleanedContent },
             ];
-            void finalizeMission(parsed, transcript);
+            // Show explicit confirmation dialog before finalizing
+            setPendingMissionEnd({ parsed, transcript });
           } catch (e) {
             console.error("MISSION_END parse error:", e);
           }
@@ -530,6 +555,62 @@ export default function Chat() {
           Sou seu amigo virtual. Em caso de emergência ou crise, ligue 188 (CVV).
         </p>
       </div>
+
+      <Dialog
+        open={!!pendingMissionEnd}
+        onOpenChange={(open) => {
+          if (!open) return; // prevent closing without a choice
+        }}
+      >
+        <DialogContent
+          className="max-w-md rounded-3xl"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle>Concluir missão</DialogTitle>
+            <DialogDescription>
+              Deseja compartilhar um resumo da sua experiência no mural, de forma anônima, para ajudar outras pessoas?
+            </DialogDescription>
+          </DialogHeader>
+          {pendingMissionEnd?.parsed?.resumo_mural && (
+            <div className="rounded-2xl bg-[hsl(258_70%_97%)] ring-1 ring-[hsl(258_70%_90%)] px-4 py-3 text-sm text-foreground/90 whitespace-pre-wrap">
+              {pendingMissionEnd.parsed.resumo_mural}
+            </div>
+          )}
+          <div className="flex flex-col gap-2 pt-2">
+            <Button
+              onClick={() => {
+                if (!pendingMissionEnd) return;
+                const { parsed, transcript } = pendingMissionEnd;
+                setPendingMissionEnd(null);
+                void finalizeMission(
+                  { ...parsed, consentiu_postar: true },
+                  transcript,
+                );
+              }}
+              className="w-full"
+            >
+              Sim, compartilhar no mural
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (!pendingMissionEnd) return;
+                const { parsed, transcript } = pendingMissionEnd;
+                setPendingMissionEnd(null);
+                void finalizeMission(
+                  { ...parsed, consentiu_postar: false },
+                  transcript,
+                );
+              }}
+              className="w-full"
+            >
+              Não, apenas concluir
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
