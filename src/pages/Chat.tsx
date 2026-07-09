@@ -389,11 +389,21 @@ export default function Chat() {
           try {
             const parsed = JSON.parse(m[1]);
             const cleanedContent = assistantSoFar.replace(MISSION_END_RE, "").trim();
+            // Strip the tag from the displayed message
+            setMessages((prev) => {
+              const copy = [...prev];
+              const lastIdx = copy.length - 1;
+              if (copy[lastIdx]?.role === "assistant") {
+                copy[lastIdx] = { role: "assistant", content: cleanedContent };
+              }
+              return copy;
+            });
             const transcript: Msg[] = [
               ...next,
               { role: "assistant", content: cleanedContent },
             ];
-            void finalizeMission(parsed, transcript);
+            // Show explicit confirmation dialog before finalizing
+            setPendingMissionEnd({ parsed, transcript });
           } catch (e) {
             console.error("MISSION_END parse error:", e);
           }
