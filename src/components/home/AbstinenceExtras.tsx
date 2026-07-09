@@ -220,7 +220,7 @@ export default function AbstinenceExtras({
           className="w-full flex items-center justify-center gap-2 rounded-2xl bg-white/70 backdrop-blur px-4 py-3 text-xs font-semibold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_90%)] shadow-sm active:scale-[0.98] transition-transform"
         >
           <RotateCcw className="h-4 w-4" />
-          Voltei a fumar, quero retornar à jornada de redução
+          Voltar para a jornada de redução
         </button>
         </div>
       )}
