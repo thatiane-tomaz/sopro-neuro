@@ -762,10 +762,10 @@ export default function Dashboard() {
               <Cigarette className="h-5 w-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground leading-tight">
+              <p className="text-sm font-bold text-foreground leading-tight whitespace-nowrap">
                 Acompanhe sua evolução
               </p>
-              <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+              <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug whitespace-nowrap">
                 Veja seu gráfico de consumo e economia.
               </p>
             </div>
