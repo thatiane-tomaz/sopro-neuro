@@ -118,31 +118,6 @@ export default function Dashboard() {
 
   const { logs: smokingLogs, isLoading: smokingLogsLoading, upsert: upsertSmokingLog } = useSmokingLogs();
 
-  // Prompt the user for yesterday's cigarette count once per session
-  // (only if they haven't logged it yet). For users on the abstinência
-  // journey, we auto-fill 0 silently — they can still edit it later on
-  // the Progresso tab.
-  useEffect(() => {
-    if (!user || authLoading || smokingLogsLoading) return;
-    const alreadyLogged = smokingLogs.some((l) => l.log_date === yesterdayStr());
-    if (alreadyLogged) return;
-
-    if (jornadaType === "abstinência") {
-      // Silently record 0 for yesterday so the chart stays continuous.
-      upsertSmokingLog({ logDate: yesterdayStr(), count: 0 }).catch(() => {});
-      return;
-    }
-
-    const key = `smoking_prompt_shown_${user.id}_${yesterdayStr()}`;
-    if (sessionStorage.getItem(key)) return;
-    // Small delay so it doesn't overlap with page load animations
-    const t = setTimeout(() => {
-      setSmokingDialogOpen(true);
-      sessionStorage.setItem(key, "1");
-    }, 1200);
-    return () => clearTimeout(t);
-  }, [user, authLoading, smokingLogsLoading, smokingLogs, jornadaType, upsertSmokingLog]);
-
   // Schedule the daily "how many yesterday?" local notification on native.
   useEffect(() => {
     if (!user) return;
