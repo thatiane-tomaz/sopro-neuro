@@ -766,7 +766,7 @@ export default function Dashboard() {
                 Acompanhe sua evolução
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
-                Veja seu gráfico de consumo
+                Veja seu gráfico de consumo e economia.
               </p>
             </div>
             <div className="text-[hsl(258_60%_50%)] text-lg font-bold">→</div>
