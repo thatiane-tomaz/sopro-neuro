@@ -763,7 +763,7 @@ export default function Dashboard() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-foreground leading-tight">
-                Acompanhe cigarros evitados e economia
+                Veja quantos cigarros deixou de fumar e quanto já economizou
               </p>
               <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
                 Veja seu gráfico e registre o consumo do dia.
