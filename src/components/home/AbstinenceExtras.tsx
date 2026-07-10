@@ -232,10 +232,10 @@ export default function AbstinenceExtras({
         <DialogContent className="max-w-sm rounded-3xl border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
           <DialogHeader className="text-left">
             <DialogTitle className="text-base font-bold">
-              Voltar para a jornada de redução?
+              Percebeu que o hábito voltou?
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Tudo bem recomeçar. Vamos ajustar seus conteúdos para focar em reduzir aos poucos, sem cobrança.
+              Voltar para a jornada de redução pode ajudar você a recuperar o controle, enfraquecer os gatilhos e tornar a próxima tentativa de parar mais leve.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-row gap-2 sm:gap-2">
