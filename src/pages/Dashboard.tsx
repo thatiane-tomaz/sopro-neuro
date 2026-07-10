@@ -116,23 +116,7 @@ export default function Dashboard() {
   const [quitPickerDate, setQuitPickerDate] = useState<Date | undefined>(new Date());
   const [switchingJornada, setSwitchingJornada] = useState(false);
 
-  const { logs: smokingLogs, isLoading: smokingLogsLoading } = useSmokingLogs();
-
-  // Prompt the user for yesterday's cigarette count once per session
-  // (only if they haven't logged it yet).
-  useEffect(() => {
-    if (!user || authLoading || smokingLogsLoading) return;
-    const key = `smoking_prompt_shown_${user.id}_${yesterdayStr()}`;
-    if (sessionStorage.getItem(key)) return;
-    const alreadyLogged = smokingLogs.some((l) => l.log_date === yesterdayStr());
-    if (alreadyLogged) return;
-    // Small delay so it doesn't overlap with page load animations
-    const t = setTimeout(() => {
-      setSmokingDialogOpen(true);
-      sessionStorage.setItem(key, "1");
-    }, 1200);
-    return () => clearTimeout(t);
-  }, [user, authLoading, smokingLogsLoading, smokingLogs]);
+  const { logs: smokingLogs, isLoading: smokingLogsLoading, upsert: upsertSmokingLog } = useSmokingLogs();
 
   // Schedule the daily "how many yesterday?" local notification on native.
   useEffect(() => {
@@ -168,6 +152,31 @@ export default function Dashboard() {
       return raw === "abstinencia" ? "abstinência" : "redução";
     },
   });
+
+  // Prompt the user for yesterday's cigarette count once per session
+  // (only if they haven't logged it yet). For users on the abstinência
+  // journey, we auto-fill 0 silently — they can still edit it later on
+  // the Progresso tab.
+  useEffect(() => {
+    if (!user || authLoading || smokingLogsLoading) return;
+    const alreadyLogged = smokingLogs.some((l) => l.log_date === yesterdayStr());
+    if (alreadyLogged) return;
+
+    if (jornadaType === "abstinência") {
+      upsertSmokingLog({ logDate: yesterdayStr(), count: 0 }).catch(() => {});
+      return;
+    }
+
+    if (!jornadaType) return;
+
+    const key = `smoking_prompt_shown_${user.id}_${yesterdayStr()}`;
+    if (sessionStorage.getItem(key)) return;
+    const t = setTimeout(() => {
+      setSmokingDialogOpen(true);
+      sessionStorage.setItem(key, "1");
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [user, authLoading, smokingLogsLoading, smokingLogs, jornadaType, upsertSmokingLog]);
 
   // Current "gatilho" / posição of the user. For now everyone starts at posição 1.
   const { data: gatilho } = useQuery({
