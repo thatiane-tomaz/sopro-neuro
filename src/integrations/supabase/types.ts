@@ -305,18 +305,21 @@ export type Database = {
       historico_jornada_usuario: {
         Row: {
           created_at: string
+          habitos_selecionados: Json | null
           id: string
           jornada: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          habitos_selecionados?: Json | null
           id?: string
           jornada: string
           user_id: string
         }
         Update: {
           created_at?: string
+          habitos_selecionados?: Json | null
           id?: string
           jornada?: string
           user_id?: string

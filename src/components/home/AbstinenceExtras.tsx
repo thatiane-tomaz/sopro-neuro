@@ -112,21 +112,50 @@ export default function AbstinenceExtras({
   const handleReturnToReducao = async () => {
     if (!user) return;
     setSwitching(true);
-    const { error } = await supabase
-      .from("historico_jornada_usuario")
-      .insert({ user_id: user.id, jornada: "reducao" } as any);
-    setSwitching(false);
-    if (error) {
-      toast({ title: "Erro", description: error.message, variant: "destructive" });
-      return;
+    try {
+      // Load all reducao habits + user's tracking to hand to the AI
+      const [{ data: habitos }, { data: tracking }] = await Promise.all([
+        (supabase as any)
+          .from("habitos_jornada")
+          .select("id,habito_titulo,tema_fixo,posicao")
+          .eq("tipo_usuario", "redução"),
+        supabase
+          .from("journey_tracking")
+          .select("interaction_type,finished_at")
+          .eq("user_id", user.id)
+          .not("finished_at", "is", null),
+      ]);
+      const doneTypes = new Set(
+        (tracking ?? []).map((t: any) => t.interaction_type as string),
+      );
+      const habitosResumo = (habitos ?? []).map((h: any) => ({
+        titulo: h.habito_titulo as string,
+        tema_fixo: !!h.tema_fixo,
+        ja_completou:
+          Array.from(doneTypes).some((t) =>
+            t.startsWith("video_semana_") || t.startsWith("hipnose_semana_"),
+          ) && false, // per-title completion is best-effort; AI uses list overall
+      }));
+      setConfirmOpen(false);
+      navigate("/chat", {
+        state: {
+          retorno: {
+            habitos: habitosResumo,
+            habitosJaCompletadosCount: Array.from(doneTypes).filter((t) =>
+              t.startsWith("video_semana_") || t.startsWith("hipnose_semana_"),
+            ).length,
+          },
+        },
+      });
+    } catch (e: any) {
+      toast({
+        title: "Erro",
+        description: e?.message ?? "Não foi possível iniciar.",
+        variant: "destructive",
+      });
+    } finally {
+      setSwitching(false);
     }
-    toast({
-      title: "Tudo bem, recomeçar faz parte",
-      description: "Você voltou para a jornada de redução.",
-    });
-    setConfirmOpen(false);
-    queryClient.invalidateQueries({ queryKey: ["jornada-type"] });
-    queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
   };
 
   return (
