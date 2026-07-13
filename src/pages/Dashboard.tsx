@@ -709,16 +709,6 @@ export default function Dashboard() {
             sparks={sparks}
             levelProgress={progressToNext}
           />
-          <div className="flex justify-center mt-2 relative z-10">
-            <button
-              type="button"
-              onClick={() => navigate("/cerebro")}
-              className="text-[11px] font-semibold text-[hsl(258_60%_45%)] underline-offset-4 hover:underline"
-              aria-label={`Nível ${level}, ${sparks} faíscas. Ver evolução do cérebro.`}
-            >
-              Ver evolução do cérebro →
-            </button>
-          </div>
         </div>
 
         {/* Weekly content cards (stacked) */}
