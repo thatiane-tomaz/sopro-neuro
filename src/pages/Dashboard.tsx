@@ -737,6 +737,36 @@ export default function Dashboard() {
           />
         </div>
 
+        {/* Chat CTA — balão saindo do Neo */}
+        {!dayLocked && (
+          <div className="mt-3 px-1">
+            <button
+              type="button"
+              onClick={() => navigate("/chat")}
+              className="group relative w-full flex items-center gap-3 rounded-2xl bg-white/90 backdrop-blur px-4 py-3.5 ring-1 ring-[hsl(220_70%_88%)] shadow-[0_10px_28px_-14px_hsl(258_70%_45%/0.55)] hover:shadow-[0_14px_32px_-12px_hsl(258_70%_45%/0.65)] hover:-translate-y-0.5 active:translate-y-0 transition-all text-left"
+              aria-label="Conversar com Neo"
+            >
+              {/* pequena seta apontando para o cérebro */}
+              <span
+                aria-hidden
+                className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-white ring-1 ring-[hsl(220_70%_88%)] ring-b-0 ring-r-0"
+              />
+              <span className="shrink-0 h-11 w-11 rounded-full flex items-center justify-center bg-gradient-to-br from-[hsl(220_90%_60%)] to-[hsl(258_75%_60%)] shadow-md">
+                <MessageCircle className="h-5 w-5 text-white" />
+              </span>
+              <span className="flex-1 min-w-0">
+                <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_60%_50%)]">
+                  Chat com o Neo · IA
+                </span>
+                <span className="block mt-0.5 text-[15px] font-semibold text-foreground leading-snug text-balance">
+                  Como foi sua vontade de fumar hoje?
+                </span>
+              </span>
+              <ChevronRight className="h-5 w-5 text-[hsl(258_60%_55%)] shrink-0 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+        )}
+
         {/* Weekly content cards (stacked) */}
         <div className="mt-6">
           <p className="text-sm font-bold text-foreground/80 mb-3 px-1">Continue sua jornada</p>
