@@ -49,6 +49,7 @@ export default function ProgressBrain({
   const isMax = level === 5;
 
   const size = 300;
+  const brainSize = 198;
   const cx = size / 2;
   const cy = size / 2;
   const radius = 130;
@@ -113,33 +114,34 @@ export default function ProgressBrain({
 
       {/* Soft glow behind brain */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full"
-        style={{ background: "var(--gradient-brain-glow)" }}
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+        style={{ width: 270, height: 270, background: "var(--gradient-brain-glow)" }}
         aria-hidden="true"
       />
 
       {/* Brain centered, sized to fill the arc */}
-      <div className="absolute inset-0 flex items-center justify-center" style={{ transform: "translateY(-6px)" }}>
+      <div className="absolute inset-0 flex items-center justify-center overflow-visible" style={{ transform: "translateY(-12px)" }}>
         {interactive ? (
           <button
             type="button"
             onClick={onClick}
             aria-label={ariaLabel ?? "Abrir jornada"}
-            className="relative rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-transform active:scale-95 hover:scale-[1.02]"
+            className="relative rounded-full overflow-visible focus:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-transform active:scale-95 hover:scale-[1.02]"
+            style={{ width: brainSize, height: brainSize }}
           >
             <img
               src={brainImg}
               alt={`Cérebro nível ${level} ${state === "active" ? "ativo" : "descansando"}`}
-              width={240}
-              height={240}
+              width={brainSize}
+              height={brainSize}
               loading="eager"
               draggable={false}
-              className={`w-[240px] h-[240px] object-contain pointer-events-none ${
+              className={`w-full h-full object-contain pointer-events-none ${
                 isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
               } ${locked ? "grayscale opacity-60" : ""}`}
             />
             {!locked && (
-              <span className="pointer-events-none absolute inset-0 flex items-end justify-center pb-8 select-none">
+              <span className="pointer-events-none absolute inset-0 flex items-end justify-center pb-6 select-none">
                 <span className="text-[10px] font-semibold text-white/95 text-center px-4 tracking-wide"
                   style={{ textShadow: "0 1px 4px hsl(230 60% 25% / 0.55)" }}>
                   Toque para conversar
@@ -151,12 +153,13 @@ export default function ProgressBrain({
           <img
           src={brainImg}
           alt={`Cérebro nível ${level}`}
-          width={240}
-          height={240}
+          width={brainSize}
+          height={brainSize}
           loading="eager"
-          className={`w-[240px] h-[240px] object-contain ${
+          className={`object-contain ${
             isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
           } ${locked ? "grayscale opacity-60" : ""}`}
+          style={{ width: brainSize, height: brainSize }}
           />
         )}
         {locked && (
