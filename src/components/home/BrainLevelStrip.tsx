@@ -4,7 +4,7 @@ import lv2 from "@/assets/brain/brain-lv2-active.png";
 import lv3 from "@/assets/brain/brain-lv3-active.png";
 import lv4 from "@/assets/brain/brain-lv4-active.png";
 import lv5 from "@/assets/brain/brain-lv5-active.png";
-import { LEVEL_RANGES, type BrainLevel } from "@/hooks/useBrainSparks";
+import { useBrainLevels, type BrainLevel } from "@/hooks/useBrainSparks";
 
 const IMAGES: Record<BrainLevel, string> = {
   1: lv1,
@@ -21,6 +21,7 @@ interface Props {
 
 export default function BrainLevelStrip({ currentLevel, sparks }: Props) {
   const navigate = useNavigate();
+  const ranges = useBrainLevels();
   const levels: BrainLevel[] = [1, 2, 3, 4, 5];
 
   return (
@@ -70,7 +71,7 @@ export default function BrainLevelStrip({ currentLevel, sparks }: Props) {
                   isCurrent ? "text-[hsl(258_60%_45%)]" : "text-muted-foreground"
                 }`}
               >
-                {LEVEL_RANGES[lv].min}+
+                {ranges[lv].min}+
               </span>
             </div>
           );
