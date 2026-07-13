@@ -62,7 +62,7 @@ import MuralPreview from "@/components/mural/MuralPreview";
 import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
-import { useBrainSparks, LEVEL_RANGES } from "@/hooks/useBrainSparks";
+import { useBrainSparks } from "@/hooks/useBrainSparks";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const getGreeting = () => {

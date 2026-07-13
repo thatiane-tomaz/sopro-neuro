@@ -19,6 +19,19 @@ const BRAIN_ASSETS: Record<BrainLevel, Record<BrainState, string>> = {
   5: { active: lv5Active, resting: lv5Resting },
 };
 
+// Warm the browser cache with all 10 brain images as soon as this module
+// loads, so switching level/state (or first paint) is instant instead of
+// waiting on a network round-trip.
+if (typeof window !== "undefined") {
+  for (const lv of Object.values(BRAIN_ASSETS)) {
+    for (const url of Object.values(lv)) {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = url;
+    }
+  }
+}
+
 interface Props {
   locked: boolean;
   onClick?: () => void;
@@ -174,8 +187,8 @@ export default function ProgressBrain({
       {/* Sparks + Level chip anchored to the bottom arc gap */}
       {!locked && (
         <div className="pointer-events-none absolute left-1/2 -translate-x-1/2" style={{ bottom: 4 }}>
-          <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-white/95 backdrop-blur px-3 py-1.5 ring-1 ring-[hsl(220_70%_88%)] shadow-[0_8px_20px_-8px_hsl(258_70%_45%/0.5)]">
-            <span className="inline-flex items-center gap-1 text-[hsl(220_90%_55%)]">
+          <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-white/95 backdrop-blur px-3 py-1.5 ring-1 ring-[hsl(220_70%_88%)] shadow-[0_8px_20px_-8px_hsl(258_70%_45%/0.5)] whitespace-nowrap">
+            <span className="inline-flex items-center gap-1 whitespace-nowrap text-[hsl(220_90%_55%)]">
               <Sparkles className="h-3.5 w-3.5" />
               <span className="text-sm font-extrabold tabular-nums leading-none">{sparks}</span>
               <span className="text-[10px] font-bold uppercase tracking-[0.12em] leading-none text-[hsl(220_90%_55%)]">
@@ -183,7 +196,7 @@ export default function ProgressBrain({
               </span>
             </span>
             <span className="h-3 w-px bg-[hsl(220_40%_88%)]" aria-hidden="true" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.14em] leading-none bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
+            <span className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.14em] leading-none bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
               Nível {level}{isMax ? " · Máx" : ""}
             </span>
           </div>

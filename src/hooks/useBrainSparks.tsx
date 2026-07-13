@@ -6,25 +6,69 @@ import { useAuth } from "@/hooks/useAuth";
 export type BrainLevel = 1 | 2 | 3 | 4 | 5;
 export type BrainState = "active" | "resting";
 
-export function computeLevel(sparks: number): BrainLevel {
-  if (sparks >= 101) return 5;
-  if (sparks >= 76) return 4;
-  if (sparks >= 51) return 3;
-  if (sparks >= 26) return 2;
-  return 1;
+export type LevelRange = { min: number; max: number | null; label: string };
+
+// Fallback used only until the DB config query resolves. The source of truth
+// is `public.brain_levels_config`.
+const FALLBACK_RANGES: Record<BrainLevel, LevelRange> = {
+  1: { min: 0, max: 25, label: "Nível 1" },
+  2: { min: 26, max: 60, label: "Nível 2" },
+  3: { min: 61, max: 100, label: "Nível 3" },
+  4: { min: 101, max: 150, label: "Nível 4" },
+  5: { min: 151, max: null, label: "Nível 5" },
+};
+
+export function useBrainLevels(): Record<BrainLevel, LevelRange> {
+  const { data } = useQuery({
+    queryKey: ["brain-levels-config"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("brain_levels_config")
+        .select("level, min_sparks, max_sparks, label")
+        .order("level", { ascending: true });
+      if (error) {
+        console.error("brain_levels_config fetch", error);
+        return null;
+      }
+      return data as Array<{
+        level: number;
+        min_sparks: number;
+        max_sparks: number | null;
+        label: string | null;
+      }>;
+    },
+    staleTime: 5 * 60_000,
+  });
+
+  if (!data || data.length === 0) return FALLBACK_RANGES;
+  const map = { ...FALLBACK_RANGES };
+  for (const row of data) {
+    const lv = row.level as BrainLevel;
+    if (lv >= 1 && lv <= 5) {
+      map[lv] = {
+        min: row.min_sparks ?? 0,
+        max: row.max_sparks,
+        label: row.label ?? `Nível ${lv}`,
+      };
+    }
+  }
+  return map;
 }
 
-export const LEVEL_RANGES: Record<BrainLevel, { min: number; max: number | null; label: string }> = {
-  1: { min: 0, max: 25, label: "Despertar" },
-  2: { min: 26, max: 50, label: "Conexão" },
-  3: { min: 51, max: 75, label: "Fortalecimento" },
-  4: { min: 76, max: 100, label: "Expansão" },
-  5: { min: 101, max: null, label: "Radiância" },
-};
+export function computeLevelFromRanges(
+  sparks: number,
+  ranges: Record<BrainLevel, LevelRange>,
+): BrainLevel {
+  for (const lv of [5, 4, 3, 2, 1] as BrainLevel[]) {
+    if (sparks >= ranges[lv].min) return lv;
+  }
+  return 1;
+}
 
 export function useBrainSparks() {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const ranges = useBrainLevels();
 
   const { data } = useQuery({
     queryKey: ["brain-sparks", user?.id],
@@ -53,15 +97,15 @@ export function useBrainSparks() {
   });
 
   const sparks = data?.brain_sparks ?? 0;
-  const level = computeLevel(sparks);
+  const level = computeLevelFromRanges(sparks, ranges);
   const lastActiveAt = data?.brain_last_active_at ? new Date(data.brain_last_active_at) : null;
   const isActive = lastActiveAt
     ? Date.now() - lastActiveAt.getTime() < 24 * 60 * 60 * 1000
     : false;
   const state: BrainState = isActive ? "active" : "resting";
 
-  const nextThreshold = LEVEL_RANGES[level].max;
-  const currentMin = LEVEL_RANGES[level].min;
+  const nextThreshold = ranges[level].max;
+  const currentMin = ranges[level].min;
   const progressToNext =
     nextThreshold == null
       ? 100
@@ -100,6 +144,7 @@ export function useBrainSparks() {
     streak: data?.brain_login_streak ?? 0,
     progressToNext,
     nextThreshold,
+    ranges,
     award,
     registerLogin,
   };

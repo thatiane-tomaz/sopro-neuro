@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Sparkles, Moon, Sun } from "lucide-react";
 import WaveBackground from "@/components/home/WaveBackground";
 import { Button } from "@/components/ui/button";
-import { useBrainSparks, LEVEL_RANGES, type BrainLevel } from "@/hooks/useBrainSparks";
+import { useBrainSparks, type BrainLevel } from "@/hooks/useBrainSparks";
 import lv1Active from "@/assets/brain/brain-lv1-active.png";
 import lv2Active from "@/assets/brain/brain-lv2-active.png";
 import lv3Active from "@/assets/brain/brain-lv3-active.png";
@@ -29,7 +29,7 @@ const EVENTS: Array<{ label: string; sparks: string; hint?: string }> = [
 
 export default function BrainEvolution() {
   const navigate = useNavigate();
-  const { sparks, level, state, streak } = useBrainSparks();
+  const { sparks, level, state, streak, ranges } = useBrainSparks();
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -53,7 +53,7 @@ export default function BrainEvolution() {
             Seu cérebro evolui com você
           </h1>
           <p className="mt-2 text-sm text-muted-foreground text-pretty">
-            Cada ação sua vira uma faísca. Quanto mais você se cuida, mais forte e brilhante ele fica.
+          Cada ação sua vira um Spark. Quanto mais você se cuida, mais forte e brilhante ele fica.
           </p>
         </div>
 
@@ -62,11 +62,11 @@ export default function BrainEvolution() {
           <div className="flex items-center gap-4">
             <img src={LEVEL_IMAGES[level]} alt="" className="w-24 h-24 object-contain" />
             <div className="flex-1">
-              <div className="text-xs font-bold uppercase tracking-wider text-[hsl(258_60%_45%)]">
-                Nível {level} · {LEVEL_RANGES[level].label}
+              <div className="text-xs font-bold uppercase tracking-wider text-[hsl(258_60%_45%)] whitespace-nowrap">
+                Nível {level}
               </div>
               <div className="mt-1 text-2xl font-bold text-foreground">
-                {sparks} <span className="text-sm font-semibold text-muted-foreground">faíscas</span>
+                {sparks} <span className="text-sm font-semibold text-muted-foreground">Sparks</span>
               </div>
               <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                 {state === "active" ? (
@@ -84,7 +84,7 @@ export default function BrainEvolution() {
         <h2 className="mt-8 mb-3 text-sm font-bold text-foreground/80">Os 5 níveis</h2>
         <div className="grid grid-cols-1 gap-2">
           {([1, 2, 3, 4, 5] as BrainLevel[]).map((lv) => {
-            const range = LEVEL_RANGES[lv];
+            const range = ranges[lv];
             const rangeLabel = range.max ? `${range.min} a ${range.max}` : `${range.min}+`;
             const isCurrent = lv === level;
             return (
@@ -99,9 +99,9 @@ export default function BrainEvolution() {
                 <img src={LEVEL_IMAGES[lv]} alt="" className="w-14 h-14 object-contain" />
                 <div className="flex-1">
                   <div className="text-sm font-bold text-foreground">
-                    Nível {lv} · {range.label}
+                    Nível {lv}
                   </div>
-                  <div className="text-xs text-muted-foreground">{rangeLabel} faíscas</div>
+                  <div className="text-xs text-muted-foreground">{rangeLabel} Sparks</div>
                 </div>
                 {isCurrent && (
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[hsl(258_60%_45%)]">
@@ -114,7 +114,7 @@ export default function BrainEvolution() {
         </div>
 
         {/* How to earn */}
-        <h2 className="mt-8 mb-3 text-sm font-bold text-foreground/80">Como ganhar faíscas</h2>
+        <h2 className="mt-8 mb-3 text-sm font-bold text-foreground/80">Como ganhar Sparks</h2>
         <div className="rounded-2xl bg-white/85 backdrop-blur ring-1 ring-[hsl(258_30%_92%)] overflow-hidden">
           {EVENTS.map((ev, i) => (
             <div
