@@ -6,8 +6,6 @@ import { ptBR } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useMuralPosts, useCreateMuralPost, useDeleteMuralPost, type MuralPost } from "@/hooks/useMural";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -89,22 +87,6 @@ export default function Mural() {
   const deletePost = useDeleteMuralPost();
   const { toast } = useToast();
 
-  const { data: temas } = useQuery({
-    queryKey: ["mural-temas"],
-    queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("mural_posts")
-        .select("habito_titulo")
-        .eq("status", "approved")
-        .not("habito_titulo", "is", null);
-      if (error) throw error;
-      const set = new Set<string>();
-      (data ?? []).forEach((r: any) => r.habito_titulo && set.add(r.habito_titulo));
-      return Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR"));
-    },
-    staleTime: 5 * 60_000,
-  });
-
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
   const [name, setName] = useState("");
@@ -185,36 +167,6 @@ export default function Mural() {
             Você não está sozinho!
           </p>
         </div>
-
-        {temas && temas.length > 0 && (
-          <div className="mt-5 -mx-5 px-5 overflow-x-auto no-scrollbar">
-            <div className="flex items-center gap-2 w-max pb-1">
-              <button
-                onClick={() => navigate("/mural")}
-                className={`whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12px] font-semibold ring-1 transition ${
-                  !tema
-                    ? "bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] text-white ring-transparent shadow-sm"
-                    : "bg-white/80 backdrop-blur text-foreground/70 ring-[hsl(258_70%_88%)]"
-                }`}
-              >
-                Todos
-              </button>
-              {temas.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => navigate(`/mural?tema=${encodeURIComponent(t)}`)}
-                  className={`whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12px] font-semibold ring-1 transition ${
-                    tema === t
-                      ? "bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] text-white ring-transparent shadow-sm"
-                      : "bg-white/80 backdrop-blur text-foreground/70 ring-[hsl(258_70%_88%)]"
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         <button
           onClick={handleOpen}
