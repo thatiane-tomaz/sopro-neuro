@@ -48,7 +48,6 @@ import {
   Check,
   Ban,
   X,
-  MessageCircle,
   ChevronRight,
 } from "lucide-react";
 import { format } from "date-fns";
