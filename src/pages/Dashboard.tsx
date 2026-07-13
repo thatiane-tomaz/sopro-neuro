@@ -425,11 +425,24 @@ export default function Dashboard() {
   }, [lastCigDate, daysSinceQuit, equivCigsPerDay, weeklyCostNum]);
 
   // ----- Media handler -----
-  const getMediaUrl = (day: number, type: "video" | "hypnosis") => {
-    const bucket = type === "video" ? "videos" : "hypnosis";
-    const ext = type === "video" ? "mp4" : day >= 8 ? "MP3" : "mp3";
-    const file = type === "video" ? `video_${day}.${ext}` : `hipnose_${day}.${ext}`;
-    return `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${file}`;
+  // Vídeos e hipnoses do "Hábito em foco" vêm dos buckets privados
+  // videos_2 / hipnoses_2, usando o nome de arquivo definido nas colunas
+  // habitos_jornada.video_nome / habitos_jornada.hipnose_nome.
+  const getMediaUrl = async (type: "video" | "hypnosis") => {
+    const bucket = type === "video" ? "videos_2" : "hipnoses_2";
+    const fileName =
+      type === "video"
+        ? ((gatilho as any)?.video_nome as string | null)
+        : ((gatilho as any)?.hipnose_nome as string | null);
+    if (!fileName) return null;
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .createSignedUrl(fileName, 60 * 60);
+    if (error || !data?.signedUrl) {
+      console.error("signed url error", error);
+      return null;
+    }
+    return data.signedUrl;
   };
 
   const openMedia = async (type: "video" | "hypnosis") => {
@@ -439,10 +452,21 @@ export default function Dashboard() {
       navigate("/paywall");
       return;
     }
+    const url = await getMediaUrl(type);
+    if (!url) {
+      toast({
+        title: "Conteúdo em preparação",
+        description:
+          type === "video"
+            ? "O vídeo deste hábito ainda será disponibilizado."
+            : "A hipnose deste hábito ainda será disponibilizada.",
+      });
+      return;
+    }
     const interactionType = type === "video" ? videoInteraction : hipnoseInteraction;
     setSelectedMedia({
       title: tituloGatilho,
-      fileUrl: getMediaUrl(posicao, type),
+      fileUrl: url,
       contentType: type,
       day: posicao,
       interactionType,

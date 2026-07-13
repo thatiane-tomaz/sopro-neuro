@@ -48,7 +48,7 @@ type JornadaItem = {
   seq: number; // 1..N — used for interaction & media file mapping
   habito_titulo: string;
   posicao_original: number | null;
-  nome_video: string | null;
+  video_nome: string | null;
   hipnose_nome: string | null;
   hasVideo: boolean;
   hasHipnose: boolean;
@@ -226,7 +226,7 @@ export default function Jornada() {
       seq: idx + 1,
       habito_titulo: h.habito_titulo,
       posicao_original: h.posicao != null ? Number(h.posicao) : null,
-      nome_video: h.nome_video ?? null,
+      video_nome: h.video_nome ?? null,
       hipnose_nome: h.hipnose_nome ?? null,
       hasVideo: h.video !== false,
       hasHipnose: h.hipnose !== false,
@@ -263,17 +263,23 @@ export default function Jornada() {
   };
 
   // ---- Media ----
-  const publicUrl = (bucket: string, file: string) =>
-    `https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/${bucket}/${file}`;
-
-  const getMediaUrl = (it: JornadaItem, type: "video" | "hypnosis") => {
-    if (type === "video") {
-      if (it.nome_video) return publicUrl("videos", it.nome_video);
-      return publicUrl("videos", `video_${it.seq}.mp4`);
+  // Vídeos e hipnoses vêm dos buckets privados videos_2 / hipnoses_2 usando
+  // habitos_jornada.video_nome / habitos_jornada.hipnose_nome.
+  const getMediaUrl = async (
+    it: JornadaItem,
+    type: "video" | "hypnosis",
+  ): Promise<string | null> => {
+    const bucket = type === "video" ? "videos_2" : "hipnoses_2";
+    const fileName = type === "video" ? it.video_nome : it.hipnose_nome;
+    if (!fileName) return null;
+    const { data, error } = await supabase.storage
+      .from(bucket)
+      .createSignedUrl(fileName, 60 * 60);
+    if (error || !data?.signedUrl) {
+      console.error("signed url error", error);
+      return null;
     }
-    if (it.hipnose_nome) return publicUrl("hypnosis", it.hipnose_nome);
-    const ext = it.seq >= 8 ? "MP3" : "mp3";
-    return publicUrl("hypnosis", `hipnose_${it.seq}.${ext}`);
+    return data.signedUrl;
   };
 
   const openMedia = async (idx: number, type: "video" | "hypnosis") => {
@@ -291,11 +297,22 @@ export default function Jornada() {
       });
       return;
     }
+    const url = await getMediaUrl(it, type);
+    if (!url) {
+      toast({
+        title: "Conteúdo em preparação",
+        description:
+          type === "video"
+            ? "O vídeo deste tema ainda será disponibilizado."
+            : "A hipnose deste tema ainda será disponibilizada.",
+      });
+      return;
+    }
     const interactionType =
       type === "video" ? `video_semana_${it.seq}` : `hipnose_semana_${it.seq}`;
     setSelectedMedia({
       title: it.habito_titulo,
-      fileUrl: getMediaUrl(it, type),
+      fileUrl: url,
       contentType: type,
       day: it.seq,
       interactionType,

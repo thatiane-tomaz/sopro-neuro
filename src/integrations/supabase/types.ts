@@ -340,13 +340,13 @@ export type Database = {
           hipnose_nome: string | null
           id: string
           missao: boolean
-          nome_video: string | null
           objetivo_chat_missao: string | null
           posicao: string | null
           tema_fixo: boolean | null
           tipo_usuario: string | null
           updated_at: string | null
           video: boolean
+          video_nome: string | null
         }
         Insert: {
           explicacao_missao?: string | null
@@ -355,13 +355,13 @@ export type Database = {
           hipnose_nome?: string | null
           id?: string
           missao?: boolean
-          nome_video?: string | null
           objetivo_chat_missao?: string | null
           posicao?: string | null
           tema_fixo?: boolean | null
           tipo_usuario?: string | null
           updated_at?: string | null
           video?: boolean
+          video_nome?: string | null
         }
         Update: {
           explicacao_missao?: string | null
@@ -370,13 +370,13 @@ export type Database = {
           hipnose_nome?: string | null
           id?: string
           missao?: boolean
-          nome_video?: string | null
           objetivo_chat_missao?: string | null
           posicao?: string | null
           tema_fixo?: boolean | null
           tipo_usuario?: string | null
           updated_at?: string | null
           video?: boolean
+          video_nome?: string | null
         }
         Relationships: []
       }
