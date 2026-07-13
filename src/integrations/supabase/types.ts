@@ -65,6 +65,84 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_levels_config: {
+        Row: {
+          created_at: string
+          label: string
+          level: number
+          max_sparks: number | null
+          min_sparks: number
+        }
+        Insert: {
+          created_at?: string
+          label: string
+          level: number
+          max_sparks?: number | null
+          min_sparks: number
+        }
+        Update: {
+          created_at?: string
+          label?: string
+          level?: number
+          max_sparks?: number | null
+          min_sparks?: number
+        }
+        Relationships: []
+      }
+      brain_sparks_config: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_key: string
+          once_per_day: boolean
+          sparks_value: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_key: string
+          once_per_day?: boolean
+          sparks_value: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_key?: string
+          once_per_day?: boolean
+          sparks_value?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      brain_sparks_log: {
+        Row: {
+          created_at: string
+          event_key: string
+          id: string
+          metadata: Json
+          sparks_awarded: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_key: string
+          id?: string
+          metadata?: Json
+          sparks_awarded: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_key?: string
+          id?: string
+          metadata?: Json
+          sparks_awarded?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       button_clicks: {
         Row: {
           button: string
@@ -508,6 +586,10 @@ export type Database = {
       }
       profiles: {
         Row: {
+          brain_last_active_at: string
+          brain_last_login_date: string | null
+          brain_login_streak: number
+          brain_sparks: number
           created_at: string
           display_name: string | null
           email: string | null
@@ -520,6 +602,10 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          brain_last_active_at?: string
+          brain_last_login_date?: string | null
+          brain_login_streak?: number
+          brain_sparks?: number
           created_at?: string
           display_name?: string | null
           email?: string | null
@@ -532,6 +618,10 @@ export type Database = {
           user_id: string
         }
         Update: {
+          brain_last_active_at?: string
+          brain_last_login_date?: string | null
+          brain_login_streak?: number
+          brain_sparks?: number
           created_at?: string
           display_name?: string | null
           email?: string | null
@@ -768,6 +858,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_sparks: {
+        Args: { p_event_key: string; p_metadata?: Json }
+        Returns: Json
+      }
       get_current_subscription: {
         Args: { user_uuid: string }
         Returns: {
@@ -819,6 +913,7 @@ export type Database = {
         Returns: boolean
       }
       mark_start_here_seen: { Args: never; Returns: undefined }
+      register_login_and_award: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
