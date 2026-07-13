@@ -307,6 +307,10 @@ export default function Chat() {
     setMessages(next);
     setInput("");
     setIsStreaming(true);
+    // Award daily chat spark (RPC handles once-per-day deduplication)
+    if (!mission && !retorno) {
+      award("chat_message");
+    }
 
     const controller = new AbortController();
     abortRef.current = controller;
