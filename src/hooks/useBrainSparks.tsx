@@ -100,7 +100,7 @@ export function useBrainSparks() {
   const level = computeLevelFromRanges(sparks, ranges);
   const lastActiveAt = data?.brain_last_active_at ? new Date(data.brain_last_active_at) : null;
   const isActive = lastActiveAt
-    ? Date.now() - lastActiveAt.getTime() < 24 * 60 * 60 * 1000
+    ? Date.now() - lastActiveAt.getTime() < 48 * 60 * 60 * 1000
     : false;
   const state: BrainState = isActive ? "active" : "resting";
 
