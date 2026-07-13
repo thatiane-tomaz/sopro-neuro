@@ -324,6 +324,14 @@ export default function Chat() {
                 },
               }
             : {}),
+          ...(retorno
+            ? {
+                retorno: {
+                  habitos: retorno.habitos,
+                  ja_completados: retorno.habitosJaCompletadosCount ?? 0,
+                },
+              }
+            : {}),
         }),
         signal: controller.signal,
       });
@@ -354,7 +362,10 @@ export default function Chat() {
         assistantSoFar += chunk;
         setMessages((prev) => {
           const copy = [...prev];
-          const cleaned = assistantSoFar.replace(MISSION_END_RE, "").trim();
+          const cleaned = assistantSoFar
+            .replace(MISSION_END_RE, "")
+            .replace(RETORNO_END_RE, "")
+            .trim();
           copy[copy.length - 1] = { role: "assistant", content: cleaned };
           return copy;
         });
@@ -439,6 +450,28 @@ export default function Chat() {
             setPendingMissionEnd({ parsed, transcript });
           } catch (e) {
             console.error("MISSION_END parse error:", e);
+          }
+        }
+      }
+
+      // Retorno end detection
+      if (retorno) {
+        const r = assistantSoFar.match(RETORNO_END_RE);
+        if (r) {
+          try {
+            const parsed = JSON.parse(r[1]);
+            const cleanedContent = assistantSoFar.replace(RETORNO_END_RE, "").trim();
+            setMessages((prev) => {
+              const copy = [...prev];
+              const lastIdx = copy.length - 1;
+              if (copy[lastIdx]?.role === "assistant") {
+                copy[lastIdx] = { role: "assistant", content: cleanedContent };
+              }
+              return copy;
+            });
+            finalizeRetorno(parsed);
+          } catch (e) {
+            console.error("RETORNO_END parse error:", e);
           }
         }
       }
