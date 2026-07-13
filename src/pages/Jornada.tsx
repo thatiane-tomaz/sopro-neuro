@@ -48,7 +48,7 @@ type JornadaItem = {
   seq: number; // 1..N — used for interaction & media file mapping
   habito_titulo: string;
   posicao_original: number | null;
-  nome_video: string | null;
+  video_nome: string | null;
   hipnose_nome: string | null;
   hasVideo: boolean;
   hasHipnose: boolean;
@@ -226,7 +226,7 @@ export default function Jornada() {
       seq: idx + 1,
       habito_titulo: h.habito_titulo,
       posicao_original: h.posicao != null ? Number(h.posicao) : null,
-      nome_video: h.nome_video ?? null,
+      video_nome: h.video_nome ?? null,
       hipnose_nome: h.hipnose_nome ?? null,
       hasVideo: h.video !== false,
       hasHipnose: h.hipnose !== false,
