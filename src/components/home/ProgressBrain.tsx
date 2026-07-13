@@ -19,6 +19,19 @@ const BRAIN_ASSETS: Record<BrainLevel, Record<BrainState, string>> = {
   5: { active: lv5Active, resting: lv5Resting },
 };
 
+// Warm the browser cache with all 10 brain images as soon as this module
+// loads, so switching level/state (or first paint) is instant instead of
+// waiting on a network round-trip.
+if (typeof window !== "undefined") {
+  for (const lv of Object.values(BRAIN_ASSETS)) {
+    for (const url of Object.values(lv)) {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = url;
+    }
+  }
+}
+
 interface Props {
   locked: boolean;
   onClick?: () => void;
