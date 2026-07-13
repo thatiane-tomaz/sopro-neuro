@@ -304,6 +304,10 @@ serve(async (req) => {
 
   try {
     const { messages, mission } = await req.json();
+    const { retorno } = await (async () => {
+      // no-op: retorno is read from same body — parsed below
+      return { retorno: undefined as any };
+    })();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
