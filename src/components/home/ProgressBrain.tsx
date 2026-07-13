@@ -41,6 +41,8 @@ interface Props {
   sparks?: number;
   /** 0-100 progress within the current level (arc fill). Level 5 = 100. */
   levelProgress?: number;
+  speechTitle?: string;
+  speechText?: string;
 }
 
 /**
@@ -55,6 +57,8 @@ export default function ProgressBrain({
   state = "resting",
   sparks = 0,
   levelProgress = 0,
+  speechTitle,
+  speechText,
 }: Props) {
   const clamped = Math.max(0, Math.min(100, levelProgress));
   const brainImg = BRAIN_ASSETS[level][state];
@@ -85,8 +89,32 @@ export default function ProgressBrain({
 
   const interactive = typeof onClick === "function";
 
+  const speechBubble = speechText ? (
+    <div className="absolute left-1/2 top-6 z-20 w-[238px] -translate-x-1/2 pointer-events-none">
+      <div className="relative rounded-[22px] bg-white/95 px-4 py-2.5 text-center ring-1 ring-[hsl(220_70%_88%)] shadow-[0_12px_30px_-16px_hsl(258_70%_45%/0.75)] backdrop-blur">
+        {speechTitle && (
+          <span className="block text-[9px] font-black uppercase tracking-[0.16em] leading-none text-[hsl(258_60%_50%)] whitespace-nowrap">
+            {speechTitle}
+          </span>
+        )}
+        <span className="mt-1 block text-[13px] font-extrabold leading-snug text-foreground text-balance">
+          {speechText}
+        </span>
+        <span
+          aria-hidden
+          className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 bg-white ring-1 ring-[hsl(220_70%_88%)]"
+        />
+        <span
+          aria-hidden
+          className="absolute -bottom-[1px] left-1/2 h-2.5 w-9 -translate-x-1/2 bg-white"
+        />
+      </div>
+    </div>
+  ) : null;
+
   return (
-    <div className="relative mx-auto" style={{ width: size, height: size }}>
+    <div className="relative mx-auto" style={{ width: size, height: speechText ? size + 6 : size }}>
+      {speechBubble}
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute inset-0">
         <defs>
           <linearGradient id="arcGrad" x1="0" y1="1" x2="1" y2="0">
@@ -133,7 +161,7 @@ export default function ProgressBrain({
       />
 
       {/* Brain centered, sized to fill the arc */}
-      <div className="absolute inset-0 flex items-center justify-center overflow-visible" style={{ transform: "translateY(-12px)" }}>
+      <div className="absolute inset-0 flex items-center justify-center overflow-visible" style={{ transform: speechText ? "translateY(18px)" : "translateY(-12px)" }}>
         {interactive ? (
           <button
             type="button"
