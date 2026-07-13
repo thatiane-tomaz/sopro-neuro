@@ -5,20 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
-import Question1 from "@/components/onboarding/Question1";
-import Question2 from "@/components/onboarding/Question2";
-import Question3 from "@/components/onboarding/Question3";
-import Question5 from "@/components/onboarding/Question5";
-import Question7 from "@/components/onboarding/Question7";
-import HabitCheckboxQuestion from "@/components/onboarding/HabitCheckboxQuestion";
-import IntroScreen from "@/components/onboarding/IntroScreen";
-import {
-  EMOTION_OPTIONS,
-  MOMENT_OPTIONS,
-  SUBSTANCE_OPTIONS,
-  selectedHabitos,
-} from "@/components/onboarding/habitOptions";
-import CompletionScreen from "@/components/onboarding/CompletionScreen";
+import ChatOnboarding from "@/components/onboarding/ChatOnboarding";
+import { selectedHabitos } from "@/components/onboarding/habitOptions";
 
 export interface OnboardingData {
   age: string;
@@ -36,7 +24,6 @@ export interface OnboardingData {
 }
 
 const Onboarding = () => {
-  const [currentQuestion, setCurrentQuestion] = useState(1);
   const [data, setData] = useState<OnboardingData>({
     age: "",
     gender: "",
@@ -120,18 +107,6 @@ const Onboarding = () => {
     setData(prev => ({ ...prev, ...newData }));
   };
 
-  const nextQuestion = () => {
-    if (currentQuestion < 10) {
-      setCurrentQuestion(prev => prev + 1);
-    }
-  };
-
-  const prevQuestion = () => {
-    if (currentQuestion > 1) {
-      setCurrentQuestion(prev => prev - 1);
-    }
-  };
-
   const finishOnboarding = async () => {
     if (!user) return;
 
@@ -211,58 +186,14 @@ const Onboarding = () => {
     }
   };
 
-  const questionComponents = {
-    1: <IntroScreen onNext={nextQuestion} />,
-    2: <Question1 data={data} updateData={updateData} onNext={nextQuestion} />,
-    3: <Question2 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    4: <Question5 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    5: <Question3 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    6: (
-      <HabitCheckboxQuestion
-        title="Em quais dessas situações você costuma fumar?"
-        subtitle="Selecione todas que se aplicam"
-        options={EMOTION_OPTIONS}
-        selected={data.habitEmotions}
-        onChange={(v) => updateData({ habitEmotions: v })}
-        onNext={nextQuestion}
-        onPrev={prevQuestion}
-        step={5}
-        total={8}
-      />
-    ),
-    7: (
-      <HabitCheckboxQuestion
-        title="Em quais momentos você costuma fumar?"
-        subtitle="Selecione todos que se aplicam"
-        options={MOMENT_OPTIONS}
-        selected={data.habitMoments}
-        onChange={(v) => updateData({ habitMoments: v })}
-        onNext={nextQuestion}
-        onPrev={prevQuestion}
-        step={6}
-        total={8}
-      />
-    ),
-    8: (
-      <HabitCheckboxQuestion
-        title="Com quais substâncias você costuma fumar junto?"
-        subtitle="Selecione todas que se aplicam"
-        options={SUBSTANCE_OPTIONS}
-        selected={data.habitSubstances}
-        onChange={(v) => updateData({ habitSubstances: v })}
-        onNext={nextQuestion}
-        onPrev={prevQuestion}
-        step={7}
-        total={8}
-      />
-    ),
-    9: <Question7 data={data} updateData={updateData} onNext={nextQuestion} onPrev={prevQuestion} />,
-    10: <CompletionScreen onFinish={finishOnboarding} isSubmitting={isSubmitting} />
-  };
-
   return (
     <div className="min-h-screen">
-      {questionComponents[currentQuestion as keyof typeof questionComponents]}
+      <ChatOnboarding
+        data={data}
+        updateData={updateData}
+        onFinish={finishOnboarding}
+        isSubmitting={isSubmitting}
+      />
     </div>
   );
 };
