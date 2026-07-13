@@ -153,18 +153,6 @@ export default function ProgressBrain({
                 isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
               } ${locked ? "grayscale opacity-60" : ""}`}
             />
-            {!locked && (
-              <span className="pointer-events-none absolute inset-0 flex flex-col items-center justify-end pb-5 select-none gap-0.5">
-                <span className="text-[11px] font-bold text-white text-center px-3 leading-tight text-balance"
-                  style={{ textShadow: "0 1px 4px hsl(230 60% 25% / 0.65)" }}>
-                  Como foi sua vontade de fumar hoje?
-                </span>
-                <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-white/90"
-                  style={{ textShadow: "0 1px 3px hsl(230 60% 25% / 0.6)" }}>
-                  Chat de IA
-                </span>
-              </span>
-            )}
           </button>
         ) : (
           <img
