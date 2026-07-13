@@ -293,8 +293,8 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
         </div>
       </div>
 
-      {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-5 space-y-3">
+      {/* Messages (upper third) */}
+      <div ref={scrollRef} className="h-[33vh] shrink-0 overflow-y-auto px-4 py-5 space-y-3">
         {messages.map((m, i) => (
           <div
             key={i}
@@ -332,8 +332,8 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
         )}
       </div>
 
-      {/* Input area */}
-      <div className="border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)]">
+      {/* Input area (takes remaining space) */}
+      <div className="flex-1 min-h-0 overflow-y-auto border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         {!typing && current && (
           <>
             {isInfo && !isLast && current.key === "intro" && (
@@ -392,8 +392,8 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
             )}
 
             {current.kind === "multi" && (
-              <div className="space-y-2">
-                <div className="max-h-52 overflow-y-auto space-y-1.5 pr-1">
+              <div className="space-y-3">
+                <div className="space-y-2 pr-1">
                   {current.options.map((o) => {
                     const sel = multiSel.includes(o.label);
                     return (
