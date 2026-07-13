@@ -303,11 +303,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, mission } = await req.json();
-    const { retorno } = await (async () => {
-      // no-op: retorno is read from same body — parsed below
-      return { retorno: undefined as any };
-    })();
+    const { messages, mission, retorno } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -367,10 +363,50 @@ REGRAS RÍGIDAS:
 - NUNCA peça "Pausa para refletir" nesse modo.`;
     }
 
+    // Retorno à redução: curta conversa (~5 min) para escolher os hábitos.
+    let retornoInstructions = "";
+    if (retorno && typeof retorno === "object" && Array.isArray(retorno.habitos)) {
+      const listaHabitos = retorno.habitos
+        .map((h: any) => `- ${h.titulo}${h.tema_fixo ? " (fixo)" : ""}`)
+        .join("\n");
+      const jaCompletados = Number(retorno.ja_completados ?? 0);
+      retornoInstructions = `\n\nMODO RETORNO À REDUÇÃO (REGRA CRÍTICA — sobrepõe fluxos gerais):
+O usuário voltou a fumar depois de uma tentativa de abstinência e escolheu retornar à jornada de redução. Você tem no MÁXIMO ~5 minutos (5 a 8 turnos, perguntas curtas, UMA por mensagem) para entender quais gatilhos precisam estar na nova jornada de redução dele.
+
+HÁBITOS DISPONÍVEIS (você DEVE escolher apenas títulos EXATOS desta lista):
+${listaHabitos}
+
+Já concluiu ${jaCompletados} conteúdo(s) da jornada anterior.
+
+REGRAS PARA MONTAR A JORNADA:
+- Hábitos marcados como (fixo): se o usuário nunca fez, inclua sempre. Se já fez, decida com base na conversa se ele precisa fazer novamente.
+- Hábitos não fixos: inclua apenas aqueles que estão ligados aos gatilhos que ele descrever.
+- É ok repetir hábitos que ele já viu se a conversa indicar que faz sentido.
+- Preserve a ordem: comece por hábitos fixos que ele ainda precisa fazer, depois os gatilhos mais fortes primeiro.
+
+FLUXO OBRIGATÓRIO (turnos SEPARADOS — NUNCA junte etapas):
+1) Faça 3 a 5 perguntas curtas, uma por mensagem, para entender: o que o levou a voltar, em quais momentos/emoções fuma agora, o que já funcionou ou não funcionou antes, o que sente que precisa fortalecer. Seja acolhedor, sem culpa.
+2) Quando tiver material suficiente, envie UMA mensagem final que:
+   a) Reconheça a coragem de retornar (1 frase).
+   b) Resuma em 2-3 frases quais gatilhos você identificou.
+   c) Diga que a jornada foi montada e ele pode continuar agora.
+   d) NÃO faça pergunta aberta nesta mensagem.
+   Essa MENSAGEM FINAL DEVE terminar OBRIGATORIAMENTE com um bloco JSON invisível exatamente neste formato (sem markdown, sem crases, tudo em uma linha), começando com [RETORNO_END] e terminando com [/RETORNO_END]:
+     [RETORNO_END]{"habitos_titulos":["<titulo exato 1>","<titulo exato 2>", ...]}[/RETORNO_END]
+   - Use APENAS títulos que aparecem na lista acima, EXATAMENTE como escritos (mesmas letras, mesmos acentos).
+   - Mínimo 3 hábitos, máximo 10.
+
+REGRAS RÍGIDAS:
+- NUNCA inclua o bloco [RETORNO_END] em nenhuma mensagem que não seja a MENSAGEM FINAL.
+- NUNCA mencione ao usuário que existe esse bloco ou uma "lista de hábitos".
+- NUNCA misture pergunta com a mensagem final.
+- Mantenha as perguntas curtas (1-2 linhas cada). O tempo total deve caber em ~5 minutos.`;
+    }
+
     const requestBody = {
       model: "google/gemini-2.5-flash",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT + (userContext || "") + missionInstructions },
+        { role: "system", content: SYSTEM_PROMPT + (userContext || "") + missionInstructions + retornoInstructions },
         ...trimmed,
       ],
       stream: true,
