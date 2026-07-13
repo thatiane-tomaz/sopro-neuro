@@ -14,6 +14,16 @@ const IMAGES: Record<BrainLevel, string> = {
   5: lv5,
 };
 
+// Warm the browser cache with the 5 level images at module load so they
+// appear instantly on the Progresso tab (no network wait on first paint).
+if (typeof window !== "undefined") {
+  for (const url of Object.values(IMAGES)) {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = url;
+  }
+}
+
 interface Props {
   currentLevel: BrainLevel;
   sparks: number;
