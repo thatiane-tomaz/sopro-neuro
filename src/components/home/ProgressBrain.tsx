@@ -113,7 +113,7 @@ export default function ProgressBrain({
 
       {/* Soft glow behind brain */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full"
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] rounded-full pointer-events-none"
         style={{ background: "var(--gradient-brain-glow)" }}
         aria-hidden="true"
       />
@@ -130,11 +130,11 @@ export default function ProgressBrain({
             <img
               src={brainImg}
               alt={`Cérebro nível ${level} ${state === "active" ? "ativo" : "descansando"}`}
-              width={340}
-              height={340}
+              width={220}
+              height={220}
               loading="eager"
               draggable={false}
-              className={`w-[340px] h-[340px] object-contain pointer-events-none ${
+              className={`w-[220px] h-[220px] object-contain pointer-events-none ${
                 isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
               } ${locked ? "grayscale opacity-60" : ""}`}
             />
@@ -151,10 +151,10 @@ export default function ProgressBrain({
           <img
           src={brainImg}
           alt={`Cérebro nível ${level}`}
-          width={340}
-          height={340}
+          width={220}
+          height={220}
           loading="eager"
-          className={`w-[340px] h-[340px] object-contain ${
+          className={`w-[220px] h-[220px] object-contain ${
             isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
           } ${locked ? "grayscale opacity-60" : ""}`}
           />
