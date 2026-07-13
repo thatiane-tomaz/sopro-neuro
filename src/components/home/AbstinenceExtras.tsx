@@ -128,22 +128,21 @@ export default function AbstinenceExtras({
       const doneTypes = new Set(
         (tracking ?? []).map((t: any) => t.interaction_type as string),
       );
-      const habitosResumo = (habitos ?? []).map((h: any) => ({
-        titulo: h.habito_titulo as string,
-        tema_fixo: !!h.tema_fixo,
-        ja_completou:
-          Array.from(doneTypes).some((t) =>
-            t.startsWith("video_semana_") || t.startsWith("hipnose_semana_"),
-          ) && false, // per-title completion is best-effort; AI uses list overall
-      }));
+      const jaCompletadosCount = Array.from(doneTypes).filter(
+        (t) => t.startsWith("video_semana_") || t.startsWith("hipnose_semana_"),
+      ).length;
+      const habitosResumo = (habitos ?? [])
+        .sort((a: any, b: any) => (Number(a.posicao ?? 999) - Number(b.posicao ?? 999)))
+        .map((h: any) => ({
+          titulo: h.habito_titulo as string,
+          tema_fixo: !!h.tema_fixo,
+        }));
       setConfirmOpen(false);
       navigate("/chat", {
         state: {
           retorno: {
             habitos: habitosResumo,
-            habitosJaCompletadosCount: Array.from(doneTypes).filter((t) =>
-              t.startsWith("video_semana_") || t.startsWith("hipnose_semana_"),
-            ).length,
+            habitosJaCompletadosCount: jaCompletadosCount,
           },
         },
       });
