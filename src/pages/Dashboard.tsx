@@ -705,15 +705,29 @@ export default function Dashboard() {
             locked={dayLocked}
             onClick={() => navigate("/chat")}
             ariaLabel="Abrir chat com a IA"
+            level={level}
+            state={brainState}
           />
-          {progressPct > 0 && (
-            <div className="flex justify-center -mt-4 relative z-10">
+          <div className="flex justify-center items-center gap-2 -mt-4 relative z-10">
+            {progressPct > 0 && (
               <div className="inline-flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur px-3 py-1 shadow-[0_4px_12px_-4px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_88%)]">
                 <span className="text-xs font-bold text-[hsl(258_65%_52%)]">{progressPct}%</span>
                 <span className="text-[10px] text-muted-foreground font-medium">completo</span>
               </div>
-            </div>
-          )}
+            )}
+            <button
+              type="button"
+              onClick={() => navigate("/cerebro")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white px-3 py-1 shadow-[0_4px_12px_-4px_hsl(258_70%_45%/0.5)]"
+              aria-label={`Nível ${level} — ${sparks} faíscas. Ver detalhes.`}
+            >
+              <Sparkles className="h-3 w-3" />
+              <span className="text-[11px] font-bold leading-none">Nv. {level}</span>
+              <span className="text-[10px] font-semibold opacity-90 leading-none">
+                {sparks} {sparks === 1 ? "faísca" : "faíscas"}
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* Weekly content cards (stacked) */}
