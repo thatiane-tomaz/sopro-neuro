@@ -91,7 +91,7 @@ export default function ProgressBrain({
 
   const speechBubble = speechText ? (
     <div className="absolute left-1/2 top-6 z-20 w-[238px] -translate-x-1/2 pointer-events-none">
-      <div className="relative rounded-[22px] bg-white/95 px-4 py-2.5 text-center ring-1 ring-[hsl(220_70%_88%)] shadow-[0_12px_30px_-16px_hsl(258_70%_45%/0.75)] backdrop-blur">
+      <div className="relative rounded-[22px] bg-white/55 px-4 py-2.5 text-center ring-1 ring-white/50 shadow-[0_8px_22px_-16px_hsl(258_70%_45%/0.45)] backdrop-blur-md">
         {speechTitle && (
           <span className="block text-[9px] font-black uppercase tracking-[0.16em] leading-none text-[hsl(258_60%_50%)] whitespace-nowrap">
             {speechTitle}
@@ -102,11 +102,11 @@ export default function ProgressBrain({
         </span>
         <span
           aria-hidden
-          className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 bg-white ring-1 ring-[hsl(220_70%_88%)]"
+          className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 bg-white/55 ring-1 ring-white/50 backdrop-blur-md"
         />
         <span
           aria-hidden
-          className="absolute -bottom-[1px] left-1/2 h-2.5 w-9 -translate-x-1/2 bg-white"
+          className="absolute -bottom-[1px] left-1/2 h-2.5 w-9 -translate-x-1/2 bg-white/55 backdrop-blur-md"
         />
       </div>
     </div>
