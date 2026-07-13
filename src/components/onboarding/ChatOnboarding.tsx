@@ -53,7 +53,7 @@ const buildSteps = (): BotStep[] => [
     key: "intro",
     kind: "info",
     text: () =>
-      "Oi! Sou o cérebro do Sopro 🧠✨ Vou te fazer algumas perguntinhas para entender sua história com o cigarro. Nada de julgamento — quanto mais real, melhor a jornada que monto pra você.",
+      "Oi! Eu sou o Neo, o cérebro do Sopro 🧠✨ Vou te fazer algumas perguntinhas para entender sua história com o cigarro. Nada de julgamento, quanto mais real, melhor a jornada que monto pra você.",
   },
   {
     key: "age",
