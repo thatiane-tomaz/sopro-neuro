@@ -1,0 +1,1 @@
+ALTER TABLE public.mural_posts DROP CONSTRAINT IF EXISTS mural_posts_user_id_fkey;
