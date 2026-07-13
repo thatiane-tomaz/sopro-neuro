@@ -212,13 +212,6 @@ export default function Mural() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
           <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-5 pb-4 relative">
-            <button
-              onClick={() => setOpen(false)}
-              aria-label="Fechar"
-              className="absolute right-3 top-3 h-8 w-8 rounded-full bg-white/90 flex items-center justify-center text-foreground/70 shadow-sm"
-            >
-              <X className="h-4 w-4" />
-            </button>
             <DialogHeader className="text-left space-y-1">
               <div className="h-10 w-10 rounded-2xl bg-white text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm mb-2">
                 <MessageCircleHeart className="h-5 w-5" />
