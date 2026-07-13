@@ -17,17 +17,26 @@ const Index = () => {
         return;
       }
 
-      // Authenticated user - check database for onboarding status
+      // Authenticated user - check database for onboarding status (legacy or v2)
       try {
-        const { data: existingResponse, error } = await supabase
-          .from('onboarding_responses')
-          .select('id')
-          .eq('user_id', user.id)
-          .maybeSingle();
+        const [legacyResult, v2Result] = await Promise.all([
+          supabase
+            .from('onboarding_responses')
+            .select('id')
+            .eq('user_id', user.id)
+            .maybeSingle(),
+          supabase
+            .from('onboarding_responses_v2')
+            .select('id')
+            .eq('user_id', user.id)
+            .maybeSingle(),
+        ]);
 
-        if (isMounted) {
-          setHasCompletedOnboarding(!!existingResponse && !error);
-        }
+        const done =
+          (!!legacyResult.data && !legacyResult.error) ||
+          (!!v2Result.data && !v2Result.error);
+
+        if (isMounted) setHasCompletedOnboarding(done);
       } catch (error) {
         console.error('Error checking onboarding:', error);
         if (isMounted) setHasCompletedOnboarding(false);
