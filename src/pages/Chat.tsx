@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Send, Loader2, Mic, Square, Volume2, VolumeX } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import WaveBackground from "@/components/home/WaveBackground";
@@ -32,6 +33,7 @@ type MissionContext = {
 };
 
 const MISSION_END_RE = /\[MISSION_END\](\{[\s\S]*?\})\[\/MISSION_END\]/;
+const RETORNO_END_RE = /\[RETORNO_END\](\{[\s\S]*?\})\[\/RETORNO_END\]/;
 
 const SUGGESTIONS_PHASE_1 = [
   "Por que desta vez será mais fácil? 🌟",
@@ -51,6 +53,10 @@ export default function Chat() {
   const navigate = useNavigate();
   const location = useLocation();
   const mission = (location.state as any)?.mission as MissionContext | undefined;
+  const retorno = (location.state as any)?.retorno as
+    | { habitos: Array<{ titulo: string; tema_fixo: boolean }>; habitosJaCompletadosCount?: number }
+    | undefined;
+  const queryClient = useQueryClient();
   const { user, loading: authLoading } = useAuth();
   const { profile } = useUserProfile();
   const { isPremium, loading: subLoading } = useSubscription();
@@ -60,14 +66,16 @@ export default function Chat() {
   const { toast } = useToast();
 
   const currentDay = getCurrentDay();
-  const SUGGESTIONS = mission
+  const SUGGESTIONS = mission || retorno
     ? []
     : currentDay <= 7
     ? SUGGESTIONS_PHASE_1
     : SUGGESTIONS_PHASE_2;
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
-  const greeting = mission
+  const greeting = retorno
+    ? `Oi${firstName ? `, ${firstName}` : ""}. Que bom que você está aqui.\n\nVoltar não é recomeçar do zero, é ajustar a rota. Em uns 5 minutinhos vou te fazer algumas perguntas curtas pra entender quais gatilhos estão te puxando de volta ao cigarro agora, e assim montar uma jornada de redução mais alinhada com esse momento.\n\nPra começar: o que você acha que mais te levou a voltar a fumar?`
+    : mission
     ? `Oi${firstName ? `, ${firstName}` : ""}!\n\nAntes de continuarmos, só siga essa conversa se você realmente viveu a missão. Se ainda não viveu, feche essa tela e volte quando tiver experimentado, assim eu consigo te ajudar de verdade.\n\nSua missão foi: ${mission.explicacaoDesafio}\n\nSe você já viveu, me conte como foi a sua experiência.`
     : `Olá${firstName ? ` ${firstName}` : ""}! Estou aqui para te ajudar a entender seu cérebro e te guiar na jornada para parar de fumar.\n\nMe conte suas dúvidas e o que está sentindo agora.`;
 
@@ -84,6 +92,7 @@ export default function Chat() {
       }
     | null
   >(null);
+  const [retornoFinalizando, setRetornoFinalizando] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
@@ -120,6 +129,30 @@ export default function Chat() {
       setTimeout(() => navigate("/dashboard"), 2500);
     } catch (e) {
       console.error("finalize mission error:", e);
+    }
+  };
+
+  const finalizeRetorno = async (parsed: { habitos_titulos?: string[] }) => {
+    if (!user || retornoFinalizando) return;
+    setRetornoFinalizando(true);
+    try {
+      const titulos = Array.isArray(parsed.habitos_titulos)
+        ? parsed.habitos_titulos.filter((t) => typeof t === "string" && t.trim())
+        : [];
+      await (supabase as any).from("historico_jornada_usuario").insert({
+        user_id: user.id,
+        jornada: "reducao",
+        habitos_selecionados: titulos,
+      });
+      await queryClient.invalidateQueries({ queryKey: ["jornada-type"] });
+      await queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
+      await queryClient.invalidateQueries({ queryKey: ["historico-jornada"] });
+      await queryClient.invalidateQueries({ queryKey: ["habitos-jornada"] });
+      toast({ title: "Jornada atualizada", description: "Sua nova rota de redução está pronta." });
+      setTimeout(() => navigate("/jornada"), 1800);
+    } catch (e) {
+      console.error("finalize retorno error:", e);
+      setRetornoFinalizando(false);
     }
   };
 
@@ -291,6 +324,14 @@ export default function Chat() {
                 },
               }
             : {}),
+          ...(retorno
+            ? {
+                retorno: {
+                  habitos: retorno.habitos,
+                  ja_completados: retorno.habitosJaCompletadosCount ?? 0,
+                },
+              }
+            : {}),
         }),
         signal: controller.signal,
       });
@@ -321,7 +362,10 @@ export default function Chat() {
         assistantSoFar += chunk;
         setMessages((prev) => {
           const copy = [...prev];
-          const cleaned = assistantSoFar.replace(MISSION_END_RE, "").trim();
+          const cleaned = assistantSoFar
+            .replace(MISSION_END_RE, "")
+            .replace(RETORNO_END_RE, "")
+            .trim();
           copy[copy.length - 1] = { role: "assistant", content: cleaned };
           return copy;
         });
@@ -406,6 +450,28 @@ export default function Chat() {
             setPendingMissionEnd({ parsed, transcript });
           } catch (e) {
             console.error("MISSION_END parse error:", e);
+          }
+        }
+      }
+
+      // Retorno end detection
+      if (retorno) {
+        const r = assistantSoFar.match(RETORNO_END_RE);
+        if (r) {
+          try {
+            const parsed = JSON.parse(r[1]);
+            const cleanedContent = assistantSoFar.replace(RETORNO_END_RE, "").trim();
+            setMessages((prev) => {
+              const copy = [...prev];
+              const lastIdx = copy.length - 1;
+              if (copy[lastIdx]?.role === "assistant") {
+                copy[lastIdx] = { role: "assistant", content: cleanedContent };
+              }
+              return copy;
+            });
+            finalizeRetorno(parsed);
+          } catch (e) {
+            console.error("RETORNO_END parse error:", e);
           }
         }
       }

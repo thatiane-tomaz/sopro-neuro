@@ -91,7 +91,7 @@ export default function Jornada() {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("historico_jornada_usuario")
-        .select("jornada, created_at")
+        .select("jornada, created_at, habitos_selecionados")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false })
         .limit(1)
@@ -100,7 +100,11 @@ export default function Jornada() {
         console.error("historico jornada error", error);
         return null;
       }
-      return data as { jornada: string; created_at: string } | null;
+      return data as {
+        jornada: string;
+        created_at: string;
+        habitos_selecionados: string[] | null;
+      } | null;
     },
   });
 
@@ -130,11 +134,17 @@ export default function Jornada() {
     historicoJornada?.jornada ?? onboardingV2?.jornada_inicial ?? "reducao";
   const tipoUsuario = JORNADA_MAP[jornadaRaw] ?? "redução";
   const habitosSelecionados: string[] = useMemo(
-    () =>
-      Array.isArray(onboardingV2?.respostas?.habitosSelecionados)
+    () => {
+      // If the user returned to redução via the AI chat, the latest historico entry
+      // carries the AI-selected habit titles — those take precedence.
+      if (Array.isArray(historicoJornada?.habitos_selecionados) && historicoJornada!.habitos_selecionados!.length > 0) {
+        return historicoJornada!.habitos_selecionados as string[];
+      }
+      return Array.isArray(onboardingV2?.respostas?.habitosSelecionados)
         ? (onboardingV2!.respostas.habitosSelecionados as string[])
-        : [],
-    [onboardingV2],
+        : [];
+    },
+    [onboardingV2, historicoJornada],
   );
 
   // ---- Load habitos_jornada for this journey type ----

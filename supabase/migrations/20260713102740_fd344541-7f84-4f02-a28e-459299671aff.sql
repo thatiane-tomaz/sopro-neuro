@@ -1,0 +1,1 @@
+ALTER TABLE public.historico_jornada_usuario ADD COLUMN IF NOT EXISTS habitos_selecionados jsonb;
