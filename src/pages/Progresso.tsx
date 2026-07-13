@@ -464,7 +464,7 @@ export default function Progresso() {
                 </p>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Escolha qualquer data para registrar quantos cigarros você fumou.
+                Escolha uma data para registrar quantos cigarros fumou.
               </p>
               <div className="mt-2.5 flex items-stretch gap-2">
                 <input
