@@ -227,7 +227,7 @@ export default function Mural() {
                 Compartilhe no mural
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Uma frase, um insight, uma virada pode inspirar outra pessoa hoje.
+                Uma frase pode inspirar outra pessoa hoje.
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -242,26 +242,6 @@ export default function Mural() {
             />
             <div className="flex justify-end text-[11px] text-muted-foreground">
               {content.length}/{MAX_LEN}
-            </div>
-
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-[12px] font-medium text-foreground/80">
-                <input
-                  type="checkbox"
-                  checked={anonymous}
-                  onChange={(e) => setAnonymous(e.target.checked)}
-                  className="h-4 w-4 rounded border-[hsl(258_70%_80%)] text-[hsl(258_65%_52%)]"
-                />
-                Publicar como anônimo
-              </label>
-              {!anonymous && (
-                <Input
-                  value={name}
-                  onChange={(e) => setName(e.target.value.slice(0, 40))}
-                  placeholder="Como você quer aparecer"
-                  className="rounded-xl border-[hsl(258_70%_92%)] focus-visible:ring-[hsl(258_70%_70%)]"
-                />
-              )}
             </div>
           </div>
 
