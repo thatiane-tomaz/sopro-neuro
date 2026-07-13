@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useBrainSparks } from '@/hooks/useBrainSparks';
 
 export interface JourneyTrack {
   id: string;
@@ -17,6 +18,7 @@ export interface JourneyTrack {
 export const useJourneyTracking = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { award } = useBrainSparks();
 
   // Fetch all tracking data for the user
   const { data: trackingData, isLoading } = useQuery({
@@ -139,6 +141,16 @@ export const useJourneyTracking = () => {
         if (error) {
           console.error('Error updating progress:', error);
           return null;
+        }
+        if (finished && data) {
+          const type = (data as any).interaction_type as string | undefined;
+          if (type?.startsWith('video_')) {
+            award('video_completed', { interaction_type: type });
+          } else if (type?.startsWith('hipnose_')) {
+            award('hypnosis_completed', { interaction_type: type });
+          } else if (type?.startsWith('missao_')) {
+            award('mission_completed', { interaction_type: type });
+          }
         }
         return data;
       } catch (error) {

@@ -1,11 +1,31 @@
-import brainImg from "@/assets/brain-user.png";
 import { Lock } from "lucide-react";
+import type { BrainLevel, BrainState } from "@/hooks/useBrainSparks";
+import lv1Active from "@/assets/brain/brain-lv1-active.png";
+import lv1Resting from "@/assets/brain/brain-lv1-resting.png";
+import lv2Active from "@/assets/brain/brain-lv2-active.png";
+import lv2Resting from "@/assets/brain/brain-lv2-resting.png";
+import lv3Active from "@/assets/brain/brain-lv3-active.png";
+import lv3Resting from "@/assets/brain/brain-lv3-resting.png";
+import lv4Active from "@/assets/brain/brain-lv4-active.png";
+import lv4Resting from "@/assets/brain/brain-lv4-resting.png";
+import lv5Active from "@/assets/brain/brain-lv5-active.png";
+import lv5Resting from "@/assets/brain/brain-lv5-resting.png";
+
+const BRAIN_ASSETS: Record<BrainLevel, Record<BrainState, string>> = {
+  1: { active: lv1Active, resting: lv1Resting },
+  2: { active: lv2Active, resting: lv2Resting },
+  3: { active: lv3Active, resting: lv3Resting },
+  4: { active: lv4Active, resting: lv4Resting },
+  5: { active: lv5Active, resting: lv5Resting },
+};
 
 interface Props {
   progress: number; // 0-100
   locked: boolean;
   onClick?: () => void;
   ariaLabel?: string;
+  level?: BrainLevel;
+  state?: BrainState;
 }
 
 /**
@@ -13,8 +33,10 @@ interface Props {
  * The arc starts at bottom-left, goes counter-clockwise across the top,
  * and ends at bottom-right, leaving a gap at the bottom (matches ref).
  */
-export default function ProgressBrain({ progress, locked, onClick, ariaLabel }: Props) {
+export default function ProgressBrain({ progress, locked, onClick, ariaLabel, level = 1, state = "resting" }: Props) {
   const clamped = Math.max(0, Math.min(100, progress));
+  const brainImg = BRAIN_ASSETS[level][state];
+  const isResting = state === "resting";
 
   const size = 300;
   const cx = size / 2;
@@ -97,14 +119,14 @@ export default function ProgressBrain({ progress, locked, onClick, ariaLabel }: 
           >
             <img
               src={brainImg}
-              alt="Cérebro"
+              alt={`Cérebro nível ${level} ${state === "active" ? "ativo" : "descansando"}`}
               width={340}
               height={340}
               loading="eager"
               draggable={false}
-              className={`w-[340px] h-[340px] object-contain animate-pulse-glow pointer-events-none ${
-                locked ? "grayscale opacity-60" : ""
-              }`}
+              className={`w-[340px] h-[340px] object-contain pointer-events-none ${
+                isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
+              } ${locked ? "grayscale opacity-60" : ""}`}
             />
             {!locked && (
               <span className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center -translate-y-1 select-none">
@@ -112,7 +134,7 @@ export default function ProgressBrain({ progress, locked, onClick, ariaLabel }: 
                   className="text-xl font-bold text-white leading-none text-center px-4"
                   style={{ textShadow: "0 2px 8px hsl(230 60% 25% / 0.55)" }}
                 >
-                  Olá!
+                  {isResting ? "Zzz" : "Olá!"}
                 </span>
                 <span
                   className="mt-1 text-[10px] font-semibold text-white/90 text-center px-4"
@@ -126,13 +148,13 @@ export default function ProgressBrain({ progress, locked, onClick, ariaLabel }: 
         ) : (
           <img
           src={brainImg}
-          alt="Cérebro"
+          alt={`Cérebro nível ${level}`}
           width={340}
           height={340}
           loading="eager"
-          className={`w-[340px] h-[340px] object-contain animate-pulse-glow ${
-            locked ? "grayscale opacity-60" : ""
-          }`}
+          className={`w-[340px] h-[340px] object-contain ${
+            isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
+          } ${locked ? "grayscale opacity-60" : ""}`}
           />
         )}
         {locked && (

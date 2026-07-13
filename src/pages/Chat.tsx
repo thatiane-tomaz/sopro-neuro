@@ -10,6 +10,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
+import { useBrainSparks } from "@/hooks/useBrainSparks";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import brainImg from "@/assets/brain-user.png";
@@ -63,6 +64,7 @@ export default function Chat() {
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { getCurrentDay, startTracking, updateProgress } = useJourneyTracking();
+  const { award } = useBrainSparks();
   const { toast } = useToast();
 
   const currentDay = getCurrentDay();
@@ -125,6 +127,9 @@ export default function Chat() {
       if (r?.id) {
         updateProgress({ trackingId: r.id, progressPercentage: 100, finished: true });
       }
+      award(parsed.consentiu_postar ? "mission_completed_with_mural" : "mission_completed", {
+        habito_id: mission.habitoId,
+      });
       toast({ title: "Missão concluída! 🎉" });
       setTimeout(() => navigate("/dashboard"), 2500);
     } catch (e) {
@@ -302,6 +307,10 @@ export default function Chat() {
     setMessages(next);
     setInput("");
     setIsStreaming(true);
+    // Award daily chat spark (RPC handles once-per-day deduplication)
+    if (!mission && !retorno) {
+      award("chat_message");
+    }
 
     const controller = new AbortController();
     abortRef.current = controller;

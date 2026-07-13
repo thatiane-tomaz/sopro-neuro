@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useBrainSparks } from "@/hooks/useBrainSparks";
 
 export type MuralPost = {
   id: string;
@@ -37,6 +38,7 @@ export function useMuralPosts(habitoTitulo?: string | null) {
 export function useCreateMuralPost() {
   const qc = useQueryClient();
   const { user } = useAuth();
+  const { award } = useBrainSparks();
   return useMutation({
     mutationFn: async ({
       content,
@@ -66,7 +68,10 @@ export function useCreateMuralPost() {
       if (error) throw error;
       return data as MuralPost;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["mural-posts"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["mural-posts"] });
+      award("mural_post");
+    },
   });
 }
 

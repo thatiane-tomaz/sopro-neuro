@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useBrainSparks } from '@/hooks/useBrainSparks';
 
 const STORAGE_BASE = 'https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis';
 const getStorageKey = (userId: string) => `sos_next_index_${userId}`;
@@ -8,6 +9,7 @@ const SOS_COUNT_CACHE_TTL = 1000 * 60 * 60; // 1 hour
 
 export const useSosHypnosis = () => {
   const { user } = useAuth();
+  const { award } = useBrainSparks();
   const [totalSos, setTotalSos] = useState<number>(() => {
     try {
       const cached = localStorage.getItem(SOS_COUNT_CACHE_KEY);
@@ -80,12 +82,14 @@ export const useSosHypnosis = () => {
     }
     setNextIndex(newIndex);
 
+    award('sos_used', { sos_number: sosNumber });
+
     return {
       title: 'Hipnose SOS',
       fileUrl: `${STORAGE_BASE}/sos_${sosNumber}.MP3`,
       index: currentIndex,
     };
-  }, [user, getNextIndex, totalSos]);
+  }, [user, getNextIndex, totalSos, award]);
 
   return {
     getSosHypnosis,
