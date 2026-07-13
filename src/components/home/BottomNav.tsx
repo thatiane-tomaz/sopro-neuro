@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Compass, LineChart, Waves } from "lucide-react";
+import { Compass, LineChart, Brain } from "lucide-react";
 
 export default function BottomNav() {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ export default function BottomNav() {
                 : "bg-gradient-to-br from-[hsl(230_85%_70%)] to-[hsl(258_80%_70%)]"
             }`}
           >
-            <Waves className="h-7 w-7 text-white" strokeWidth={2.4} />
+            <Brain className="h-7 w-7 text-white" strokeWidth={2.4} />
           </button>
         </div>
       </div>
