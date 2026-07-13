@@ -13,9 +13,9 @@ const FALLBACK = [
   },
 ];
 
-export default function MuralPreview() {
+export default function MuralPreview({ habitoTitulo }: { habitoTitulo?: string | null } = {}) {
   const navigate = useNavigate();
-  const { data } = useMuralPosts();
+  const { data } = useMuralPosts(habitoTitulo ?? null);
   const posts = (data && data.length > 0 ? data.slice(0, 6) : FALLBACK) as any[];
   const [idx, setIdx] = useState(0);
 
@@ -36,7 +36,11 @@ export default function MuralPreview() {
 
   return (
     <button
-      onClick={() => navigate("/mural")}
+      onClick={() =>
+        navigate(
+          habitoTitulo ? `/mural?tema=${encodeURIComponent(habitoTitulo)}` : "/mural"
+        )
+      }
       className="group mt-6 w-full text-left rounded-3xl p-5 relative overflow-hidden ring-1 ring-black/[0.04] shadow-[0_18px_50px_-20px_hsl(258_70%_45%/0.35)] active:scale-[0.995] transition-transform"
       style={{
         background:
