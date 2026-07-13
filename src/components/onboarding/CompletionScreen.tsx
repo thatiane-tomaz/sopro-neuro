@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
-import brainImg from "@/assets/brain-user.png";
+import brainImg from "@/assets/brain/brain-lv3-active.png";
 
 interface CompletionScreenProps {
   onFinish: () => void;

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Send } from "lucide-react";
-import brainAvatar from "@/assets/brain-3d.png";
+import brainAvatar from "@/assets/brain/brain-lv3-active.png";
 import type { OnboardingData } from "@/pages/Onboarding";
 import {
   EMOTION_OPTIONS,
