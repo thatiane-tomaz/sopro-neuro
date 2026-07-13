@@ -178,10 +178,13 @@ export default function ProgressBrain({
             <span className="inline-flex items-center gap-1 text-[hsl(220_90%_55%)]">
               <Sparkles className="h-3.5 w-3.5" />
               <span className="text-sm font-extrabold tabular-nums leading-none">{sparks}</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.12em] leading-none text-[hsl(220_90%_55%)]">
+                Sparks
+              </span>
             </span>
             <span className="h-3 w-px bg-[hsl(220_40%_88%)]" aria-hidden="true" />
             <span className="text-[10px] font-bold uppercase tracking-[0.14em] leading-none bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
-              Nv {level}{isMax ? " · Máx" : ""}
+              Nível {level}{isMax ? " · Máx" : ""}
             </span>
           </div>
         </div>
