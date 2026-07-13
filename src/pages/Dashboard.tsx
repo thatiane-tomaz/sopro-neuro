@@ -751,7 +751,7 @@ export default function Dashboard() {
         {isAbstinencia && <AbstinenceExtras />}
 
         {/* Mural — experiências compartilhadas */}
-        <MuralPreview />
+        <MuralPreview habitoTitulo={tituloGatilho} />
 
         {/* Progress / savings card */}
         <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
