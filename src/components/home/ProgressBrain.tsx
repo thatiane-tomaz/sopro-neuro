@@ -130,11 +130,11 @@ export default function ProgressBrain({
             <img
               src={brainImg}
               alt={`Cérebro nível ${level} ${state === "active" ? "ativo" : "descansando"}`}
-              width={340}
-              height={340}
+              width={240}
+              height={240}
               loading="eager"
               draggable={false}
-              className={`w-[340px] h-[340px] object-contain pointer-events-none ${
+              className={`w-[240px] h-[240px] object-contain pointer-events-none ${
                 isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
               } ${locked ? "grayscale opacity-60" : ""}`}
             />
@@ -151,10 +151,10 @@ export default function ProgressBrain({
           <img
           src={brainImg}
           alt={`Cérebro nível ${level}`}
-          width={340}
-          height={340}
+          width={240}
+          height={240}
           loading="eager"
-          className={`w-[340px] h-[340px] object-contain ${
+          className={`w-[240px] h-[240px] object-contain ${
             isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
           } ${locked ? "grayscale opacity-60" : ""}`}
           />
