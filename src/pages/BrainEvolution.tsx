@@ -137,7 +137,7 @@ export default function BrainEvolution() {
             <Moon className="h-4 w-4" /> Ativo x Descansando
           </div>
           <p className="mt-1 text-xs text-muted-foreground text-pretty">
-            Se você fica mais de 24 horas sem interagir, seu cérebro entra em modo descanso. Volte para acordá-lo.
+            Se você fica mais de 48 horas sem interagir, seu cérebro entra em modo descanso. Volte para acordá-lo.
           </p>
         </div>
 
