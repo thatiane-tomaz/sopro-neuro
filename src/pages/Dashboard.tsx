@@ -65,6 +65,7 @@ import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import soproLogo from "@/assets/sopro-logo.png";
+import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -734,7 +735,7 @@ export default function Dashboard() {
             sparks={sparks}
             levelProgress={progressToNext}
             speechTitle={!dayLocked ? "Neo · Chat de IA" : undefined}
-            speechText={!dayLocked ? "Como foi sua vontade de fumar hoje?" : undefined}
+            speechText={!dayLocked ? getDailyChatPrompt() : undefined}
           />
         </div>
 
