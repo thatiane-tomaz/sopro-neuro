@@ -549,6 +549,7 @@ export default function Chat() {
                 role={m.role}
                 content={m.content}
                 showBrain={i === 0 && m.role === "assistant"}
+                brainSrc={BRAIN_BY_LEVEL[brainLevel]}
                 showSpeaker={isLastAssistant}
                 voiceEnabled={voiceEnabled}
                 onSpeakerClick={() => handleSpeakerClick(m.content)}
@@ -711,11 +712,13 @@ function MessageBubble({
   role,
   content,
   showBrain,
+  brainSrc,
   showSpeaker,
   voiceEnabled,
   onSpeakerClick,
 }: Msg & {
   showBrain?: boolean;
+  brainSrc?: string;
   showSpeaker?: boolean;
   voiceEnabled?: boolean;
   onSpeakerClick?: () => void;
@@ -731,10 +734,10 @@ function MessageBubble({
   }
   return (
     <div className="flex justify-start items-end gap-2 w-full min-w-0">
-      {showBrain && (
+      {showBrain && brainSrc && (
         <img
-          src={brainImg}
-          alt="Cérebro"
+          src={brainSrc}
+          alt="Neo"
           className="h-14 w-14 flex-shrink-0 object-contain drop-shadow-[0_6px_14px_hsl(258_70%_45%/0.35)] animate-pulse-glow"
         />
       )}
