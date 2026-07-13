@@ -144,7 +144,7 @@ export default function Mural() {
         {/* Header */}
         <header className="flex items-center justify-between pt-4">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/")}
             aria-label="Voltar"
             className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-sm ring-1 ring-black/[0.03] active:scale-95"
           >
