@@ -293,8 +293,8 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
         </div>
       </div>
 
-      {/* Messages (upper third) */}
-      <div ref={scrollRef} className="h-[33vh] shrink-0 overflow-y-auto px-4 py-5 space-y-3">
+      {/* Messages (fills remaining space above input) */}
+      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-3">
         {messages.map((m, i) => (
           <div
             key={i}
@@ -332,8 +332,8 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
         )}
       </div>
 
-      {/* Input area (takes remaining space) */}
-      <div className="flex-1 min-h-0 overflow-y-auto border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+      {/* Input area (height adapts to content, capped at 66vh) */}
+      <div className="shrink-0 max-h-[66vh] overflow-y-auto border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         {!typing && current && (
           <>
             {isInfo && !isLast && current.key === "intro" && (
