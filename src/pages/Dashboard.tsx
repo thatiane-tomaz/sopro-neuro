@@ -724,30 +724,6 @@ export default function Dashboard() {
           </h1>
         </div>
 
-        {/* Speech bubble — Neo fala com o usuário. Clique no cérebro abre o chat. */}
-        {!dayLocked && (
-          <div className="mt-5 px-3 flex justify-center">
-            <button
-              type="button"
-              onClick={() => navigate("/chat")}
-              aria-label="Conversar com Neo"
-              className="group relative max-w-[300px] rounded-2xl bg-white/95 backdrop-blur px-4 py-3 ring-1 ring-[hsl(220_70%_88%)] shadow-[0_10px_28px_-14px_hsl(258_70%_45%/0.55)] hover:shadow-[0_14px_32px_-12px_hsl(258_70%_45%/0.65)] hover:-translate-y-0.5 active:translate-y-0 transition-all text-left animate-fade-in"
-            >
-              <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_60%_50%)]">
-                Neo · IA
-              </span>
-              <span className="block mt-0.5 text-[14px] font-semibold text-foreground leading-snug text-balance">
-                Como foi sua vontade de fumar hoje?
-              </span>
-              {/* rabinho do balão apontando para o Neo (para baixo) */}
-              <span
-                aria-hidden
-                className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-white ring-1 ring-[hsl(220_70%_88%)] ring-t-0 ring-l-0"
-              />
-            </button>
-          </div>
-        )}
-
         {/* Brain progress — clicar no Neo abre o chat */}
         <div className="mt-3">
           <ProgressBrain
@@ -758,6 +734,8 @@ export default function Dashboard() {
             state={brainState}
             sparks={sparks}
             levelProgress={progressToNext}
+            speechTitle={!dayLocked ? "Neo · Chat de IA" : undefined}
+            speechText={!dayLocked ? "Como foi sua vontade de fumar hoje?" : undefined}
           />
         </div>
 
