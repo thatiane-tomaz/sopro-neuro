@@ -1,4 +1,4 @@
-import { Lock } from "lucide-react";
+import { Lock, Sparkles } from "lucide-react";
 import type { BrainLevel, BrainState } from "@/hooks/useBrainSparks";
 import lv1Active from "@/assets/brain/brain-lv1-active.png";
 import lv1Resting from "@/assets/brain/brain-lv1-resting.png";
@@ -20,23 +20,33 @@ const BRAIN_ASSETS: Record<BrainLevel, Record<BrainState, string>> = {
 };
 
 interface Props {
-  progress: number; // 0-100
   locked: boolean;
   onClick?: () => void;
   ariaLabel?: string;
   level?: BrainLevel;
   state?: BrainState;
+  sparks?: number;
+  /** 0-100 progress within the current level (arc fill). Level 5 = 100. */
+  levelProgress?: number;
 }
 
 /**
  * Open-bottom 3/4 circular progress arc with the 3D brain centered.
- * The arc starts at bottom-left, goes counter-clockwise across the top,
- * and ends at bottom-right, leaving a gap at the bottom (matches ref).
+ * The arc represents the user's progress within the current brain level.
  */
-export default function ProgressBrain({ progress, locked, onClick, ariaLabel, level = 1, state = "resting" }: Props) {
-  const clamped = Math.max(0, Math.min(100, progress));
+export default function ProgressBrain({
+  locked,
+  onClick,
+  ariaLabel,
+  level = 1,
+  state = "resting",
+  sparks = 0,
+  levelProgress = 0,
+}: Props) {
+  const clamped = Math.max(0, Math.min(100, levelProgress));
   const brainImg = BRAIN_ASSETS[level][state];
   const isResting = state === "resting";
+  const isMax = level === 5;
 
   const size = 300;
   const cx = size / 2;
@@ -129,17 +139,9 @@ export default function ProgressBrain({ progress, locked, onClick, ariaLabel, le
               } ${locked ? "grayscale opacity-60" : ""}`}
             />
             {!locked && (
-              <span className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center -translate-y-1 select-none">
-                <span
-                  className="text-xl font-bold text-white leading-none text-center px-4"
-                  style={{ textShadow: "0 2px 8px hsl(230 60% 25% / 0.55)" }}
-                >
-                  {isResting ? "Zzz" : "Olá!"}
-                </span>
-                <span
-                  className="mt-1 text-[10px] font-semibold text-white/90 text-center px-4"
-                  style={{ textShadow: "0 1px 4px hsl(230 60% 25% / 0.55)" }}
-                >
+              <span className="pointer-events-none absolute inset-0 flex items-end justify-center pb-8 select-none">
+                <span className="text-[10px] font-semibold text-white/95 text-center px-4 tracking-wide"
+                  style={{ textShadow: "0 1px 4px hsl(230 60% 25% / 0.55)" }}>
                   Toque para conversar
                 </span>
               </span>
@@ -165,6 +167,22 @@ export default function ProgressBrain({ progress, locked, onClick, ariaLabel, le
           </div>
         )}
       </div>
+
+      {/* Sparks + Level chip anchored to the bottom arc gap */}
+      {!locked && (
+        <div className="pointer-events-none absolute left-1/2 -translate-x-1/2" style={{ bottom: 4 }}>
+          <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-white/95 backdrop-blur px-3 py-1.5 ring-1 ring-[hsl(220_70%_88%)] shadow-[0_8px_20px_-8px_hsl(258_70%_45%/0.5)]">
+            <span className="inline-flex items-center gap-1 text-[hsl(220_90%_55%)]">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span className="text-sm font-extrabold tabular-nums leading-none">{sparks}</span>
+            </span>
+            <span className="h-3 w-px bg-[hsl(220_40%_88%)]" aria-hidden="true" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.14em] leading-none bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
+              Nv {level}{isMax ? " · Máx" : ""}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

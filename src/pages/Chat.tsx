@@ -127,7 +127,7 @@ export default function Chat() {
       if (r?.id) {
         updateProgress({ trackingId: r.id, progressPercentage: 100, finished: true });
       }
-      award(parsed.consentiu_postar ? "mission_completed_with_mural" : "mission_completed", {
+      award(parsed.consentiu_postar ? "mission_completed_with_mural_post" : "mission_completed", {
         habito_id: mission.habitoId,
       });
       toast({ title: "Missão concluída! 🎉" });
