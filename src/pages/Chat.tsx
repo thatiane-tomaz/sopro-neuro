@@ -13,7 +13,21 @@ import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import brainImg from "@/assets/brain-user.png";
+import lv1Active from "@/assets/brain/brain-lv1-active.png";
+import lv2Active from "@/assets/brain/brain-lv2-active.png";
+import lv3Active from "@/assets/brain/brain-lv3-active.png";
+import lv4Active from "@/assets/brain/brain-lv4-active.png";
+import lv5Active from "@/assets/brain/brain-lv5-active.png";
+import type { BrainLevel } from "@/hooks/useBrainSparks";
+import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
+
+const BRAIN_BY_LEVEL: Record<BrainLevel, string> = {
+  1: lv1Active,
+  2: lv2Active,
+  3: lv3Active,
+  4: lv4Active,
+  5: lv5Active,
+};
 import {
   Dialog,
   DialogContent,
@@ -64,22 +78,25 @@ export default function Chat() {
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { getCurrentDay, startTracking, updateProgress } = useJourneyTracking();
-  const { award } = useBrainSparks();
+  const { award, level: brainLevel } = useBrainSparks();
   const { toast } = useToast();
 
   const currentDay = getCurrentDay();
+  const dailyPrompt = getDailyChatPrompt();
   const SUGGESTIONS = mission || retorno
     ? []
-    : currentDay <= 7
-    ? SUGGESTIONS_PHASE_1
-    : SUGGESTIONS_PHASE_2;
+    : [
+        `Responder: ${dailyPrompt}`,
+        "Quero falar sobre outra coisa 💬",
+        ...(currentDay <= 7 ? SUGGESTIONS_PHASE_1 : SUGGESTIONS_PHASE_2),
+      ];
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
   const greeting = retorno
     ? `Oi${firstName ? `, ${firstName}` : ""}. Que bom que você está aqui.\n\nVoltar não é recomeçar do zero, é ajustar a rota. Em uns 5 minutinhos vou te fazer algumas perguntas curtas pra entender quais gatilhos estão te puxando de volta ao cigarro agora, e assim montar uma jornada de redução mais alinhada com esse momento.\n\nPra começar: o que você acha que mais te levou a voltar a fumar?`
     : mission
     ? `Oi${firstName ? `, ${firstName}` : ""}!\n\nAntes de continuarmos, só siga essa conversa se você realmente viveu a missão. Se ainda não viveu, feche essa tela e volte quando tiver experimentado, assim eu consigo te ajudar de verdade.\n\nSua missão foi: ${mission.explicacaoDesafio}\n\nSe você já viveu, me conte como foi a sua experiência.`
-    : `Olá${firstName ? ` ${firstName}` : ""}! Estou aqui para te ajudar a entender seu cérebro e te guiar na jornada para parar de fumar.\n\nMe conte suas dúvidas e o que está sentindo agora.`;
+    : `Oi${firstName ? `, ${firstName}` : ""}! ${dailyPrompt}\n\nPode responder essa pergunta ou me contar sobre outra coisa que esteja passando aí. Tô aqui pra te ouvir.`;
 
   const [messages, setMessages] = useState<Msg[]>([
     { role: "assistant", content: greeting },
