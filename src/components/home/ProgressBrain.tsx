@@ -66,7 +66,7 @@ export default function ProgressBrain({
   const isMax = level === 5;
 
   const size = 300;
-  const brainSize = 198;
+  const brainSize = 158;
   const cx = size / 2;
   const cy = size / 2;
   const radius = 130;
