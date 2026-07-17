@@ -635,6 +635,71 @@ export type Database = {
         }
         Relationships: []
       }
+      push_messages: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          message: string
+          sequence_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          message: string
+          sequence_order: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          message?: string
+          sequence_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      push_send_log: {
+        Row: {
+          id: string
+          onesignal_response: Json | null
+          push_message_id: string
+          recipients_count: number
+          sent_at: string
+          sequence_order: number
+          slot: string
+        }
+        Insert: {
+          id?: string
+          onesignal_response?: Json | null
+          push_message_id: string
+          recipients_count?: number
+          sent_at?: string
+          sequence_order: number
+          slot: string
+        }
+        Update: {
+          id?: string
+          onesignal_response?: Json | null
+          push_message_id?: string
+          recipients_count?: number
+          sent_at?: string
+          sequence_order?: number
+          slot?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_send_log_push_message_id_fkey"
+            columns: ["push_message_id"]
+            isOneToOne: false
+            referencedRelation: "push_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       resultado_missao_usuario: {
         Row: {
           consentiu_postar: boolean
