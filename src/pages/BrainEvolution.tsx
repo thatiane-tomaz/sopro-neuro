@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Sparkles, Moon, Sun } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import WaveBackground from "@/components/home/WaveBackground";
 import { Button } from "@/components/ui/button";
 import { useBrainSparks, type BrainLevel } from "@/hooks/useBrainSparks";
@@ -29,7 +29,7 @@ const EVENTS: Array<{ label: string; sparks: string; hint?: string }> = [
 
 export default function BrainEvolution() {
   const navigate = useNavigate();
-  const { sparks, level, state, streak, ranges } = useBrainSparks();
+  const { sparks, level, streak, ranges } = useBrainSparks();
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -70,14 +70,11 @@ export default function BrainEvolution() {
               <div className="mt-1 text-2xl font-bold text-foreground">
                 {sparks} <span className="text-sm font-semibold text-muted-foreground">Sparks</span>
               </div>
-              <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-                {state === "active" ? (
-                  <><Sun className="h-3.5 w-3.5 text-amber-500" /> Ativo agora</>
-                ) : (
-                  <><Moon className="h-3.5 w-3.5 text-indigo-400" /> Descansando</>
-                )}
-                {streak > 0 && <span>· {streak} dias seguidos</span>}
-              </div>
+              {streak > 0 && (
+                <div className="mt-1 text-xs text-muted-foreground">
+                  {streak} dias seguidos
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -134,16 +131,7 @@ export default function BrainEvolution() {
           ))}
         </div>
 
-        <div className="mt-6 rounded-2xl bg-gradient-to-br from-[hsl(220_90%_96%)] to-[hsl(258_70%_96%)] p-4 ring-1 ring-[hsl(258_70%_88%)]">
-          <div className="flex items-center gap-2 text-sm font-bold text-[hsl(258_60%_40%)]">
-            <Moon className="h-4 w-4" /> Ativo x Descansando
-          </div>
-          <p className="mt-1 text-xs text-muted-foreground text-pretty">
-            Se você fica mais de 48 horas sem interagir, o Neo entra em modo descanso. Volte para acordá-lo.
-          </p>
-        </div>
-
-        <Button className="mt-6 w-full" onClick={() => navigate("/dashboard")}>
+        <Button className="mt-8 w-full" onClick={() => navigate("/dashboard")}>
           Voltar para a jornada
         </Button>
       </div>

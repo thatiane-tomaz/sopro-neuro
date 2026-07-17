@@ -1,34 +1,25 @@
 import { Lock, Sparkles } from "lucide-react";
 import type { BrainLevel, BrainState } from "@/hooks/useBrainSparks";
 import lv1Active from "@/assets/brain/brain-lv1-active.png";
-import lv1Resting from "@/assets/brain/brain-lv1-resting.png";
 import lv2Active from "@/assets/brain/brain-lv2-active.png";
-import lv2Resting from "@/assets/brain/brain-lv2-resting.png";
 import lv3Active from "@/assets/brain/brain-lv3-active.png";
-import lv3Resting from "@/assets/brain/brain-lv3-resting.png";
 import lv4Active from "@/assets/brain/brain-lv4-active.png";
-import lv4Resting from "@/assets/brain/brain-lv4-resting.png";
 import lv5Active from "@/assets/brain/brain-lv5-active.png";
-import lv5Resting from "@/assets/brain/brain-lv5-resting.png";
 
-const BRAIN_ASSETS: Record<BrainLevel, Record<BrainState, string>> = {
-  1: { active: lv1Active, resting: lv1Resting },
-  2: { active: lv2Active, resting: lv2Resting },
-  3: { active: lv3Active, resting: lv3Resting },
-  4: { active: lv4Active, resting: lv4Resting },
-  5: { active: lv5Active, resting: lv5Resting },
+const BRAIN_ASSETS: Record<BrainLevel, string> = {
+  1: lv1Active,
+  2: lv2Active,
+  3: lv3Active,
+  4: lv4Active,
+  5: lv5Active,
 };
 
-// Warm the browser cache with all 10 brain images as soon as this module
-// loads, so switching level/state (or first paint) is instant instead of
-// waiting on a network round-trip.
+// Warm the browser cache with all brain images on module load.
 if (typeof window !== "undefined") {
-  for (const lv of Object.values(BRAIN_ASSETS)) {
-    for (const url of Object.values(lv)) {
-      const img = new Image();
-      img.decoding = "async";
-      img.src = url;
-    }
+  for (const url of Object.values(BRAIN_ASSETS)) {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = url;
   }
 }
 
@@ -37,6 +28,7 @@ interface Props {
   onClick?: () => void;
   ariaLabel?: string;
   level?: BrainLevel;
+  /** @deprecated Neo is always active. Kept for API compatibility. */
   state?: BrainState;
   sparks?: number;
   /** 0-100 progress within the current level (arc fill). Level 5 = 100. */
@@ -54,15 +46,13 @@ export default function ProgressBrain({
   onClick,
   ariaLabel,
   level = 1,
-  state = "resting",
   sparks = 0,
   levelProgress = 0,
   speechTitle,
   speechText,
 }: Props) {
   const clamped = Math.max(0, Math.min(100, levelProgress));
-  const brainImg = BRAIN_ASSETS[level][state];
-  const isResting = state === "resting";
+  const brainImg = BRAIN_ASSETS[level];
   const isMax = level === 5;
 
   const size = 300;
@@ -172,26 +162,26 @@ export default function ProgressBrain({
           >
             <img
               src={brainImg}
-              alt={`Cérebro nível ${level} ${state === "active" ? "ativo" : "descansando"}`}
+              alt={`Neo nível ${level}`}
               width={brainSize}
               height={brainSize}
               loading="eager"
               draggable={false}
-              className={`w-full h-full object-contain pointer-events-none ${
-                isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
-              } ${locked ? "grayscale opacity-60" : ""}`}
+              className={`w-full h-full object-contain pointer-events-none animate-pulse-glow ${
+                locked ? "grayscale opacity-60" : ""
+              }`}
             />
           </button>
         ) : (
           <img
           src={brainImg}
-          alt={`Cérebro nível ${level}`}
+          alt={`Neo nível ${level}`}
           width={brainSize}
           height={brainSize}
           loading="eager"
-          className={`object-contain ${
-            isResting ? "animate-breathe opacity-90" : "animate-pulse-glow"
-          } ${locked ? "grayscale opacity-60" : ""}`}
+          className={`object-contain animate-pulse-glow ${
+            locked ? "grayscale opacity-60" : ""
+          }`}
           style={{ width: brainSize, height: brainSize }}
           />
         )}
