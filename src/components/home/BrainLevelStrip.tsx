@@ -39,11 +39,11 @@ export default function BrainLevelStrip({ currentLevel, sparks }: Props) {
       type="button"
       onClick={() => navigate("/cerebro")}
       className="w-full text-left rounded-3xl bg-white/85 backdrop-blur-md ring-1 ring-black/[0.04] shadow-[0_10px_28px_-14px_hsl(230_60%_40%/0.22)] p-3 active:scale-[0.99] transition-transform"
-      aria-label={`Evolução do cérebro. Você está no nível ${currentLevel} com ${sparks} sparks. Toque para ver detalhes.`}
+      aria-label={`Evolução do Neo. Você está no nível ${currentLevel} com ${sparks} sparks. Toque para ver detalhes.`}
     >
       <div className="flex items-center justify-between px-1">
         <p className="text-[11px] font-bold uppercase tracking-[0.14em] bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
-          Evolução do cérebro
+          Evolução do Neo
         </p>
         <span className="text-[10px] font-semibold text-muted-foreground">
           {sparks} sparks
@@ -65,7 +65,7 @@ export default function BrainLevelStrip({ currentLevel, sparks }: Props) {
               >
                 <img
                   src={IMAGES[lv]}
-                  alt={`Cérebro nível ${lv}`}
+                  alt={`Neo nível ${lv}`}
                   width={44}
                   height={44}
                   className={`object-contain ${
