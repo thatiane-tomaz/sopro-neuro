@@ -21,7 +21,7 @@ const EVENTS: Array<{ label: string; sparks: string; hint?: string }> = [
   { label: "Assistir um vídeo", sparks: "+5" },
   { label: "Ouvir uma hipnose", sparks: "+5" },
   { label: "Concluir uma missão", sparks: "+5", hint: "+10 ao compartilhar no mural" },
-  { label: "Conversar com o cérebro no chat", sparks: "+10", hint: "1x por dia" },
+  { label: "Conversar com o Neo no chat", sparks: "+10", hint: "1x por dia" },
   { label: "Postar no mural", sparks: "+10" },
   { label: "Usar a Hipnose SOS", sparks: "+10" },
   { label: "Entrar no app todo dia", sparks: "+10", hint: "+20 ao completar 7 dias seguidos" },
@@ -46,11 +46,11 @@ export default function BrainEvolution() {
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur px-3 py-1 ring-1 ring-[hsl(258_70%_88%)]">
             <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
             <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-              Evolução do cérebro
+              Evolução do Neo
             </span>
           </div>
           <h1 className="mt-2 text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent text-balance">
-            Seu cérebro evolui com você
+            O Neo evolui com você
           </h1>
           <p className="mt-2 text-sm text-muted-foreground text-pretty">
           Cada ação sua vira um Spark. Quanto mais você se cuida, mais forte e brilhante ele fica.
@@ -137,7 +137,7 @@ export default function BrainEvolution() {
             <Moon className="h-4 w-4" /> Ativo x Descansando
           </div>
           <p className="mt-1 text-xs text-muted-foreground text-pretty">
-            Se você fica mais de 48 horas sem interagir, seu cérebro entra em modo descanso. Volte para acordá-lo.
+            Se você fica mais de 48 horas sem interagir, o Neo entra em modo descanso. Volte para acordá-lo.
           </p>
         </div>
 
