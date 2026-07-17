@@ -28,3 +28,6 @@ verify_jwt = false
 
 [functions.chat]
 verify_jwt = false
+
+[functions.send-scheduled-push]
+verify_jwt = false
