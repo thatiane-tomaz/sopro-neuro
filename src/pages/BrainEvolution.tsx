@@ -53,7 +53,9 @@ export default function BrainEvolution() {
             O Neo evolui com você
           </h1>
           <p className="mt-2 text-sm text-muted-foreground text-pretty">
-          Cada ação sua vira um Spark. Quanto mais você se cuida, mais forte e brilhante ele fica.
+            Cada ação sua vira Sparks.
+            <br />
+            Quanto mais você se cuida, mais forte e brilhante o Neo fica.
           </p>
         </div>
 
