@@ -170,6 +170,36 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_prompts: {
+        Row: {
+          ativo: boolean
+          categoria: string
+          created_at: string
+          id: string
+          mensagem: string
+          ordem: number
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          categoria: string
+          created_at?: string
+          id?: string
+          mensagem: string
+          ordem?: number
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          categoria?: string
+          created_at?: string
+          id?: string
+          mensagem?: string
+          ordem?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       content_views: {
         Row: {
           content_identifier: string
