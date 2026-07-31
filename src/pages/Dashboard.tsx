@@ -46,6 +46,7 @@ import {
   Lock,
   Sparkles,
   Check,
+  ArrowRight,
   Ban,
   X,
   ChevronRight,
