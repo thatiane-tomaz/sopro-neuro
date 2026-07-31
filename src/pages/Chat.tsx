@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Send, Loader2, Mic, Square, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeft, X, Send, Loader2, Mic, Square, Volume2, VolumeX } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import WaveBackground from "@/components/home/WaveBackground";
 import { useAuth } from "@/hooks/useAuth";
@@ -52,7 +52,16 @@ const SUGGESTIONS_PHASE_2 = [
   "Pausa para refletir 💭",
 ];
 
-export default function Chat() {
+interface ChatProps {
+  /** Renders the chat to fill its parent (modal) instead of the full viewport. */
+  embedded?: boolean;
+  /** Message sent automatically as soon as the chat opens. */
+  initialMessage?: string;
+  /** Called when the user closes an embedded chat. */
+  onClose?: () => void;
+}
+
+export default function Chat({ embedded = false, initialMessage, onClose }: ChatProps = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   const mission = (location.state as any)?.mission as MissionContext | undefined;
@@ -166,9 +175,22 @@ export default function Chat() {
     }
   };
 
+  const sendRef = useRef<((text: string) => void) | null>(null);
+  const autoSentRef = useRef(false);
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, isStreaming]);
+
+  // Send the message typed on the Dashboard as soon as the chat is ready.
+  useEffect(() => {
+    const text = initialMessage?.trim();
+    if (!text || autoSentRef.current) return;
+    if (authLoading || subLoading || freelistLoading || adminLoading) return;
+    autoSentRef.current = true;
+    const id = setTimeout(() => sendRef.current?.(text), 60);
+    return () => clearTimeout(id);
+  }, [initialMessage, authLoading, subLoading, freelistLoading, adminLoading]);
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
@@ -501,25 +523,33 @@ export default function Chat() {
     }
   };
 
+  sendRef.current = send;
+
   return (
-    <div className="relative h-[100dvh] w-full max-w-full overflow-x-hidden overflow-y-hidden flex flex-col">
+    <div
+      className={`relative w-full max-w-full overflow-x-hidden overflow-y-hidden flex flex-col ${
+        embedded ? "h-full" : "h-[100dvh]"
+      }`}
+    >
       <WaveBackground />
 
-      {/* Floating back button (no full header) */}
-      <div className="absolute top-[env(safe-area-inset-top)] left-4 z-20 pt-3">
+      {/* Floating back/close button (no full header) */}
+      <div className={`absolute left-4 z-20 ${embedded ? "top-0 pt-2" : "top-[env(safe-area-inset-top)] pt-3"}`}>
         <button
-          onClick={() => navigate("/dashboard")}
-          aria-label="Voltar"
+          onClick={() => (embedded && onClose ? onClose() : navigate("/dashboard"))}
+          aria-label={embedded ? "Fechar" : "Voltar"}
           className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]"
         >
-          <ArrowLeft className="h-5 w-5 text-primary" />
+          {embedded ? <X className="h-5 w-5 text-primary" /> : <ArrowLeft className="h-5 w-5 text-primary" />}
         </button>
       </div>
 
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="relative z-10 flex-1 overflow-y-auto px-5 pb-2 pt-[calc(env(safe-area-inset-top)+64px)]"
+        className={`relative z-10 flex-1 overflow-y-auto px-5 pb-2 ${
+          embedded ? "pt-14" : "pt-[calc(env(safe-area-inset-top)+64px)]"
+        }`}
       >
         <div className="mx-auto max-w-md space-y-3 py-2">
           {messages.map((m, i) => {
@@ -580,7 +610,11 @@ export default function Chat() {
       </div>
 
       {/* Composer */}
-      <div className="relative z-10 px-5 pb-[max(env(safe-area-inset-bottom),12px)] pt-2 bg-gradient-to-t from-white/80 via-white/40 to-transparent">
+      <div
+        className={`relative z-10 px-5 pt-2 bg-gradient-to-t from-white/80 via-white/40 to-transparent ${
+          embedded ? "pb-3" : "pb-[max(env(safe-area-inset-bottom),12px)]"
+        }`}
+      >
         <form
           onSubmit={(e) => {
             e.preventDefault();
