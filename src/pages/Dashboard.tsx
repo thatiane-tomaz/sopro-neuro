@@ -850,23 +850,25 @@ export default function Dashboard() {
         <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
           <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
 
-          <button
-            onClick={() => navigate("/progresso")}
-            className="mt-4 w-full text-left rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-4 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] active:scale-[0.99] transition-transform flex items-center gap-3"
-          >
-            <div className="h-11 w-11 rounded-full bg-white flex items-center justify-center text-[hsl(258_60%_50%)] shadow-sm flex-shrink-0">
-              <Cigarette className="h-5 w-5" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground leading-tight whitespace-nowrap">
-                Acompanhe sua evolução
-              </p>
-              <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug whitespace-nowrap">
-                Veja seu gráfico de consumo e economia.
-              </p>
-            </div>
-            <div className="text-[hsl(258_60%_50%)] text-lg font-bold">→</div>
-          </button>
+          {!isAbstinencia && (
+            <button
+              onClick={() => navigate("/progresso")}
+              className="mt-4 w-full text-left rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-4 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] active:scale-[0.99] transition-transform flex items-center gap-3"
+            >
+              <div className="h-11 w-11 rounded-full bg-white flex items-center justify-center text-[hsl(258_60%_50%)] shadow-sm flex-shrink-0">
+                <Cigarette className="h-5 w-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-foreground leading-tight whitespace-nowrap">
+                  Acompanhe sua evolução
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug whitespace-nowrap">
+                  Veja seu gráfico de consumo e economia.
+                </p>
+              </div>
+              <div className="text-[hsl(258_60%_50%)] text-lg font-bold">→</div>
+            </button>
+          )}
 
           {phaseNumber !== 1 && lastCigDate && (
             <div className="mt-4 flex items-start justify-between gap-3 text-xs bg-[hsl(258_80%_97%)] rounded-lg px-3 py-2.5">
