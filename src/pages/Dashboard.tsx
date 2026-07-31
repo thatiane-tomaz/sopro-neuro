@@ -724,16 +724,45 @@ export default function Dashboard() {
           </h1>
         </div>
 
-        {/* Brain progress — clicar no Neo abre o chat */}
+        {/* Brain progress — clicar no Neo abre o chat em modal */}
         <div className="mt-3">
           <ProgressBrain
             locked={dayLocked}
-            onClick={() => navigate("/chat")}
+            onClick={() => openChat()}
             ariaLabel="Conversar com Neo"
             speechTitle={!dayLocked ? "Neo · Chat de IA" : undefined}
             speechText={!dayLocked ? getDailyChatPrompt() : undefined}
           />
         </div>
+
+        {/* Composer: escreva direto no Dashboard e o chat abre em modal */}
+        {!dayLocked && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const text = chatDraft.trim();
+              if (!text) return;
+              openChat(text);
+            }}
+            className="mt-1 flex items-center gap-2"
+          >
+            <input
+              value={chatDraft}
+              onChange={(e) => setChatDraft(e.target.value)}
+              placeholder="Fala comigo..."
+              aria-label="Escrever para o Neo"
+              className="flex-1 min-w-0 rounded-full bg-white px-4 py-3 text-base md:text-sm shadow-[0_8px_22px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)] placeholder:text-muted-foreground/70"
+            />
+            <button
+              type="submit"
+              disabled={!chatDraft.trim()}
+              aria-label="Enviar para o Neo"
+              className="h-11 w-11 flex-shrink-0 rounded-full bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] text-primary-foreground flex items-center justify-center shadow-[0_10px_24px_-10px_hsl(258_70%_45%/0.55)] disabled:opacity-40 active:scale-95 transition-transform"
+            >
+              <Send className="h-5 w-5" />
+            </button>
+          </form>
+        )}
 
         {/* Weekly content cards (stacked) */}
         <div className="mt-6">
