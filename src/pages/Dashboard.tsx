@@ -791,22 +791,36 @@ export default function Dashboard() {
           </DialogContent>
         </Dialog>
 
-        {/* Foco atual — hero */}
-        <div className="mt-7">
-          <div className="inline-flex items-center gap-1.5">
-            <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
-            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-              Foco atual
-            </span>
+        {/* Foco atual — seção agrupada (header + conteúdos) */}
+        <section className="mt-7 rounded-3xl bg-white/80 backdrop-blur-md p-4 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.18)] ring-1 ring-black/[0.03]">
+          <div className="flex items-center justify-between gap-3">
+            <div className="inline-flex items-center gap-1.5 min-w-0">
+              <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
+              <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+                Foco atual
+              </span>
+            </div>
+            {(() => {
+              const total = [hasVideo, hasHipnose, hasMissao].filter(Boolean).length;
+              const done = [
+                hasVideo && weeklyVideoDone,
+                hasHipnose && weeklyHipnoseDone,
+                hasMissao && weeklyMissaoDone,
+              ].filter(Boolean).length;
+              if (!total) return null;
+              return (
+                <span className="flex-shrink-0 rounded-full bg-[hsl(258_80%_97%)] px-2.5 py-1 text-[10px] font-bold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_92%)]">
+                  {done}/{total} concluídos
+                </span>
+              );
+            })()}
           </div>
-          <h1 className="mt-1.5 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+
+          <h1 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
             {tituloGatilho}
           </h1>
-        </div>
 
-        {/* Weekly content cards (fila de 3) */}
-        <div className="mt-4">
-          <div className="flex items-stretch gap-2">
+          <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] flex items-stretch gap-2">
             {[
               hasVideo && {
                 key: "video",
@@ -843,7 +857,7 @@ export default function Dashboard() {
                 </div>
               ))}
           </div>
-        </div>
+        </section>
 
         {/* Extras da jornada de abstinência: SOS + gatilhos (a lista abaixo termina com "voltar para redução") */}
         {isAbstinencia && <AbstinenceExtras />}
