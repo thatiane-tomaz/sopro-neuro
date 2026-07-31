@@ -26,7 +26,6 @@ import FeedbackPreview from "./pages/FeedbackPreview";
 import EmailConfirmed from "./pages/EmailConfirmed";
 import ErrorLogs from "./pages/ErrorLogs";
 import Mural from "./pages/Mural";
-import BrainEvolution from "./pages/BrainEvolution";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -73,7 +72,6 @@ const App = () => (
               <Route path="/faq" element={<FAQ />} />
               <Route path="/error-logs" element={<ErrorLogs />} />
               <Route path="/mural" element={<Mural />} />
-              <Route path="/cerebro" element={<BrainEvolution />} />
               <Route path="/feedback-preview" element={<FeedbackPreview />} />
               <Route path="/404" element={<NotFound />} />
               <Route path="*" element={<Navigate to="/404" replace />} />
