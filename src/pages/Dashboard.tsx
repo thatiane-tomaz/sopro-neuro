@@ -46,6 +46,7 @@ import {
   Lock,
   Sparkles,
   Check,
+  ArrowRight,
   Ban,
   X,
   ChevronRight,
@@ -723,21 +724,8 @@ export default function Dashboard() {
           }
           aria-hidden={abstinenciaBloqueada}
         >
-        {/* Hábito em foco — hero */}
-        <div className="text-center mt-6 px-2">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur px-3 py-1 ring-1 ring-[hsl(258_70%_88%)] shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
-            <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
-            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-              Hábito em foco
-            </span>
-          </div>
-          <h1 className="mt-2.5 text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
-            {tituloGatilho}
-          </h1>
-        </div>
-
         {/* Brain progress — clicar no Neo abre o chat em modal */}
-        <div className="mt-3">
+        <div className="mt-6">
           <ProgressBrain
             locked={dayLocked}
             onClick={() => openChat()}
@@ -804,41 +792,64 @@ export default function Dashboard() {
           </DialogContent>
         </Dialog>
 
-        {/* Weekly content cards (stacked) */}
-        <div className="mt-6">
-          <p className="text-sm font-bold text-foreground/80 mb-3 px-1">Continue sua jornada</p>
-          <div className="flex flex-col gap-3">
-          {hasVideo && (
-          <WeeklyContentCard
-            title="Vídeo"
-            subtitle="Entenda e transforme sua mente."
-            iconBg="from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)]"
-            icon={<Play className="h-5 w-5 text-white fill-white" />}
-            done={weeklyVideoDone}
-            onClick={() => openMedia("video")}
-          />
-          )}
-          {hasHipnose && (
-          <WeeklyContentCard
-            title="Hipnose"
-            subtitle="Reprograme seu cérebro em profundidade."
-            iconBg="from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)]"
-            icon={<Headphones className="h-5 w-5 text-white" />}
-            done={weeklyHipnoseDone}
-            onClick={() => openMedia("hypnosis")}
-          />
-          )}
-          {hasMissao && (
-          <WeeklyContentCard
-            title="Missão"
-            subtitle="Coloque em prática o seu desafio da semana."
-            iconBg="from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]"
-            icon={<Sparkles className="h-5 w-5 text-white" />}
-            done={weeklyMissaoDone}
-            onClick={openMissionDialog}
-          />
-          )}
-        </div></div>
+        {/* Foco atual — hero */}
+        <div className="mt-7 rounded-3xl bg-white/70 backdrop-blur-md ring-1 ring-black/[0.04] shadow-[0_14px_40px_-20px_hsl(258_70%_45%/0.3)] px-4 py-4">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/85 backdrop-blur px-3 py-1 ring-1 ring-[hsl(258_70%_88%)] shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
+            <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
+            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+              Foco atual
+            </span>
+          </div>
+          <h1 className="mt-2.5 text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight text-balance">
+            {tituloGatilho}
+          </h1>
+        </div>
+
+        {/* Weekly content cards (fila de 3) */}
+        <div className="mt-4">
+          <div className="flex items-stretch gap-1.5">
+            {[
+              hasVideo && {
+                key: "video",
+                title: "Vídeo",
+                subtitle: "Entenda o ciclo do hábito.",
+                iconBg: "from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)]",
+                icon: <Play className="h-5 w-5 text-white fill-white" />,
+                done: weeklyVideoDone,
+                onClick: () => openMedia("video"),
+              },
+              hasHipnose && {
+                key: "hipnose",
+                title: "Hipnose",
+                subtitle: "Crie um novo padrão.",
+                iconBg: "from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)]",
+                icon: <Headphones className="h-5 w-5 text-white" />,
+                done: weeklyHipnoseDone,
+                onClick: () => openMedia("hypnosis"),
+              },
+              hasMissao && {
+                key: "missao",
+                title: "Missão",
+                subtitle: "Pratique no mundo real.",
+                iconBg: "from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]",
+                icon: <Sparkles className="h-5 w-5 text-white" />,
+                done: weeklyMissaoDone,
+                onClick: openMissionDialog,
+              },
+            ]
+              .filter(Boolean)
+              .map((step: any, i: number, arr: any[]) => (
+                <div key={step.key} className="flex items-stretch flex-1 min-w-0">
+                  <WeeklyStepCard step={i + 1} {...step} />
+                  {i < arr.length - 1 && (
+                    <div className="flex items-center px-0.5 flex-shrink-0" aria-hidden>
+                      <ArrowRight className="h-3.5 w-3.5 text-[hsl(258_60%_60%)]" />
+                    </div>
+                  )}
+                </div>
+              ))}
+          </div>
+        </div>
 
         {/* Extras da jornada de abstinência: SOS + gatilhos (a lista abaixo termina com "voltar para redução") */}
         {isAbstinencia && <AbstinenceExtras />}
@@ -1286,14 +1297,37 @@ function WeeklyContentCard({
   done: boolean;
   onClick: () => void;
 }) {
+  return <WeeklyStepCard step={1} title={title} subtitle={subtitle} icon={icon} iconBg={iconBg} done={done} onClick={onClick} />;
+}
+
+function WeeklyStepCard({
+  step,
+  title,
+  subtitle,
+  icon,
+  iconBg,
+  done,
+  onClick,
+}: {
+  step: number;
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  iconBg: string;
+  done: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}
-      className="relative w-full rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-left shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-[0.98] hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)] flex items-center gap-3"
+      className="relative w-full min-w-0 rounded-2xl bg-white/85 backdrop-blur-sm px-2 pt-4 pb-3 text-center shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-[0.98] flex flex-col items-center gap-2"
     >
-      <div className="relative flex-shrink-0">
+      <span className="absolute top-1.5 left-1.5 h-5 w-5 rounded-full bg-[hsl(258_70%_55%)] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
+        {step}
+      </span>
+      <div className="relative flex-shrink-0 mt-1">
         <div
-          className={`h-12 w-12 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md ${
+          className={`h-11 w-11 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md ${
             done ? "opacity-40" : ""
           }`}
         >
@@ -1305,9 +1339,9 @@ function WeeklyContentCard({
           </div>
         )}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="font-semibold text-sm text-foreground">{title}</p>
-        <p className="text-[11px] text-muted-foreground leading-snug">{subtitle}</p>
+      <div className="min-w-0 w-full">
+        <p className="font-semibold text-[13px] text-foreground">{title}</p>
+        <p className="text-[10px] text-muted-foreground leading-snug text-pretty mt-0.5">{subtitle}</p>
       </div>
     </button>
   );
