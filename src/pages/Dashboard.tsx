@@ -723,21 +723,8 @@ export default function Dashboard() {
           }
           aria-hidden={abstinenciaBloqueada}
         >
-        {/* Hábito em foco — hero */}
-        <div className="text-center mt-6 px-2">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/70 backdrop-blur px-3 py-1 ring-1 ring-[hsl(258_70%_88%)] shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
-            <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
-            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-              Hábito em foco
-            </span>
-          </div>
-          <h1 className="mt-2.5 text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
-            {tituloGatilho}
-          </h1>
-        </div>
-
         {/* Brain progress — clicar no Neo abre o chat em modal */}
-        <div className="mt-3">
+        <div className="mt-6">
           <ProgressBrain
             locked={dayLocked}
             onClick={() => openChat()}
