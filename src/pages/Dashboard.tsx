@@ -49,12 +49,14 @@ import {
   Ban,
   X,
   ChevronRight,
+  Send,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
 import ProgressBrain from "@/components/home/ProgressBrain";
+import ChatPanel from "@/pages/Chat";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import StartHereStory from "@/components/StartHereStory";
@@ -118,6 +120,16 @@ export default function Dashboard() {
   const [showQuitDatePicker, setShowQuitDatePicker] = useState(false);
   const [quitPickerDate, setQuitPickerDate] = useState<Date | undefined>(new Date());
   const [switchingJornada, setSwitchingJornada] = useState(false);
+  const [chatDraft, setChatDraft] = useState("");
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatSeed, setChatSeed] = useState<string | undefined>(undefined);
+
+  // Abre o chat de IA em modal (opcionalmente já enviando a 1ª mensagem)
+  const openChat = (seed?: string) => {
+    setChatSeed(seed);
+    setChatDraft("");
+    setChatOpen(true);
+  };
 
   const { logs: smokingLogs, isLoading: smokingLogsLoading, upsert: upsertSmokingLog } = useSmokingLogs();
   const { registerLogin } = useBrainSparks();
@@ -763,6 +775,34 @@ export default function Dashboard() {
             </button>
           </form>
         )}
+
+        {/* Chat de IA em modal */}
+        <Dialog
+          open={chatOpen}
+          onOpenChange={(open) => {
+            setChatOpen(open);
+            if (!open) setChatSeed(undefined);
+          }}
+        >
+          <DialogContent
+            className="p-0 gap-0 overflow-hidden rounded-3xl sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden"
+          >
+            <DialogHeader className="sr-only">
+              <DialogTitle>Chat com o Neo</DialogTitle>
+              <DialogDescription>Converse com o Neo sobre sua vontade de fumar.</DialogDescription>
+            </DialogHeader>
+            {chatOpen && (
+              <ChatPanel
+                embedded
+                initialMessage={chatSeed}
+                onClose={() => {
+                  setChatOpen(false);
+                  setChatSeed(undefined);
+                }}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* Weekly content cards (stacked) */}
         <div className="mt-6">
