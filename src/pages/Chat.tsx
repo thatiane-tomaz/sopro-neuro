@@ -13,21 +13,9 @@ import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import lv1Active from "@/assets/brain/brain-lv1-active.png";
-import lv2Active from "@/assets/brain/brain-lv2-active.png";
-import lv3Active from "@/assets/brain/brain-lv3-active.png";
-import lv4Active from "@/assets/brain/brain-lv4-active.png";
-import lv5Active from "@/assets/brain/brain-lv5-active.png";
-import type { BrainLevel } from "@/hooks/useBrainSparks";
+import brainDefault from "@/assets/brain/brain-lv5-active.png";
 import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
 
-const BRAIN_BY_LEVEL: Record<BrainLevel, string> = {
-  1: lv1Active,
-  2: lv2Active,
-  3: lv3Active,
-  4: lv4Active,
-  5: lv5Active,
-};
 import {
   Dialog,
   DialogContent,
@@ -78,7 +66,7 @@ export default function Chat() {
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { getCurrentDay, startTracking, updateProgress } = useJourneyTracking();
-  const { award, level: brainLevel } = useBrainSparks();
+  const { award } = useBrainSparks();
   const { toast } = useToast();
 
   const currentDay = getCurrentDay();
@@ -549,7 +537,7 @@ export default function Chat() {
                 role={m.role}
                 content={m.content}
                 showBrain={i === 0 && m.role === "assistant"}
-                brainSrc={BRAIN_BY_LEVEL[brainLevel]}
+                brainSrc={brainDefault}
                 showSpeaker={isLastAssistant}
                 voiceEnabled={voiceEnabled}
                 onSpeakerClick={() => handleSpeakerClick(m.content)}

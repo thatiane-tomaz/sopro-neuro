@@ -44,8 +44,6 @@ import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
 import soproLogo from "@/assets/sopro-logo.png";
-import BrainLevelStrip from "@/components/home/BrainLevelStrip";
-import { useBrainSparks } from "@/hooks/useBrainSparks";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -66,7 +64,6 @@ export default function Progresso() {
   const { profile, loading: profileLoading } = useUserProfile();
   const { data: onboarding, isLoading: onbLoading } = useOnboardingData() as any;
   const { logs, isLoading: logsLoading } = useSmokingLogs();
-  const { sparks, level } = useBrainSparks();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogDate, setDialogDate] = useState<string | undefined>();
@@ -300,10 +297,6 @@ export default function Progresso() {
           </p>
         </div>
 
-        {/* Brain evolution strip */}
-        <div className="mt-4">
-          <BrainLevelStrip currentLevel={level} sparks={sparks} />
-        </div>
 
         {/* Savings — cigs avoided + money saved */}
         <div className="mt-5 grid grid-cols-2 gap-3">

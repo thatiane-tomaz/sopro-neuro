@@ -120,7 +120,7 @@ export default function Dashboard() {
   const [switchingJornada, setSwitchingJornada] = useState(false);
 
   const { logs: smokingLogs, isLoading: smokingLogsLoading, upsert: upsertSmokingLog } = useSmokingLogs();
-  const { sparks, level, state: brainState, progressToNext, registerLogin } = useBrainSparks();
+  const { registerLogin } = useBrainSparks();
 
   useEffect(() => {
     if (user?.id) {
@@ -730,10 +730,6 @@ export default function Dashboard() {
             locked={dayLocked}
             onClick={() => navigate("/chat")}
             ariaLabel="Conversar com Neo"
-            level={level}
-            state={brainState}
-            sparks={sparks}
-            levelProgress={progressToNext}
             speechTitle={!dayLocked ? "Neo · Chat de IA" : undefined}
             speechText={!dayLocked ? getDailyChatPrompt() : undefined}
           />

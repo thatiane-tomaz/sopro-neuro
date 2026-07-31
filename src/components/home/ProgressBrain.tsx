@@ -1,82 +1,31 @@
-import { Lock, Sparkles } from "lucide-react";
-import type { BrainLevel, BrainState } from "@/hooks/useBrainSparks";
-import lv1Active from "@/assets/brain/brain-lv1-active.png";
-import lv2Active from "@/assets/brain/brain-lv2-active.png";
-import lv3Active from "@/assets/brain/brain-lv3-active.png";
-import lv4Active from "@/assets/brain/brain-lv4-active.png";
-import lv5Active from "@/assets/brain/brain-lv5-active.png";
+import { Lock } from "lucide-react";
+import brainDefault from "@/assets/brain/brain-lv5-active.png";
 
-const BRAIN_ASSETS: Record<BrainLevel, string> = {
-  1: lv1Active,
-  2: lv2Active,
-  3: lv3Active,
-  4: lv4Active,
-  5: lv5Active,
-};
-
-// Warm the browser cache with all brain images on module load.
+// Warm the browser cache with the mascot image on module load.
 if (typeof window !== "undefined") {
-  for (const url of Object.values(BRAIN_ASSETS)) {
-    const img = new Image();
-    img.decoding = "async";
-    img.src = url;
-  }
+  const img = new Image();
+  img.decoding = "async";
+  img.src = brainDefault;
 }
 
 interface Props {
   locked: boolean;
   onClick?: () => void;
   ariaLabel?: string;
-  level?: BrainLevel;
-  /** @deprecated Neo is always active. Kept for API compatibility. */
-  state?: BrainState;
-  sparks?: number;
-  /** 0-100 progress within the current level (arc fill). Level 5 = 100. */
-  levelProgress?: number;
   speechTitle?: string;
   speechText?: string;
 }
 
-/**
- * Open-bottom 3/4 circular progress arc with the 3D brain centered.
- * The arc represents the user's progress within the current brain level.
- */
+/** Neo mascot with an optional speech bubble. */
 export default function ProgressBrain({
   locked,
   onClick,
   ariaLabel,
-  level = 1,
-  sparks = 0,
-  levelProgress = 0,
   speechTitle,
   speechText,
 }: Props) {
-  const clamped = Math.max(0, Math.min(100, levelProgress));
-  const brainImg = BRAIN_ASSETS[level];
-  const isMax = level === 5;
-
   const size = 300;
   const brainSize = 158;
-  const cx = size / 2;
-  const cy = size / 2;
-  const radius = 130;
-
-  // Open-bottom arc: gap of ~70° at the bottom.
-  // Start angle = 125° (bottom-left), sweep clockwise to 55° (bottom-right) → 290° total.
-  const startAngle = 125;
-  const sweep = 290;
-  const toXY = (angleDeg: number) => {
-    const a = (angleDeg * Math.PI) / 180;
-    return { x: cx + radius * Math.cos(a), y: cy + radius * Math.sin(a) };
-  };
-  const start = toXY(startAngle);
-  const end = toXY(startAngle + sweep);
-  const largeArc = sweep > 180 ? 1 : 0;
-  const arcPath = `M ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 1 ${end.x} ${end.y}`;
-
-  const arcLen = (sweep / 360) * 2 * Math.PI * radius;
-  const dash = (clamped / 100) * arcLen;
-
   const interactive = typeof onClick === "function";
 
   const speechBubble = speechText ? (
@@ -105,43 +54,6 @@ export default function ProgressBrain({
   return (
     <div className="relative mx-auto" style={{ width: size, height: speechText ? size + 6 : size }}>
       {speechBubble}
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute inset-0">
-        <defs>
-          <linearGradient id="arcGrad" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="hsl(195 95% 60%)" />
-            <stop offset="25%" stopColor="hsl(215 95% 60%)" />
-            <stop offset="55%" stopColor="hsl(245 90% 62%)" />
-            <stop offset="80%" stopColor="hsl(275 85% 65%)" />
-            <stop offset="100%" stopColor="hsl(300 80% 70%)" />
-          </linearGradient>
-          <filter id="arcGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        {/* Track */}
-        <path
-          d={arcPath}
-          fill="none"
-          stroke="hsl(220 40% 92%)"
-          strokeWidth={10}
-          strokeLinecap="round"
-        />
-        {/* Filled */}
-        <path
-          d={arcPath}
-          fill="none"
-          stroke="url(#arcGrad)"
-          strokeWidth={12}
-          strokeLinecap="round"
-          strokeDasharray={`${dash} ${arcLen}`}
-          filter="url(#arcGlow)"
-          style={{ transition: "stroke-dasharray 1.2s ease-out" }}
-        />
-      </svg>
 
       {/* Soft glow behind brain */}
       <div
@@ -150,7 +62,6 @@ export default function ProgressBrain({
         aria-hidden="true"
       />
 
-      {/* Brain centered, sized to fill the arc */}
       <div className="absolute inset-0 flex items-center justify-center overflow-visible" style={{ transform: speechText ? "translateY(18px)" : "translateY(-12px)" }}>
         {interactive ? (
           <button
@@ -161,8 +72,8 @@ export default function ProgressBrain({
             style={{ width: brainSize, height: brainSize }}
           >
             <img
-              src={brainImg}
-              alt={`Neo nível ${level}`}
+              src={brainDefault}
+              alt="Neo"
               width={brainSize}
               height={brainSize}
               loading="eager"
@@ -174,15 +85,13 @@ export default function ProgressBrain({
           </button>
         ) : (
           <img
-          src={brainImg}
-          alt={`Neo nível ${level}`}
-          width={brainSize}
-          height={brainSize}
-          loading="eager"
-          className={`object-contain animate-pulse-glow ${
-            locked ? "grayscale opacity-60" : ""
-          }`}
-          style={{ width: brainSize, height: brainSize }}
+            src={brainDefault}
+            alt="Neo"
+            width={brainSize}
+            height={brainSize}
+            loading="eager"
+            className={`object-contain animate-pulse-glow ${locked ? "grayscale opacity-60" : ""}`}
+            style={{ width: brainSize, height: brainSize }}
           />
         )}
         {locked && (
@@ -193,25 +102,6 @@ export default function ProgressBrain({
           </div>
         )}
       </div>
-
-      {/* Sparks + Level chip anchored to the bottom arc gap */}
-      {!locked && (
-        <div className="pointer-events-none absolute left-1/2 -translate-x-1/2" style={{ bottom: 4 }}>
-          <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-white/95 backdrop-blur px-3 py-1.5 ring-1 ring-[hsl(220_70%_88%)] shadow-[0_8px_20px_-8px_hsl(258_70%_45%/0.5)] whitespace-nowrap">
-            <span className="inline-flex items-center gap-1 whitespace-nowrap text-[hsl(220_90%_55%)]">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span className="text-sm font-extrabold tabular-nums leading-none">{sparks}</span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.12em] leading-none text-[hsl(220_90%_55%)]">
-                Sparks
-              </span>
-            </span>
-            <span className="h-3 w-px bg-[hsl(220_40%_88%)]" aria-hidden="true" />
-            <span className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.14em] leading-none bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
-              Nível {level}{isMax ? " · Máx" : ""}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
