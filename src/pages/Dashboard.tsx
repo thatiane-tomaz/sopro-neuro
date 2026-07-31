@@ -793,21 +793,21 @@ export default function Dashboard() {
         </Dialog>
 
         {/* Foco atual — hero */}
-        <div className="mt-7 rounded-3xl bg-white/70 backdrop-blur-md ring-1 ring-black/[0.04] shadow-[0_14px_40px_-20px_hsl(258_70%_45%/0.3)] px-4 py-4">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/85 backdrop-blur px-3 py-1 ring-1 ring-[hsl(258_70%_88%)] shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
+        <div className="mt-7">
+          <div className="inline-flex items-center gap-1.5">
             <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
             <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
               Foco atual
             </span>
           </div>
-          <h1 className="mt-2.5 text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight text-balance">
+          <h1 className="mt-1.5 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
             {tituloGatilho}
           </h1>
         </div>
 
         {/* Weekly content cards (fila de 3) */}
         <div className="mt-4">
-          <div className="flex items-stretch gap-1.5">
+          <div className="flex items-stretch gap-2">
             {[
               hasVideo && {
                 key: "video",
@@ -838,14 +838,9 @@ export default function Dashboard() {
               },
             ]
               .filter(Boolean)
-              .map((step: any, i: number, arr: any[]) => (
+              .map((step: any, i: number) => (
                 <div key={step.key} className="flex items-stretch flex-1 min-w-0">
                   <WeeklyStepCard step={i + 1} {...step} />
-                  {i < arr.length - 1 && (
-                    <div className="flex items-center px-0.5 flex-shrink-0" aria-hidden>
-                      <ArrowRight className="h-3.5 w-3.5 text-[hsl(258_60%_60%)]" />
-                    </div>
-                  )}
                 </div>
               ))}
           </div>
