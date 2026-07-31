@@ -1297,14 +1297,37 @@ function WeeklyContentCard({
   done: boolean;
   onClick: () => void;
 }) {
+  return <WeeklyStepCard step={1} title={title} subtitle={subtitle} icon={icon} iconBg={iconBg} done={done} onClick={onClick} />;
+}
+
+function WeeklyStepCard({
+  step,
+  title,
+  subtitle,
+  icon,
+  iconBg,
+  done,
+  onClick,
+}: {
+  step: number;
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+  iconBg: string;
+  done: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       onClick={onClick}
-      className="relative w-full rounded-2xl bg-white/85 backdrop-blur-sm p-4 text-left shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-[0.98] hover:shadow-[0_14px_36px_-14px_hsl(258_70%_45%/0.45)] flex items-center gap-3"
+      className="relative w-full min-w-0 rounded-2xl bg-white/85 backdrop-blur-sm px-2 pt-4 pb-3 text-center shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-[0.98] flex flex-col items-center gap-2"
     >
-      <div className="relative flex-shrink-0">
+      <span className="absolute top-1.5 left-1.5 h-5 w-5 rounded-full bg-[hsl(258_70%_55%)] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
+        {step}
+      </span>
+      <div className="relative flex-shrink-0 mt-1">
         <div
-          className={`h-12 w-12 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md ${
+          className={`h-11 w-11 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md ${
             done ? "opacity-40" : ""
           }`}
         >
@@ -1316,9 +1339,9 @@ function WeeklyContentCard({
           </div>
         )}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="font-semibold text-sm text-foreground">{title}</p>
-        <p className="text-[11px] text-muted-foreground leading-snug">{subtitle}</p>
+      <div className="min-w-0 w-full">
+        <p className="font-semibold text-[13px] text-foreground">{title}</p>
+        <p className="text-[10px] text-muted-foreground leading-snug text-pretty mt-0.5">{subtitle}</p>
       </div>
     </button>
   );
