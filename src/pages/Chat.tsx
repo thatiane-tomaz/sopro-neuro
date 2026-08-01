@@ -57,11 +57,13 @@ interface ChatProps {
   embedded?: boolean;
   /** Message sent automatically as soon as the chat opens. */
   initialMessage?: string;
+  /** Neo's opening line, so it matches the hook shown before the chat opened. */
+  greetingText?: string;
   /** Called when the user closes an embedded chat. */
   onClose?: () => void;
 }
 
-export default function Chat({ embedded = false, initialMessage, onClose }: ChatProps = {}) {
+export default function Chat({ embedded = false, initialMessage, greetingText, onClose }: ChatProps = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   const mission = (location.state as any)?.mission as MissionContext | undefined;
@@ -79,7 +81,7 @@ export default function Chat({ embedded = false, initialMessage, onClose }: Chat
   const { toast } = useToast();
 
   const currentDay = getCurrentDay();
-  const dailyPrompt = getDailyChatPrompt();
+  const dailyPrompt = greetingText?.trim() || getDailyChatPrompt();
   const SUGGESTIONS = mission || retorno
     ? []
     : [
