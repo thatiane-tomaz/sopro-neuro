@@ -727,7 +727,7 @@ export default function Dashboard() {
           aria-hidden={abstinenciaBloqueada}
         >
         {/* Brain progress — clicar no Neo abre o chat em modal */}
-        <div className="mt-6">
+        <div className="mt-2">
           <ProgressBrain
             locked={dayLocked}
             onClick={() => openChat()}
