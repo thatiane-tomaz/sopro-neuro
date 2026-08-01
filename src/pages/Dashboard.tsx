@@ -562,6 +562,8 @@ export default function Dashboard() {
   // Bloqueio: abstinência sem data do último cigarro precisa escolher antes de acessar a jornada.
   const abstinenciaBloqueada = isAbstinencia && !lastCigDate;
 
+  const { gancho, sugestoes } = useChatPrompts(isAbstinencia);
+
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-32">
       <WaveBackground />
