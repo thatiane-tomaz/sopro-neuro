@@ -50,8 +50,6 @@ import {
   X,
   ChevronRight,
   Send,
-  MessageCircle,
-  ArrowRight,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -739,19 +737,21 @@ export default function Dashboard() {
           />
         </div>
 
-        {/* Perguntas sugeridas (rotacionam a cada entrada no app) */}
+        {/* Perguntas sugeridas: parecem falas do usuário, para dar sensação de conversa */}
         {!dayLocked && sugestoes.length > 0 && (
-          <div className="mt-1 flex flex-col gap-2">
-            {sugestoes.map((p) => (
+          <div className="mt-2 flex flex-col items-end gap-2">
+            <span className="pr-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_35%_58%)]">
+              Responda ao Neo
+            </span>
+            {sugestoes.map((p, i) => (
               <button
                 key={p}
                 type="button"
                 onClick={() => openChat(p)}
-                className="group flex w-full items-center gap-2 rounded-2xl bg-white/85 px-4 py-3 text-left text-[13px] font-semibold leading-snug text-foreground shadow-[0_10px_26px_-16px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_93%)] backdrop-blur-md active:scale-[0.98] transition-transform text-balance"
+                style={{ animationDelay: `${120 + i * 90}ms` }}
+                className="max-w-[86%] animate-page-in rounded-[20px] rounded-br-md bg-gradient-to-br from-[hsl(220_90%_96%)] to-[hsl(258_75%_95%)] px-4 py-2.5 text-right text-[13px] font-semibold leading-snug text-[hsl(258_45%_32%)] ring-1 ring-[hsl(258_60%_90%)] shadow-[0_8px_20px_-14px_hsl(258_70%_45%/0.35)] active:scale-[0.97] transition-transform text-balance"
               >
-                <MessageCircle className="h-4 w-4 flex-shrink-0 text-[hsl(258_65%_55%)]" />
-                <span className="min-w-0 flex-1">{p}</span>
-                <ArrowRight className="h-4 w-4 flex-shrink-0 text-[hsl(258_40%_70%)]" />
+                {p}
               </button>
             ))}
           </div>
@@ -766,7 +766,7 @@ export default function Dashboard() {
               if (!text) return;
               openChat(text);
             }}
-            className="mt-1 flex items-center gap-2"
+            className="mt-3 flex items-center gap-2"
           >
             <input
               value={chatDraft}
@@ -805,6 +805,7 @@ export default function Dashboard() {
               <ChatPanel
                 embedded
                 initialMessage={chatSeed}
+                greetingText={gancho ?? undefined}
                 onClose={() => {
                   setChatOpen(false);
                   setChatSeed(undefined);
