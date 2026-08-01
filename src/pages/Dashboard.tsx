@@ -50,6 +50,8 @@ import {
   X,
   ChevronRight,
   Send,
+  MessageCircle,
+  ArrowRight,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
