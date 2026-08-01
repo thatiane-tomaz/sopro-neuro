@@ -805,6 +805,7 @@ export default function Dashboard() {
               <ChatPanel
                 embedded
                 initialMessage={chatSeed}
+                greetingText={gancho ?? undefined}
                 onClose={() => {
                   setChatOpen(false);
                   setChatSeed(undefined);
