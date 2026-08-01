@@ -739,7 +739,7 @@ export default function Dashboard() {
 
         {/* Perguntas sugeridas: parecem falas do usuário, para dar sensação de conversa */}
         {!dayLocked && sugestoes.length > 0 && (
-          <div className="mt-2 flex flex-col items-end gap-2">
+          <div className="-mt-1 flex flex-col items-end gap-2">
             <span className="pr-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_35%_58%)]">
               Responda ao Neo
             </span>

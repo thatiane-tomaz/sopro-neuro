@@ -52,7 +52,7 @@ export default function ProgressBrain({
   ) : null;
 
   return (
-    <div className="relative mx-auto" style={{ width: size, height: speechText ? size - 44 : size }}>
+    <div className="relative mx-auto" style={{ width: size, height: speechText ? size - 84 : size }}>
       {speechBubble}
 
       {/* Soft glow behind brain */}
@@ -62,7 +62,7 @@ export default function ProgressBrain({
         aria-hidden="true"
       />
 
-      <div className="absolute inset-0 flex items-center justify-center overflow-visible" style={{ transform: speechText ? "translateY(18px)" : "translateY(-12px)" }}>
+      <div className="absolute inset-0 flex items-center justify-center overflow-visible" style={{ transform: speechText ? "translateY(24px)" : "translateY(-12px)" }}>
         {interactive ? (
           <button
             type="button"
