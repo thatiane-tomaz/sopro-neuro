@@ -52,7 +52,7 @@ export default function ProgressBrain({
   ) : null;
 
   return (
-    <div className="relative mx-auto" style={{ width: size, height: speechText ? size + 6 : size }}>
+    <div className="relative mx-auto" style={{ width: size, height: speechText ? size - 44 : size }}>
       {speechBubble}
 
       {/* Soft glow behind brain */}
