@@ -178,6 +178,8 @@ export default function Dashboard() {
     },
   });
 
+  const { gancho, sugestoes } = useChatPrompts(jornadaType === "abstinência");
+
   // Prompt the user for yesterday's cigarette count once per session
   // (only if they haven't logged it yet). For users on the abstinência
   // journey, we auto-fill 0 silently — they can still edit it later on
@@ -563,8 +565,6 @@ export default function Dashboard() {
   const showQuitCTA = !lastCigDate && !isAbstinencia;
   // Bloqueio: abstinência sem data do último cigarro precisa escolher antes de acessar a jornada.
   const abstinenciaBloqueada = isAbstinencia && !lastCigDate;
-
-  const { gancho, sugestoes } = useChatPrompts(isAbstinencia);
 
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-32">
