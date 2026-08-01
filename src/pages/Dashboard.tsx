@@ -68,6 +68,7 @@ import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import soproLogo from "@/assets/sopro-logo.png";
 import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
+import { useChatPrompts } from "@/hooks/useChatPrompts";
 
 const getGreeting = () => {
   const h = new Date().getHours();
