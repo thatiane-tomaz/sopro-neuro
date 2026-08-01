@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react";
-import brainDefault from "@/assets/brain/brain-lv5-active.png";
+import brainDefault from "@/assets/brain/neo.png";
 
 // Warm the browser cache with the mascot image on module load.
 if (typeof window !== "undefined") {

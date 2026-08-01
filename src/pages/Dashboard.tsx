@@ -50,6 +50,8 @@ import {
   X,
   ChevronRight,
   Send,
+  MessageCircle,
+  ArrowRight,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -68,6 +70,7 @@ import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import soproLogo from "@/assets/sopro-logo.png";
 import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
+import { useChatPrompts } from "@/hooks/useChatPrompts";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -561,6 +564,8 @@ export default function Dashboard() {
   // Bloqueio: abstinência sem data do último cigarro precisa escolher antes de acessar a jornada.
   const abstinenciaBloqueada = isAbstinencia && !lastCigDate;
 
+  const { gancho, sugestoes } = useChatPrompts(isAbstinencia);
+
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-32">
       <WaveBackground />
@@ -730,9 +735,27 @@ export default function Dashboard() {
             onClick={() => openChat()}
             ariaLabel="Conversar com Neo"
             speechTitle={!dayLocked ? "Neo · Chat de IA" : undefined}
-            speechText={!dayLocked ? getDailyChatPrompt() : undefined}
+            speechText={!dayLocked ? (gancho ?? getDailyChatPrompt()) : undefined}
           />
         </div>
+
+        {/* Perguntas sugeridas (rotacionam a cada entrada no app) */}
+        {!dayLocked && sugestoes.length > 0 && (
+          <div className="mt-1 flex flex-col gap-2">
+            {sugestoes.map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => openChat(p)}
+                className="group flex w-full items-center gap-2 rounded-2xl bg-white/85 px-4 py-3 text-left text-[13px] font-semibold leading-snug text-foreground shadow-[0_10px_26px_-16px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_93%)] backdrop-blur-md active:scale-[0.98] transition-transform text-balance"
+              >
+                <MessageCircle className="h-4 w-4 flex-shrink-0 text-[hsl(258_65%_55%)]" />
+                <span className="min-w-0 flex-1">{p}</span>
+                <ArrowRight className="h-4 w-4 flex-shrink-0 text-[hsl(258_40%_70%)]" />
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Composer: escreva direto no Dashboard e o chat abre em modal */}
         {!dayLocked && (
