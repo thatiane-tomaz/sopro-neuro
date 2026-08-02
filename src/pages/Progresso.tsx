@@ -85,6 +85,26 @@ export default function Progresso() {
   })();
   const costPerCig = baseline > 0 ? weeklyCostNum / 7 / baseline : 0;
 
+  // Dias sem fumar, contados desde a data informada do último cigarro.
+  const smokeFreeDays = useMemo(() => {
+    const raw = onboarding?.last_cigarette_date as string | undefined;
+    if (!raw) return null;
+    const start = new Date(String(raw).slice(0, 10) + "T00:00:00");
+    if (isNaN(start.getTime())) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diff = Math.floor((today.getTime() - start.getTime()) / 86_400_000);
+    return diff >= 0 ? diff : null;
+  }, [onboarding?.last_cigarette_date]);
+
+  const lastCigLabel = useMemo(() => {
+    const raw = onboarding?.last_cigarette_date as string | undefined;
+    if (!raw) return null;
+    const d = new Date(String(raw).slice(0, 10) + "T00:00:00");
+    if (isNaN(d.getTime())) return null;
+    return format(d, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+  }, [onboarding?.last_cigarette_date]);
+
   const potential = useMemo(() => ({
     cigsMonth: equivCigsPerDay * 30,
     cigsYear: equivCigsPerDay * 365,
@@ -297,6 +317,25 @@ export default function Progresso() {
           </p>
         </div>
 
+        {/* Savings — cigs avoided + money saved */}
+        {smokeFreeDays !== null && (
+          <Card className="mt-5 overflow-hidden border-0 rounded-3xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-5 text-primary-foreground shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.5)]">
+            <p className="text-[11px] font-semibold uppercase tracking-wide opacity-80">
+              Sem fumar
+            </p>
+            <div className="mt-1 flex items-end gap-2">
+              <span className="text-5xl font-bold leading-none">{smokeFreeDays}</span>
+              <span className="text-sm font-medium opacity-90 pb-1">
+                {smokeFreeDays === 1 ? "dia" : "dias"}
+              </span>
+            </div>
+            <p className="mt-2 text-[11px] leading-snug opacity-85 text-balance">
+              {smokeFreeDays === 0
+                ? `Sua nova fase começou hoje, ${lastCigLabel}. Um passo por vez.`
+                : `Desde o seu último cigarro em ${lastCigLabel}.`}
+            </p>
+          </Card>
+        )}
 
         {/* Savings — cigs avoided + money saved */}
         <div className="mt-5 grid grid-cols-2 gap-3">
