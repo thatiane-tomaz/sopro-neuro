@@ -756,7 +756,7 @@ export default function Dashboard() {
                 type="button"
                 onClick={() => openChat(p)}
                 style={{ animationDelay: `${120 + i * 90}ms` }}
-                className="max-w-[86%] animate-page-in rounded-[20px] rounded-br-md bg-gradient-to-br from-[hsl(220_90%_96%)] to-[hsl(258_75%_95%)] px-4 py-2.5 text-right text-[13px] font-semibold leading-snug text-[hsl(258_45%_32%)] ring-1 ring-[hsl(258_60%_90%)] shadow-[0_8px_20px_-14px_hsl(258_70%_45%/0.35)] active:scale-[0.97] transition-transform text-balance"
+                className="max-w-full animate-page-in rounded-[20px] rounded-br-md bg-gradient-to-br from-[hsl(220_90%_96%)] to-[hsl(258_75%_95%)] px-3.5 py-2 text-right text-[11.5px] font-semibold leading-snug text-[hsl(258_45%_32%)] ring-1 ring-[hsl(258_60%_90%)] shadow-[0_8px_20px_-14px_hsl(258_70%_45%/0.35)] active:scale-[0.97] transition-transform whitespace-nowrap"
               >
                 {p}
               </button>
