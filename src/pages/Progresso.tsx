@@ -643,6 +643,56 @@ export default function Progresso() {
             : undefined
         }
       />
+
+      <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
+        <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
+          <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-5 pb-4">
+            <DialogHeader className="text-left space-y-1">
+              <div className="h-10 w-10 rounded-2xl bg-white text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm mb-2">
+                <CalendarIcon className="h-5 w-5" />
+              </div>
+              <DialogTitle className="text-base font-bold text-foreground text-balance">
+                Data do último cigarro
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground text-balance">
+                Ajuste o dia em que você fumou pela última vez.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="px-3 py-3 flex justify-center">
+            <Calendar
+              mode="single"
+              selected={pendingDate}
+              onSelect={setPendingDate}
+              locale={ptBR}
+              disabled={(d) => d > new Date()}
+              initialFocus
+              className="rounded-xl"
+            />
+          </div>
+          <DialogFooter className="px-5 pb-5 pt-1 flex-row gap-2 sm:gap-2">
+            <Button
+              variant="outline"
+              className="flex-1 rounded-xl"
+              onClick={() => setDateDialogOpen(false)}
+              disabled={savingDate}
+            >
+              Cancelar
+            </Button>
+            <Button
+              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+              disabled={!pendingDate || savingDate}
+              onClick={async () => {
+                if (!pendingDate) return;
+                await saveLastCigDate(toLocalDateStr(pendingDate));
+                setDateDialogOpen(false);
+              }}
+            >
+              {savingDate ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
