@@ -29,7 +29,10 @@ export function useMuralPosts(habitoTitulo?: string | null) {
       if (habitoTitulo) q = q.eq("habito_titulo", habitoTitulo);
       const { data, error } = await q;
       if (error) throw error;
-      return (data ?? []) as MuralPost[];
+      // Posts sem conteúdo não devem aparecer (nem o nome do autor)
+      return ((data ?? []) as MuralPost[]).filter(
+        (p) => (p.content ?? "").trim().length > 0
+      );
     },
     staleTime: 60_000,
   });
