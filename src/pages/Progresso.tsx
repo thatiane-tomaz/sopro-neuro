@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import {
   ChevronRight,
+  Calendar as CalendarIcon,
   Cigarette,
   DollarSign,
   HelpCircle,
@@ -39,6 +40,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
@@ -62,11 +74,16 @@ export default function Progresso() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile();
-  const { data: onboarding, isLoading: onbLoading } = useOnboardingData() as any;
+  const { data: onboarding, isLoading: onbLoading, refetch: refetchOnboarding } =
+    useOnboardingData() as any;
   const { logs, isLoading: logsLoading } = useSmokingLogs();
+  const { toast } = useToast();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogDate, setDialogDate] = useState<string | undefined>();
+  const [dateDialogOpen, setDateDialogOpen] = useState(false);
+  const [pendingDate, setPendingDate] = useState<Date | undefined>();
+  const [savingDate, setSavingDate] = useState(false);
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
