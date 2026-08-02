@@ -239,6 +239,59 @@ export default function Jornada() {
   const isFinished = (interactionType: string) =>
     !!trackingData?.some((t) => t.interaction_type === interactionType && t.finished_at !== null);
 
+  // ---- Hipnoses da jornada de redução (liberadas para quem está na abstinência) ----
+  const isAbstinencia = tipoUsuario === "abstinência";
+  const { data: hipnosesReducao } = useQuery({
+    queryKey: ["hipnoses-reducao-extra"],
+    enabled: isAbstinencia,
+    staleTime: 10 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("habitos_jornada")
+        .select("id,habito_titulo,hipnose_nome,hipnose,posicao")
+        .eq("tipo_usuario", "redução");
+      if (error) {
+        console.error("hipnoses reducao error", error);
+        return [];
+      }
+      return ((data as any[]) || [])
+        .filter((h) => h.hipnose !== false && !!h.hipnose_nome)
+        .sort((a, b) => {
+          const pa = a.posicao != null ? Number(a.posicao) : Infinity;
+          const pb = b.posicao != null ? Number(b.posicao) : Infinity;
+          if (pa !== pb) return pa - pb;
+          return String(a.habito_titulo).localeCompare(String(b.habito_titulo), "pt-BR");
+        });
+    },
+  });
+
+  const openHipnoseReducao = async (h: any) => {
+    const { data, error } = await supabase.storage
+      .from("hipnoses_2")
+      .createSignedUrl(h.hipnose_nome, 60 * 60);
+    if (error || !data?.signedUrl) {
+      toast({
+        title: "Conteúdo em preparação",
+        description: "Esta hipnose ainda será disponibilizada.",
+      });
+      return;
+    }
+    const interactionType = `hipnose_apoio_${h.id}`;
+    setSelectedMedia({
+      title: h.habito_titulo,
+      fileUrl: data.signedUrl,
+      contentType: "hypnosis",
+      day: 0,
+      interactionType,
+    });
+    try {
+      const r = await startTracking({ interactionType });
+      if (r?.id) setTrackingId(r.id);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const itemCompleted = (it: JornadaItem) => {
     const needsVideo = it.hasVideo;
     const needsHip = it.hasHipnose;
@@ -472,6 +525,38 @@ export default function Jornada() {
             ))
           )}
         </section>
+
+        {/* Hipnoses da redução liberadas para quem está na abstinência */}
+        {isAbstinencia && (hipnosesReducao?.length ?? 0) > 0 && (
+          <section className="mt-5 rounded-3xl bg-white/85 backdrop-blur-md shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] p-4">
+            <div className="inline-flex items-center gap-1.5">
+              <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
+              <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+                Extras
+              </span>
+            </div>
+            <h2 className="mt-1 text-lg font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
+              Hipnoses de Apoio
+            </h2>
+
+            <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] space-y-2">
+              {(hipnosesReducao ?? []).map((h: any) => (
+                <button
+                  key={h.id}
+                  onClick={() => openHipnoseReducao(h)}
+                  className="w-full flex items-center gap-3 rounded-2xl bg-white/70 ring-1 ring-[hsl(220_30%_94%)] p-3 text-left active:scale-[0.99] transition-transform"
+                >
+                  <div className="h-11 w-11 flex-shrink-0 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-[0_8px_20px_-10px_hsl(258_70%_50%/0.6)]">
+                    <Headphones className="h-5 w-5 text-white" />
+                  </div>
+                  <p className="flex-1 min-w-0 text-[13px] font-bold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                    {h.habito_titulo}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       <BottomNav />
