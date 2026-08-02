@@ -201,7 +201,7 @@ export default function AbstinenceExtras({
         </div>
 
         <h2 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
-          Hipnoses para momentos desafiadores
+          Hipnoses de Apoio
         </h2>
 
         <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] space-y-2">
