@@ -897,14 +897,11 @@ export default function Dashboard() {
         {/* Mural — experiências compartilhadas */}
         <MuralPreview habitoTitulo={tituloGatilho} />
 
-        {/* Progress / savings card */}
-        <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
-          <h3 className="font-semibold text-foreground text-base">Você está no caminho certo</h3>
-
-          {!isAbstinencia && (
+        {/* Entradas de acompanhamento */}
+        {!isAbstinencia && (
             <button
               onClick={() => navigate("/progresso")}
-              className="mt-4 w-full text-left rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-4 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] active:scale-[0.99] transition-transform flex items-center gap-3"
+              className="mt-6 w-full text-left rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-4 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] active:scale-[0.99] transition-transform flex items-center gap-3"
             >
               <div className="h-11 w-11 rounded-full bg-white flex items-center justify-center text-[hsl(258_60%_50%)] shadow-sm flex-shrink-0">
                 <Cigarette className="h-5 w-5" />
@@ -919,10 +916,10 @@ export default function Dashboard() {
               </div>
               <div className="text-[hsl(258_60%_50%)] text-lg font-bold">→</div>
             </button>
-          )}
+        )}
 
           {phaseNumber !== 1 && lastCigDate && (
-            <div className="mt-4 flex items-start justify-between gap-3 text-xs bg-[hsl(258_80%_97%)] rounded-lg px-3 py-2.5">
+            <div className="mt-4 flex items-start justify-between gap-3 text-xs bg-[hsl(258_80%_97%)] rounded-2xl px-3 py-2.5">
               <div className="flex-1 min-w-0">
                 <p className="text-muted-foreground">O dia da sua mudança de vida foi</p>
                 <p className="mt-0.5 text-sm font-semibold text-foreground">
@@ -941,15 +938,6 @@ export default function Dashboard() {
               </button>
             </div>
           )}
-
-          {/* Benefits row */}
-          <div className="grid grid-cols-4 gap-2 mt-5 pt-4 border-t border-[hsl(220_30%_94%)]">
-            <Benefit icon={<Zap className="h-5 w-5" />} label="Mais energia" />
-            <Benefit icon={<Target className="h-5 w-5" />} label="Mais foco" />
-            <Benefit icon={<Flower2 className="h-5 w-5" />} label="Mais calma" />
-            <Benefit icon={<HeartPulse className="h-5 w-5" />} label="Mais saúde" />
-          </div>
-        </Card>
         {isAbstinencia && <AbstinenceExtras mode="return" />}
         {/* CTA — Decidir parar de fumar */}
         {showQuitCTA && !showQuitDatePicker && (
