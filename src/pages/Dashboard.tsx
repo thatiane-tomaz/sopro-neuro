@@ -726,8 +726,15 @@ export default function Dashboard() {
           }
           aria-hidden={abstinenciaBloqueada}
         >
+        {/* Bloco da IA: Neo + sugestões + composer em um único cartão */}
+        <section className="mt-3 relative overflow-hidden rounded-[28px] bg-gradient-to-b from-white/80 via-white/60 to-[hsl(258_80%_97%)]/70 px-3 pt-2 pb-3 ring-1 ring-white/70 backdrop-blur-xl shadow-[0_24px_60px_-32px_hsl(258_70%_45%/0.35)]">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-16 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-[hsl(258_80%_75%/0.25)] blur-3xl"
+          />
+
         {/* Brain progress — clicar no Neo abre o chat em modal */}
-        <div className="mt-2">
+        <div className="relative">
           <ProgressBrain
             locked={dayLocked}
             onClick={() => openChat()}
@@ -739,7 +746,7 @@ export default function Dashboard() {
 
         {/* Perguntas sugeridas: parecem falas do usuário, para dar sensação de conversa */}
         {!dayLocked && sugestoes.length > 0 && (
-          <div className="-mt-1 flex flex-col items-end gap-2">
+          <div className="relative -mt-1 flex flex-col items-end gap-2">
             <span className="pr-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_35%_58%)]">
               Responda ao Neo
             </span>
@@ -766,7 +773,7 @@ export default function Dashboard() {
               if (!text) return;
               openChat(text);
             }}
-            className="mt-3 flex items-center gap-2"
+            className="relative mt-3 flex items-center gap-2"
           >
             <input
               value={chatDraft}
@@ -785,6 +792,7 @@ export default function Dashboard() {
             </button>
           </form>
         )}
+        </section>
 
         {/* Chat de IA em modal */}
         <Dialog
