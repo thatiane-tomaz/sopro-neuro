@@ -255,7 +255,7 @@ export default function Jornada() {
         return [];
       }
       return ((data as any[]) || [])
-        .filter((h) => h.hipnose !== false && !!h.hipnose_nome)
+        .filter((h) => h.hipnose !== false)
         .sort((a, b) => {
           const pa = a.posicao != null ? Number(a.posicao) : Infinity;
           const pb = b.posicao != null ? Number(b.posicao) : Infinity;
@@ -266,6 +266,13 @@ export default function Jornada() {
   });
 
   const openHipnoseReducao = async (h: any) => {
+    if (!h.hipnose_nome) {
+      toast({
+        title: "Conteúdo em preparação",
+        description: "Esta hipnose ainda será disponibilizada.",
+      });
+      return;
+    }
     const { data, error } = await supabase.storage
       .from("hipnoses_2")
       .createSignedUrl(h.hipnose_nome, 60 * 60);
