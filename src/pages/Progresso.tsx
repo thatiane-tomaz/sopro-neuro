@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import {
   ChevronRight,
+  Calendar as CalendarIcon,
   Cigarette,
   DollarSign,
   HelpCircle,
@@ -39,6 +40,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
@@ -62,11 +74,16 @@ export default function Progresso() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useUserProfile();
-  const { data: onboarding, isLoading: onbLoading } = useOnboardingData() as any;
+  const { data: onboarding, isLoading: onbLoading, refetch: refetchOnboarding } =
+    useOnboardingData() as any;
   const { logs, isLoading: logsLoading } = useSmokingLogs();
+  const { toast } = useToast();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogDate, setDialogDate] = useState<string | undefined>();
+  const [dateDialogOpen, setDateDialogOpen] = useState(false);
+  const [pendingDate, setPendingDate] = useState<Date | undefined>();
+  const [savingDate, setSavingDate] = useState(false);
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
@@ -104,6 +121,29 @@ export default function Progresso() {
     if (isNaN(d.getTime())) return null;
     return format(d, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
   }, [onboarding?.last_cigarette_date]);
+
+  const openDateDialog = () => {
+    const raw = onboarding?.last_cigarette_date as string | undefined;
+    const d = raw ? new Date(String(raw).slice(0, 10) + "T00:00:00") : undefined;
+    setPendingDate(d && !isNaN(d.getTime()) ? d : undefined);
+    setDateDialogOpen(true);
+  };
+
+  const saveLastCigDate = async (dateStr: string) => {
+    if (!user) return;
+    setSavingDate(true);
+    const { error } = await supabase
+      .from("onboarding_responses")
+      .update({ last_cigarette_date: dateStr })
+      .eq("user_id", user.id);
+    setSavingDate(false);
+    if (error) {
+      toast({ title: "Erro ao salvar", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Data atualizada!" });
+    refetchOnboarding?.();
+  };
 
   const potential = useMemo(() => ({
     cigsMonth: equivCigsPerDay * 30,
@@ -317,23 +357,44 @@ export default function Progresso() {
           </p>
         </div>
 
-        {/* Savings — cigs avoided + money saved */}
+        {/* Smoke free counter */}
         {smokeFreeDays !== null && (
-          <Card className="mt-5 overflow-hidden border-0 rounded-3xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-5 text-primary-foreground shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.5)]">
-            <p className="text-[11px] font-semibold uppercase tracking-wide opacity-80">
-              Sem fumar
-            </p>
-            <div className="mt-1 flex items-end gap-2">
-              <span className="text-5xl font-bold leading-none">{smokeFreeDays}</span>
-              <span className="text-sm font-medium opacity-90 pb-1">
-                {smokeFreeDays === 1 ? "dia" : "dias"}
-              </span>
+          <Card className="mt-5 overflow-hidden border-0 rounded-3xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-5 text-white shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.5)]">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wide opacity-85">
+                Sem fumar
+              </p>
+              <button
+                onClick={openDateDialog}
+                aria-label="Alterar a data do último cigarro"
+                className="flex min-h-[32px] items-center gap-1.5 rounded-full bg-white/20 px-3 py-1.5 text-[11px] font-semibold backdrop-blur transition-transform active:scale-95"
+              >
+                <Pencil className="h-3 w-3" />
+                Alterar data
+              </button>
             </div>
-            <p className="mt-2 text-[11px] leading-snug opacity-85 text-balance">
-              {smokeFreeDays === 0
-                ? `Sua nova fase começou hoje, ${lastCigLabel}. Um passo por vez.`
-                : `Desde o seu último cigarro em ${lastCigLabel}.`}
-            </p>
+
+            <div className="mt-3 flex flex-col items-center text-center">
+              <div className="flex items-end justify-center gap-2">
+                <span className="text-6xl font-bold leading-none tracking-tight">
+                  {smokeFreeDays}
+                </span>
+                <span className="pb-1.5 text-base font-medium opacity-90">
+                  {smokeFreeDays === 1 ? "dia" : "dias"}
+                </span>
+              </div>
+              <div className="mt-3 flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 backdrop-blur">
+                <CalendarIcon className="h-3.5 w-3.5 opacity-90" />
+                <span className="text-[11px] font-medium">
+                  Último cigarro em {lastCigLabel}
+                </span>
+              </div>
+              <p className="mt-3 text-[11px] leading-snug opacity-85 text-balance">
+                {smokeFreeDays === 0
+                  ? "Sua nova fase começou hoje. Um passo por vez."
+                  : "Cada dia aqui é uma escolha sua se somando."}
+              </p>
+            </div>
           </Card>
         )}
 
@@ -582,6 +643,56 @@ export default function Progresso() {
             : undefined
         }
       />
+
+      <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
+        <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
+          <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-5 pb-4">
+            <DialogHeader className="text-left space-y-1">
+              <div className="h-10 w-10 rounded-2xl bg-white text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm mb-2">
+                <CalendarIcon className="h-5 w-5" />
+              </div>
+              <DialogTitle className="text-base font-bold text-foreground text-balance">
+                Data do último cigarro
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground text-balance">
+                Ajuste o dia em que você fumou pela última vez.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="px-3 py-3 flex justify-center">
+            <Calendar
+              mode="single"
+              selected={pendingDate}
+              onSelect={setPendingDate}
+              locale={ptBR}
+              disabled={(d) => d > new Date()}
+              initialFocus
+              className="rounded-xl"
+            />
+          </div>
+          <DialogFooter className="px-5 pb-5 pt-1 flex-row gap-2 sm:gap-2">
+            <Button
+              variant="outline"
+              className="flex-1 rounded-xl"
+              onClick={() => setDateDialogOpen(false)}
+              disabled={savingDate}
+            >
+              Cancelar
+            </Button>
+            <Button
+              className="flex-1 rounded-xl bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+              disabled={!pendingDate || savingDate}
+              onClick={async () => {
+                if (!pendingDate) return;
+                await saveLastCigDate(toLocalDateStr(pendingDate));
+                setDateDialogOpen(false);
+              }}
+            >
+              {savingDate ? "Salvando..." : "Salvar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
