@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronRight, Headphones, Play, Zap, RotateCcw } from "lucide-react";
+import { ChevronRight, Headphones, Play, Zap, RotateCcw, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -189,40 +189,54 @@ export default function AbstinenceExtras({
         </div>
       </button>
 
-      {/* Triggers */}
-      <div className="mt-7">
-        <h2 className="text-lg font-bold text-foreground">
+      {/* Triggers — mesma identidade visual da seção "Foco atual" */}
+      <section className="mt-7 rounded-3xl bg-white/80 backdrop-blur-md p-4 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.18)] ring-1 ring-black/[0.03]">
+        <div className="flex items-center justify-between gap-3">
+          <div className="inline-flex items-center gap-1.5 min-w-0">
+            <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
+            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+              Gatilhos
+            </span>
+          </div>
+          {triggers.length > 0 && (
+            <span className="flex-shrink-0 rounded-full bg-[hsl(258_80%_97%)] px-2.5 py-1 text-[10px] font-bold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_92%)]">
+              {triggers.length} hipnoses
+            </span>
+          )}
+        </div>
+
+        <h2 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
           Hipnoses para gatilhos específicos
         </h2>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground mt-1 text-balance">
           Fortaleça sua mente para enfrentar momentos desafiadores.
         </p>
-      </div>
 
-      <div className="mt-4 space-y-3">
-        {triggers.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => handleTrigger(t)}
-            className="w-full flex items-center gap-3 rounded-2xl bg-white/85 backdrop-blur-md ring-1 ring-black/[0.03] shadow-[0_10px_30px_-18px_hsl(230_60%_40%/0.25)] p-3.5 text-left active:scale-[0.99] transition-transform"
-          >
-            <div className="h-12 w-12 flex-shrink-0 rounded-full bg-[hsl(180_55%_94%)] flex items-center justify-center">
-              <Headphones className="h-5 w-5 text-[hsl(185_60%_45%)]" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-foreground leading-tight">
-                {t.title}
-              </p>
-              {t.description && (
-                <p className="text-xs text-muted-foreground leading-snug mt-0.5 line-clamp-2">
-                  {t.description}
+        <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] space-y-2">
+          {triggers.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => handleTrigger(t)}
+              className="w-full flex items-center gap-3 rounded-2xl bg-white/70 ring-1 ring-[hsl(220_30%_94%)] p-3 text-left active:scale-[0.99] transition-transform"
+            >
+              <div className="h-11 w-11 flex-shrink-0 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-[0_8px_20px_-10px_hsl(258_70%_50%/0.6)]">
+                <Headphones className="h-5 w-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-foreground leading-tight">
+                  {t.title}
                 </p>
-              )}
-            </div>
-            <ChevronRight className="h-5 w-5 text-[hsl(220_70%_55%)] flex-shrink-0" />
-          </button>
-        ))}
-      </div>
+                {t.description && (
+                  <p className="text-xs text-muted-foreground leading-snug mt-0.5 line-clamp-2">
+                    {t.description}
+                  </p>
+                )}
+              </div>
+              <ChevronRight className="h-5 w-5 text-[hsl(258_60%_55%)] flex-shrink-0" />
+            </button>
+          ))}
+        </div>
+      </section>
 
       {selectedMedia && (
         <MediaPlayer
