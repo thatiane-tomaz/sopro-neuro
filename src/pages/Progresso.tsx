@@ -357,23 +357,44 @@ export default function Progresso() {
           </p>
         </div>
 
-        {/* Savings — cigs avoided + money saved */}
+        {/* Smoke free counter */}
         {smokeFreeDays !== null && (
-          <Card className="mt-5 overflow-hidden border-0 rounded-3xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-5 text-primary-foreground shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.5)]">
-            <p className="text-[11px] font-semibold uppercase tracking-wide opacity-80">
-              Sem fumar
-            </p>
-            <div className="mt-1 flex items-end gap-2">
-              <span className="text-5xl font-bold leading-none">{smokeFreeDays}</span>
-              <span className="text-sm font-medium opacity-90 pb-1">
-                {smokeFreeDays === 1 ? "dia" : "dias"}
-              </span>
+          <Card className="mt-5 overflow-hidden border-0 rounded-3xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-5 text-white shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.5)]">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wide opacity-85">
+                Sem fumar
+              </p>
+              <button
+                onClick={openDateDialog}
+                aria-label="Alterar a data do último cigarro"
+                className="flex min-h-[32px] items-center gap-1.5 rounded-full bg-white/20 px-3 py-1.5 text-[11px] font-semibold backdrop-blur transition-transform active:scale-95"
+              >
+                <Pencil className="h-3 w-3" />
+                Alterar data
+              </button>
             </div>
-            <p className="mt-2 text-[11px] leading-snug opacity-85 text-balance">
-              {smokeFreeDays === 0
-                ? `Sua nova fase começou hoje, ${lastCigLabel}. Um passo por vez.`
-                : `Desde o seu último cigarro em ${lastCigLabel}.`}
-            </p>
+
+            <div className="mt-3 flex flex-col items-center text-center">
+              <div className="flex items-end justify-center gap-2">
+                <span className="text-6xl font-bold leading-none tracking-tight">
+                  {smokeFreeDays}
+                </span>
+                <span className="pb-1.5 text-base font-medium opacity-90">
+                  {smokeFreeDays === 1 ? "dia" : "dias"}
+                </span>
+              </div>
+              <div className="mt-3 flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 backdrop-blur">
+                <CalendarIcon className="h-3.5 w-3.5 opacity-90" />
+                <span className="text-[11px] font-medium">
+                  Último cigarro em {lastCigLabel}
+                </span>
+              </div>
+              <p className="mt-3 text-[11px] leading-snug opacity-85 text-balance">
+                {smokeFreeDays === 0
+                  ? "Sua nova fase começou hoje. Um passo por vez."
+                  : "Cada dia aqui é uma escolha sua se somando."}
+              </p>
+            </div>
           </Card>
         )}
 
