@@ -122,6 +122,29 @@ export default function Progresso() {
     return format(d, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
   }, [onboarding?.last_cigarette_date]);
 
+  const openDateDialog = () => {
+    const raw = onboarding?.last_cigarette_date as string | undefined;
+    const d = raw ? new Date(String(raw).slice(0, 10) + "T00:00:00") : undefined;
+    setPendingDate(d && !isNaN(d.getTime()) ? d : undefined);
+    setDateDialogOpen(true);
+  };
+
+  const saveLastCigDate = async (dateStr: string) => {
+    if (!user) return;
+    setSavingDate(true);
+    const { error } = await supabase
+      .from("onboarding_responses")
+      .update({ last_cigarette_date: dateStr })
+      .eq("user_id", user.id);
+    setSavingDate(false);
+    if (error) {
+      toast({ title: "Erro ao salvar", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Data atualizada!" });
+    refetchOnboarding?.();
+  };
+
   const potential = useMemo(() => ({
     cigsMonth: equivCigsPerDay * 30,
     cigsYear: equivCigsPerDay * 365,
