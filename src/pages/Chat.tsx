@@ -97,9 +97,11 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
     ? `Oi${firstName ? `, ${firstName}` : ""}!\n\nAntes de continuarmos, só siga essa conversa se você realmente viveu a missão. Se ainda não viveu, feche essa tela e volte quando tiver experimentado, assim eu consigo te ajudar de verdade.\n\nSua missão foi: ${mission.explicacaoDesafio}\n\nSe você já viveu, me conte como foi a sua experiência.`
     : `Oi${firstName ? `, ${firstName}` : ""}! ${dailyPrompt}\n\nPode responder essa pergunta ou me contar sobre outra coisa que esteja passando aí. Tô aqui pra te ouvir.`;
 
-  const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: greeting },
-  ]);
+  // When the user arrives with a question already written/selected on the
+  // Dashboard, the conversation starts with that message (no Neo greeting).
+  const [messages, setMessages] = useState<Msg[]>(
+    initialMessage?.trim() ? [] : [{ role: "assistant", content: greeting }],
+  );
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [missionCompleted, setMissionCompleted] = useState(false);
