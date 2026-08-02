@@ -239,6 +239,59 @@ export default function Jornada() {
   const isFinished = (interactionType: string) =>
     !!trackingData?.some((t) => t.interaction_type === interactionType && t.finished_at !== null);
 
+  // ---- Hipnoses da jornada de redução (liberadas para quem está na abstinência) ----
+  const isAbstinencia = tipoUsuario === "abstinência";
+  const { data: hipnosesReducao } = useQuery({
+    queryKey: ["hipnoses-reducao-extra"],
+    enabled: isAbstinencia,
+    staleTime: 10 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await (supabase as any)
+        .from("habitos_jornada")
+        .select("id,habito_titulo,hipnose_nome,hipnose,posicao")
+        .eq("tipo_usuario", "redução");
+      if (error) {
+        console.error("hipnoses reducao error", error);
+        return [];
+      }
+      return ((data as any[]) || [])
+        .filter((h) => h.hipnose !== false && !!h.hipnose_nome)
+        .sort((a, b) => {
+          const pa = a.posicao != null ? Number(a.posicao) : Infinity;
+          const pb = b.posicao != null ? Number(b.posicao) : Infinity;
+          if (pa !== pb) return pa - pb;
+          return String(a.habito_titulo).localeCompare(String(b.habito_titulo), "pt-BR");
+        });
+    },
+  });
+
+  const openHipnoseReducao = async (h: any) => {
+    const { data, error } = await supabase.storage
+      .from("hipnoses_2")
+      .createSignedUrl(h.hipnose_nome, 60 * 60);
+    if (error || !data?.signedUrl) {
+      toast({
+        title: "Conteúdo em preparação",
+        description: "Esta hipnose ainda será disponibilizada.",
+      });
+      return;
+    }
+    const interactionType = `hipnose_apoio_${h.id}`;
+    setSelectedMedia({
+      title: h.habito_titulo,
+      fileUrl: data.signedUrl,
+      contentType: "hypnosis",
+      day: 0,
+      interactionType,
+    });
+    try {
+      const r = await startTracking({ interactionType });
+      if (r?.id) setTrackingId(r.id);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const itemCompleted = (it: JornadaItem) => {
     const needsVideo = it.hasVideo;
     const needsHip = it.hasHipnose;
