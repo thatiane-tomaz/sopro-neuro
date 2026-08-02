@@ -2,6 +2,17 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import ErrorBoundary from './components/ErrorBoundary.tsx'
 import './index.css'
+import neoMascot from './assets/brain/neo.png'
+
+// Preload the Neo mascot so it is ready before the Dashboard paints.
+{
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = 'image';
+  link.href = neoMascot;
+  link.setAttribute('fetchpriority', 'high');
+  document.head.appendChild(link);
+}
 
 // Disable Service Worker on native Capacitor builds (iOS/Android).
 // The PWA SW interferes with WebView asset caching on native platforms.

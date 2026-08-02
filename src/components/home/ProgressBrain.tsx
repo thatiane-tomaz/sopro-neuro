@@ -77,6 +77,8 @@ export default function ProgressBrain({
               width={brainSize}
               height={brainSize}
               loading="eager"
+              // @ts-expect-error fetchpriority is valid HTML
+              fetchpriority="high"
               draggable={false}
               className={`w-full h-full object-contain pointer-events-none animate-pulse-glow ${
                 locked ? "grayscale opacity-60" : ""
