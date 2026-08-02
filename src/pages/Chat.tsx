@@ -579,7 +579,10 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
             );
           })}
           {isStreaming && messages[messages.length - 1]?.content === "" && (
-            <div className="flex justify-start">
+            <div className="flex justify-start items-end gap-2">
+              <div className="h-8 w-8 flex-shrink-0 rounded-full bg-white/90 ring-1 ring-[hsl(258_70%_90%)] shadow-[0_4px_12px_-6px_hsl(258_70%_45%/0.35)] flex items-center justify-center overflow-hidden">
+                <img src={brainDefault} alt="Neo" className="h-7 w-7 object-contain" />
+              </div>
               <div className="rounded-2xl rounded-tl-sm bg-white/90 backdrop-blur-sm px-4 py-3 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.03]">
                 <div className="flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-[hsl(258_60%_55%)] animate-bounce" style={{ animationDelay: "0ms" }} />
