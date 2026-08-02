@@ -539,7 +539,7 @@ export default function Jornada() {
         </section>
 
         {/* Hipnoses da redução liberadas para quem está na abstinência */}
-        {isAbstinencia && (hipnosesReducao?.length ?? 0) > 0 && (
+        {isAbstinencia && (temasReducao?.length ?? 0) > 0 && (
           <section className="mt-5 rounded-3xl bg-white/85 backdrop-blur-md shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] p-4">
             <div className="inline-flex items-center gap-1.5">
               <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
@@ -551,20 +551,24 @@ export default function Jornada() {
               Hipnoses de Apoio
             </h2>
 
-            <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] space-y-2">
-              {(hipnosesReducao ?? []).map((h: any) => (
-                <button
+            <div className="mt-3 pt-1 border-t border-[hsl(220_30%_94%)]">
+              {(temasReducao ?? []).map((h: any, i: number) => (
+                <ThemeRow
                   key={h.id}
-                  onClick={() => openHipnoseReducao(h)}
-                  className="w-full flex items-center gap-3 rounded-2xl bg-white/70 ring-1 ring-[hsl(220_30%_94%)] p-3 text-left active:scale-[0.99] transition-transform"
-                >
-                  <div className="h-11 w-11 flex-shrink-0 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-[0_8px_20px_-10px_hsl(258_70%_50%/0.6)]">
-                    <Headphones className="h-5 w-5 text-white" />
-                  </div>
-                  <p className="flex-1 min-w-0 text-[13px] font-bold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
-                    {h.habito_titulo}
-                  </p>
-                </button>
+                  index={i}
+                  isLast={i === (temasReducao?.length ?? 0) - 1}
+                  seq={i + 1}
+                  title={h.habito_titulo}
+                  isIntro={false}
+                  status="current"
+                  hasVideo={h.video !== false}
+                  hasHipnose={h.hipnose !== false}
+                  onVideo={() => openMediaReducao(h, "video")}
+                  onHypnosis={() => openMediaReducao(h, "hypnosis")}
+                  onMural={() =>
+                    navigate(`/mural?tema=${encodeURIComponent(h.habito_titulo)}`)
+                  }
+                />
               ))}
             </div>
           </section>
