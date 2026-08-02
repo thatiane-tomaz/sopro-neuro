@@ -241,21 +241,20 @@ export default function Jornada() {
 
   // ---- Hipnoses da jornada de redução (liberadas para quem está na abstinência) ----
   const isAbstinencia = tipoUsuario === "abstinência";
-  const { data: hipnosesReducao } = useQuery({
+  const { data: temasReducao } = useQuery({
     queryKey: ["hipnoses-reducao-extra"],
     enabled: isAbstinencia,
     staleTime: 10 * 60 * 1000,
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("habitos_jornada")
-        .select("id,habito_titulo,hipnose_nome,hipnose,posicao")
+        .select("id,habito_titulo,video_nome,video,hipnose_nome,hipnose,posicao")
         .eq("tipo_usuario", "redução");
       if (error) {
         console.error("hipnoses reducao error", error);
         return [];
       }
       return ((data as any[]) || [])
-        .filter((h) => h.hipnose !== false)
         .sort((a, b) => {
           const pa = a.posicao != null ? Number(a.posicao) : Infinity;
           const pb = b.posicao != null ? Number(b.posicao) : Infinity;
@@ -265,29 +264,35 @@ export default function Jornada() {
     },
   });
 
-  const openHipnoseReducao = async (h: any) => {
-    if (!h.hipnose_nome) {
+  const openMediaReducao = async (h: any, type: "video" | "hypnosis") => {
+    const bucket = type === "video" ? "videos_2" : "hipnoses_2";
+    const fileName = type === "video" ? h.video_nome : h.hipnose_nome;
+    if (!fileName) {
       toast({
         title: "Conteúdo em preparação",
-        description: "Esta hipnose ainda será disponibilizada.",
+        description:
+          type === "video"
+            ? "O vídeo deste tema ainda será disponibilizado."
+            : "A hipnose deste tema ainda será disponibilizada.",
       });
       return;
     }
     const { data, error } = await supabase.storage
-      .from("hipnoses_2")
-      .createSignedUrl(h.hipnose_nome, 60 * 60);
+      .from(bucket)
+      .createSignedUrl(fileName, 60 * 60);
     if (error || !data?.signedUrl) {
       toast({
         title: "Conteúdo em preparação",
-        description: "Esta hipnose ainda será disponibilizada.",
+        description: "Este conteúdo ainda será disponibilizado.",
       });
       return;
     }
-    const interactionType = `hipnose_apoio_${h.id}`;
+    const interactionType =
+      type === "video" ? `video_apoio_${h.id}` : `hipnose_apoio_${h.id}`;
     setSelectedMedia({
       title: h.habito_titulo,
       fileUrl: data.signedUrl,
-      contentType: "hypnosis",
+      contentType: type,
       day: 0,
       interactionType,
     });
