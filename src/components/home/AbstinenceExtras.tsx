@@ -198,19 +198,11 @@ export default function AbstinenceExtras({
               Gatilhos
             </span>
           </div>
-          {triggers.length > 0 && (
-            <span className="flex-shrink-0 rounded-full bg-[hsl(258_80%_97%)] px-2.5 py-1 text-[10px] font-bold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_92%)]">
-              {triggers.length} hipnoses
-            </span>
-          )}
         </div>
 
         <h2 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
-          Hipnoses para gatilhos específicos
+          Hipnoses para momentos desafiadores
         </h2>
-        <p className="text-xs text-muted-foreground mt-1 text-balance">
-          Fortaleça sua mente para enfrentar momentos desafiadores.
-        </p>
 
         <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] space-y-2">
           {triggers.map((t) => (
