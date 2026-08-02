@@ -215,11 +215,11 @@ export default function AbstinenceExtras({
                 <Headphones className="h-5 w-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-foreground leading-tight">
+                <p className="text-[13px] font-bold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                   {t.title}
                 </p>
                 {t.description && (
-                  <p className="text-xs text-muted-foreground leading-snug mt-0.5 line-clamp-2">
+                  <p className="text-[11px] text-muted-foreground leading-snug mt-0.5 line-clamp-2">
                     {t.description}
                   </p>
                 )}
