@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, X, Headphones, Volume2, Sofa, VolumeX, BellOff, BatteryCharging } from 'lucide-react';
 import videoCoverImage from '@/assets/video-cover.jpg';
@@ -320,9 +321,9 @@ const MediaPlayer = ({
 
   const progressPercentage = duration > 0 && isFinite(duration) ? (currentTime / duration) * 100 : 0;
 
-  return (
-    <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm flex items-center justify-center z-50 p-3">
-      <div className="w-[calc(100vw-24px)] sm:max-w-md max-h-[86dvh] flex flex-col bg-gradient-to-br from-background via-background to-primary/5 rounded-3xl shadow-2xl shadow-primary/20 border border-primary/10 overflow-hidden">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-navy/80 p-3 backdrop-blur-sm">
+      <div className="flex w-[calc(100vw-24px)] max-w-sm max-h-[76dvh] flex-col overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-background via-background to-primary/5 shadow-2xl shadow-primary/20">
         {/* Header */}
         <div className="relative px-4 py-3 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-accent/5 flex-shrink-0">
           <div className="flex items-center gap-3">
@@ -355,7 +356,7 @@ const MediaPlayer = ({
         </div>
 
         {/* Content */}
-        <div className="p-3 sm:p-4 space-y-3 flex-1 min-h-0 flex flex-col overflow-y-auto">
+        <div className="min-h-0 space-y-3 overflow-y-auto p-3 sm:p-4">
           {/* Tips for hypnosis - compact */}
           {contentType === 'hypnosis' && (
             <div className="bg-navy/5 dark:bg-navy/20 p-3 rounded-xl border border-navy/10 dark:border-navy/30 flex-shrink-0">
@@ -450,7 +451,7 @@ const MediaPlayer = ({
                 </audio>
                 
                 {/* Audio Player Visual */}
-                <div className="relative w-full flex-1 min-h-0" style={{ aspectRatio: '16/9' }} onContextMenu={(e) => e.preventDefault()}>
+                  <div className="relative aspect-video w-full" onContextMenu={(e) => e.preventDefault()}>
                   <img 
                     src={hypnosisImage} 
                     alt="Homem relaxando com fones de ouvido" 
@@ -503,7 +504,8 @@ const MediaPlayer = ({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
