@@ -89,8 +89,6 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
   const SUGGESTIONS = mission || retorno
     ? []
     : [
-        `Responder: ${dailyPrompt}`,
-        "Quero falar sobre outra coisa 💬",
         ...(currentDay <= 7 ? SUGGESTIONS_PHASE_1 : SUGGESTIONS_PHASE_2),
       ];
 
@@ -99,7 +97,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
     ? `Oi${firstName ? `, ${firstName}` : ""}. Que bom que você está aqui.\n\nVoltar não é recomeçar do zero, é ajustar a rota. Em uns 5 minutinhos vou te fazer algumas perguntas curtas pra entender quais gatilhos estão te puxando de volta ao cigarro agora, e assim montar uma jornada de redução mais alinhada com esse momento.\n\nPra começar: o que você acha que mais te levou a voltar a fumar?`
     : mission
     ? `Oi${firstName ? `, ${firstName}` : ""}!\n\nAntes de continuarmos, só siga essa conversa se você realmente viveu a missão. Se ainda não viveu, feche essa tela e volte quando tiver experimentado, assim eu consigo te ajudar de verdade.\n\nSua missão foi: ${mission.explicacaoDesafio}\n\nSe você já viveu, me conte como foi a sua experiência.`
-    : `Oi${firstName ? `, ${firstName}` : ""}! ${dailyPrompt}\n\nPode responder essa pergunta ou me contar sobre outra coisa que esteja passando aí. Tô aqui pra te ouvir.`;
+    : `Oi${firstName ? `, ${firstName}` : ""}! Tô aqui com você.\n\nMe conta o que está passando aí ou me faça a pergunta que quiser sobre parar de fumar. Pode escrever abaixo.`;
 
   // When the user arrives with a question already written/selected on the
   // Dashboard, the conversation starts with that message (no Neo greeting).
