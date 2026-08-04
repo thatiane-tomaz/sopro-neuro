@@ -187,12 +187,14 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
         jornada: "reducao",
         habitos_selecionados: titulos,
       });
-      // Voltando a fumar: limpa a data do último cigarro para que o usuário
-      // possa marcar um novo momento de parada na jornada de redução.
-      await (supabase as any)
-        .from("onboarding_responses")
-        .update({ last_cigarette_date: null })
-        .eq("user_id", user.id);
+      if (!revisao) {
+        // Voltando a fumar: limpa a data do último cigarro para que o usuário
+        // possa marcar um novo momento de parada na jornada de redução.
+        await (supabase as any)
+          .from("onboarding_responses")
+          .update({ last_cigarette_date: null })
+          .eq("user_id", user.id);
+      }
       await queryClient.invalidateQueries({ queryKey: ["onboarding_response"] });
       await queryClient.invalidateQueries({ queryKey: ["jornada-type"] });
       await queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
@@ -200,8 +202,13 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
       await queryClient.invalidateQueries({ queryKey: ["habitos-jornada"] });
       await queryClient.invalidateQueries({ queryKey: ["journey-start"] });
       await queryClient.invalidateQueries({ queryKey: ["journey-tracking"] });
+      await queryClient.invalidateQueries({ queryKey: ["journey-review"] });
       toast({ title: "Jornada atualizada", description: "Sua nova rota de redução está pronta." });
-      navigate("/dashboard", { replace: true });
+      if (embedded && onClose) {
+        onClose();
+      } else {
+        navigate("/dashboard", { replace: true });
+      }
     } catch (e) {
       console.error("finalize retorno error:", e);
       setRetornoFinalizando(false);
@@ -368,7 +375,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
     setInput("");
     setIsStreaming(true);
     // Award daily chat spark (RPC handles once-per-day deduplication)
-    if (!mission && !retorno) {
+    if (!mission && !retorno && !revisao) {
       award("chat_message");
     }
 
@@ -399,6 +406,15 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
                   habitos: retorno.habitos,
                   ja_completados: retorno.habitosJaCompletadosCount ?? 0,
                   gatilhos_anteriores: retorno.gatilhosAnteriores ?? [],
+                },
+              }
+            : {}),
+          ...(revisao
+            ? {
+                revisao: {
+                  habitos: revisao.habitos,
+                  habitos_concluidos: revisao.habitosConcluidos ?? [],
+                  gatilhos_anteriores: revisao.gatilhosAnteriores ?? [],
                 },
               }
             : {}),
@@ -524,8 +540,8 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
         }
       }
 
-      // Retorno end detection
-      if (retorno) {
+      // Retorno / revisão end detection
+      if (retorno || revisao) {
         const r = assistantSoFar.match(RETORNO_END_RE);
         if (r) {
           try {
