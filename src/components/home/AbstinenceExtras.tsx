@@ -114,7 +114,7 @@ export default function AbstinenceExtras({
     setSwitching(true);
     try {
       // Load all reducao habits + user's tracking to hand to the AI
-      const [{ data: habitos }, { data: tracking }] = await Promise.all([
+      const [{ data: habitos }, { data: tracking }, onbRes, histRes] = await Promise.all([
         (supabase as any)
           .from("habitos_jornada")
           .select("id,habito_titulo,tema_fixo,posicao")
@@ -124,7 +124,37 @@ export default function AbstinenceExtras({
           .select("interaction_type,finished_at")
           .eq("user_id", user.id)
           .not("finished_at", "is", null),
+        (supabase as any)
+          .from("onboarding_responses_v2")
+          .select("respostas")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        (supabase as any)
+          .from("historico_jornada_usuario")
+          .select("habitos_selecionados")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
       ]);
+      // Triggers/habits the user had before: the AI must revisit each of them.
+      const previousFromHistorico = Array.isArray(histRes?.data?.habitos_selecionados)
+        ? (histRes.data.habitos_selecionados as string[])
+        : [];
+      const previousFromOnboarding = Array.isArray(
+        onbRes?.data?.respostas?.habitosSelecionados,
+      )
+        ? (onbRes.data.respostas.habitosSelecionados as string[])
+        : [];
+      const gatilhosAnteriores = Array.from(
+        new Set(
+          [...previousFromHistorico, ...previousFromOnboarding].filter(
+            (t) => typeof t === "string" && t.trim(),
+          ),
+        ),
+      );
       const doneTypes = new Set(
         (tracking ?? []).map((t: any) => t.interaction_type as string),
       );
@@ -143,6 +173,7 @@ export default function AbstinenceExtras({
           retorno: {
             habitos: habitosResumo,
             habitosJaCompletadosCount: jaCompletadosCount,
+            gatilhosAnteriores,
           },
         },
       });
