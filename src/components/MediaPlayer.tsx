@@ -321,8 +321,8 @@ const MediaPlayer = ({
   const progressPercentage = duration > 0 && isFinite(duration) ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
-      <div className="w-full max-w-2xl max-h-[100dvh] flex flex-col bg-gradient-to-br from-background via-background to-primary/5 rounded-3xl shadow-2xl shadow-primary/20 border border-primary/10 overflow-hidden">
+    <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm flex items-center justify-center z-50 p-3">
+      <div className="w-[calc(100vw-24px)] sm:max-w-md max-h-[86dvh] flex flex-col bg-gradient-to-br from-background via-background to-primary/5 rounded-3xl shadow-2xl shadow-primary/20 border border-primary/10 overflow-hidden">
         {/* Header */}
         <div className="relative px-4 py-3 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-accent/5 flex-shrink-0">
           <div className="flex items-center gap-3">
@@ -355,7 +355,7 @@ const MediaPlayer = ({
         </div>
 
         {/* Content */}
-        <div className="p-3 sm:p-4 space-y-3 flex-1 min-h-0 flex flex-col">
+        <div className="p-3 sm:p-4 space-y-3 flex-1 min-h-0 flex flex-col overflow-y-auto">
           {/* Tips for hypnosis - compact */}
           {contentType === 'hypnosis' && (
             <div className="bg-navy/5 dark:bg-navy/20 p-3 rounded-xl border border-navy/10 dark:border-navy/30 flex-shrink-0">
@@ -402,14 +402,14 @@ const MediaPlayer = ({
           
           {/* Media Player */}
           <div 
-            className="rounded-xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5 flex-1 min-h-0"
+            className="rounded-xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5 flex-shrink-0"
             onContextMenu={(e) => e.preventDefault()}
           >
             {contentType === 'video' ? (
               <div className="relative">
                 <video
                   ref={mediaRef as React.RefObject<HTMLVideoElement>}
-                  className="w-full h-auto max-h-96"
+                  className="w-full h-auto max-h-[50dvh]"
                   controls
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
