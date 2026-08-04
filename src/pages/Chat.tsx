@@ -14,7 +14,6 @@ import { useBrainSparks } from "@/hooks/useBrainSparks";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import brainDefault from "@/assets/brain/neo.png";
-import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
 
 import {
   Dialog,
