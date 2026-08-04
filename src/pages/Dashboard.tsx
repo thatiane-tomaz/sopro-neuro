@@ -60,7 +60,7 @@ import ProgressBrain from "@/components/home/ProgressBrain";
 import ChatPanel from "@/pages/Chat";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
-import StartHereStory from "@/components/StartHereStory";
+import { getStartHereVideoUrl, startHereKeyForJornada } from "@/lib/startHereVideo";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
 import MuralPreview from "@/components/mural/MuralPreview";
 import AbstinenceExtras from "@/components/home/AbstinenceExtras";
@@ -114,8 +114,7 @@ export default function Dashboard() {
   const [savingDate, setSavingDate] = useState(false);
   const [dateDialogOpen, setDateDialogOpen] = useState(false);
   const [pendingDate, setPendingDate] = useState<Date | undefined>(undefined);
-  const [showStartHere, setShowStartHere] = useState(false);
-  const [startHereSeen, setStartHereSeen] = useState(true);
+  const [loadingStartHere, setLoadingStartHere] = useState(false);
   const [missionDialogOpen, setMissionDialogOpen] = useState(false);
   useScrollLock(missionDialogOpen);
   const [smokingDialogOpen, setSmokingDialogOpen] = useState(false);
