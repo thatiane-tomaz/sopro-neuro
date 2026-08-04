@@ -117,6 +117,7 @@ export default function Dashboard() {
   const [showStartHere, setShowStartHere] = useState(false);
   const [startHereSeen, setStartHereSeen] = useState(true);
   const [missionDialogOpen, setMissionDialogOpen] = useState(false);
+  useScrollLock(missionDialogOpen);
   const [smokingDialogOpen, setSmokingDialogOpen] = useState(false);
   const [ritualDialogOpen, setRitualDialogOpen] = useState(false);
   const [showQuitDatePicker, setShowQuitDatePicker] = useState(false);
