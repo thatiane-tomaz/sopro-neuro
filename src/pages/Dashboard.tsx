@@ -348,14 +348,30 @@ export default function Dashboard() {
       });
       return;
     }
+    const interactionType = `comece_aqui_${startHere.key}`;
     setSelectedMedia({
       title: "Comece aqui",
       fileUrl: url,
       contentType: "video",
       day: 0,
-      interactionType: `comece_aqui_${startHere.key}`,
+      interactionType,
     });
+    try {
+      const r = await startTracking({ interactionType });
+      if (r?.id) setTrackingId(r.id);
+    } catch (e) {
+      console.error(e);
+    }
   };
+
+  // O cartão "Comece aqui" continua visível até o usuário assistir 20% do vídeo.
+  const startHereWatched =
+    !!startHere &&
+    !!trackingData?.some(
+      (t) =>
+        t.interaction_type === `comece_aqui_${startHere.key}` &&
+        (t.progress_percentage >= 20 || t.finished_at !== null)
+    );
 
   const currentDay = getCurrentDay();
   const phaseNumber = currentDay <= 7 ? 1 : 2;
@@ -699,7 +715,7 @@ export default function Dashboard() {
         )}
 
         {/* Comece aqui: vídeo de introdução (some se o usuário trocar de jornada) */}
-        {!abstinenciaBloqueada && startHere && !startHere.trocouJornada && (
+        {!abstinenciaBloqueada && startHere && !startHere.trocouJornada && !startHereWatched && (
           <button
             type="button"
             onClick={openStartHereVideo}
