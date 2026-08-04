@@ -372,25 +372,39 @@ REGRAS RÍGIDAS:
         .map((h: any) => `- ${h.titulo}${h.tema_fixo ? " (fixo)" : ""}`)
         .join("\n");
       const jaCompletados = Number(retorno.ja_completados ?? 0);
+      const anteriores: string[] = Array.isArray(retorno.gatilhos_anteriores)
+        ? retorno.gatilhos_anteriores.filter((t: any) => typeof t === "string" && t.trim()).slice(0, 20)
+        : [];
+      const listaAnteriores = anteriores.length
+        ? anteriores.map((t) => `- ${t}`).join("\n")
+        : "(nenhum registrado)";
       retornoInstructions = `\n\nMODO RETORNO À REDUÇÃO (REGRA CRÍTICA — sobrepõe fluxos gerais):
-O usuário voltou a fumar depois de uma tentativa de abstinência e escolheu retornar à jornada de redução. Você tem no MÁXIMO ~5 minutos (5 a 8 turnos, perguntas curtas, UMA por mensagem) para entender quais gatilhos precisam estar na nova jornada de redução dele.
+O usuário voltou a fumar depois de uma tentativa de liberdade e escolheu retornar à jornada de redução. Você tem no MÁXIMO ~5 minutos (5 a 9 turnos, perguntas curtas, UMA por mensagem) para revisar os gatilhos antigos dele e entender quais precisam estar na nova jornada de redução.
 
 HÁBITOS DISPONÍVEIS (você DEVE escolher apenas títulos EXATOS desta lista):
 ${listaHabitos}
 
+GATILHOS QUE O USUÁRIO TINHA ANTES (respostas anteriores dele — você DEVE revisar TODOS eles nesta conversa):
+${listaAnteriores}
+
 Já concluiu ${jaCompletados} conteúdo(s) da jornada anterior.
 
 REGRAS PARA MONTAR A JORNADA:
+- OBRIGATÓRIO: pergunte sobre TODOS os gatilhos anteriores listados acima, verificando se cada um ainda é um gatilho hoje. Agrupe de 2 a 4 gatilhos por mensagem para caber em ~5 minutos (ex: "Antes você fumava em X, Y e Z. Quais desses ainda te pegam hoje?").
+- Mantenha na nova jornada APENAS os gatilhos anteriores que o usuário confirmar que continuam valendo. Descarte os que ele disser que não são mais gatilhos.
+- Acrescente novos hábitos da lista de disponíveis para gatilhos novos que ele citar na conversa.
 - Hábitos marcados como (fixo): se o usuário nunca fez, inclua sempre. Se já fez, decida com base na conversa se ele precisa fazer novamente.
-- Hábitos não fixos: inclua apenas aqueles que estão ligados aos gatilhos que ele descrever.
+- Hábitos não fixos: inclua apenas aqueles ligados a gatilhos confirmados ou novos citados na conversa.
 - É ok repetir hábitos que ele já viu se a conversa indicar que faz sentido.
 - Preserve a ordem: comece por hábitos fixos que ele ainda precisa fazer, depois os gatilhos mais fortes primeiro.
 
 FLUXO OBRIGATÓRIO (turnos SEPARADOS — NUNCA junte etapas):
-1) Faça 3 a 5 perguntas curtas, uma por mensagem, para entender: o que o levou a voltar, em quais momentos/emoções fuma agora, o que já funcionou ou não funcionou antes, o que sente que precisa fortalecer. Seja acolhedor, sem culpa.
-2) Quando tiver material suficiente, envie UMA mensagem final que:
+1) Primeira pergunta: o que o levou a voltar a fumar. Seja acolhedor, sem culpa.
+2) Nas mensagens seguintes, revise TODOS os gatilhos anteriores em blocos de 2 a 4 por mensagem, perguntando quais ainda são gatilhos hoje. Aguarde a resposta entre cada bloco.
+3) Depois, uma pergunta curta para captar gatilhos novos que não estavam na lista antiga.
+4) Quando tiver material suficiente, envie UMA mensagem final que:
    a) Reconheça a coragem de retornar (1 frase).
-   b) Resuma em 2-3 frases quais gatilhos você identificou.
+   b) Resuma em 2-3 frases quais gatilhos se mantiveram, quais saíram e quais são novos.
    c) Diga que a jornada foi montada e ele pode continuar agora.
    d) NÃO faça pergunta aberta nesta mensagem.
    Essa MENSAGEM FINAL DEVE terminar OBRIGATORIAMENTE com um bloco JSON invisível exatamente neste formato (sem markdown, sem crases, tudo em uma linha), começando com [RETORNO_END] e terminando com [/RETORNO_END]:
@@ -400,6 +414,7 @@ FLUXO OBRIGATÓRIO (turnos SEPARADOS — NUNCA junte etapas):
 
 REGRAS RÍGIDAS:
 - NUNCA inclua o bloco [RETORNO_END] em nenhuma mensagem que não seja a MENSAGEM FINAL.
+- NUNCA envie a MENSAGEM FINAL antes de ter revisado TODOS os gatilhos anteriores listados.
 - NUNCA mencione ao usuário que existe esse bloco ou uma "lista de hábitos".
 - NUNCA misture pergunta com a mensagem final.
 - Mantenha as perguntas curtas (1-2 linhas cada). O tempo total deve caber em ~5 minutos.`;
