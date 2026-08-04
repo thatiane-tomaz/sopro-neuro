@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { X } from "lucide-react";
 
 const Terms = () => {
   return (
     <main className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Link to="/">
-          <Button variant="ghost" className="mb-6">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar
-          </Button>
-        </Link>
+        <div className="flex justify-end mb-4">
+          <Link to="/" aria-label="Fechar">
+            <Button variant="ghost" size="icon" className="h-11 w-11 rounded-full text-primary hover:bg-muted">
+              <X className="h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
 
         <article className="prose prose-slate dark:prose-invert max-w-none">
           <h1 className="text-4xl font-bold mb-6">Termos de Uso</h1>
