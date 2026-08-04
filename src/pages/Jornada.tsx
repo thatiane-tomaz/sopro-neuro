@@ -307,8 +307,8 @@ export default function Jornada() {
   const itemCompleted = (it: JornadaItem) => {
     const needsVideo = it.hasVideo;
     const needsHip = it.hasHipnose;
-    const v = needsVideo ? isFinished(`video_semana_${it.seq}`) : true;
-    const h = needsHip ? isFinished(`hipnose_semana_${it.seq}`) : true;
+    const v = needsVideo ? isFinished(interactionKey(it, "video")) : true;
+    const h = needsHip ? isFinished(interactionKey(it, "hypnosis")) : true;
     return v && h;
   };
 
