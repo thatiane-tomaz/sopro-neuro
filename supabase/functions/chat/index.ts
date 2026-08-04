@@ -305,7 +305,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, mission, retorno } = await req.json();
+    const { messages, mission, retorno, revisao } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -420,10 +420,64 @@ REGRAS RÍGIDAS:
 - Mantenha as perguntas curtas (1-2 linhas cada). O tempo total deve caber em ~5 minutos.`;
     }
 
+    // Revisão de gatilhos: usuário concluiu TODOS os focos da jornada de redução.
+    let revisaoInstructions = "";
+    if (revisao && typeof revisao === "object" && Array.isArray(revisao.habitos)) {
+      const listaHabitos = revisao.habitos
+        .map((h: any) => `- ${h.titulo}${h.tema_fixo ? " (fixo)" : ""}`)
+        .join("\n");
+      const concluidos: string[] = Array.isArray(revisao.habitos_concluidos)
+        ? revisao.habitos_concluidos.filter((t: any) => typeof t === "string" && t.trim()).slice(0, 30)
+        : [];
+      const anteriores: string[] = Array.isArray(revisao.gatilhos_anteriores)
+        ? revisao.gatilhos_anteriores.filter((t: any) => typeof t === "string" && t.trim()).slice(0, 20)
+        : [];
+      revisaoInstructions = `\n\nMODO REVISÃO DE GATILHOS (REGRA CRÍTICA — sobrepõe fluxos gerais):
+O usuário CONCLUIU todos os focos da jornada de redução dele. Você tem no MÁXIMO ~5 minutos (5 a 9 turnos, perguntas curtas, UMA por mensagem) para revisar os gatilhos dele e montar uma NOVA jornada de redução, repetindo os conteúdos dos gatilhos que continuam presentes.
+
+HÁBITOS DISPONÍVEIS (você DEVE escolher apenas títulos EXATOS desta lista):
+${listaHabitos}
+
+FOCOS QUE ELE JÁ CONCLUIU NESTA JORNADA:
+${concluidos.length ? concluidos.map((t) => `- ${t}`).join("\n") : "(nenhum registrado)"}
+
+GATILHOS QUE ELE APONTOU ANTES (você DEVE revisar TODOS eles nesta conversa):
+${anteriores.length ? anteriores.map((t) => `- ${t}`).join("\n") : "(nenhum registrado)"}
+
+REGRAS PARA MONTAR A NOVA JORNADA:
+- OBRIGATÓRIO: pergunte sobre TODOS os gatilhos anteriores/focos concluídos, verificando se cada um AINDA é forte hoje. Agrupe de 2 a 4 por mensagem para caber em ~5 minutos (ex.: "Antes o cigarro aparecia em X, Y e Z. Quais desses ainda te pegam?").
+- Mantenha na nova jornada APENAS os gatilhos que o usuário confirmar que continuam fortes ou presentes — repetir esses conteúdos é intencional e ajuda a enfraquecer o hábito.
+- Acrescente hábitos da lista para gatilhos NOVOS que ele citar.
+- Descarte gatilhos que ele disser que já não fazem mais sentido, celebrando esse avanço com 1 frase curta.
+- Hábitos (fixo): inclua apenas se a conversa indicar que faz sentido revisitar.
+- Ordem: gatilhos mais fortes primeiro.
+
+FLUXO OBRIGATÓRIO (turnos SEPARADOS — NUNCA junte etapas):
+1) Primeira pergunta: como ele está em relação ao cigarro agora, depois de concluir os focos. Celebre a conclusão em 1 frase, sem exagero.
+2) Nas mensagens seguintes, revise TODOS os gatilhos anteriores em blocos de 2 a 4 por mensagem, perguntando quais continuam fortes. Aguarde a resposta entre cada bloco.
+3) Depois, uma pergunta curta para captar gatilhos novos.
+4) Quando tiver material suficiente, envie UMA mensagem final que:
+   a) Reconheça o progresso dele (1 frase).
+   b) Resuma em 2-3 frases quais gatilhos continuam fortes, quais já enfraqueceram e quais são novos.
+   c) Diga que a nova jornada foi montada e ele pode continuar agora.
+   d) NÃO faça pergunta aberta nesta mensagem.
+   Essa MENSAGEM FINAL DEVE terminar OBRIGATORIAMENTE com um bloco JSON invisível exatamente neste formato (sem markdown, sem crases, tudo em uma linha), começando com [RETORNO_END] e terminando com [/RETORNO_END]:
+     [RETORNO_END]{"habitos_titulos":["<titulo exato 1>","<titulo exato 2>", ...]}[/RETORNO_END]
+   - Use APENAS títulos que aparecem na lista acima, EXATAMENTE como escritos (mesmas letras, mesmos acentos).
+   - Mínimo 3 hábitos, máximo 10.
+
+REGRAS RÍGIDAS:
+- NUNCA inclua o bloco [RETORNO_END] em nenhuma mensagem que não seja a MENSAGEM FINAL.
+- NUNCA envie a MENSAGEM FINAL antes de ter revisado TODOS os gatilhos listados.
+- NUNCA mencione ao usuário que existe esse bloco ou uma "lista de hábitos".
+- NUNCA misture pergunta com a mensagem final.
+- Mantenha as perguntas curtas (1-2 linhas cada).`;
+    }
+
     const requestBody = {
       model: "google/gemini-2.5-flash",
       messages: [
-        { role: "system", content: SYSTEM_PROMPT + (userContext || "") + missionInstructions + retornoInstructions },
+        { role: "system", content: SYSTEM_PROMPT + (userContext || "") + missionInstructions + retornoInstructions + revisaoInstructions },
         ...trimmed,
       ],
       stream: true,
