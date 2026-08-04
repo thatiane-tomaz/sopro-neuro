@@ -245,8 +245,6 @@ export const useJourneyTracking = () => {
         track.finished_at !== null
     );
     
-    console.log(`[isDayCompleted] Day ${day}: video=${videoCompleted}, hypnosis=${hypnosisCompleted}`);
-    
     return videoCompleted && hypnosisCompleted;
   };
 
