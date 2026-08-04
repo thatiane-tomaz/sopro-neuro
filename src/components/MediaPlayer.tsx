@@ -322,10 +322,10 @@ const MediaPlayer = ({
   const progressPercentage = duration > 0 && isFinite(duration) ? (currentTime / duration) * 100 : 0;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-navy/80 p-3 backdrop-blur-sm">
-      <div className="flex w-[calc(100vw-24px)] max-w-sm max-h-[76dvh] flex-col overflow-hidden rounded-3xl border border-primary/10 bg-gradient-to-br from-background via-background to-primary/5 shadow-2xl shadow-primary/20">
+    <div className="fixed inset-0 z-[100] flex items-end justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 backdrop-blur-sm sm:items-center sm:pt-8">
+      <div className="relative my-auto flex w-full max-w-md max-h-[82dvh] flex-col overflow-hidden rounded-3xl bg-background shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
         {/* Header */}
-        <div className="relative px-4 py-3 border-b border-primary/10 bg-gradient-to-r from-primary/5 to-accent/5 flex-shrink-0">
+        <div className="relative flex-shrink-0 border-b border-primary/10 bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-4 py-3">
           <div className="flex items-center gap-3">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
               contentType === 'video' 
