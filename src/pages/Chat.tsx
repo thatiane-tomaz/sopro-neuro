@@ -174,6 +174,13 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
         jornada: "reducao",
         habitos_selecionados: titulos,
       });
+      // Voltando a fumar: limpa a data do último cigarro para que o usuário
+      // possa marcar um novo momento de parada na jornada de redução.
+      await (supabase as any)
+        .from("onboarding_responses")
+        .update({ last_cigarette_date: null })
+        .eq("user_id", user.id);
+      await queryClient.invalidateQueries({ queryKey: ["onboarding_response"] });
       await queryClient.invalidateQueries({ queryKey: ["jornada-type"] });
       await queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
       await queryClient.invalidateQueries({ queryKey: ["historico-jornada"] });
