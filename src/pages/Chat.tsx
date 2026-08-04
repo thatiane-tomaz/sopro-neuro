@@ -626,6 +626,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
 
       {/* Composer */}
       <div
+        hidden={!!pendingRetornoEnd}
         className={`relative z-10 px-5 pt-2 bg-gradient-to-t from-white/80 via-white/40 to-transparent ${
           embedded ? "pb-3" : "pb-[max(env(safe-area-inset-bottom),12px)]"
         }`}
@@ -685,6 +686,35 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
           Sou seu amigo virtual. Em caso de emergência ou crise, ligue 188 (CVV).
         </p>
       </div>
+
+      {pendingRetornoEnd && (
+        <div
+          className={`relative z-10 px-5 pt-2 bg-gradient-to-t from-white/85 via-white/45 to-transparent ${
+            embedded ? "pb-3" : "pb-[max(env(safe-area-inset-bottom),12px)]"
+          }`}
+        >
+          <div className="mx-auto max-w-md">
+            <Button
+              disabled={retornoFinalizando}
+              onClick={() => {
+                const parsed = pendingRetornoEnd;
+                setPendingRetornoEnd(null);
+                void finalizeRetorno(parsed);
+              }}
+              className="w-full h-12 rounded-2xl text-white text-base font-bold bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] shadow-[0_12px_28px_-12px_hsl(258_70%_45%/0.55)]"
+            >
+              {retornoFinalizando ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                "Vamos lá"
+              )}
+            </Button>
+            <p className="text-center text-[11px] text-muted-foreground mt-2">
+              Leia com calma. Ao tocar em Vamos lá sua nova jornada de redução começa.
+            </p>
+          </div>
+        </div>
+      )}
 
       <Dialog
         open={!!pendingMissionEnd}
