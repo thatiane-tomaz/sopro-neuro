@@ -384,8 +384,7 @@ export default function Jornada() {
       });
       return;
     }
-    const interactionType =
-      type === "video" ? `video_semana_${it.seq}` : `hipnose_semana_${it.seq}`;
+    const interactionType = interactionKey(it, type);
     setSelectedMedia({
       title: it.habito_titulo,
       fileUrl: url,
