@@ -1,0 +1,2 @@
+CREATE POLICY "Authenticated can read videos_2" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'videos_2');
+CREATE POLICY "Authenticated can read hipnoses_2" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'hipnoses_2');
