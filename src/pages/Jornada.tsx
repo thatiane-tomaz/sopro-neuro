@@ -239,6 +239,17 @@ export default function Jornada() {
   const isFinished = (interactionType: string) =>
     !!trackingData?.some((t) => t.interaction_type === interactionType && t.finished_at !== null);
 
+  // Chaves de progresso compartilhadas com o Dashboard: prefixo da jornada +
+  // posição original do tema em habitos_jornada (estável, não muda se o
+  // usuário alterar os hábitos selecionados).
+  const journeyKey = tipoUsuario === "abstinência" ? "abst_" : "";
+  const interactionKey = (it: JornadaItem, type: "video" | "hypnosis") => {
+    const pos = it.posicao_original ?? it.seq;
+    return type === "video"
+      ? `${journeyKey}video_semana_${pos}`
+      : `${journeyKey}hipnose_semana_${pos}`;
+  };
+
   // ---- Hipnoses da jornada de redução (liberadas para quem está na abstinência) ----
   const isAbstinencia = tipoUsuario === "abstinência";
   const { data: temasReducao } = useQuery({
@@ -307,8 +318,8 @@ export default function Jornada() {
   const itemCompleted = (it: JornadaItem) => {
     const needsVideo = it.hasVideo;
     const needsHip = it.hasHipnose;
-    const v = needsVideo ? isFinished(`video_semana_${it.seq}`) : true;
-    const h = needsHip ? isFinished(`hipnose_semana_${it.seq}`) : true;
+    const v = needsVideo ? isFinished(interactionKey(it, "video")) : true;
+    const h = needsHip ? isFinished(interactionKey(it, "hypnosis")) : true;
     return v && h;
   };
 
@@ -373,8 +384,7 @@ export default function Jornada() {
       });
       return;
     }
-    const interactionType =
-      type === "video" ? `video_semana_${it.seq}` : `hipnose_semana_${it.seq}`;
+    const interactionType = interactionKey(it, type);
     setSelectedMedia({
       title: it.habito_titulo,
       fileUrl: url,
