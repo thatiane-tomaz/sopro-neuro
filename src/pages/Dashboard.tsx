@@ -54,6 +54,7 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import MediaPlayer from "@/components/MediaPlayer";
+import { useScrollLock } from "@/hooks/useScrollLock";
 import WaveBackground from "@/components/home/WaveBackground";
 import ProgressBrain from "@/components/home/ProgressBrain";
 import ChatPanel from "@/pages/Chat";
