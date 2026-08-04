@@ -153,7 +153,7 @@ const FAQ = () => {
             <p className="text-sm text-muted-foreground text-balance">
               A assinatura é cobrada pela loja do seu celular, então o cancelamento precisa ser feito
               diretamente por lá. Excluir o app ou a sua conta <strong>não cancela</strong> a cobrança.
-              O acesso continua até o fim do período que já foi pago.
+              O acesso continua enquanto não houver cancelamento da assinatura.
             </p>
 
             <div className="bg-accent/30 rounded-xl p-4 space-y-2">
