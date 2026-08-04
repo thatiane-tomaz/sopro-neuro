@@ -70,6 +70,7 @@ import { useBrainSparks } from "@/hooks/useBrainSparks";
 import soproLogo from "@/assets/sopro-logo.png";
 import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
 import { useChatPrompts } from "@/hooks/useChatPrompts";
+import { useJourneyReview } from "@/hooks/useJourneyReview";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -178,6 +179,12 @@ export default function Dashboard() {
   });
 
   const { gancho, sugestoes } = useChatPrompts(jornadaType === "abstinência");
+  const { needsReview, revisao } = useJourneyReview(jornadaType);
+
+  // Revisão de gatilhos: substitui o gancho e as sugestões do Neo.
+  const [revisaoChatOpen, setRevisaoChatOpen] = useState(false);
+  const ganchoAtual = needsReview ? "Vamos rever seus gatilhos?" : gancho ?? getDailyChatPrompt();
+  const sugestoesAtuais = needsReview ? ["Sim, vamos!"] : sugestoes;
 
   // Prompt the user for yesterday's cigarette count once per session
   // (only if they haven't logged it yet). For users on the abstinência
@@ -763,21 +770,21 @@ export default function Dashboard() {
             onClick={() => openChat()}
             ariaLabel="Conversar com Neo"
             speechTitle={!dayLocked ? "Neo · Chat de IA" : undefined}
-            speechText={!dayLocked ? (gancho ?? getDailyChatPrompt()) : undefined}
+            speechText={!dayLocked ? ganchoAtual : undefined}
           />
         </div>
 
         {/* Perguntas sugeridas: parecem falas do usuário, para dar sensação de conversa */}
-        {!dayLocked && sugestoes.length > 0 && (
+        {!dayLocked && sugestoesAtuais.length > 0 && (
           <div className="relative -mt-1 flex flex-col items-end gap-2">
             <span className="pr-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_35%_58%)]">
               Responda ao Neo
             </span>
-            {sugestoes.map((p, i) => (
+            {sugestoesAtuais.map((p, i) => (
               <button
                 key={p}
                 type="button"
-                onClick={() => openChat(p)}
+                onClick={() => (needsReview ? setRevisaoChatOpen(true) : openChat(p))}
                 style={{ animationDelay: `${120 + i * 90}ms` }}
                 className="max-w-full animate-page-in rounded-[20px] rounded-br-md bg-gradient-to-br from-[hsl(220_90%_96%)] to-[hsl(258_75%_95%)] px-3.5 py-2 text-right text-[11.5px] font-semibold leading-snug text-[hsl(258_45%_32%)] ring-1 ring-[hsl(258_60%_90%)] shadow-[0_8px_20px_-14px_hsl(258_70%_45%/0.35)] active:scale-[0.97] transition-transform whitespace-nowrap"
               >
@@ -841,6 +848,25 @@ export default function Dashboard() {
                   setChatOpen(false);
                   setChatSeed(undefined);
                 }}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Revisão de gatilhos ao concluir todos os focos da jornada */}
+        <Dialog open={revisaoChatOpen} onOpenChange={setRevisaoChatOpen}>
+          <DialogContent className="p-0 gap-0 overflow-hidden rounded-3xl sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden">
+            <DialogHeader className="sr-only">
+              <DialogTitle>Revisão de gatilhos com o Neo</DialogTitle>
+              <DialogDescription>
+                Converse com o Neo para revisar seus gatilhos e montar a próxima jornada.
+              </DialogDescription>
+            </DialogHeader>
+            {revisaoChatOpen && revisao && (
+              <ChatPanel
+                embedded
+                revisao={revisao}
+                onClose={() => setRevisaoChatOpen(false)}
               />
             )}
           </DialogContent>
