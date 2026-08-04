@@ -715,7 +715,7 @@ export default function Dashboard() {
         )}
 
         {/* Comece aqui: vídeo de introdução (some se o usuário trocar de jornada) */}
-        {!abstinenciaBloqueada && startHere && !startHere.trocouJornada && (
+        {!abstinenciaBloqueada && startHere && !startHere.trocouJornada && !startHereWatched && (
           <button
             type="button"
             onClick={openStartHereVideo}
