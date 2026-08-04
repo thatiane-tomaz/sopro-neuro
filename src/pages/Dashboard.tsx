@@ -558,6 +558,8 @@ export default function Dashboard() {
     }
     await queryClient.invalidateQueries({ queryKey: ["jornada-type"] });
     await queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
+    await queryClient.invalidateQueries({ queryKey: ["journey-start"] });
+    await queryClient.invalidateQueries({ queryKey: ["journey-tracking"] });
     return true;
   };
 
