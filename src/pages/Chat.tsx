@@ -85,7 +85,6 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
   const { toast } = useToast();
 
   const currentDay = getCurrentDay();
-  const dailyPrompt = greetingText?.trim() || getDailyChatPrompt();
   const SUGGESTIONS = mission || retorno
     ? []
     : [
