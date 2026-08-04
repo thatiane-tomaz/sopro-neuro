@@ -68,7 +68,11 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
   const location = useLocation();
   const mission = (location.state as any)?.mission as MissionContext | undefined;
   const retorno = (location.state as any)?.retorno as
-    | { habitos: Array<{ titulo: string; tema_fixo: boolean }>; habitosJaCompletadosCount?: number }
+    | {
+        habitos: Array<{ titulo: string; tema_fixo: boolean }>;
+        habitosJaCompletadosCount?: number;
+        gatilhosAnteriores?: string[];
+      }
     | undefined;
   const queryClient = useQueryClient();
   const { user, loading: authLoading } = useAuth();
@@ -113,6 +117,9 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
     | null
   >(null);
   const [retornoFinalizando, setRetornoFinalizando] = useState(false);
+  const [pendingRetornoEnd, setPendingRetornoEnd] = useState<{ habitos_titulos?: string[] } | null>(
+    null,
+  );
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
@@ -172,7 +179,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
       await queryClient.invalidateQueries({ queryKey: ["historico-jornada"] });
       await queryClient.invalidateQueries({ queryKey: ["habitos-jornada"] });
       toast({ title: "Jornada atualizada", description: "Sua nova rota de redução está pronta." });
-      setTimeout(() => navigate("/jornada"), 1800);
+      navigate("/dashboard", { replace: true });
     } catch (e) {
       console.error("finalize retorno error:", e);
       setRetornoFinalizando(false);
