@@ -1091,7 +1091,7 @@ export default function Dashboard() {
                 Sua jornada vai mudar
               </p>
               <p className="mt-1 text-[13px] leading-relaxed text-foreground/85">
-                A partir dessa data, o app vai focar em te ajudar nos primeiros dias de abstinência,
+                A partir dessa data, o app vai focar em te ajudar nos primeiros dias de liberdade,
                 com conteúdos, hábitos e missões pensados para atravessar as fissuras e sustentar sua nova identidade.
               </p>
             </div>
