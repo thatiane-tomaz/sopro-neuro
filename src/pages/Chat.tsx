@@ -185,6 +185,8 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
       await queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
       await queryClient.invalidateQueries({ queryKey: ["historico-jornada"] });
       await queryClient.invalidateQueries({ queryKey: ["habitos-jornada"] });
+      await queryClient.invalidateQueries({ queryKey: ["journey-start"] });
+      await queryClient.invalidateQueries({ queryKey: ["journey-tracking"] });
       toast({ title: "Jornada atualizada", description: "Sua nova rota de redução está pronta." });
       navigate("/dashboard", { replace: true });
     } catch (e) {
