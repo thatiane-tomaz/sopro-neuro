@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
   ChevronRight,
   Calendar as CalendarIcon,
@@ -84,6 +85,55 @@ export default function Progresso() {
   const [dateDialogOpen, setDateDialogOpen] = useState(false);
   const [pendingDate, setPendingDate] = useState<Date | undefined>();
   const [savingDate, setSavingDate] = useState(false);
+
+  // Journey history: define a jornada atual e os períodos em que o usuário
+  // esteve na jornada de liberdade (abstinência). Esses dias contam como 0.
+  const { data: journey } = useQuery({
+    queryKey: ["progresso-jornada", user?.id],
+    enabled: !!user?.id,
+    staleTime: 60 * 1000,
+    queryFn: async () => {
+      const [hist, onb] = await Promise.all([
+        (supabase as any)
+          .from("historico_jornada_usuario")
+          .select("jornada, created_at")
+          .eq("user_id", user!.id)
+          .order("created_at", { ascending: true }),
+        (supabase as any)
+          .from("onboarding_responses_v2")
+          .select("jornada_inicial")
+          .eq("user_id", user!.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ]);
+      const rows: { jornada: string; created_at: string }[] = hist?.data ?? [];
+      const inicial: string = onb?.data?.jornada_inicial ?? rows[0]?.jornada ?? "reducao";
+      const atual = rows.length ? rows[rows.length - 1].jornada : inicial;
+
+      // Intervalos [start, end) em que a jornada era de abstinência.
+      const intervals: { start: string; end: string | null }[] = [];
+      rows.forEach((r, idx) => {
+        if (r.jornada !== "abstinencia") return;
+        const start = toLocalDateStr(new Date(r.created_at));
+        const next = rows[idx + 1];
+        intervals.push({
+          start,
+          end: next ? toLocalDateStr(new Date(next.created_at)) : null,
+        });
+      });
+
+      return { atual, intervals };
+    },
+  });
+
+  const isReducao = (journey?.atual ?? "reducao") !== "abstinencia";
+
+  const isAbstinenceDay = useMemo(() => {
+    const intervals = journey?.intervals ?? [];
+    return (ds: string) =>
+      intervals.some((i) => ds >= i.start && (i.end === null || ds < i.end));
+  }, [journey]);
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
@@ -204,18 +254,19 @@ export default function Progresso() {
       const ds = toLocalDateStr(cursor);
       const inLog = logsByDate.get(ds);
       if (inLog !== undefined) carry = inLog;
+      const abst = isAbstinenceDay(ds);
       days.push({
         date: ds,
         label: format(cursor, "dd/MM"),
-        count: carry,
-        logged: inLog !== undefined || i === 0,
+        count: abst ? 0 : carry,
+        logged: abst || inLog !== undefined || i === 0,
         baseline,
       });
       cursor.setDate(cursor.getDate() + 1);
       i++;
     }
     return days;
-  }, [startDateStr, activeLogs, baseline]);
+  }, [startDateStr, activeLogs, baseline, isAbstinenceDay]);
 
   // Compute stats considering the WHOLE period between onboarding and yesterday.
   // For days without a log we carry forward the user's last known daily count
@@ -239,8 +290,9 @@ export default function Progresso() {
         carry = logged;
         daysWithLog += 1;
       }
-      totalSmoked += carry;
-      avoided += Math.max(0, baseline - carry);
+      const effective = isAbstinenceDay(d.date) ? 0 : carry;
+      totalSmoked += effective;
+      avoided += Math.max(0, baseline - effective);
     }
 
     // Average of the last 3 calendar days ending on the most-recent logged day.
@@ -264,7 +316,7 @@ export default function Progresso() {
         const ds = toLocalDateStr(walkCursor);
         const v = walkLogs.get(ds);
         if (v !== undefined) carryAvg = v;
-        values.push(carryAvg);
+        values.push(isAbstinenceDay(ds) ? 0 : carryAvg);
         walkCursor.setDate(walkCursor.getDate() + 1);
       }
       const last3 = values.slice(-3);
@@ -280,7 +332,7 @@ export default function Progresso() {
       totalSmoked,
       avgPerDay,
     };
-  }, [chartData, baseline, costPerCig, activeLogs]);
+  }, [chartData, baseline, costPerCig, activeLogs, isAbstinenceDay]);
 
   // Has the user already logged yesterday?
   const yesterdayLogged = useMemo(
@@ -358,7 +410,7 @@ export default function Progresso() {
         </div>
 
         {/* Smoke free counter */}
-        {smokeFreeDays !== null && (
+        {!isReducao && smokeFreeDays !== null && (
           <Card className="mt-5 overflow-hidden border-0 rounded-3xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-5 text-white shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.5)]">
             <div className="flex flex-col items-center text-center">
               <div className="flex items-end justify-center gap-2">
