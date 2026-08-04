@@ -102,6 +102,17 @@ Atenciosamente.`;
                       Para evitar cobranças futuras, cancele sua assinatura antes de excluir a conta.
                     </p>
                     <p className="text-sm text-amber-700 dark:text-amber-500/90">
+                      O cancelamento é feito na loja onde você assinou:
+                    </p>
+                    <ul className="text-sm text-amber-700 dark:text-amber-500/90 space-y-1">
+                      <li>
+                        <strong>iPhone:</strong> Ajustes → seu nome (Apple ID) → Assinaturas → SoPro Neuro → Cancelar assinatura
+                      </li>
+                      <li>
+                        <strong>Android:</strong> Google Play Store → foto do perfil → Pagamentos e assinaturas → Assinaturas → SoPro Neuro → Cancelar assinatura
+                      </li>
+                    </ul>
+                    <p className="text-sm text-amber-700 dark:text-amber-500/90">
                       O acesso ao conteúdo continua disponível até o fim do período atual que já foi pago.
                     </p>
                     <Link to="/cancel-subscription" className="inline-flex items-center text-sm font-medium text-amber-800 dark:text-amber-400 hover:underline">
@@ -186,6 +197,10 @@ Atenciosamente.`;
                 <li>Histórico de progresso</li>
                 <li>Dados de assinatura</li>
               </ul>
+              <p className="mt-2 text-balance">
+                Atenção: isso <strong>não cancela</strong> sua assinatura. Cancele na App Store (Ajustes → seu nome → Assinaturas)
+                ou na Google Play Store (perfil → Pagamentos e assinaturas → Assinaturas) para parar de pagar.
+              </p>
               <p className="mt-2 font-semibold">Esta ação não pode ser desfeita.</p>
             </AlertDialogDescription>
           </AlertDialogHeader>
