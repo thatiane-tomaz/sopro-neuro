@@ -376,6 +376,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
                 retorno: {
                   habitos: retorno.habitos,
                   ja_completados: retorno.habitosJaCompletadosCount ?? 0,
+                  gatilhos_anteriores: retorno.gatilhosAnteriores ?? [],
                 },
               }
             : {}),
@@ -516,7 +517,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
               }
               return copy;
             });
-            finalizeRetorno(parsed);
+            setPendingRetornoEnd(parsed ?? {});
           } catch (e) {
             console.error("RETORNO_END parse error:", e);
           }
