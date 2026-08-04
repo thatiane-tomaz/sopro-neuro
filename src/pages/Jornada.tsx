@@ -315,8 +315,28 @@ export default function Jornada() {
     }
   };
 
+  // Vídeo "Comece aqui" (bucket videos_2 -> comece_reducao)
+  const openStartHereVideo = async () => {
+    setLoadingStartHere(true);
+    const url = await getStartHereVideoUrl("comece_reducao");
+    setLoadingStartHere(false);
+    if (!url) {
+      toast({
+        title: "Conteúdo em preparação",
+        description: "O vídeo de introdução ainda será disponibilizado.",
+      });
+      return;
+    }
+    setSelectedMedia({
+      title: "Comece aqui",
+      fileUrl: url,
+      contentType: "video",
+      day: 0,
+      interactionType: "comece_aqui_reducao",
+    });
+  };
+
   const itemCompleted = (it: JornadaItem) => {
-    const needsVideo = it.hasVideo;
     const needsVideo = it.hasVideo;
     const needsHip = it.hasHipnose;
     const v = needsVideo ? isFinished(interactionKey(it, "video")) : true;
