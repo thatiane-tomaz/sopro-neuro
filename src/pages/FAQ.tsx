@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { X, Smartphone, Wifi, WifiOff, Battery, BellOff, Headphones, Mail } from 'lucide-react';
+import { X, Smartphone, Wifi, WifiOff, Battery, BellOff, Headphones, Mail, CreditCard, Apple } from 'lucide-react';
 import { Capacitor } from '@capacitor/core';
 
 const FAQ = () => {
@@ -132,6 +132,66 @@ const FAQ = () => {
                 a sessão e certifique-se de estar em uma rede WiFi estável.
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* Cancel subscription */}
+        <section className="bg-card rounded-2xl border border-border overflow-hidden">
+          <div className="bg-primary/5 px-5 py-4 border-b border-border">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <CreditCard className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="font-semibold text-foreground text-balance">Como cancelar a assinatura e parar de pagar</h2>
+                <p className="text-xs text-muted-foreground text-balance">O cancelamento é feito na loja onde você assinou</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-5 space-y-4">
+            <p className="text-sm text-muted-foreground text-balance">
+              A assinatura é cobrada pela loja do seu celular, então o cancelamento precisa ser feito
+              diretamente por lá. Excluir o app ou a sua conta <strong>não cancela</strong> a cobrança.
+              O acesso continua até o fim do período que já foi pago.
+            </p>
+
+            <div className="bg-accent/30 rounded-xl p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Apple className="h-4 w-4 text-primary" />
+                <p className="text-sm font-medium text-foreground">iPhone / iPad (App Store)</p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Ajustes → toque no seu nome (Apple ID) → Assinaturas → SoPro Neuro → Cancelar assinatura
+              </p>
+            </div>
+
+            {!isIOS && (
+              <div className="bg-accent/30 rounded-xl p-4 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Smartphone className="h-4 w-4 text-primary" />
+                  <p className="text-sm font-medium text-foreground">Android (Google Play Store)</p>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Google Play Store → foto do perfil → Pagamentos e assinaturas → Assinaturas → SoPro Neuro → Cancelar assinatura
+                </p>
+              </div>
+            )}
+
+            <div className="bg-muted/50 rounded-xl p-4">
+              <p className="text-xs text-muted-foreground text-balance">
+                💡 <strong>Importante:</strong> use a mesma conta {isIOS ? 'Apple' : 'Apple ou Google'} com a qual você
+                fez a compra. Se não encontrar a assinatura, ela pode ter sido feita em outra conta da loja.
+              </p>
+            </div>
+
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => navigate('/cancel-subscription')}
+            >
+              Ver o passo a passo completo
+            </Button>
           </div>
         </section>
 
