@@ -31,7 +31,7 @@ import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
-import StartHereStory from "@/components/StartHereStory";
+import { getStartHereVideoUrl } from "@/lib/startHereVideo";
 import soproLogo from "@/assets/sopro-logo.png";
 
 const getGreeting = () => {
@@ -78,7 +78,7 @@ export default function Jornada() {
 
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [trackingId, setTrackingId] = useState<string | null>(null);
-  const [showStartHere, setShowStartHere] = useState(false);
+  const [loadingStartHere, setLoadingStartHere] = useState(false);
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
@@ -315,6 +315,27 @@ export default function Jornada() {
     }
   };
 
+  // Vídeo "Comece aqui" (bucket videos_2 -> comece_reducao)
+  const openStartHereVideo = async () => {
+    setLoadingStartHere(true);
+    const url = await getStartHereVideoUrl("comece_reducao");
+    setLoadingStartHere(false);
+    if (!url) {
+      toast({
+        title: "Conteúdo em preparação",
+        description: "O vídeo de introdução ainda será disponibilizado.",
+      });
+      return;
+    }
+    setSelectedMedia({
+      title: "Comece aqui",
+      fileUrl: url,
+      contentType: "video",
+      day: 0,
+      interactionType: "comece_aqui_reducao",
+    });
+  };
+
   const itemCompleted = (it: JornadaItem) => {
     const needsVideo = it.hasVideo;
     const needsHip = it.hasHipnose;
@@ -495,7 +516,8 @@ export default function Jornada() {
             </p>
           </div>
           <button
-            onClick={() => setShowStartHere(true)}
+            onClick={openStartHereVideo}
+            disabled={loadingStartHere}
             className="h-9 w-9 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03] active:scale-95 transition-transform"
             aria-label="Como funciona"
           >
@@ -602,7 +624,6 @@ export default function Jornada() {
         />
       )}
 
-      {showStartHere && <StartHereStory onClose={() => setShowStartHere(false)} />}
     </div>
   );
 }

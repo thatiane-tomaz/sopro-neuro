@@ -60,7 +60,7 @@ import ProgressBrain from "@/components/home/ProgressBrain";
 import ChatPanel from "@/pages/Chat";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
-import StartHereStory from "@/components/StartHereStory";
+import { getStartHereVideoUrl, startHereKeyForJornada } from "@/lib/startHereVideo";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
 import MuralPreview from "@/components/mural/MuralPreview";
 import AbstinenceExtras from "@/components/home/AbstinenceExtras";
@@ -114,8 +114,7 @@ export default function Dashboard() {
   const [savingDate, setSavingDate] = useState(false);
   const [dateDialogOpen, setDateDialogOpen] = useState(false);
   const [pendingDate, setPendingDate] = useState<Date | undefined>(undefined);
-  const [showStartHere, setShowStartHere] = useState(false);
-  const [startHereSeen, setStartHereSeen] = useState(true);
+  const [loadingStartHere, setLoadingStartHere] = useState(false);
   const [missionDialogOpen, setMissionDialogOpen] = useState(false);
   useScrollLock(missionDialogOpen);
   const [smokingDialogOpen, setSmokingDialogOpen] = useState(false);
@@ -307,51 +306,55 @@ export default function Dashboard() {
     ? Math.round((weeklyCompletedCount / weeklyTotalCount) * 100)
     : 0;
 
-  useEffect(() => {
-    if (!user) return;
-    const key = `start_here_seen_${user.id}`;
-    // Optimistic local check (legacy)
-    if (localStorage.getItem(key)) {
-      setStartHereSeen(true);
-    }
-    // Source of truth: profiles.start_here_seen
-    (async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("start_here_seen")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if ((data as any)?.start_here_seen) {
-        setStartHereSeen(true);
-        localStorage.setItem(key, "1");
-      } else {
-        // If user already has any journey progress, treat as existing user and auto-mark as seen
-        const { count } = await supabase
-          .from("journey_tracking")
-          .select("id", { count: "exact", head: true })
-          .eq("user_id", user.id);
-        if ((count ?? 0) > 0) {
-          setStartHereSeen(true);
-          localStorage.setItem(key, "1");
-          supabase.rpc("mark_start_here_seen").then(({ error }) => {
-            if (error) console.error("mark_start_here_seen error:", error);
-          });
-        } else {
-          setStartHereSeen(false);
-        }
-      }
-    })();
-  }, [user]);
+  // "Comece aqui": aparece para quem ainda não trocou de jornada.
+  // O vídeo vem do bucket videos_2 (comece_reducao / comece_liberdade)
+  // conforme a jornada inicial do usuário.
+  const { data: startHere } = useQuery({
+    queryKey: ["start-here", user?.id],
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const [hist, onb] = await Promise.all([
+        (supabase as any)
+          .from("historico_jornada_usuario")
+          .select("jornada")
+          .eq("user_id", user!.id)
+          .order("created_at", { ascending: true }),
+        (supabase as any)
+          .from("onboarding_responses_v2")
+          .select("jornada_inicial")
+          .eq("user_id", user!.id)
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle(),
+      ]);
+      const rows: { jornada: string }[] = hist?.data ?? [];
+      const inicial: string =
+        onb?.data?.jornada_inicial ?? rows[0]?.jornada ?? "reducao";
+      const trocouJornada = rows.some((r) => r.jornada !== inicial);
+      return { trocouJornada, key: startHereKeyForJornada(inicial) };
+    },
+  });
 
-  const handleCloseStartHere = () => {
-    if (user) {
-      localStorage.setItem(`start_here_seen_${user.id}`, "1");
-      supabase.rpc("mark_start_here_seen").then(({ error }) => {
-        if (error) console.error("mark_start_here_seen error:", error);
+  const openStartHereVideo = async () => {
+    if (!startHere) return;
+    setLoadingStartHere(true);
+    const url = await getStartHereVideoUrl(startHere.key);
+    setLoadingStartHere(false);
+    if (!url) {
+      toast({
+        title: "Conteúdo em preparação",
+        description: "O vídeo de introdução ainda será disponibilizado.",
       });
+      return;
     }
-    setShowStartHere(false);
-    setStartHereSeen(true);
+    setSelectedMedia({
+      title: "Comece aqui",
+      fileUrl: url,
+      contentType: "video",
+      day: 0,
+      interactionType: `comece_aqui_${startHere.key}`,
+    });
   };
 
   const currentDay = getCurrentDay();
@@ -695,29 +698,27 @@ export default function Dashboard() {
           </Card>
         )}
 
-        {/* Comece aqui (first-time only) */}
-        {!abstinenciaBloqueada && !startHereSeen && (
-          <div className="flex justify-center mt-6">
-            <button
-              onClick={() => {
-                setShowStartHere(true);
-                if (user) {
-                  localStorage.setItem(`start_here_seen_${user.id}`, "1");
-                  supabase.rpc("mark_start_here_seen").then(({ error }) => {
-                    if (error) console.error("mark_start_here_seen error:", error);
-                  });
-                  setStartHereSeen(true);
-                }
-              }}
-              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-white shadow-[0_10px_28px_-10px_hsl(230_70%_40%/0.55)] active:scale-95 transition-transform"
-              style={{
-                background:
-                  "linear-gradient(135deg, hsl(220, 90%, 55%), hsl(258, 70%, 55%))",
-              }}
-            >
-              ✨ Comece aqui
-            </button>
-          </div>
+        {/* Comece aqui: vídeo de introdução (some se o usuário trocar de jornada) */}
+        {!abstinenciaBloqueada && startHere && !startHere.trocouJornada && (
+          <button
+            type="button"
+            onClick={openStartHereVideo}
+            disabled={loadingStartHere}
+            className="mt-4 w-full flex items-center gap-3 rounded-2xl bg-white/70 px-3.5 py-2.5 text-left ring-1 ring-white/80 backdrop-blur-md shadow-[0_12px_30px_-22px_hsl(258_70%_45%/0.4)] active:scale-[0.99] transition-transform"
+          >
+            <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] text-white shadow-sm">
+              <Play className="h-4 w-4" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[9px] font-bold uppercase tracking-[0.14em] text-[hsl(258_45%_58%)]">
+                Comece aqui
+              </span>
+              <span className="block text-[12.5px] font-semibold leading-tight text-[hsl(258_45%_32%)] text-balance">
+                {loadingStartHere ? "Abrindo vídeo..." : "Entenda como funciona sua jornada"}
+              </span>
+            </span>
+            <ChevronRight className="h-4 w-4 flex-shrink-0 text-[hsl(258_35%_65%)]" />
+          </button>
         )}
 
         <div
@@ -1048,7 +1049,6 @@ export default function Dashboard() {
         />
       )}
 
-      {showStartHere && <StartHereStory onClose={handleCloseStartHere} />}
 
       <SmokingLogDialog
         open={smokingDialogOpen}
@@ -1091,7 +1091,7 @@ export default function Dashboard() {
                 Sua jornada vai mudar
               </p>
               <p className="mt-1 text-[13px] leading-relaxed text-foreground/85">
-                A partir dessa data, o app vai focar em te ajudar nos primeiros dias de abstinência,
+                A partir dessa data, o app vai focar em te ajudar nos primeiros dias de liberdade,
                 com conteúdos, hábitos e missões pensados para atravessar as fissuras e sustentar sua nova identidade.
               </p>
             </div>

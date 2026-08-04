@@ -165,7 +165,7 @@ const buildSteps = (): BotStep[] => [
         (d.habitMoments?.length || 0) +
         (d.habitSubstances?.length || 0);
       if (past(d)) {
-        return `Entendi tudo. 🧠 Você mapeou ${gatilhos} gatilhos que faziam parte da sua rotina. Vou usar isso pra fortalecer sua abstinência e proteger você quando eles aparecerem.`;
+        return `Entendi tudo. 🧠 Você mapeou ${gatilhos} gatilhos que faziam parte da sua rotina. Vou usar isso pra fortalecer sua liberdade e proteger você quando eles aparecerem.`;
       }
       return `Ótimo. 🧠 Você me mostrou ${gatilhos} gatilhos importantes. Cada um deles é uma oportunidade de reprogramar o hábito — e é exatamente isso que vamos fazer juntos.`;
     },
