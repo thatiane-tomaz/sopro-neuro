@@ -60,9 +60,15 @@ interface ChatProps {
   greetingText?: string;
   /** Called when the user closes an embedded chat. */
   onClose?: () => void;
+  /** Revisão de gatilhos: usuário concluiu todos os focos da jornada de redução. */
+  revisao?: {
+    habitos: Array<{ titulo: string; tema_fixo: boolean }>;
+    habitosConcluidos?: string[];
+    gatilhosAnteriores?: string[];
+  };
 }
 
-export default function Chat({ embedded = false, initialMessage, greetingText, onClose }: ChatProps = {}) {
+export default function Chat({ embedded = false, initialMessage, greetingText, onClose, revisao: revisaoProp }: ChatProps = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   const mission = (location.state as any)?.mission as MissionContext | undefined;
@@ -73,6 +79,15 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
         gatilhosAnteriores?: string[];
       }
     | undefined;
+  const revisao =
+    revisaoProp ??
+    ((location.state as any)?.revisao as
+      | {
+          habitos: Array<{ titulo: string; tema_fixo: boolean }>;
+          habitosConcluidos?: string[];
+          gatilhosAnteriores?: string[];
+        }
+      | undefined);
   const queryClient = useQueryClient();
   const { user, loading: authLoading } = useAuth();
   const { profile } = useUserProfile();
@@ -84,7 +99,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
   const { toast } = useToast();
 
   const currentDay = getCurrentDay();
-  const SUGGESTIONS = mission || retorno
+  const SUGGESTIONS = mission || retorno || revisao
     ? []
     : [
         ...(currentDay <= 7 ? SUGGESTIONS_PHASE_1 : SUGGESTIONS_PHASE_2),
@@ -93,6 +108,8 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
   const greeting = retorno
     ? `Oi${firstName ? `, ${firstName}` : ""}. Que bom que você está aqui.\n\nVoltar não é recomeçar do zero, é ajustar a rota. Em uns 5 minutinhos vou te fazer algumas perguntas curtas pra entender quais gatilhos estão te puxando de volta ao cigarro agora, e assim montar uma jornada de redução mais alinhada com esse momento.\n\nPra começar: o que você acha que mais te levou a voltar a fumar?`
+    : revisao
+    ? `Parabéns${firstName ? `, ${firstName}` : ""}! Você concluiu todos os focos da sua jornada. 💜\n\nVamos rever seus gatilhos? Em uns 5 minutinhos vou te fazer algumas perguntas curtas pra entender quais gatilhos continuam fortes hoje, e com isso montar sua próxima jornada.\n\nPra começar: como você está em relação ao cigarro agora, depois de tudo o que já trabalhou?`
     : mission
     ? `Oi${firstName ? `, ${firstName}` : ""}!\n\nAntes de continuarmos, só siga essa conversa se você realmente viveu a missão. Se ainda não viveu, feche essa tela e volte quando tiver experimentado, assim eu consigo te ajudar de verdade.\n\nSua missão foi: ${mission.explicacaoDesafio}\n\nSe você já viveu, me conte como foi a sua experiência.`
     : `Oi${firstName ? `, ${firstName}` : ""}! Tô aqui com você.\n\nMe conta o que está passando aí ou me faça a pergunta que quiser sobre parar de fumar. Pode escrever abaixo.`;
