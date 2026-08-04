@@ -306,51 +306,55 @@ export default function Dashboard() {
     ? Math.round((weeklyCompletedCount / weeklyTotalCount) * 100)
     : 0;
 
-  useEffect(() => {
-    if (!user) return;
-    const key = `start_here_seen_${user.id}`;
-    // Optimistic local check (legacy)
-    if (localStorage.getItem(key)) {
-      setStartHereSeen(true);
-    }
-    // Source of truth: profiles.start_here_seen
-    (async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("start_here_seen")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if ((data as any)?.start_here_seen) {
-        setStartHereSeen(true);
-        localStorage.setItem(key, "1");
-      } else {
-        // If user already has any journey progress, treat as existing user and auto-mark as seen
-        const { count } = await supabase
-          .from("journey_tracking")
-          .select("id", { count: "exact", head: true })
-          .eq("user_id", user.id);
-        if ((count ?? 0) > 0) {
-          setStartHereSeen(true);
-          localStorage.setItem(key, "1");
-          supabase.rpc("mark_start_here_seen").then(({ error }) => {
-            if (error) console.error("mark_start_here_seen error:", error);
-          });
-        } else {
-          setStartHereSeen(false);
-        }
-      }
-    })();
-  }, [user]);
+  // "Comece aqui": aparece para quem ainda não trocou de jornada.
+  // O vídeo vem do bucket videos_2 (comece_reducao / comece_liberdade)
+  // conforme a jornada inicial do usuário.
+  const { data: startHere } = useQuery({
+    queryKey: ["start-here", user?.id],
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000,
+    queryFn: async () => {
+      const [hist, onb] = await Promise.all([
+        (supabase as any)
+          .from("historico_jornada_usuario")
+          .select("jornada")
+          .eq("user_id", user!.id)
+          .order("created_at", { ascending: true }),
+        (supabase as any)
+          .from("onboarding_responses_v2")
+          .select("jornada_inicial")
+          .eq("user_id", user!.id)
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle(),
+      ]);
+      const rows: { jornada: string }[] = hist?.data ?? [];
+      const inicial: string =
+        onb?.data?.jornada_inicial ?? rows[0]?.jornada ?? "reducao";
+      const trocouJornada = rows.some((r) => r.jornada !== inicial);
+      return { trocouJornada, key: startHereKeyForJornada(inicial) };
+    },
+  });
 
-  const handleCloseStartHere = () => {
-    if (user) {
-      localStorage.setItem(`start_here_seen_${user.id}`, "1");
-      supabase.rpc("mark_start_here_seen").then(({ error }) => {
-        if (error) console.error("mark_start_here_seen error:", error);
+  const openStartHereVideo = async () => {
+    if (!startHere) return;
+    setLoadingStartHere(true);
+    const url = await getStartHereVideoUrl(startHere.key);
+    setLoadingStartHere(false);
+    if (!url) {
+      toast({
+        title: "Conteúdo em preparação",
+        description: "O vídeo de introdução ainda será disponibilizado.",
       });
+      return;
     }
-    setShowStartHere(false);
-    setStartHereSeen(true);
+    setSelectedMedia({
+      title: "Comece aqui",
+      fileUrl: url,
+      contentType: "video",
+      day: 0,
+      interactionType: `comece_aqui_${startHere.key}`,
+    });
   };
 
   const currentDay = getCurrentDay();
