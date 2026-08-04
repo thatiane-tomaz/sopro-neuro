@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import {
   X,
   ChevronLeft,
@@ -173,6 +174,7 @@ interface StartHereStoryProps {
 }
 
 const StartHereStory = ({ onClose }: StartHereStoryProps) => {
+  useScrollLock(true);
   const [currentStory, setCurrentStory] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [isAnimating, setIsAnimating] = useState(false);
