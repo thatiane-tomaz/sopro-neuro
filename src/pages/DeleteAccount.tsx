@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Trash2, Mail, RefreshCw, CreditCard } from "lucide-react";
+import { X, Trash2, Mail, RefreshCw, CreditCard } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,10 +73,17 @@ Atenciosamente.`;
     <div className="min-h-screen bg-gradient-hero">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <Link to={user ? "/dashboard" : "/"} className="inline-flex items-center text-white/80 hover:text-white transition-smooth mb-6">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar
-          </Link>
+          <div className="flex justify-end mb-4">
+            <Link to={user ? "/dashboard" : "/"} aria-label="Fechar">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-11 w-11 rounded-full bg-white/90 backdrop-blur text-primary hover:bg-white shadow-sm"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
 
           <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
             <CardHeader className="text-center">
