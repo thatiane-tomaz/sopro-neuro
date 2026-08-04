@@ -581,7 +581,9 @@ export default function Dashboard() {
   };
 
   const isAbstinencia = jornadaType === "abstinência";
-  const showQuitCTA = !lastCigDate && !isAbstinencia;
+  // Na jornada de redução o convite para marcar o último cigarro fica sempre visível,
+  // mesmo que exista uma data antiga (por exemplo, quem voltou a fumar).
+  const showQuitCTA = !isAbstinencia;
   // Bloqueio: abstinência sem data do último cigarro precisa escolher antes de acessar a jornada.
   const abstinenciaBloqueada = isAbstinencia && !lastCigDate;
 
