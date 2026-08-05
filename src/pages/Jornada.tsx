@@ -513,7 +513,7 @@ export default function Jornada() {
               Jornada
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Uma jornada montada para você.
+              Uma jornada criada para você.
             </p>
           </div>
           <button
