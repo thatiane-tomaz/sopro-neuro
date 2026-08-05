@@ -29,26 +29,74 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     let email: string | null = null;
     let userId: string | null = null;
+    let requestedEmail: string | null = null;
+    let isAuthenticated = false;
 
     // Try to get email from request body first
     try {
       const body = await req.json();
-      email = body.email;
-      logStep("Email from request body", { email });
+      if (typeof body?.email === "string" && body.email.length <= 320) {
+        requestedEmail = body.email;
+      }
     } catch {
       // No body, will try auth header
     }
 
-    // If no email in body, try to get from authenticated user
-    if (!email && authHeader) {
+    // Always prefer the verified identity of the caller
+    if (authHeader?.startsWith("Bearer ")) {
       const token = authHeader.replace("Bearer ", "");
       const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-      
+
       if (!userError && userData.user?.email) {
         email = userData.user.email;
         userId = userData.user.id;
+        isAuthenticated = true;
         logStep("Email from authenticated user", { email, userId });
       }
+    }
+
+    // Unauthenticated pre-signup lookup: never reveal subscription/payment details,
+    // only whether the email already has an account and a subscription record.
+    if (!isAuthenticated) {
+      if (!requestedEmail) {
+        return new Response(JSON.stringify({ subscribed: false, error: "Email not provided" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        });
+      }
+
+      const lookupEmail = requestedEmail.toLowerCase();
+
+      const { data: sub } = await supabaseClient
+        .from("subscriptions")
+        .select("id")
+        .eq("email", requestedEmail)
+        .maybeSingle();
+
+      const { data: freelist } = await supabaseClient
+        .from("freelist_users")
+        .select("id, expires_at")
+        .eq("email", requestedEmail)
+        .maybeSingle();
+
+      const freelistValid = !!freelist &&
+        (!freelist.expires_at || new Date(freelist.expires_at) > new Date());
+
+      const { data: existingUsers } = await supabaseClient.auth.admin.listUsers();
+      const hasAccount = existingUsers?.users?.some(
+        (u) => u.email?.toLowerCase() === lookupEmail,
+      ) || false;
+
+      logStep("Minimal pre-signup lookup performed");
+
+      return new Response(JSON.stringify({
+        subscribed: false,
+        has_subscription: !!sub || freelistValid,
+        has_account: hasAccount,
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     }
 
     if (!email) {
