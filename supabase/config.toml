@@ -31,3 +31,6 @@ verify_jwt = false
 
 [functions.send-scheduled-push]
 verify_jwt = false
+
+[functions.push-config]
+verify_jwt = false

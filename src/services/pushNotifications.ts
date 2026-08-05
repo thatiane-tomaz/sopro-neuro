@@ -2,29 +2,62 @@ import { supabase } from '@/integrations/supabase/client';
 
 let isInitialized = false;
 
-// Dynamically import Capacitor only when needed
+// Carrega o Capacitor somente quando necessário (no navegador não existe)
 const getCapacitor = async () => {
   try {
     const { Capacitor } = await import('@capacitor/core');
     return Capacitor;
-  } catch (error) {
-    console.log('Capacitor not available');
+  } catch {
+    console.log('Capacitor não disponível');
     return null;
   }
 };
 
-const getPushNotifications = async () => {
+const getOneSignal = async (): Promise<any | null> => {
   try {
-    const { PushNotifications } = await import('@capacitor/push-notifications');
-    return PushNotifications;
+    const mod: any = await import('onesignal-cordova-plugin');
+    return mod.default ?? mod;
   } catch (error) {
-    console.log('Push notifications plugin not available');
+    console.log('Plugin do OneSignal não disponível', error);
     return null;
+  }
+};
+
+const fetchAppId = async (): Promise<string | null> => {
+  try {
+    const { data, error } = await supabase.functions.invoke('push-config');
+    if (error) {
+      console.error('Erro ao buscar App ID do OneSignal:', error);
+      return null;
+    }
+    return (data as any)?.appId ?? null;
+  } catch (error) {
+    console.error('Erro ao buscar configuração de push:', error);
+    return null;
+  }
+};
+
+// Salva o subscription ID do OneSignal (é isso que a API include_player_ids espera)
+const saveSubscriptionId = async (subscriptionId: string | null | undefined) => {
+  if (!subscriptionId) return;
+
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ onesignal_player_id: subscriptionId })
+      .eq('user_id', user.id);
+
+    if (error) console.error('Erro ao salvar subscription ID:', error);
+    else console.log('OneSignal subscription ID salvo:', subscriptionId);
+  } catch (error) {
+    console.error('Erro ao processar subscription ID:', error);
   }
 };
 
 export const initializePushNotifications = async () => {
-  // Evitar inicialização duplicada
   if (isInitialized) {
     console.log('Push notifications já inicializadas');
     return;
@@ -32,77 +65,53 @@ export const initializePushNotifications = async () => {
 
   try {
     const Capacitor = await getCapacitor();
-    
-    // Check if Capacitor is available and we're on native platform
     if (!Capacitor || !Capacitor.isNativePlatform()) {
       console.log('Push notifications só funcionam em apps nativos');
       return;
     }
 
-    const PushNotifications = await getPushNotifications();
-    
-    if (!PushNotifications) {
-      console.log('Plugin de push notifications não disponível');
+    const OneSignal = await getOneSignal();
+    if (!OneSignal) return;
+
+    const appId = await fetchAppId();
+    if (!appId) {
+      console.error('App ID do OneSignal não configurado');
       return;
     }
 
-    // Remover todos os listeners existentes antes de adicionar novos
-    await PushNotifications.removeAllListeners();
+    OneSignal.initialize(appId);
 
-    // Solicitar permissão
-    const permStatus = await PushNotifications.requestPermissions();
-    
-    if (permStatus.receive === 'granted') {
-      await PushNotifications.register();
-    } else {
+    // Vincula o usuário do app ao OneSignal (permite envio por external id no futuro)
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) OneSignal.login(user.id);
+    } catch (error) {
+      console.error('Erro ao vincular usuário ao OneSignal:', error);
+    }
+
+    // Atualiza o ID sempre que a inscrição mudar (troca de token, reinstalação, etc.)
+    try {
+      OneSignal.User.pushSubscription.addEventListener('change', (event: any) => {
+        saveSubscriptionId(event?.current?.id);
+      });
+    } catch (error) {
+      console.log('Listener de inscrição indisponível', error);
+    }
+
+    const accepted = await OneSignal.Notifications.requestPermission(true);
+    if (!accepted) {
       console.log('Permissão de push notifications negada');
+      isInitialized = true;
       return;
     }
 
-    // Listener para quando o token for registrado
-    await PushNotifications.addListener('registration', async (token) => {
-      console.log('Push registration success, token:', token.value);
-      
-      try {
-        // Salvar o player ID no perfil do usuário
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          const { error } = await supabase
-            .from('profiles')
-            .update({ onesignal_player_id: token.value })
-            .eq('user_id', user.id);
-          
-          if (error) {
-            console.error('Erro ao salvar player ID:', error);
-          }
-        }
-      } catch (err) {
-        console.error('Erro ao processar registro de push:', err);
-      }
-    });
-
-    // Listener para erros de registro
-    await PushNotifications.addListener('registrationError', (error) => {
-      console.error('Erro no registro de push:', error);
-    });
-
-    // Listener para notificações recebidas
-    await PushNotifications.addListener('pushNotificationReceived', (notification) => {
-      console.log('Push recebido:', notification);
-    });
-
-    // Listener para quando o usuário toca na notificação
-    await PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
-      console.log('Push action performed:', notification);
-    });
+    const subscriptionId = await OneSignal.User.pushSubscription.getIdAsync();
+    await saveSubscriptionId(subscriptionId);
 
     isInitialized = true;
     console.log('Push notifications inicializadas com sucesso');
-
   } catch (error) {
     console.error('Erro ao inicializar push notifications:', error);
-    // Resetar flag para permitir nova tentativa
     isInitialized = false;
   }
 };
