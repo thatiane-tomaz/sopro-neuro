@@ -9,6 +9,7 @@ import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useOnboardingData } from "@/hooks/useOnboardingData";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
+import { useContentAccess } from "@/hooks/useContentAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -101,6 +102,7 @@ export default function Dashboard() {
   const { data: onboarding, refetch: refetchOnboarding } = useOnboardingData();
   const { loading: subLoading, isPremium, isExpired } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
+  const { hasContentAccess, ensureContentAccess } = useContentAccess();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -129,6 +131,7 @@ export default function Dashboard() {
 
   // Abre o chat de IA em modal (opcionalmente já enviando a 1ª mensagem)
   const openChat = (seed?: string) => {
+    if (!ensureContentAccess()) return;
     setChatSeed(seed);
     setChatDraft("");
     setChatOpen(true);
@@ -279,6 +282,7 @@ export default function Dashboard() {
   }, [tick, missaoLocked, missaoUnlockAt]);
 
   const openMissionDialog = async () => {
+    if (!ensureContentAccess()) return;
     setMissionDialogOpen(true);
     if (!missaoStartTrack) {
       try {
@@ -345,6 +349,7 @@ export default function Dashboard() {
 
   const openStartHereVideo = async () => {
     if (!startHere) return;
+    if (!ensureContentAccess()) return;
     setLoadingStartHere(true);
     const url = await getStartHereVideoUrl(startHere.key);
     setLoadingStartHere(false);
@@ -397,25 +402,8 @@ export default function Dashboard() {
 
   const dayLocked = isDayTimeLocked(currentDay) && !isAdmin;
 
-  // Trigger paywall once Day 1 is completed and user has no access
-  useEffect(() => {
-    if (adminLoading || subLoading || trackingLoading || freelistLoading) return;
-    if (isAdmin || isPremium || isExpired || isFreelist) return;
-    if (isDayCompleted(1)) {
-      navigate("/paywall");
-    }
-  }, [
-    adminLoading,
-    subLoading,
-    trackingLoading,
-    freelistLoading,
-    isAdmin,
-    isPremium,
-    isExpired,
-    isFreelist,
-    isDayCompleted,
-    navigate,
-  ]);
+  // Sem conteúdo gratuito: o Dashboard e as abas seguem navegáveis, mas
+  // qualquer conteúdo (vídeo, hipnose, missão, chat) exige acesso ativo.
 
   const dayContent = dailyContent?.find((d) => d.day_number === currentDay);
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
@@ -492,11 +480,7 @@ export default function Dashboard() {
 
   const openMedia = async (type: "video" | "hypnosis") => {
     if (dayLocked) return;
-    // Day 2+ requires active subscription (admins bypass)
-    if (!isAdmin && !isFreelist && currentDay >= 2 && !isPremium) {
-      navigate("/paywall");
-      return;
-    }
+    if (!ensureContentAccess()) return;
     const url = await getMediaUrl(type);
     if (!url) {
       toast({

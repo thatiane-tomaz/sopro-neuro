@@ -7,6 +7,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
+import { useContentAccess } from "@/hooks/useContentAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -69,6 +70,7 @@ export default function Jornada() {
   const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { isPremium, isExpired, loading: subLoading } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
+  const { ensureContentAccess } = useContentAccess();
   const {
     trackingData,
     startTracking,
@@ -382,11 +384,8 @@ export default function Jornada() {
   const openMedia = async (idx: number, type: "video" | "hypnosis") => {
     const it = items[idx];
     if (!it) return;
+    if (!ensureContentAccess()) return;
     if (!canOpen(idx)) {
-      if (!isAdmin && !isFreelist && idx >= 1 && !isPremium && !isExpired) {
-        navigate("/paywall");
-        return;
-      }
       toast({
         title: "Tema bloqueado",
         description: "Complete o tema anterior para desbloquear este.",
