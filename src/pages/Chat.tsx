@@ -13,6 +13,11 @@ import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+
+async function getAccessToken(): Promise<string> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token ?? "";
+}
 import brainDefault from "@/assets/brain/neo.png";
 
 import {
@@ -246,7 +251,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${await getAccessToken()}`,
         },
         body: JSON.stringify({ text }),
       });
@@ -283,7 +288,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+              Authorization: `Bearer ${await getAccessToken()}`,
             },
             body: JSON.stringify({ text }),
           });
@@ -331,7 +336,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+              Authorization: `Bearer ${await getAccessToken()}`,
             },
             body: JSON.stringify({ audio: base64 }),
           });
@@ -387,7 +392,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${await getAccessToken()}`,
         },
         body: JSON.stringify({
           messages: next.map((m) => ({ role: m.role, content: m.content })),
