@@ -890,7 +890,7 @@ export default function Dashboard() {
               hasVideo && {
                 key: "video",
                 title: "Vídeo",
-                subtitle: "Entenda seu corpo e cérebro.",
+                subtitle: "Entenda corpo e cérebro.",
                 iconBg: "from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)]",
                 icon: <Play className="h-5 w-5 text-white fill-white" />,
                 done: weeklyVideoDone,
@@ -1388,7 +1388,7 @@ function WeeklyStepCard({
       </div>
       <div className="min-w-0 w-full">
         <p className="font-semibold text-[13px] text-foreground">{title}</p>
-        <p className="text-[10px] text-muted-foreground leading-snug text-pretty mt-0.5">{subtitle}</p>
+        <p className="text-[10px] text-muted-foreground leading-snug mt-0.5 line-clamp-2 [hyphens:auto]">{subtitle}</p>
       </div>
     </button>
   );
