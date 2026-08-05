@@ -7,6 +7,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
+import { useContentAccess } from "@/hooks/useContentAccess";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
