@@ -536,9 +536,6 @@ export default function Jornada() {
               <p className="text-[13px] font-semibold text-foreground leading-tight">
                 {totalDone} de {items.length} temas concluídos
               </p>
-              <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">
-                Assista, ouça e compartilhe no mural de cada tema.
-              </p>
             </div>
           </div>
         )}
