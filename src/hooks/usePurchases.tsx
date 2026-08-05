@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 
 // RevenueCat API Keys (public keys - safe to include in code)
 const REVENUECAT_API_KEY_IOS = 'appl_QmMRMglMnjgQtzPjEjHutHtUqMW';
-const REVENUECAT_API_KEY_ANDROID = 'goog_PLACEHOLDER'; // TODO: Replace with actual Google Play API key
+const REVENUECAT_API_KEY_ANDROID = 'goog_CrqdzoxFmynSEZOtPiKUjwrxDvS';
 
 // Expected product ID for validation logging
 const EXPECTED_PRODUCT_ID = 'sopro_30_days_sub';
