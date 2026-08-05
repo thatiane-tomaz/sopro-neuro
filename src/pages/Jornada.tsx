@@ -348,6 +348,8 @@ export default function Jornada() {
 
   const statusForIndex = (idx: number): DayStatus => {
     if (itemCompleted(items[idx])) return "completed";
+    // Admin (e freelist) enxergam tudo liberado
+    if (isAdmin || isFreelist) return "current";
     // current if all previous items are completed
     for (let i = 0; i < idx; i++) {
       if (!itemCompleted(items[i])) return "locked";
