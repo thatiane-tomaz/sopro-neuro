@@ -70,6 +70,7 @@ export default function Jornada() {
   const { isAdmin, loading: adminLoading } = useIsAdmin();
   const { isPremium, isExpired, loading: subLoading } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
+  const { ensureContentAccess } = useContentAccess();
   const {
     trackingData,
     startTracking,
