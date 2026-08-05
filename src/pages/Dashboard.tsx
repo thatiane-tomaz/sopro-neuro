@@ -1388,7 +1388,7 @@ function WeeklyStepCard({
       </div>
       <div className="min-w-0 w-full">
         <p className="font-semibold text-[13px] text-foreground">{title}</p>
-        <p className="text-[10px] text-muted-foreground leading-snug text-pretty mt-0.5">{subtitle}</p>
+        <p className="text-[10px] text-muted-foreground leading-snug mt-0.5 line-clamp-2 [hyphens:auto]">{subtitle}</p>
       </div>
     </button>
   );
