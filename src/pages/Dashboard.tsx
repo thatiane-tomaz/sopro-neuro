@@ -890,7 +890,7 @@ export default function Dashboard() {
               hasVideo && {
                 key: "video",
                 title: "Vídeo",
-                subtitle: "Entenda corpo e cérebro.",
+                subtitle: "Entenda seu cérebro.",
                 iconBg: "from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)]",
                 icon: <Play className="h-5 w-5 text-white fill-white" />,
                 done: weeklyVideoDone,
