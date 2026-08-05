@@ -383,11 +383,8 @@ export default function Jornada() {
   const openMedia = async (idx: number, type: "video" | "hypnosis") => {
     const it = items[idx];
     if (!it) return;
+    if (!ensureContentAccess()) return;
     if (!canOpen(idx)) {
-      if (!isAdmin && !isFreelist && idx >= 1 && !isPremium && !isExpired) {
-        navigate("/paywall");
-        return;
-      }
       toast({
         title: "Tema bloqueado",
         description: "Complete o tema anterior para desbloquear este.",
