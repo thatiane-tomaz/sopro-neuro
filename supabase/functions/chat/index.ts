@@ -182,16 +182,24 @@ Dia 14 — Celebrar a primeira semana sem fumar e consolidar identidade. Conceit
 
 // Decode JWT payload without verification (used only to extract user_id;
 // real authorization is enforced by RLS / service-role queries below).
-function getUserIdFromAuthHeader(authHeader: string | null): string | null {
+// Verifies the caller's JWT signature server-side against Supabase Auth and
+// returns the authenticated user id. Never trust the raw token payload.
+async function getVerifiedUserId(authHeader: string | null): Promise<string | null> {
   if (!authHeader) return null;
   const token = authHeader.replace(/^Bearer\s+/i, "").trim();
-  const parts = token.split(".");
-  if (parts.length < 2) return null;
+  if (!token) return null;
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+  if (!supabaseUrl || !anonKey) return null;
+
   try {
-    const payload = JSON.parse(
-      atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")),
-    );
-    return payload?.sub ?? null;
+    const client = createClient(supabaseUrl, anonKey, {
+      auth: { persistSession: false },
+    });
+    const { data, error } = await client.auth.getUser(token);
+    if (error || !data?.user) return null;
+    return data.user.id;
   } catch {
     return null;
   }
@@ -321,13 +329,19 @@ serve(async (req) => {
     // Keep only last 20 turns to bound token usage
     const trimmed = messages.slice(-20);
 
+    // Require a verified session: the chat prompt includes private user data.
+    const userId = await getVerifiedUserId(req.headers.get("authorization"));
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     // Build per-user context (best-effort; never blocks the chat on failure)
     let userContext = "";
     try {
-      const userId = getUserIdFromAuthHeader(req.headers.get("authorization"));
-      if (userId) {
-        userContext = await buildUserContext(userId);
-      }
+      userContext = await buildUserContext(userId);
     } catch (ctxErr) {
       console.error("user context error:", ctxErr);
     }
