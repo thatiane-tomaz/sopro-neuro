@@ -31,6 +31,52 @@ serve(async (req) => {
       throw new Error("Email is required");
     }
 
+    if (typeof email !== "string" || email.length > 320 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      return new Response(JSON.stringify({ error: "Invalid email" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    // Require a verified session: only the account owner (or an admin) may delete.
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    const token = authHeader.replace("Bearer ", "").trim();
+    const { data: callerData, error: callerError } = await supabaseAdmin.auth.getUser(token);
+    if (callerError || !callerData?.user) {
+      logStep("Unauthorized caller");
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    const caller = callerData.user;
+    const isOwnAccount = caller.email?.toLowerCase() === email.toLowerCase();
+
+    let isAdmin = false;
+    if (!isOwnAccount) {
+      const { data: adminCheck } = await supabaseAdmin.rpc("has_role", {
+        _user_id: caller.id,
+        _role: "admin",
+      });
+      isAdmin = adminCheck === true;
+    }
+
+    if (!isOwnAccount && !isAdmin) {
+      logStep("Forbidden: caller may only delete own account", { callerId: caller.id });
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
     logStep("Searching for user", { email });
 
     // List all users and find by email
