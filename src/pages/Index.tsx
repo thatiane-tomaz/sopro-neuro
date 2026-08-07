@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import PageLoader from "@/components/home/PageLoader";
 
 const Index = () => {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState<boolean | null>(null);
@@ -39,7 +40,9 @@ const Index = () => {
         if (isMounted) setHasCompletedOnboarding(done);
       } catch (error) {
         console.error('Error checking onboarding:', error);
-        if (isMounted) setHasCompletedOnboarding(false);
+        // On network/permission failure assume the user already onboarded so we
+        // never resend an existing user through the questionnaire.
+        if (isMounted) setHasCompletedOnboarding(true);
       }
     };
 
@@ -56,8 +59,19 @@ const Index = () => {
     };
   }, [user, loading]);
 
+  // Safety net: never leave the user on an endless loading screen.
+  const [timedOut, setTimedOut] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setTimedOut(true), 8000);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (timedOut && hasCompletedOnboarding === null) {
+    return <Navigate to={user ? "/dashboard" : "/login"} replace />;
+  }
+
   if (loading || hasCompletedOnboarding === null) {
-    return null; // Loading state
+    return <PageLoader />;
   }
 
   // Authenticated user who completed onboarding -> dashboard
