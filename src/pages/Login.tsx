@@ -61,77 +61,11 @@ const Login = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Check if user has completed onboarding
-  useEffect(() => {
-    let isMounted = true;
-    let navigationTimeout: ReturnType<typeof setTimeout> | null = null;
-    
-    const checkOnboarding = async () => {
-      // During password recovery we must NOT redirect; user needs to stay here and set a new password.
-      if (!user || showResetPassword) return;
-
-      try {
-        // First check if user profile exists (user might have been deleted from DB but session still active)
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (!isMounted) return;
-
-        // If no profile found, user was likely deleted - sign out
-        if (!profileData || profileError) {
-          console.log('User profile not found, signing out...');
-          await signOut();
-          return;
-        }
-
-        const { data: onboardingData, error } = await supabase
-          .from('onboarding_responses')
-          .select('id')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (!isMounted) return;
-
-        if (error) {
-          console.error('Error checking onboarding:', error);
-          return;
-        }
-
-        // Use timeout to avoid race conditions
-        navigationTimeout = setTimeout(() => {
-          if (!isMounted) return;
-          if (onboardingData) {
-            // User completed onboarding, go to dashboard
-            window.location.href = "/dashboard";
-          } else {
-            // User needs to complete onboarding
-            window.location.href = "/onboarding";
-          }
-        }, 100);
-      } catch (error) {
-        console.error('Error in checkOnboarding:', error);
-      }
-    };
-
-    checkOnboarding();
-
-    return () => {
-      isMounted = false;
-      if (navigationTimeout) clearTimeout(navigationTimeout);
-    };
-  }, [user, showResetPassword]);
-
-  // Don't redirect if showing reset password form
+  // Once authenticated (and not in password recovery), let the root route decide
+  // where to go (dashboard vs onboarding). Doing the routing here with extra
+  // queries could leave the user stuck on a "Carregando..." screen.
   if (user && !showResetPassword) {
-    return (
-      <div className="relative min-h-screen flex items-center justify-center">
-        <WaveBackground />
-        <div className="text-foreground/70 text-sm">Carregando...</div>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   const handleResetPassword = async (e: React.FormEvent) => {
