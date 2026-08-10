@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import ChatOnboarding from "@/components/onboarding/ChatOnboarding";
+import BuildingJourneyScreen from "@/components/onboarding/BuildingJourneyScreen";
 import { selectedHabitos } from "@/components/onboarding/habitOptions";
 
 export interface OnboardingData {
@@ -40,6 +41,9 @@ const Onboarding = () => {
   });
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBuilding, setIsBuilding] = useState(false);
+  const [saveDone, setSaveDone] = useState(false);
+  const [animDone, setAnimDone] = useState(false);
   const { user, loading } = useAuth();
   
   const { isAdmin } = useIsAdmin();
@@ -92,6 +96,13 @@ const Onboarding = () => {
     };
   }, [user, loading, isAdmin]);
 
+  // Redirect only when both the animation and the saving finished
+  useEffect(() => {
+    if (isBuilding && saveDone && animDone) {
+      window.location.href = "/dashboard";
+    }
+  }, [isBuilding, saveDone, animDone]);
+
   // Redirect to login if not authenticated
   if (!loading && !user) {
     return <Navigate to="/login" replace />;
@@ -111,6 +122,7 @@ const Onboarding = () => {
     if (!user) return;
 
     setIsSubmitting(true);
+    setIsBuilding(true);
     
     try {
       const { error } = await supabase
@@ -168,14 +180,10 @@ const Onboarding = () => {
         } as any);
       if (histError) console.error('Error saving journey history:', histError);
       
-      toast({
-        title: "Onboarding concluído",
-        description: "Suas respostas foram salvas com sucesso!"
-      });
-      
-      window.location.href = "/dashboard";
+      setSaveDone(true);
     } catch (error) {
       console.error('Error saving onboarding:', error);
+      setIsBuilding(false);
       toast({
         title: "Erro",
         description: "Erro ao salvar suas respostas. Tente novamente.",
@@ -185,6 +193,15 @@ const Onboarding = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (isBuilding) {
+    return (
+      <BuildingJourneyScreen
+        journeyType={data.journeyType}
+        onDone={() => setAnimDone(true)}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen">
