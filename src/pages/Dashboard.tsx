@@ -349,7 +349,6 @@ export default function Dashboard() {
 
   const openStartHereVideo = async () => {
     if (!startHere) return;
-    if (!ensureContentAccess()) return;
     setLoadingStartHere(true);
     const url = await getStartHereVideoUrl(startHere.key);
     setLoadingStartHere(false);
