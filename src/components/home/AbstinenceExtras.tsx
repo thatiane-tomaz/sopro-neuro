@@ -21,8 +21,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-const STORAGE_BASE =
-  "https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis";
+const HYPNOSIS_BUCKET = "hypnosis";
 
 interface TriggerItem {
   id: string;
@@ -86,18 +85,22 @@ export default function AbstinenceExtras({
     }
   };
 
-  const handleSos = () => {
+  const handleSos = async () => {
     if (!ensureAccess()) return;
-    const sos = getSosHypnosis();
+    const sos = await getSosHypnosis();
+    if (!sos.fileUrl) return;
     openMedia(sos.title, sos.fileUrl, `sos_${sos.index + 1}`);
   };
 
-  const handleTrigger = (t: TriggerItem) =>
+  const handleTrigger = async (t: TriggerItem) => {
+    const url = await getSignedMediaUrl(HYPNOSIS_BUCKET, t.file_name, "hypnosis");
+    if (!url) return;
     openMedia(
       t.title,
-      `${STORAGE_BASE}/${t.file_name}`,
+      url,
       `gatilho_${t.file_name.replace(/\.[^.]+$/, "")}`
     );
+  };
 
   const handleProgress = (p: number) => {
     if (!trackingId) return;
