@@ -73,6 +73,7 @@ import soproLogo from "@/assets/sopro-logo.png";
 import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
 import { useChatPrompts } from "@/hooks/useChatPrompts";
 import { useJourneyReview } from "@/hooks/useJourneyReview";
+import { useJourneyFocos } from "@/hooks/useJourneyFocos";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -230,9 +231,9 @@ export default function Dashboard() {
   const explicacaoDesafio: string =
     (gatilho as any)?.explicacao_missao ||
     "Observe esse hábito nos próximos dias: em quais momentos ele aparece, o que você sente antes e o que muda depois. Anote mentalmente os padrões para conversarmos sobre sua experiência.";
-  const hasVideo: boolean = (gatilho as any)?.video ?? true;
-  const hasHipnose: boolean = (gatilho as any)?.hipnose ?? true;
-  const hasMissao: boolean = (gatilho as any)?.missao ?? true;
+  const hasVideo: boolean = (gatilho as any)?.hasVideo ?? true;
+  const hasHipnose: boolean = (gatilho as any)?.hasHipnose ?? true;
+  const hasMissao: boolean = (gatilho as any)?.hasMissao ?? true;
 
   // Keep interaction keys unique per journey type so completions in "redução"
   // don't count as done in "abstinência" (and vice-versa).
@@ -529,7 +530,7 @@ export default function Dashboard() {
       return false;
     }
     await queryClient.invalidateQueries({ queryKey: ["jornada-type"] });
-    await queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
+    await queryClient.invalidateQueries({ queryKey: ["journey-focos"] });
     await queryClient.invalidateQueries({ queryKey: ["journey-start"] });
     await queryClient.invalidateQueries({ queryKey: ["journey-tracking"] });
     return true;
