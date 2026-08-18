@@ -282,13 +282,13 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
         <div className="relative">
           <img
             src={brainAvatar}
-            alt="Cérebro Sopro"
-            className="w-11 h-11 rounded-full object-cover shadow-md"
+            alt="Neo"
+            className="w-11 h-11 rounded-full object-contain bg-white/70 p-0.5 shadow-md"
           />
           <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="font-semibold text-sm text-foreground">Cérebro Sopro</div>
+          <div className="font-semibold text-sm text-foreground">Neo</div>
           <div className="text-xs text-emerald-600 font-medium">online agora</div>
         </div>
       </div>
@@ -304,7 +304,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
               <img
                 src={brainAvatar}
                 alt=""
-                className="w-7 h-7 rounded-full object-cover mr-2 mt-auto shadow-sm"
+                className="w-8 h-8 rounded-full object-contain bg-white/70 p-0.5 mr-2 mt-auto shadow-sm"
               />
             )}
             <div
@@ -320,7 +320,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
         ))}
         {typing && (
           <div className="flex justify-start animate-fade-in">
-            <img src={brainAvatar} alt="" className="w-7 h-7 rounded-full object-cover mr-2 mt-auto shadow-sm" />
+            <img src={brainAvatar} alt="" className="w-8 h-8 rounded-full object-contain bg-white/70 p-0.5 mr-2 mt-auto shadow-sm" />
             <div className="bg-white/90 border border-white rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
               <div className="flex gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/50 animate-bounce [animation-delay:-0.3s]" />
@@ -383,7 +383,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                   <button
                     key={o.value}
                     onClick={() => handleSingle(current.key as keyof OnboardingData, o.value, o.label)}
-                    className="w-full text-left px-4 py-3 rounded-2xl bg-white border border-white hover:border-primary/40 hover:bg-primary/5 transition-all text-sm font-medium shadow-sm"
+                    className="w-full text-left px-4 py-3 rounded-2xl bg-white border border-white hover:border-primary/40 hover:bg-primary/5 transition-all text-[15px] font-medium shadow-sm"
                   >
                     {o.label}
                   </button>
@@ -400,7 +400,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                       <button
                         key={o.label}
                         onClick={() => toggleMulti(o.label)}
-                        className={`w-full text-left px-3.5 py-2.5 rounded-xl border text-sm transition-all ${
+                        className={`w-full text-left px-3.5 py-2.5 rounded-xl border text-[15px] transition-all ${
                           sel
                             ? "bg-primary/10 border-primary/40 text-foreground font-medium"
                             : "bg-white border-white text-foreground/80 hover:bg-primary/5"
