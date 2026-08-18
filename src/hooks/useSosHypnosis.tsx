@@ -1,8 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useBrainSparks } from '@/hooks/useBrainSparks';
+import { supabase } from '@/integrations/supabase/client';
+import { getSignedMediaUrl } from '@/lib/mediaUrl';
 
-const STORAGE_BASE = 'https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis';
+const HYPNOSIS_BUCKET = 'hypnosis';
 const getStorageKey = (userId: string) => `sos_next_index_${userId}`;
 const SOS_COUNT_CACHE_KEY = 'sos_total_count';
 const SOS_COUNT_CACHE_TTL = 1000 * 60 * 60; // 1 hour
@@ -27,18 +29,18 @@ export const useSosHypnosis = () => {
 
     const probe = async () => {
       let count = 0;
-      // Check sequentially: sos_1, sos_2, ... until a HEAD request fails
-      for (let i = 1; i <= 20; i++) {
-        try {
-          const res = await fetch(`${STORAGE_BASE}/sos_${i}.MP3`, { method: 'HEAD' });
-          if (res.ok) {
-            count = i;
-          } else {
-            break;
-          }
-        } catch {
-          break;
+      try {
+        const { data, error } = await supabase.storage
+          .from(HYPNOSIS_BUCKET)
+          .list('', { limit: 1000 });
+        if (error || !data) return;
+        const names = new Set(data.map((f) => f.name.toLowerCase()));
+        for (let i = 1; i <= 20; i++) {
+          if (names.has(`sos_${i}.mp3`)) count = i;
+          else break;
         }
+      } catch {
+        return;
       }
 
       if (!cancelled && count > 0) {
@@ -72,7 +74,7 @@ export const useSosHypnosis = () => {
     return getNextIndex();
   });
 
-  const getSosHypnosis = useCallback((): { title: string; fileUrl: string; index: number } => {
+  const getSosHypnosis = useCallback(async (): Promise<{ title: string; fileUrl: string | null; index: number }> => {
     const currentIndex = getNextIndex() % totalSos;
     const sosNumber = currentIndex + 1;
 
@@ -84,9 +86,11 @@ export const useSosHypnosis = () => {
 
     award('sos_used', { sos_number: sosNumber });
 
+    const fileUrl = await getSignedMediaUrl(HYPNOSIS_BUCKET, `sos_${sosNumber}.MP3`, 'hypnosis');
+
     return {
       title: 'Hipnose SOS',
-      fileUrl: `${STORAGE_BASE}/sos_${sosNumber}.MP3`,
+      fileUrl,
       index: currentIndex,
     };
   }, [user, getNextIndex, totalSos, award]);
