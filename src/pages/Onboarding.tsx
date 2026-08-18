@@ -125,9 +125,7 @@ const Onboarding = () => {
     setIsBuilding(true);
     
     try {
-      const { error } = await supabase
-        .from('onboarding_responses')
-        .insert({
+      const payload = {
           user_id: user.id,
           age: data.age,
           gender: data.gender,
@@ -137,9 +135,31 @@ const Onboarding = () => {
           smoking_reasons: data.smokingReasons,
           smoking_fears: data.smokingFears,
           weekly_cost: data.weeklyCost
-        } as any);
+      };
 
-      if (error) throw error;
+      // Skip if a response already exists (avoids duplicates on retry)
+      const { data: already } = await supabase
+        .from('onboarding_responses')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (!already) {
+        let { error } = await supabase
+          .from('onboarding_responses')
+          .insert(payload as any);
+
+        // One silent retry for transient network/auth hiccups
+        if (error) {
+          console.error('Error saving onboarding (retrying):', error);
+          const retry = await supabase
+            .from('onboarding_responses')
+            .insert(payload as any);
+          error = retry.error;
+        }
+
+        if (error) throw error;
+      }
 
       // v2: guarda respostas completas + jornada inicial
       const jornada = data.journeyType === "abstinencia" ? "abstinencia" : "reducao";
