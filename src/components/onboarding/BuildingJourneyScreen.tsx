@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
-import neo from "@/assets/brain/neo.png";
+import neo from "@/assets/brain/neo.webp";
 
 interface Props {
   /** Called when the animation finishes (all steps concluded). */

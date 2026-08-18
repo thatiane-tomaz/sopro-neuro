@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock } from "lucide-react";
-import brainImg from "@/assets/brain/neo.png";
+import brainImg from "@/assets/brain/neo.webp";
 
 interface IntroScreenProps {
   onNext: () => void;
