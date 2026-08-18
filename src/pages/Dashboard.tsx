@@ -844,7 +844,9 @@ export default function Dashboard() {
             <div className="inline-flex items-center gap-1.5 min-w-0">
               <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
               <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-                Foco atual
+                {totalFocos > 0
+                  ? `Foco atual · ${focoAtualNumero} de ${totalFocos}`
+                  : "Foco atual"}
               </span>
             </div>
             {(() => {
