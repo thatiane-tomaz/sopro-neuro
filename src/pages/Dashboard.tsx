@@ -215,28 +215,17 @@ export default function Dashboard() {
     return () => clearTimeout(t);
   }, [user, authLoading, smokingLogsLoading, smokingLogs, jornadaType, upsertSmokingLog]);
 
-  // Current "gatilho" / posição of the user. For now everyone starts at posição 1.
-  const { data: gatilho } = useQuery({
-    queryKey: ["gatilho-jornada", 1, jornadaType],
-    enabled: !!jornadaType,
-    queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("habitos_jornada")
-        .select("*")
-        .eq("posicao", "1")
-        .eq("tipo_usuario", jornadaType)
-        .limit(1)
-        .maybeSingle();
-      if (error) {
-        console.error("Erro ao buscar gatilho:", error);
-        return null;
-      }
-      return data;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  // Foco atual: calculado dinamicamente a partir de habitos_jornada, então
+  // novos temas inseridos na tabela entram no app sem nova versão.
+  const {
+    focoAtual,
+    focoAtualNumero,
+    totalFocos,
+    focosConcluidos,
+  } = useJourneyFocos(jornadaType);
+  const gatilho = focoAtual;
 
-  const posicao = (gatilho as any)?.posicao ?? 1;
+  const posicao = (gatilho as any)?.posicao ?? focoAtualNumero ?? 1;
   const tituloGatilho: string = (gatilho as any)?.habito_titulo ?? "Sua jornada começa aqui";
   const explicacaoDesafio: string =
     (gatilho as any)?.explicacao_missao ||
