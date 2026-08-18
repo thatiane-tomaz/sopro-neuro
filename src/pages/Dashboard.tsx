@@ -73,6 +73,7 @@ import soproLogo from "@/assets/sopro-logo.png";
 import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
 import { useChatPrompts } from "@/hooks/useChatPrompts";
 import { useJourneyReview } from "@/hooks/useJourneyReview";
+import { useJourneyFocos } from "@/hooks/useJourneyFocos";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -215,35 +216,24 @@ export default function Dashboard() {
     return () => clearTimeout(t);
   }, [user, authLoading, smokingLogsLoading, smokingLogs, jornadaType, upsertSmokingLog]);
 
-  // Current "gatilho" / posição of the user. For now everyone starts at posição 1.
-  const { data: gatilho } = useQuery({
-    queryKey: ["gatilho-jornada", 1, jornadaType],
-    enabled: !!jornadaType,
-    queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("habitos_jornada")
-        .select("*")
-        .eq("posicao", "1")
-        .eq("tipo_usuario", jornadaType)
-        .limit(1)
-        .maybeSingle();
-      if (error) {
-        console.error("Erro ao buscar gatilho:", error);
-        return null;
-      }
-      return data;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  // Foco atual: calculado dinamicamente a partir de habitos_jornada, então
+  // novos temas inseridos na tabela entram no app sem nova versão.
+  const {
+    focoAtual,
+    focoAtualNumero,
+    totalFocos,
+    focosConcluidos,
+  } = useJourneyFocos(jornadaType);
+  const gatilho = focoAtual;
 
-  const posicao = (gatilho as any)?.posicao ?? 1;
+  const posicao = (gatilho as any)?.posicao ?? focoAtualNumero ?? 1;
   const tituloGatilho: string = (gatilho as any)?.habito_titulo ?? "Sua jornada começa aqui";
   const explicacaoDesafio: string =
     (gatilho as any)?.explicacao_missao ||
     "Observe esse hábito nos próximos dias: em quais momentos ele aparece, o que você sente antes e o que muda depois. Anote mentalmente os padrões para conversarmos sobre sua experiência.";
-  const hasVideo: boolean = (gatilho as any)?.video ?? true;
-  const hasHipnose: boolean = (gatilho as any)?.hipnose ?? true;
-  const hasMissao: boolean = (gatilho as any)?.missao ?? true;
+  const hasVideo: boolean = (gatilho as any)?.hasVideo ?? true;
+  const hasHipnose: boolean = (gatilho as any)?.hasHipnose ?? true;
+  const hasMissao: boolean = (gatilho as any)?.hasMissao ?? true;
 
   // Keep interaction keys unique per journey type so completions in "redução"
   // don't count as done in "abstinência" (and vice-versa).
@@ -540,7 +530,7 @@ export default function Dashboard() {
       return false;
     }
     await queryClient.invalidateQueries({ queryKey: ["jornada-type"] });
-    await queryClient.invalidateQueries({ queryKey: ["gatilho-jornada"] });
+    await queryClient.invalidateQueries({ queryKey: ["journey-focos"] });
     await queryClient.invalidateQueries({ queryKey: ["journey-start"] });
     await queryClient.invalidateQueries({ queryKey: ["journey-tracking"] });
     return true;
@@ -854,7 +844,9 @@ export default function Dashboard() {
             <div className="inline-flex items-center gap-1.5 min-w-0">
               <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
               <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-                Foco atual
+                {totalFocos > 0
+                  ? `Foco atual · ${focoAtualNumero} de ${totalFocos}`
+                  : "Foco atual"}
               </span>
             </div>
             {(() => {
