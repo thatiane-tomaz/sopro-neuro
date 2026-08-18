@@ -156,13 +156,22 @@ export default function Progresso() {
   const smokeFreeDays = useMemo(() => {
     const raw = onboarding?.last_cigarette_date as string | undefined;
     if (!raw) return null;
-    const start = new Date(String(raw).slice(0, 10) + "T00:00:00");
+    let startStr = String(raw).slice(0, 10);
+    // Se o usuário registrou que fumou depois da data informada, o último
+    // input dele tem prioridade e a contagem reinicia nesse dia.
+    const lastSmoked = logs
+      .filter((l) => l.cigarettes_count > 0 && l.log_date > startStr)
+      .map((l) => l.log_date)
+      .sort()
+      .pop();
+    if (lastSmoked) startStr = lastSmoked;
+    const start = new Date(startStr + "T00:00:00");
     if (isNaN(start.getTime())) return null;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const diff = Math.floor((today.getTime() - start.getTime()) / 86_400_000);
     return diff >= 0 ? diff : null;
-  }, [onboarding?.last_cigarette_date]);
+  }, [onboarding?.last_cigarette_date, logs]);
 
   const lastCigLabel = useMemo(() => {
     const raw = onboarding?.last_cigarette_date as string | undefined;
