@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import ErrorBoundary from './components/ErrorBoundary.tsx'
 import './index.css'
-import neoMascot from './assets/brain/neo.png'
+import neoMascot from './assets/brain/neo.webp'
 
 // Preload the Neo mascot so it is ready before the Dashboard paints.
 {

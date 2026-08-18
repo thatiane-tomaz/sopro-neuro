@@ -18,7 +18,7 @@ async function getAccessToken(): Promise<string> {
   const { data } = await supabase.auth.getSession();
   return data.session?.access_token ?? "";
 }
-import brainDefault from "@/assets/brain/neo.png";
+import brainDefault from "@/assets/brain/neo.webp";
 
 import {
   Dialog,
