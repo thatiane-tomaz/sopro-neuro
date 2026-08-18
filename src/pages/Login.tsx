@@ -313,7 +313,7 @@ const Login = () => {
   return (
     <AuthShell>
       <AuthHeader
-        title="Bem-vindo"
+        title="Entrar"
         subtitle="Entre na sua jornada de transformação."
       />
 
