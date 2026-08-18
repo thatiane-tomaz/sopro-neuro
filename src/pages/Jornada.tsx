@@ -290,10 +290,8 @@ export default function Jornada() {
       });
       return;
     }
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .createSignedUrl(fileName, 60 * 60);
-    if (error || !data?.signedUrl) {
+    const signedUrl = await getSignedMediaUrl(bucket, fileName, type);
+    if (!signedUrl) {
       toast({
         title: "Conteúdo em preparação",
         description: "Este conteúdo ainda será disponibilizado.",
