@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Send } from "lucide-react";
-import brainAvatar from "@/assets/brain/brain-lv3-active.png";
+import brainAvatar from "@/assets/brain/neo.png";
 import type { OnboardingData } from "@/pages/Onboarding";
 import {
   EMOTION_OPTIONS,
@@ -308,7 +308,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
               />
             )}
             <div
-              className={`max-w-[78%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed text-pretty shadow-sm ${
+              className={`max-w-[80%] rounded-2xl px-4 py-3 text-[16px] leading-[1.55] text-pretty shadow-sm ${
                 m.from === "user"
                   ? "bg-primary text-primary-foreground rounded-br-sm"
                   : "bg-white/90 text-foreground rounded-bl-sm border border-white"
