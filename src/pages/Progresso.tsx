@@ -254,7 +254,9 @@ export default function Progresso() {
       const ds = toLocalDateStr(cursor);
       const inLog = logsByDate.get(ds);
       if (inLog !== undefined) carry = inLog;
-      const abst = isAbstinenceDay(ds);
+      // O registro do usuário sempre tem prioridade: mesmo na jornada de
+      // liberdade, se ele informou que fumou, o gráfico mostra esse valor.
+      const abst = inLog === undefined && isAbstinenceDay(ds);
       days.push({
         date: ds,
         label: format(cursor, "dd/MM"),
@@ -290,7 +292,8 @@ export default function Progresso() {
         carry = logged;
         daysWithLog += 1;
       }
-      const effective = isAbstinenceDay(d.date) ? 0 : carry;
+      const effective =
+        logged === undefined && isAbstinenceDay(d.date) ? 0 : carry;
       totalSmoked += effective;
       avoided += Math.max(0, baseline - effective);
     }
@@ -316,7 +319,7 @@ export default function Progresso() {
         const ds = toLocalDateStr(walkCursor);
         const v = walkLogs.get(ds);
         if (v !== undefined) carryAvg = v;
-        values.push(isAbstinenceDay(ds) ? 0 : carryAvg);
+        values.push(v === undefined && isAbstinenceDay(ds) ? 0 : carryAvg);
         walkCursor.setDate(walkCursor.getDate() + 1);
       }
       const last3 = values.slice(-3);
