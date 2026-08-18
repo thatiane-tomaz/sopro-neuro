@@ -98,24 +98,25 @@ const Paywall = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 flex items-center justify-center p-4 relative">
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 relative">
       <Button
         variant="ghost"
         size="icon"
         onClick={() => navigate('/dashboard')}
-        className="absolute top-4 right-4 z-10"
+        className="fixed right-3 top-[calc(env(safe-area-inset-top)+10px)] z-50 h-11 w-11 rounded-full bg-background/80 backdrop-blur-md shadow-md"
         aria-label="Fechar"
       >
         <X className="w-5 h-5" />
       </Button>
+      <div className="min-h-screen overflow-y-auto flex items-start justify-center px-4 pt-[calc(env(safe-area-inset-top)+64px)] pb-[calc(env(safe-area-inset-bottom)+24px)]">
       <Card className="w-full max-w-md border-accent/20 shadow-2xl">
         <CardHeader className="text-center pb-2">
-          <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-br from-amber-400 to-amber-600 p-4 rounded-full shadow-lg">
-              <Crown className="w-10 h-10 text-white" />
+          <div className="flex justify-center mb-3">
+            <div className="bg-gradient-to-br from-amber-400 to-amber-600 p-3 rounded-full shadow-lg">
+              <Crown className="w-8 h-8 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">
+          <CardTitle className="text-xl font-bold text-balance">
             Desbloqueie sua Transformação
           </CardTitle>
           <CardDescription className="text-base mt-2">
@@ -123,7 +124,7 @@ const Paywall = () => {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           <div className="space-y-4">
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-start gap-3">
@@ -148,7 +149,7 @@ const Paywall = () => {
           {priceString && (
             <div className="text-center">
               <div className="flex items-baseline justify-center gap-1">
-                <span className="text-4xl font-bold text-primary">{priceString}</span>
+                <span className="text-3xl font-bold text-primary">{priceString}</span>
                 <span className="text-muted-foreground">/mês</span>
               </div>
             </div>
@@ -157,7 +158,7 @@ const Paywall = () => {
           <Button 
             onClick={handlePurchase}
             disabled={isPurchasing}
-            className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
+            className="w-full h-12 text-base font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
           >
             {isPurchasing ? (
               <>
@@ -203,6 +204,7 @@ const Paywall = () => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

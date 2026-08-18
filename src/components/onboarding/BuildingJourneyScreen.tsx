@@ -68,6 +68,9 @@ const BuildingJourneyScreen = ({ onDone, journeyType }: Props) => {
       <p className="mt-2 text-sm text-muted-foreground text-center max-w-xs text-balance">
         Cada resposta sua vira uma peça do seu plano. Isso leva só alguns segundos.
       </p>
+      <p className="mt-1.5 text-sm font-medium text-foreground text-center max-w-xs text-balance">
+        E você não está sozinho nessa. O Sopro caminha com você.
+      </p>
 
       {/* Progress */}
       <div className="mt-7 w-full max-w-sm">
