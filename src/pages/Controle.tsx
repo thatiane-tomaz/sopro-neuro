@@ -1,3 +1,4 @@
+import { getSignedMediaUrl } from "@/lib/mediaUrl";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -31,8 +32,7 @@ import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
 import soproLogo from "@/assets/sopro-logo.png";
 
-const STORAGE_BASE =
-  "https://kpewsvpufzkyejchncta.supabase.co/storage/v1/object/public/hypnosis";
+const HYPNOSIS_BUCKET = "hypnosis";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -113,16 +113,19 @@ export default function Controle() {
     }
   };
 
-  const handleSos = () => {
+  const handleSos = async () => {
     if (!ensureAccess()) return;
-    const sos = getSosHypnosis();
+    const sos = await getSosHypnosis();
+    if (!sos.fileUrl) return;
     openMedia(sos.title, sos.fileUrl, `sos_${sos.index + 1}`);
   };
 
-  const handleTrigger = (t: TriggerItem) => {
+  const handleTrigger = async (t: TriggerItem) => {
+    const url = await getSignedMediaUrl(HYPNOSIS_BUCKET, t.file_name, "hypnosis");
+    if (!url) return;
     openMedia(
       t.title,
-      `${STORAGE_BASE}/${t.file_name}`,
+      url,
       `gatilho_${t.file_name.replace(/\.[^.]+$/, "")}`,
     );
   };
