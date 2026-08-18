@@ -11,6 +11,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useContentAccess } from "@/hooks/useContentAccess";
 import { supabase } from "@/integrations/supabase/client";
+import { getSignedMediaUrl } from "@/lib/mediaUrl";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -466,15 +467,7 @@ export default function Dashboard() {
       type === "video"
         ? ((gatilho as any)?.video_nome as string | null)
         : ((gatilho as any)?.hipnose_nome as string | null);
-    if (!fileName) return null;
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .createSignedUrl(fileName, 60 * 60);
-    if (error || !data?.signedUrl) {
-      console.error("signed url error", error);
-      return null;
-    }
-    return data.signedUrl;
+    return getSignedMediaUrl(bucket, fileName, type);
   };
 
   const openMedia = async (type: "video" | "hypnosis") => {
