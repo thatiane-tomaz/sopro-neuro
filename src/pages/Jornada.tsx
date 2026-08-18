@@ -9,6 +9,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useContentAccess } from "@/hooks/useContentAccess";
 import { supabase } from "@/integrations/supabase/client";
+import { getSignedMediaUrl } from "@/lib/mediaUrl";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -290,10 +291,8 @@ export default function Jornada() {
       });
       return;
     }
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .createSignedUrl(fileName, 60 * 60);
-    if (error || !data?.signedUrl) {
+    const signedUrl = await getSignedMediaUrl(bucket, fileName, type);
+    if (!signedUrl) {
       toast({
         title: "Conteúdo em preparação",
         description: "Este conteúdo ainda será disponibilizado.",
@@ -304,7 +303,7 @@ export default function Jornada() {
       type === "video" ? `video_apoio_${h.id}` : `hipnose_apoio_${h.id}`;
     setSelectedMedia({
       title: h.habito_titulo,
-      fileUrl: data.signedUrl,
+      fileUrl: signedUrl,
       contentType: type,
       day: 0,
       interactionType,
@@ -372,15 +371,7 @@ export default function Jornada() {
   ): Promise<string | null> => {
     const bucket = type === "video" ? "videos_2" : "hipnoses_2";
     const fileName = type === "video" ? it.video_nome : it.hipnose_nome;
-    if (!fileName) return null;
-    const { data, error } = await supabase.storage
-      .from(bucket)
-      .createSignedUrl(fileName, 60 * 60);
-    if (error || !data?.signedUrl) {
-      console.error("signed url error", error);
-      return null;
-    }
-    return data.signedUrl;
+    return getSignedMediaUrl(bucket, fileName, type);
   };
 
   const openMedia = async (idx: number, type: "video" | "hypnosis") => {
