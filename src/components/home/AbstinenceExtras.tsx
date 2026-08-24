@@ -94,8 +94,18 @@ export default function AbstinenceExtras({
   };
 
   const handleTrigger = async (t: TriggerItem) => {
-    const url = await getSignedMediaUrl(HYPNOSIS_BUCKET, t.file_name, "hypnosis");
-    if (!url) return;
+    if (!ensureAccess()) return;
+    const url = await getSignedMediaUrl(HYPNOSIS_BUCKET, t.file_name, "hypnosis", [
+      "hipnoses_2",
+    ]);
+    if (!url) {
+      toast({
+        title: "Conteúdo em preparação",
+        description: "Esta hipnose ainda não está disponível. Tente novamente em breve.",
+        variant: "destructive",
+      });
+      return;
+    }
     openMedia(
       t.title,
       url,
