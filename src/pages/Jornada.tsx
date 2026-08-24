@@ -371,7 +371,7 @@ export default function Jornada() {
   ): Promise<string | null> => {
     const bucket = type === "video" ? "videos_2" : "hipnoses_2";
     const fileName = type === "video" ? it.video_nome : it.hipnose_nome;
-    return getSignedMediaUrl(bucket, fileName, type);
+    return getSignedMediaUrl(bucket, fileName, type, type === "video" ? ["videos"] : ["hypnosis"]);
   };
 
   const openMedia = async (idx: number, type: "video" | "hypnosis") => {
