@@ -122,7 +122,8 @@ export default function Controle() {
 
   const handleTrigger = async (t: TriggerItem) => {
     if (!ensureAccess()) return;
-    const url = await getSignedMediaUrl(HYPNOSIS_BUCKET, t.file_name, "hypnosis", [
+    const url = await getSignedMediaUrl("hipnoses_2", t.file_name, "hypnosis", [
+      HYPNOSIS_BUCKET,
       "hipnoses_2",
     ]);
     if (!url) {

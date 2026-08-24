@@ -457,7 +457,7 @@ export default function Dashboard() {
       type === "video"
         ? ((gatilho as any)?.video_nome as string | null)
         : ((gatilho as any)?.hipnose_nome as string | null);
-    return getSignedMediaUrl(bucket, fileName, type);
+    return getSignedMediaUrl(bucket, fileName, type, type === "video" ? ["videos"] : ["hypnosis"]);
   };
 
   const openMedia = async (type: "video" | "hypnosis") => {
