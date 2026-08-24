@@ -291,7 +291,7 @@ export default function Jornada() {
       });
       return;
     }
-    const signedUrl = await getSignedMediaUrl(bucket, fileName, type);
+    const signedUrl = await getSignedMediaUrl(bucket, fileName, type, type === "video" ? ["videos"] : ["hypnosis"]);
     if (!signedUrl) {
       toast({
         title: "Conteúdo em preparação",
