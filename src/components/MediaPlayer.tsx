@@ -405,7 +405,7 @@ const MediaPlayer = ({
           )}
           
           {/* Media Player */}
-          <div 
+          <div
             className="rounded-xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5 flex-shrink-0"
             onContextMenu={(e) => e.preventDefault()}
           >
@@ -417,7 +417,8 @@ const MediaPlayer = ({
                   controls
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
-                  poster={videoCoverImage}
+                  autoPlay
+                  playsInline
                   onPlay={() => { setIsPlaying(true); setHasStartedPlaying(true); }}
                   onPause={() => setIsPlaying(false)}
                   onContextMenu={(e) => e.preventDefault()}
@@ -437,6 +438,7 @@ const MediaPlayer = ({
                   ref={mediaRef as React.RefObject<HTMLAudioElement>}
                   className="sr-only"
                   preload="auto"
+                  autoPlay
                   controlsList="nodownload noplaybackrate"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
@@ -452,26 +454,21 @@ const MediaPlayer = ({
                   {fileUrl && <source src={fileUrl} type="audio/mpeg" />}
                   Seu navegador não suporta áudio HTML5.
                 </audio>
-                
+
                 {/* Audio Player Visual */}
-                  <div className="relative aspect-video w-full" onContextMenu={(e) => e.preventDefault()}>
-                  <img 
-                    src={hypnosisImage} 
-                    alt="Homem relaxando com fones de ouvido" 
-                    className="w-full h-full object-cover select-none pointer-events-none"
-                    draggable={false}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-navy/20 to-transparent" />
-                  
-                  {/* Play Button */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Button 
-                      onClick={handlePlayPause} 
+                <div className="relative aspect-video w-full bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(220_80%_40%)] flex items-center justify-center" onContextMenu={(e) => e.preventDefault()}>
+                  <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.06\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50" />
+                  <div className="relative z-10 flex flex-col items-center gap-3">
+                    <div className="h-16 w-16 rounded-full bg-white/15 backdrop-blur flex items-center justify-center ring-1 ring-white/20">
+                      <Headphones className="h-8 w-8 text-white" />
+                    </div>
+                    <Button
+                      onClick={handlePlayPause}
                       size="lg"
                       className={`rounded-full w-20 h-20 shadow-2xl transition-all duration-300 ${
-                        isPlaying 
-                          ? 'bg-navy hover:bg-navy/90 scale-90' 
-                          : 'bg-gradient-to-br from-navy/90 to-navy hover:from-navy hover:to-navy/80 hover:scale-110'
+                        isPlaying
+                          ? 'bg-white/20 hover:bg-white/30 scale-90'
+                          : 'bg-white/25 hover:bg-white/35 hover:scale-110'
                       }`}
                     >
                       {isPlaying ? (
@@ -491,7 +488,7 @@ const MediaPlayer = ({
                         {formatTime(currentTime)}
                       </span>
                       <div className="flex-1 h-2 bg-navy/10 dark:bg-navy/30 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-gradient-to-r from-navy/80 to-navy rounded-full transition-all duration-300"
                           style={{ width: `${progressPercentage}%` }}
                         />
