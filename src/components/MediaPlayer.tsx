@@ -375,7 +375,11 @@ const MediaPlayer = ({
         </div>
 
         {/* Content */}
-        <div className="min-h-0 space-y-3 overflow-y-auto p-3 sm:p-4">
+        <div className={`min-h-0 space-y-3 overflow-y-auto ${
+          contentType === 'video'
+            ? 'flex-1 flex flex-col justify-center p-0 overflow-hidden'
+            : 'p-3 sm:p-4'
+        }`}>
           {/* Tips for hypnosis - compact */}
           {contentType === 'hypnosis' && (
             <div className="bg-navy/5 dark:bg-navy/20 p-3 rounded-xl border border-navy/10 dark:border-navy/30 flex-shrink-0">
