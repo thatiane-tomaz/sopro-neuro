@@ -12,8 +12,12 @@ export const WaveBackground: React.FC = () => {
         src={waveBg}
         alt=""
         aria-hidden="true"
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
         className="absolute inset-0 w-full h-full object-cover"
       />
+
       {/* Soft white veil to keep content legible */}
       <div className="absolute inset-0 bg-white/30" />
     </div>
