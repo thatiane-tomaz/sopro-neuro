@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from './use-toast';
+import { useGoogleDeepLink } from './useGoogleDeepLink';
+
 
 interface AuthContextType {
   user: User | null;
