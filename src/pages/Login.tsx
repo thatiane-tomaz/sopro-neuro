@@ -316,9 +316,9 @@ const Login = () => {
   return (
     <AuthShell>
       <AuthHeader
-        title="Entrar"
         subtitle="Entre na sua jornada de transformação."
       />
+
 
       <Tabs defaultValue="login" className="w-full mt-6">
         <TabsList className="grid w-full grid-cols-2 mb-5 bg-[hsl(220_30%_94%)] rounded-xl p-1 h-11">
@@ -515,16 +515,18 @@ function AuthShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function AuthHeader({ title, subtitle }: { title: string; subtitle: string }) {
+function AuthHeader({ title, subtitle }: { title?: string; subtitle?: string }) {
   return (
     <div className="text-center">
       <div className="flex items-center justify-center mb-3">
         <img src={soproLogo} alt="Sopro Neuro" className="h-11 w-auto object-contain" />
       </div>
-      <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
-        {title}
-      </h1>
-      <p className="text-sm text-muted-foreground mt-1.5 leading-snug">{subtitle}</p>
+      {title && (
+        <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
+          {title}
+        </h1>
+      )}
+      {subtitle && <p className="text-sm text-muted-foreground mt-1.5 leading-snug">{subtitle}</p>}
     </div>
   );
 }
