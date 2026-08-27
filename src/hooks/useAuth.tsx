@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from './use-toast';
+import { useGoogleDeepLink } from './useGoogleDeepLink';
+
 
 interface AuthContextType {
   user: User | null;
@@ -22,6 +24,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  useGoogleDeepLink();
+
 
   useEffect(() => {
     let isMounted = true;
