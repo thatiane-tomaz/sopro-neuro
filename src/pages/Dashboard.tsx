@@ -69,7 +69,7 @@ import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
-import soproLogo from "@/assets/sopro-logo.png";
+import soproLogo from "@/assets/sopro-logo.webp";
 import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
 import { useChatPrompts } from "@/hooks/useChatPrompts";
 import { useJourneyReview } from "@/hooks/useJourneyReview";

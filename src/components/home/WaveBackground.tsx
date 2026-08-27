@@ -1,5 +1,5 @@
 import React from "react";
-import waveBg from "@/assets/wave-bg.png";
+import waveBg from "@/assets/wave-bg.webp";
 
 /**
  * Background image of organic flowing waves (provided by the brand).
