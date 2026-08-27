@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,27 +6,31 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ErrorLoggerProvider } from "@/components/ErrorLoggerProvider";
+import PageLoader from "@/components/home/PageLoader";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Jornada from "./pages/Jornada";
-import Chat from "./pages/Chat";
-import Controle from "./pages/Controle";
-import Progresso from "./pages/Progresso";
-import Onboarding from "./pages/Onboarding";
-import Paywall from "./pages/Paywall";
-import Settings from "./pages/Settings";
-import Terms from "./pages/Terms";
-import Privacy from "./pages/Privacy";
-import DeleteAccount from "./pages/DeleteAccount";
-import CancelSubscription from "./pages/CancelSubscription";
-import FAQ from "./pages/FAQ";
-import NotFound from "./pages/NotFound";
-import Install from "./pages/Install";
-import FeedbackPreview from "./pages/FeedbackPreview";
-import EmailConfirmed from "./pages/EmailConfirmed";
-import ErrorLogs from "./pages/ErrorLogs";
-import Mural from "./pages/Mural";
+
+// Rotas secundárias carregadas sob demanda (code splitting)
+const Jornada = lazy(() => import("./pages/Jornada"));
+const Chat = lazy(() => import("./pages/Chat"));
+const Controle = lazy(() => import("./pages/Controle"));
+const Progresso = lazy(() => import("./pages/Progresso"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+const Paywall = lazy(() => import("./pages/Paywall"));
+const Settings = lazy(() => import("./pages/Settings"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const DeleteAccount = lazy(() => import("./pages/DeleteAccount"));
+const CancelSubscription = lazy(() => import("./pages/CancelSubscription"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Install = lazy(() => import("./pages/Install"));
+const FeedbackPreview = lazy(() => import("./pages/FeedbackPreview"));
+const EmailConfirmed = lazy(() => import("./pages/EmailConfirmed"));
+const ErrorLogs = lazy(() => import("./pages/ErrorLogs"));
+const Mural = lazy(() => import("./pages/Mural"));
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
