@@ -392,7 +392,9 @@ const Login = () => {
               Entrar
             </PrimaryButton>
           </form>
+          <GoogleAuthButton label="Entrar com Google" />
         </TabsContent>
+
 
         <TabsContent value="register">
           <form onSubmit={handleSignup} className="space-y-4">
