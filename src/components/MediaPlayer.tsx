@@ -430,16 +430,25 @@ const MediaPlayer = ({
             onContextMenu={(e) => e.preventDefault()}
           >
             {contentType === 'video' ? (
-              <div className="relative">
+              <div className="relative h-full w-full flex items-center justify-center bg-black">
                 <video
                   ref={mediaRef as React.RefObject<HTMLVideoElement>}
-                  className="w-full h-auto max-h-[50dvh]"
+                  className="h-full w-full max-h-none object-contain"
                   controls
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
                   autoPlay
                   playsInline
-                  onPlay={() => { setIsPlaying(true); setHasStartedPlaying(true); }}
+                  onPlay={() => {
+                    setIsPlaying(true);
+                    setHasStartedPlaying(true);
+                    const el = mediaRef.current as HTMLVideoElement | null;
+                    if (el && typeof el.requestFullscreen === 'function') {
+                      el.requestFullscreen().catch(() => {});
+                    } else if (el && 'webkitEnterFullScreen' in el) {
+                      try { (el as any).webkitEnterFullScreen(); } catch {}
+                    }
+                  }}
                   onPause={() => setIsPlaying(false)}
                   onContextMenu={(e) => e.preventDefault()}
                   onError={(e) => {
