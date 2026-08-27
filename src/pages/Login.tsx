@@ -463,8 +463,10 @@ const Login = () => {
               </div>
             )}
           </form>
+          <GoogleAuthButton label="Cadastrar com Google" />
         </TabsContent>
       </Tabs>
+
 
       <div className="text-center text-xs mt-6 pt-5 border-t border-[hsl(220_30%_94%)]">
         <p className="text-muted-foreground mb-1">Ao cadastrar, você concorda com nossos</p>
