@@ -336,30 +336,40 @@ const MediaPlayer = ({
           : 'max-w-md max-h-[82dvh] rounded-3xl'
       }`}>
         {/* Header */}
-        <div className="relative flex-shrink-0 border-b border-primary/10 bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-4 py-3">
+        <div className={`relative flex-shrink-0 border-b border-primary/10 px-4 py-3 ${
+          contentType === 'video'
+            ? 'absolute left-0 right-0 top-0 z-10 bg-gradient-to-b from-black/60 to-transparent border-0'
+            : 'bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)]'
+        }`}>
           <div className="flex items-center gap-3">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-              contentType === 'video' 
-                ? 'bg-sky-100 dark:bg-sky-900/30' 
-                : 'bg-navy/10 dark:bg-navy/30'
+              contentType === 'video'
+                ? 'bg-white/15'
+                : contentType === 'video'
+                  ? 'bg-sky-100 dark:bg-sky-900/30'
+                  : 'bg-navy/10 dark:bg-navy/30'
             }`}>
               {contentType === 'video' ? (
-                <Play className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+                <Play className="h-5 w-5 text-white" />
               ) : (
                 <Headphones className="h-5 w-5 text-navy dark:text-navy-foreground" />
               )}
             </div>
             <div className="flex-1">
-              <h2 className="text-base font-semibold text-foreground leading-tight">{title}</h2>
-              <p className="text-xs text-muted-foreground">
+              <h2 className={`text-base font-semibold leading-tight ${contentType === 'video' ? 'text-white' : 'text-foreground'}`}>{title}</h2>
+              <p className={`text-xs ${contentType === 'video' ? 'text-white/80' : 'text-muted-foreground'}`}>
                 {contentType === 'video' ? 'Vídeo' : 'Hipnose'}
               </p>
             </div>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               onClick={handleClose}
-              className="rounded-full hover:bg-primary/10 text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px]"
+              className={`rounded-full min-w-[44px] min-h-[44px] ${
+                contentType === 'video'
+                  ? 'hover:bg-white/20 text-white/90 hover:text-white'
+                  : 'hover:bg-primary/10 text-muted-foreground hover:text-foreground'
+              }`}
             >
               <X className="h-6 w-6" />
             </Button>
