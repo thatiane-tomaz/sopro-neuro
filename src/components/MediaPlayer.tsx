@@ -325,33 +325,49 @@ const MediaPlayer = ({
   const progressPercentage = duration > 0 && isFinite(duration) ? (currentTime / duration) * 100 : 0;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-end justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 backdrop-blur-sm sm:items-center sm:pt-8">
-      <div className="relative my-auto flex w-full max-w-md max-h-[82dvh] flex-col overflow-hidden rounded-3xl bg-background shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
+    <div className={`fixed inset-0 z-[100] flex justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] backdrop-blur-sm ${
+      contentType === 'video'
+        ? 'items-stretch p-0'
+        : 'items-end px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 sm:items-center sm:pt-8'
+    }`}>
+      <div className={`relative my-auto flex w-full flex-col overflow-hidden bg-background shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200 ${
+        contentType === 'video'
+          ? 'h-full max-h-none rounded-none'
+          : 'max-w-md max-h-[82dvh] rounded-3xl'
+      }`}>
         {/* Header */}
-        <div className="relative flex-shrink-0 border-b border-primary/10 bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-4 py-3">
+        <div className={`relative flex-shrink-0 border-b border-primary/10 px-4 py-3 ${
+          contentType === 'video'
+            ? 'absolute left-0 right-0 top-0 z-10 bg-gradient-to-b from-black/60 to-transparent border-0'
+            : 'bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)]'
+        }`}>
           <div className="flex items-center gap-3">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-              contentType === 'video' 
-                ? 'bg-sky-100 dark:bg-sky-900/30' 
+              contentType === 'video'
+                ? 'bg-white/15'
                 : 'bg-navy/10 dark:bg-navy/30'
             }`}>
               {contentType === 'video' ? (
-                <Play className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+                <Play className="h-5 w-5 text-white" />
               ) : (
                 <Headphones className="h-5 w-5 text-navy dark:text-navy-foreground" />
               )}
             </div>
             <div className="flex-1">
-              <h2 className="text-base font-semibold text-foreground leading-tight">{title}</h2>
-              <p className="text-xs text-muted-foreground">
+              <h2 className={`text-base font-semibold leading-tight ${contentType === 'video' ? 'text-white' : 'text-foreground'}`}>{title}</h2>
+              <p className={`text-xs ${contentType === 'video' ? 'text-white/80' : 'text-muted-foreground'}`}>
                 {contentType === 'video' ? 'Vídeo' : 'Hipnose'}
               </p>
             </div>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               onClick={handleClose}
-              className="rounded-full hover:bg-primary/10 text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px]"
+              className={`rounded-full min-w-[44px] min-h-[44px] ${
+                contentType === 'video'
+                  ? 'hover:bg-white/20 text-white/90 hover:text-white'
+                  : 'hover:bg-primary/10 text-muted-foreground hover:text-foreground'
+              }`}
             >
               <X className="h-6 w-6" />
             </Button>
@@ -359,7 +375,11 @@ const MediaPlayer = ({
         </div>
 
         {/* Content */}
-        <div className="min-h-0 space-y-3 overflow-y-auto p-3 sm:p-4">
+        <div className={`min-h-0 space-y-3 overflow-y-auto ${
+          contentType === 'video'
+            ? 'flex-1 flex flex-col justify-center p-0 overflow-hidden'
+            : 'p-3 sm:p-4'
+        }`}>
           {/* Tips for hypnosis - compact */}
           {contentType === 'hypnosis' && (
             <div className="bg-navy/5 dark:bg-navy/20 p-3 rounded-xl border border-navy/10 dark:border-navy/30 flex-shrink-0">
@@ -410,16 +430,25 @@ const MediaPlayer = ({
             onContextMenu={(e) => e.preventDefault()}
           >
             {contentType === 'video' ? (
-              <div className="relative">
+              <div className="relative h-full w-full flex items-center justify-center bg-black">
                 <video
                   ref={mediaRef as React.RefObject<HTMLVideoElement>}
-                  className="w-full h-auto max-h-[50dvh]"
+                  className="h-full w-full max-h-none object-contain"
                   controls
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
                   autoPlay
                   playsInline
-                  onPlay={() => { setIsPlaying(true); setHasStartedPlaying(true); }}
+                  onPlay={() => {
+                    setIsPlaying(true);
+                    setHasStartedPlaying(true);
+                    const el = mediaRef.current as HTMLVideoElement | null;
+                    if (el && typeof el.requestFullscreen === 'function') {
+                      el.requestFullscreen().catch(() => {});
+                    } else if (el && 'webkitEnterFullScreen' in el) {
+                      try { (el as any).webkitEnterFullScreen(); } catch {}
+                    }
+                  }}
                   onPause={() => setIsPlaying(false)}
                   onContextMenu={(e) => e.preventDefault()}
                   onError={(e) => {
