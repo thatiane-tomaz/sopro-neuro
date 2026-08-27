@@ -34,7 +34,7 @@ import WaveBackground from "@/components/home/WaveBackground";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import { getStartHereVideoUrl } from "@/lib/startHereVideo";
-import soproLogo from "@/assets/sopro-logo.png";
+import soproLogo from "@/assets/sopro-logo.webp";
 
 const getGreeting = () => {
   const h = new Date().getHours();

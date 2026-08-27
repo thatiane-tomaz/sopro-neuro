@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useIsNativeIOS } from "@/hooks/useIsNativeIOS";
-import soproLogo from "@/assets/sopro-logo.png";
+import soproLogo from "@/assets/sopro-logo.webp";
 import WaveBackground from "@/components/home/WaveBackground";
 import { loginSchema, signupSchema } from "@/lib/validations";
 import { signInWithGoogle } from "@/lib/googleAuth";

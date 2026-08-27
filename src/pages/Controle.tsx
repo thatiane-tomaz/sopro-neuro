@@ -30,7 +30,7 @@ import MediaPlayer from "@/components/MediaPlayer";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
-import soproLogo from "@/assets/sopro-logo.png";
+import soproLogo from "@/assets/sopro-logo.webp";
 
 const HYPNOSIS_BUCKET = "hypnosis";
 

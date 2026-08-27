@@ -1,5 +1,5 @@
 import WaveBackground from "@/components/home/WaveBackground";
-import soproLogo from "@/assets/sopro-logo.png";
+import soproLogo from "@/assets/sopro-logo.webp";
 
 /**
  * Branded full-screen loader used across the app.

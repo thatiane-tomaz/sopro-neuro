@@ -435,10 +435,12 @@ const MediaPlayer = ({
                   ref={mediaRef as React.RefObject<HTMLVideoElement>}
                   className="h-full w-full max-h-none object-contain"
                   controls
+                  preload="auto"
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
                   autoPlay
                   playsInline
+
                   onPlay={() => {
                     setIsPlaying(true);
                     setHasStartedPlaying(true);

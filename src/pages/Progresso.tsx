@@ -56,7 +56,7 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
-import soproLogo from "@/assets/sopro-logo.png";
+import soproLogo from "@/assets/sopro-logo.webp";
 
 const getGreeting = () => {
   const h = new Date().getHours();

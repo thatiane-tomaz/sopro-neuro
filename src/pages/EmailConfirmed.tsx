@@ -1,6 +1,6 @@
 import { CheckCircle, Smartphone } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import soproLogo from "@/assets/sopro-logo.png";
+import soproLogo from "@/assets/sopro-logo.webp";
 
 const EmailConfirmed = () => {
   return (
