@@ -13,6 +13,7 @@ import soproLogo from "@/assets/sopro-logo.png";
 import WaveBackground from "@/components/home/WaveBackground";
 import { loginSchema, signupSchema } from "@/lib/validations";
 import { signInWithGoogle } from "@/lib/googleAuth";
+import { signInWithApple, isAppleSignInAvailable } from "@/lib/appleAuth";
 
 
 const Login = () => {
@@ -395,6 +396,7 @@ const Login = () => {
             </PrimaryButton>
           </form>
           <GoogleAuthButton label="Entrar com Google" />
+          <AppleAuthButton label="Continuar com Apple" />
         </TabsContent>
 
 
@@ -466,6 +468,7 @@ const Login = () => {
             )}
           </form>
           <GoogleAuthButton label="Cadastrar com Google" />
+          <AppleAuthButton label="Continuar com Apple" />
         </TabsContent>
       </Tabs>
 
@@ -678,5 +681,43 @@ function GoogleAuthButton({ label }: { label: string }) {
   );
 }
 
+
+function AppleAuthButton({ label }: { label: string }) {
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+
+  if (!isAppleSignInAvailable()) return null;
+
+  const handleClick = async () => {
+    setLoading(true);
+    const { error, canceled } = await signInWithApple();
+    if (error || canceled) {
+      setLoading(false);
+      if (error) {
+        toast({
+          title: "Erro ao entrar com Apple",
+          description: error.message || "Tente novamente em instantes.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  return (
+    <div className="mt-3">
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={loading}
+        className="w-full h-12 rounded-xl border border-[hsl(220_30%_90%)] bg-foreground text-background font-semibold text-base flex items-center justify-center gap-3 active:scale-[0.98] transition-transform disabled:opacity-60"
+      >
+        <svg width="18" height="18" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true">
+          <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-36.8-2.8-77 21.3-91.7 21.3-15.6 0-51.2-20.3-79.2-20.3C61.3 141.6 12 184.2 12 271.9c0 25.9 4.7 52.7 14.2 80.3 12.6 36.3 46.7 128 91.7 126.6 23.5-.6 40.1-16.7 70.7-16.7 29.7 0 45.1 16.7 70.7 16.7 45.3-.7 76.2-83.5 88.2-119.9-60.6-28.6-58.8-107-58.8-90.2zM255.2 92.9c17.6-21.3 26.4-45.8 24.4-74.9-25.4 1.5-49 12.4-66.9 32.4-17.6 19.7-27.1 43.9-25.4 71.3 27.4 2.1 51.6-9.1 67.9-28.8z" />
+        </svg>
+        {loading ? "Conectando..." : label}
+      </button>
+    </div>
+  );
+}
 
 export default Login;
