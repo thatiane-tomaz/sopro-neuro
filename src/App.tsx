@@ -57,30 +57,33 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <ErrorLoggerProvider>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/jornada" element={<Jornada />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/controle" element={<Controle />} />
-              <Route path="/progresso" element={<Progresso />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/paywall" element={<Paywall />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/install" element={<Install />} />
-              <Route path="/email-confirmed" element={<EmailConfirmed />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/delete-account" element={<DeleteAccount />} />
-              <Route path="/cancel-subscription" element={<CancelSubscription />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/error-logs" element={<ErrorLogs />} />
-              <Route path="/mural" element={<Mural />} />
-              <Route path="/feedback-preview" element={<FeedbackPreview />} />
-              <Route path="/404" element={<NotFound />} />
-              <Route path="*" element={<Navigate to="/404" replace />} />
-            </Routes>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/jornada" element={<Jornada />} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/controle" element={<Controle />} />
+                <Route path="/progresso" element={<Progresso />} />
+                <Route path="/onboarding" element={<Onboarding />} />
+                <Route path="/paywall" element={<Paywall />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/install" element={<Install />} />
+                <Route path="/email-confirmed" element={<EmailConfirmed />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/delete-account" element={<DeleteAccount />} />
+                <Route path="/cancel-subscription" element={<CancelSubscription />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/error-logs" element={<ErrorLogs />} />
+                <Route path="/mural" element={<Mural />} />
+                <Route path="/feedback-preview" element={<FeedbackPreview />} />
+                <Route path="/404" element={<NotFound />} />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+            </Suspense>
+
           </ErrorLoggerProvider>
         </AuthProvider>
       </BrowserRouter>
