@@ -345,9 +345,7 @@ const MediaPlayer = ({
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
               contentType === 'video'
                 ? 'bg-white/15'
-                : contentType === 'video'
-                  ? 'bg-sky-100 dark:bg-sky-900/30'
-                  : 'bg-navy/10 dark:bg-navy/30'
+                : 'bg-navy/10 dark:bg-navy/30'
             }`}>
               {contentType === 'video' ? (
                 <Play className="h-5 w-5 text-white" />
