@@ -325,8 +325,16 @@ const MediaPlayer = ({
   const progressPercentage = duration > 0 && isFinite(duration) ? (currentTime / duration) * 100 : 0;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-end justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 backdrop-blur-sm sm:items-center sm:pt-8">
-      <div className="relative my-auto flex w-full max-w-md max-h-[82dvh] flex-col overflow-hidden rounded-3xl bg-background shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
+    <div className={`fixed inset-0 z-[100] flex justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] backdrop-blur-sm ${
+      contentType === 'video'
+        ? 'items-stretch p-0'
+        : 'items-end px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 sm:items-center sm:pt-8'
+    }`}>
+      <div className={`relative my-auto flex w-full flex-col overflow-hidden bg-background shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200 ${
+        contentType === 'video'
+          ? 'h-full max-h-none rounded-none'
+          : 'max-w-md max-h-[82dvh] rounded-3xl'
+      }`}>
         {/* Header */}
         <div className="relative flex-shrink-0 border-b border-primary/10 bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-4 py-3">
           <div className="flex items-center gap-3">
