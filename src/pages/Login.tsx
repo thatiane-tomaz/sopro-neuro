@@ -12,6 +12,8 @@ import { useIsNativeIOS } from "@/hooks/useIsNativeIOS";
 import soproLogo from "@/assets/sopro-logo.png";
 import WaveBackground from "@/components/home/WaveBackground";
 import { loginSchema, signupSchema } from "@/lib/validations";
+import { signInWithGoogle } from "@/lib/googleAuth";
+
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
