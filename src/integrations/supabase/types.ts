@@ -224,6 +224,33 @@ export type Database = {
         }
         Relationships: []
       }
+      content_views_backup: {
+        Row: {
+          backed_up_at: string
+          content_identifier: string
+          content_type: string
+          id: string
+          user_id: string
+          viewed_at: string
+        }
+        Insert: {
+          backed_up_at?: string
+          content_identifier: string
+          content_type: string
+          id?: string
+          user_id: string
+          viewed_at?: string
+        }
+        Update: {
+          backed_up_at?: string
+          content_identifier?: string
+          content_type?: string
+          id?: string
+          user_id?: string
+          viewed_at?: string
+        }
+        Relationships: []
+      }
       daily_content: {
         Row: {
           created_at: string
@@ -434,6 +461,33 @@ export type Database = {
         }
         Relationships: []
       }
+      historico_jornada_usuario_backup: {
+        Row: {
+          backed_up_at: string
+          created_at: string
+          habitos_selecionados: Json | null
+          id: string
+          jornada: string
+          user_id: string
+        }
+        Insert: {
+          backed_up_at?: string
+          created_at?: string
+          habitos_selecionados?: Json | null
+          id?: string
+          jornada: string
+          user_id: string
+        }
+        Update: {
+          backed_up_at?: string
+          created_at?: string
+          habitos_selecionados?: Json | null
+          id?: string
+          jornada?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       journey_tracking: {
         Row: {
           created_at: string
@@ -456,6 +510,42 @@ export type Database = {
           user_id: string
         }
         Update: {
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          interaction_type?: string
+          progress_percentage?: number | null
+          started_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      journey_tracking_backup: {
+        Row: {
+          backed_up_at: string
+          created_at: string
+          finished_at: string | null
+          id: string
+          interaction_type: string
+          progress_percentage: number | null
+          started_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          backed_up_at?: string
+          created_at?: string
+          finished_at?: string | null
+          id?: string
+          interaction_type: string
+          progress_percentage?: number | null
+          started_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          backed_up_at?: string
           created_at?: string
           finished_at?: string | null
           id?: string
@@ -864,6 +954,48 @@ export type Database = {
           },
         ]
       }
+      resultado_missao_usuario_backup: {
+        Row: {
+          backed_up_at: string
+          consentiu_postar: boolean
+          created_at: string
+          habito_id: string
+          id: string
+          performance: Database["public"]["Enums"]["missao_performance"] | null
+          postado_no_mural: boolean
+          resumo_mural: string | null
+          transcript: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          backed_up_at?: string
+          consentiu_postar?: boolean
+          created_at?: string
+          habito_id: string
+          id?: string
+          performance?: Database["public"]["Enums"]["missao_performance"] | null
+          postado_no_mural?: boolean
+          resumo_mural?: string | null
+          transcript?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          backed_up_at?: string
+          consentiu_postar?: boolean
+          created_at?: string
+          habito_id?: string
+          id?: string
+          performance?: Database["public"]["Enums"]["missao_performance"] | null
+          postado_no_mural?: boolean
+          resumo_mural?: string | null
+          transcript?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           amount_paid: number | null
@@ -1000,6 +1132,51 @@ export type Database = {
           user_id: string
         }
         Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_app_access?: string
+          last_completed_at?: string | null
+          last_completed_day?: number | null
+          last_completed_label?: string | null
+          last_completed_type?: string | null
+          max_unlocked_day?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_progress_summary_backup: {
+        Row: {
+          backed_up_at: string
+          created_at: string
+          email: string | null
+          id: string
+          last_app_access: string
+          last_completed_at: string | null
+          last_completed_day: number | null
+          last_completed_label: string | null
+          last_completed_type: string | null
+          max_unlocked_day: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          backed_up_at?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_app_access?: string
+          last_completed_at?: string | null
+          last_completed_day?: number | null
+          last_completed_label?: string | null
+          last_completed_type?: string | null
+          max_unlocked_day?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          backed_up_at?: string
           created_at?: string
           email?: string | null
           id?: string
