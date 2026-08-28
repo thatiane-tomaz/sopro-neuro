@@ -203,27 +203,11 @@ export default function Jornada() {
       return 0;
     });
 
-    // Remaining habits (not fixed and not selected) — appear as future/locked
-    // so the user sees the full journey ahead.
-    const selectedIds = new Set(selected.map((h) => h.id));
-    const rest = allHabitos
-      .filter(
-        (h) =>
-          !fixedIds.has(h.id) &&
-          !selectedIds.has(h.id),
-      )
-      .sort((a, b) => {
-        const pa = a.posicao != null ? Number(a.posicao) : Infinity;
-        const pb = b.posicao != null ? Number(b.posicao) : Infinity;
-        if (pa !== pb) return pa - pb;
-        return String(a.habito_titulo).localeCompare(String(b.habito_titulo), "pt-BR");
-      });
+    // A jornada mostra APENAS os temas fixos + os gatilhos que o usuário
+    // escolheu no onboarding. Temas não escolhidos não entram na jornada
+    // (antes apareciam como "futuros" e pareciam gatilhos atribuídos pela IA).
+    const ordered = [...fixed, ...selected];
 
-    const ordered = [
-      ...fixed,
-      ...selected,
-      ...rest,
-    ];
     return ordered.map((h, idx) => ({
       id: h.id,
       seq: idx + 1,
