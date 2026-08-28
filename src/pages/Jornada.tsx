@@ -218,7 +218,7 @@ export default function Jornada() {
       hasVideo: h.video !== false,
       hasHipnose: h.hipnose !== false,
       isIntro: fixedIds.has(h.id),
-      isSelected: fixedIds.has(h.id) || selectedIds.has(h.id),
+      isSelected: true,
     }));
   }, [allHabitos, habitosSelecionados]);
 
