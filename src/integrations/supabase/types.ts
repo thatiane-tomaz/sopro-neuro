@@ -557,6 +557,60 @@ export type Database = {
         }
         Relationships: []
       }
+      onboarding_responses_backup: {
+        Row: {
+          age: string | null
+          backed_up_at: string
+          cigarettes_per_day: number | null
+          completed_at: string
+          gender: string | null
+          id: string
+          last_cigarette_date: string | null
+          smoking_fears: string[] | null
+          smoking_frequency: string | null
+          smoking_reasons: string[] | null
+          smoking_types: string[] | null
+          user_id: string
+          vapes_per_month: number | null
+          weekly_cost: string | null
+          weekly_cost_value: number | null
+        }
+        Insert: {
+          age?: string | null
+          backed_up_at?: string
+          cigarettes_per_day?: number | null
+          completed_at?: string
+          gender?: string | null
+          id?: string
+          last_cigarette_date?: string | null
+          smoking_fears?: string[] | null
+          smoking_frequency?: string | null
+          smoking_reasons?: string[] | null
+          smoking_types?: string[] | null
+          user_id: string
+          vapes_per_month?: number | null
+          weekly_cost?: string | null
+          weekly_cost_value?: number | null
+        }
+        Update: {
+          age?: string | null
+          backed_up_at?: string
+          cigarettes_per_day?: number | null
+          completed_at?: string
+          gender?: string | null
+          id?: string
+          last_cigarette_date?: string | null
+          smoking_fears?: string[] | null
+          smoking_frequency?: string | null
+          smoking_reasons?: string[] | null
+          smoking_types?: string[] | null
+          user_id?: string
+          vapes_per_month?: number | null
+          weekly_cost?: string | null
+          weekly_cost_value?: number | null
+        }
+        Relationships: []
+      }
       onboarding_responses_v2: {
         Row: {
           created_at: string
@@ -577,6 +631,39 @@ export type Database = {
           user_id: string
         }
         Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          jornada_inicial?: string
+          respostas?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      onboarding_responses_v2_backup: {
+        Row: {
+          backed_up_at: string
+          created_at: string
+          email: string | null
+          id: string
+          jornada_inicial: string
+          respostas: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          backed_up_at?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          jornada_inicial: string
+          respostas?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          backed_up_at?: string
           created_at?: string
           email?: string | null
           id?: string
