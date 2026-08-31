@@ -211,11 +211,11 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepIndex]);
 
-  // Auto-scroll: always pin the chat to the very bottom (instant, runs after layout settles)
+  // Auto-scroll: pin chat to the bottom, and show the options from their start
   useEffect(() => {
     const pin = () => {
       scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-      inputScrollRef.current?.scrollTo({ top: inputScrollRef.current.scrollHeight });
+      inputScrollRef.current?.scrollTo({ top: 0 });
     };
     pin();
     const t1 = setTimeout(pin, 60);
@@ -225,6 +225,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
       clearTimeout(t2);
     };
   }, [messages, typing, stepIndex]);
+
 
   const advance = (userLabel?: string) => {
     if (userLabel) {
