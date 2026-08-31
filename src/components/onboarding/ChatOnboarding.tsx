@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ArrowRight, Send } from "lucide-react";
 import brainAvatar from "@/assets/brain/neo.webp";
 import type { OnboardingData } from "@/pages/Onboarding";
@@ -21,9 +22,10 @@ type BotStep =
     }
   | {
       key: keyof OnboardingData;
-      kind: "text" | "number" | "money";
+      kind: "text" | "number" | "money" | "longtext";
       text: (d: OnboardingData) => string;
       placeholder?: string;
+      optional?: boolean;
       suffix?: string;
       prefix?: string;
     }
@@ -157,6 +159,16 @@ const buildSteps = (): BotStep[] => [
     options: SUBSTANCE_OPTIONS.map((o) => ({ label: o.label })),
   },
   {
+    key: "cigaretteStory",
+    kind: "longtext",
+    optional: true,
+    text: (d) =>
+      past(d)
+        ? "Pra fechar, quer me contar com suas palavras como era a sua relação com o cigarro? Escreva o quanto quiser (ou toque em pular)."
+        : "Pra fechar, quer me contar com suas palavras como é a sua relação com o cigarro? Escreva o quanto quiser (ou toque em pular).",
+    placeholder: "Escreva aqui como você se sente...",
+  },
+  {
     key: "insight",
     kind: "info",
     text: (d) => {
@@ -281,6 +293,10 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
       updateData({ [key]: v } as Partial<OnboardingData>);
       advance(v);
     }
+  };
+
+  const handleSkip = () => {
+    advance("Prefiro pular");
   };
 
   const toggleMulti = (label: string) => {
@@ -468,6 +484,41 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                 >
                   Enviar {multiSel.length > 0 && `(${multiSel.length})`}
                 </Button>
+              </div>
+            )}
+
+            {current.kind === "longtext" && (
+              <div className="space-y-3">
+                <Textarea
+                  autoFocus
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  placeholder={current.placeholder}
+                  rows={4}
+                  className="rounded-2xl bg-white border-white resize-none"
+                />
+                <div className="flex items-center gap-2">
+                  {current.optional && (
+                    <Button
+                      variant="ghost"
+                      onClick={handleSkip}
+                      className="h-12 rounded-full flex-1 text-muted-foreground"
+                    >
+                      Pular
+                    </Button>
+                  )}
+                  <Button
+                    onClick={handleTextSubmit}
+                    disabled={!inputText.trim()}
+                    className="h-12 rounded-full flex-1 text-white"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(230 75% 55%) 45%, hsl(var(--lilac)) 100%)",
+                    }}
+                  >
+                    Enviar
+                  </Button>
+                </div>
               </div>
             )}
 
