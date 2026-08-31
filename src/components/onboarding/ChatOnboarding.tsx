@@ -496,8 +496,9 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder={current.placeholder}
                   rows={4}
-                  className="rounded-2xl bg-white border-white resize-none"
+                  className="rounded-2xl bg-white border-white resize-none text-[16px]"
                 />
+
                 <div className="flex items-center gap-2">
                   {current.optional && (
                     <Button
@@ -540,7 +541,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                       if (e.key === "Enter") handleTextSubmit();
                     }}
                     placeholder={current.placeholder}
-                    className={`h-12 rounded-full bg-white border-white ${
+                    className={`h-12 rounded-full bg-white border-white text-[16px] ${
                       current.prefix ? "pl-10" : "pl-4"
                     } ${current.suffix ? "pr-24" : "pr-4"}`}
                   />
