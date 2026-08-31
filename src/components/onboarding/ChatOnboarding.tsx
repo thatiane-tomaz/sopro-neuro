@@ -541,7 +541,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                       if (e.key === "Enter") handleTextSubmit();
                     }}
                     placeholder={current.placeholder}
-                    className={`h-12 rounded-full bg-white border-white ${
+                    className={`h-12 rounded-full bg-white border-white text-[16px] ${
                       current.prefix ? "pl-10" : "pl-4"
                     } ${current.suffix ? "pr-24" : "pr-4"}`}
                   />
