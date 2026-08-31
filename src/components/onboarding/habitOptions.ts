@@ -16,6 +16,7 @@ export const MOMENT_OPTIONS: { label: string; habito: string }[] = [
   { label: "Ao acordar", habito: "Fumar ao acordar" },
   { label: "Antes de dormir", habito: "Gatilhos automáticos do dia a dia" },
   { label: "Dirigindo", habito: "Gatilhos automáticos do dia a dia" },
+  { label: "Depois do almoço / à tarde", habito: "Fumar após as refeições" },
   { label: "Enquanto trabalho", habito: "Fumar durante o trabalho" },
   { label: "Em festas ou eventos sociais", habito: "Fumar em situações sociais" },
   { label: "Vendo TV / séries / filmes", habito: "Gatilhos automáticos do dia a dia" },
@@ -27,6 +28,8 @@ export const SUBSTANCE_OPTIONS: { label: string; habito: string }[] = [
   { label: "Bebendo álcool", habito: "Fumar em situações sociais" },
   { label: "Tomando café", habito: "Fumar após o café" },
   { label: "Depois das refeições", habito: "Fumar após as refeições" },
+  { label: "Outras", habito: "Gatilhos automáticos do dia a dia" },
+  { label: "Nenhuma", habito: "" },
 ];
 
 export function selectedHabitos(
@@ -35,7 +38,9 @@ export function selectedHabitos(
   substances: string[]
 ): string[] {
   const map = (opts: { label: string; habito: string }[], selected: string[]) =>
-    opts.filter((o) => selected.includes(o.label)).map((o) => o.habito);
+    opts
+      .filter((o) => selected.includes(o.label) && o.habito)
+      .map((o) => o.habito);
   return [
     ...map(EMOTION_OPTIONS, emotions),
     ...map(MOMENT_OPTIONS, moments),
