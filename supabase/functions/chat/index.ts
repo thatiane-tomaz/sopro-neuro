@@ -249,7 +249,7 @@ async function buildUserContext(userId: string): Promise<string> {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  const [profileRes, onboardingRes, progressRes, lastJourneyRes, feedbackRes] =
+  const [profileRes, onboardingRes, onboardingV2Res, progressRes, lastJourneyRes, feedbackRes] =
     await Promise.all([
       admin.from("profiles").select("display_name").eq("user_id", userId).maybeSingle(),
       admin
@@ -258,6 +258,13 @@ async function buildUserContext(userId: string): Promise<string> {
           "age,gender,smoking_frequency,smoking_types,smoking_reasons,smoking_fears,weekly_cost,cigarettes_per_day,vapes_per_week,last_cigarette_date",
         )
         .eq("user_id", userId)
+        .maybeSingle(),
+      admin
+        .from("onboarding_responses_v2")
+        .select("respostas")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(1)
         .maybeSingle(),
       admin
         .from("user_progress_summary")
@@ -282,6 +289,7 @@ async function buildUserContext(userId: string): Promise<string> {
 
   const profile = profileRes.data;
   const onb = onboardingRes.data as any;
+  const onbV2 = (onboardingV2Res.data as any)?.respostas ?? null;
   const progress = progressRes.data;
   const lastDone = lastJourneyRes.data?.[0];
   const feedback = feedbackRes.data ?? [];
@@ -306,6 +314,13 @@ async function buildUserContext(userId: string): Promise<string> {
           : `- Sem fumar há ${dsl} dia(s) (último cigarro em ${onb.last_cigarette_date})`,
       );
     }
+  }
+
+  const story = typeof onbV2?.cigaretteStory === "string" ? onbV2.cigaretteStory.trim() : "";
+  if (story) {
+    lines.push(
+      `- Como ele(a) descreveu a própria relação com o cigarro (nas palavras dele(a), use como base pra acolher, nunca cite literalmente): "${story.slice(0, 800)}"`,
+    );
   }
 
   const day = progress?.max_unlocked_day ?? 1;
