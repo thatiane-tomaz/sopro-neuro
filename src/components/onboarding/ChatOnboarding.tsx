@@ -211,11 +211,11 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepIndex]);
 
-  // Auto-scroll: always pin the chat to the very bottom (instant, runs after layout settles)
+  // Auto-scroll: pin chat to the bottom, and show the options from their start
   useEffect(() => {
     const pin = () => {
       scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-      inputScrollRef.current?.scrollTo({ top: inputScrollRef.current.scrollHeight });
+      inputScrollRef.current?.scrollTo({ top: 0 });
     };
     pin();
     const t1 = setTimeout(pin, 60);
@@ -225,6 +225,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
       clearTimeout(t2);
     };
   }, [messages, typing, stepIndex]);
+
 
   const advance = (userLabel?: string) => {
     if (userLabel) {
@@ -273,7 +274,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
   const isInfo = current?.kind === "info";
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col">
+    <div className="h-[100dvh] max-h-[100dvh] relative overflow-hidden flex flex-col">
       {/* Background */}
       <div
         className="absolute inset-0 -z-20"
@@ -305,7 +306,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
       </div>
 
       {/* Messages (fills remaining space above input) */}
-      <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-3">
+      <div ref={scrollRef} className="flex-1 min-h-[22vh] overflow-y-auto px-4 py-5 space-y-3">
         {messages.map((m, i) => (
           <div
             key={i}
@@ -344,7 +345,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
       </div>
 
       {/* Input area (height adapts to content, capped at 66vh) */}
-      <div ref={inputScrollRef} className="shrink-0 max-h-[66vh] overflow-y-auto border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+      <div ref={inputScrollRef} className="shrink-0 max-h-[72vh] overflow-y-auto border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         {!typing && current && (
           <>
             {isInfo && !isLast && current.key === "intro" && (
