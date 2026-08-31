@@ -16,8 +16,16 @@ import { supabase } from "@/integrations/supabase/client";
 
 async function getAccessToken(): Promise<string> {
   const { data } = await supabase.auth.getSession();
-  return data.session?.access_token ?? "";
+  const session = data.session;
+  const expiresAt = session?.expires_at ? session.expires_at * 1000 : 0;
+  // Refresh proactively: stale tokens in the native webview caused 401s on the chat function.
+  if (!session?.access_token || expiresAt - Date.now() < 60_000) {
+    const { data: refreshed } = await supabase.auth.refreshSession();
+    if (refreshed.session?.access_token) return refreshed.session.access_token;
+  }
+  return session?.access_token ?? "";
 }
+
 import brainDefault from "@/assets/brain/neo.webp";
 
 import {

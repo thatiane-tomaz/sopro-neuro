@@ -185,25 +185,53 @@ Dia 14 — Celebrar a primeira semana sem fumar e consolidar identidade. Conceit
 // Verifies the caller's JWT signature server-side against Supabase Auth and
 // returns the authenticated user id. Never trust the raw token payload.
 async function getVerifiedUserId(authHeader: string | null): Promise<string | null> {
-  if (!authHeader) return null;
+  if (!authHeader) {
+    console.error("auth: missing authorization header");
+    return null;
+  }
   const token = authHeader.replace(/^Bearer\s+/i, "").trim();
-  if (!token) return null;
+  if (!token) {
+    console.error("auth: empty bearer token");
+    return null;
+  }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
-  if (!supabaseUrl || !anonKey) return null;
+  const apiKey =
+    Deno.env.get("SUPABASE_ANON_KEY") ??
+    Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ??
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !apiKey) {
+    console.error("auth: missing SUPABASE_URL or api key env", {
+      hasUrl: !!supabaseUrl,
+      hasAnon: !!Deno.env.get("SUPABASE_ANON_KEY"),
+      hasService: !!Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),
+    });
+    return null;
+  }
 
   try {
-    const client = createClient(supabaseUrl, anonKey, {
-      auth: { persistSession: false },
+    const res = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: apiKey,
+      },
     });
-    const { data, error } = await client.auth.getUser(token);
-    if (error || !data?.user) return null;
-    return data.user.id;
-  } catch {
+    if (!res.ok) {
+      console.error("auth: getUser failed", res.status, (await res.text()).slice(0, 300));
+      return null;
+    }
+    const user = await res.json();
+    if (!user?.id) {
+      console.error("auth: user payload without id");
+      return null;
+    }
+    return user.id as string;
+  } catch (e) {
+    console.error("auth: verification threw", e);
     return null;
   }
 }
+
 
 function daysSince(dateStr: string | null | undefined): number | null {
   if (!dateStr) return null;
@@ -313,7 +341,9 @@ serve(async (req) => {
   }
 
   try {
+    console.log("chat: request received", req.method);
     const { messages, mission, retorno, revisao } = await req.json();
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
