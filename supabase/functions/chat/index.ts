@@ -489,7 +489,7 @@ REGRAS RÍGIDAS:
     }
 
     const requestBody = {
-      model: "google/gemini-2.5-flash",
+      model: "google/gemini-3.7-flash",
       messages: [
         { role: "system", content: SYSTEM_PROMPT + (userContext || "") + missionInstructions + retornoInstructions + revisaoInstructions },
         ...trimmed,
@@ -499,7 +499,8 @@ REGRAS RÍGIDAS:
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Lovable-API-Key": LOVABLE_API_KEY,
+        "X-Lovable-AIG-SDK": "fetch",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(requestBody),
