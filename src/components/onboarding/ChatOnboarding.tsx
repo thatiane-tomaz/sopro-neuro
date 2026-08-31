@@ -455,7 +455,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
 
             {current.kind === "multi" && (
               <div className="space-y-3">
-                <div className="space-y-2 pr-1">
+                <div className="space-y-2 pr-1 max-h-[38vh] overflow-y-auto overscroll-contain">
                   {current.options.map((o) => {
                     const sel = multiSel.includes(o.label);
                     return (
@@ -476,7 +476,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                 <Button
                   onClick={handleMultiSubmit}
                   disabled={multiSel.length === 0}
-                  className="w-full h-11 rounded-full text-white"
+                  className="sticky bottom-0 w-full h-11 rounded-full text-white"
                   style={{
                     background:
                       "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(230 75% 55%) 45%, hsl(var(--lilac)) 100%)",
@@ -486,6 +486,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                 </Button>
               </div>
             )}
+
 
             {current.kind === "longtext" && (
               <div className="space-y-3">
