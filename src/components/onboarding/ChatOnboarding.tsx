@@ -274,7 +274,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
   const isInfo = current?.kind === "info";
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex flex-col">
+    <div className="h-[100dvh] max-h-[100dvh] relative overflow-hidden flex flex-col">
       {/* Background */}
       <div
         className="absolute inset-0 -z-20"
