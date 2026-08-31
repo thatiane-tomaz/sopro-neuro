@@ -193,6 +193,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
   const [inputText, setInputText] = useState("");
   const [multiSel, setMultiSel] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputScrollRef = useRef<HTMLDivElement>(null);
 
   const current = steps[stepIndex];
 
@@ -210,10 +211,20 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepIndex]);
 
-  // Auto-scroll
+  // Auto-scroll: always pin the chat to the very bottom (instant, runs after layout settles)
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, typing]);
+    const pin = () => {
+      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+      inputScrollRef.current?.scrollTo({ top: inputScrollRef.current.scrollHeight });
+    };
+    pin();
+    const t1 = setTimeout(pin, 60);
+    const t2 = setTimeout(pin, 250);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [messages, typing, stepIndex]);
 
   const advance = (userLabel?: string) => {
     if (userLabel) {
