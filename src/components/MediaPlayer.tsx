@@ -34,6 +34,8 @@ const MediaPlayer = ({
   const [error, setError] = useState<string | null>(null);
   const [hasCompleted, setHasCompleted] = useState(false);
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(contentType === 'video');
+
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
   
   // Store callbacks in refs to avoid dependency issues
