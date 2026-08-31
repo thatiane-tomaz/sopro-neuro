@@ -506,235 +506,78 @@ const MediaPlayer = ({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-stretch justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] p-0 backdrop-blur-sm">
-
-      <div className={`relative my-auto flex w-full flex-col overflow-hidden bg-background shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200 ${
-        contentType === 'video'
-          ? 'h-full max-h-none rounded-none'
-          : 'max-w-md max-h-[82dvh] rounded-3xl'
-      }`}>
-        {/* Header */}
-        <div className={`relative flex-shrink-0 border-b border-primary/10 px-4 py-3 ${
-          contentType === 'video'
-            ? 'absolute left-0 right-0 top-0 z-10 bg-gradient-to-b from-black/60 to-transparent border-0'
-            : 'bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)]'
-        }`}>
-          <div className="flex items-center gap-3">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-              contentType === 'video'
-                ? 'bg-white/15'
-                : 'bg-navy/10 dark:bg-navy/30'
-            }`}>
-              {contentType === 'video' ? (
-                <Play className="h-5 w-5 text-white" />
-              ) : (
-                <Headphones className="h-5 w-5 text-navy dark:text-navy-foreground" />
-              )}
+    <div className="fixed inset-0 z-[100] flex items-stretch justify-center bg-black">
+      <div className="relative flex h-full w-full flex-col overflow-hidden animate-in fade-in-0 duration-200">
+        {/* Header overlay */}
+        <div className="absolute left-0 right-0 top-0 z-10 bg-gradient-to-b from-black/70 to-transparent px-4 pb-6 pt-[max(env(safe-area-inset-top),12px)]">
+          <div className="flex items-start gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/55">Vídeo</p>
+              <h2 className="mt-0.5 text-base font-semibold leading-tight text-white text-balance">{title}</h2>
             </div>
-            <div className="flex-1">
-              <h2 className={`text-base font-semibold leading-tight ${contentType === 'video' ? 'text-white' : 'text-foreground'}`}>{title}</h2>
-              <p className={`text-xs ${contentType === 'video' ? 'text-white/80' : 'text-muted-foreground'}`}>
-                {contentType === 'video' ? 'Vídeo' : 'Hipnose'}
-              </p>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={handleClose}
-              className={`rounded-full min-w-[44px] min-h-[44px] ${
-                contentType === 'video'
-                  ? 'hover:bg-white/20 text-white/90 hover:text-white'
-                  : 'hover:bg-primary/10 text-muted-foreground hover:text-foreground'
-              }`}
+              aria-label="Fechar"
+              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-white/90 ring-1 ring-white/15 backdrop-blur transition active:scale-95"
             >
-              <X className="h-6 w-6" />
-            </Button>
+              <X className="h-5 w-5" />
+            </button>
           </div>
         </div>
 
-        {/* Content */}
-        <div className={`min-h-0 space-y-3 overflow-y-auto ${
-          contentType === 'video'
-            ? 'flex-1 flex flex-col justify-center p-0 overflow-hidden'
-            : 'p-3 sm:p-4'
-        }`}>
-          {/* Tips for hypnosis - compact */}
-          {contentType === 'hypnosis' && (
-            <div className="bg-navy/5 dark:bg-navy/20 p-3 rounded-xl border border-navy/10 dark:border-navy/30 flex-shrink-0">
-              <p className="text-xs font-medium text-navy dark:text-navy-foreground mb-2 flex items-center gap-1.5">
-                <Volume2 className="h-3.5 w-3.5" />
-                Dicas para melhor experiência
-              </p>
-              <div className="grid grid-cols-2 gap-1.5">
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
-                  <Sofa className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
-                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Deite-se confortavelmente</span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
-                  <Headphones className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
-                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Use fones de ouvido</span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
-                  <BellOff className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
-                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Modo "Não Perturbe"</span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/60 dark:bg-white/5 rounded-lg px-2 py-1.5">
-                  <BatteryCharging className="h-3.5 w-3.5 text-navy dark:text-navy-foreground flex-shrink-0" />
-                  <span className="text-[11px] text-navy/80 dark:text-navy-foreground/80 leading-tight">Desative economia de bateria</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
-          )}
-          
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/30 rounded-2xl p-4">
-              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-            </div>
-          )}
-
-          {!fileUrl && (
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 dark:border-amber-800/30 rounded-2xl p-4">
-              <p className="text-sm text-amber-600 dark:text-amber-400">Arquivo não encontrado no storage</p>
-            </div>
-          )}
-          
-          {/* Media Player */}
-          <div
-            className={`overflow-hidden ${
-              contentType === 'video'
-                ? 'flex-1 min-h-0 bg-black'
-                : 'rounded-xl bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5 flex-shrink-0'
-            }`}
+        <div
+          className="relative flex h-full w-full flex-1 items-center justify-center bg-black"
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          <video
+            ref={mediaRef as React.RefObject<HTMLVideoElement>}
+            className="h-full w-full object-contain"
+            controls
+            preload="auto"
+            controlsList="nodownload noplaybackrate"
+            disablePictureInPicture
+            autoPlay
+            playsInline
+            onPlay={() => {
+              setIsPlaying(true);
+              setHasStartedPlaying(true);
+            }}
+            onPlaying={() => setIsBuffering(false)}
+            onCanPlay={() => setIsBuffering(false)}
+            onWaiting={() => setIsBuffering(true)}
+            onPause={() => setIsPlaying(false)}
             onContextMenu={(e) => e.preventDefault()}
+            onError={(e) => {
+              const err = e.currentTarget.error;
+              console.error('Video inline error:', { code: err?.code, message: err?.message, src: e.currentTarget.currentSrc });
+            }}
+            onLoadStart={() => {
+              setIsBuffering(true);
+              console.log('Video load started:', fileUrl);
+            }}
           >
-            {contentType === 'video' ? (
-              <div className="relative h-full w-full flex items-center justify-center bg-black">
-                <video
-                  ref={mediaRef as React.RefObject<HTMLVideoElement>}
-                  className="h-full w-full object-contain"
-                  controls
-                  preload="auto"
-                  controlsList="nodownload noplaybackrate"
-                  disablePictureInPicture
-                  autoPlay
-                  playsInline
-                  onPlay={() => {
-                    setIsPlaying(true);
-                    setHasStartedPlaying(true);
-                  }}
-                  onPlaying={() => setIsBuffering(false)}
-                  onCanPlay={() => setIsBuffering(false)}
-                  onWaiting={() => setIsBuffering(true)}
-                  onPause={() => setIsPlaying(false)}
-                  onContextMenu={(e) => e.preventDefault()}
-                  onError={(e) => {
-                    const err = e.currentTarget.error;
-                    console.error('Video inline error:', { code: err?.code, message: err?.message, src: e.currentTarget.currentSrc });
-                  }}
-                  onLoadStart={() => {
-                    setIsBuffering(true);
-                    console.log('Video load started:', fileUrl);
-                  }}
-                >
-                  {fileUrl && <source src={fileUrl} type="video/mp4" />}
-                  Seu navegador não suporta vídeo HTML5.
-                </video>
+            {fileUrl && <source src={fileUrl} type="video/mp4" />}
+            Seu navegador não suporta vídeo HTML5.
+          </video>
 
-                {isBuffering && !error && (
-                  <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70">
-                    <Loader2 className="h-9 w-9 animate-spin text-white/90" />
-                    <p className="text-xs font-medium text-white/80">Carregando vídeo...</p>
-                  </div>
-                )}
-              </div>
-            ) : (
+          {isBuffering && !error && (
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70">
+              <Loader2 className="h-9 w-9 animate-spin text-white/90" />
+              <p className="text-xs font-medium text-white/80">Carregando vídeo...</p>
+            </div>
+          )}
 
-              <div className="relative" onContextMenu={(e) => e.preventDefault()}>
-                <audio
-                  ref={mediaRef as React.RefObject<HTMLAudioElement>}
-                  className="sr-only"
-                  preload="auto"
-                  autoPlay
-                  controlsList="nodownload noplaybackrate"
-                  onPlay={() => setIsPlaying(true)}
-                  onPause={() => setIsPlaying(false)}
-                  onContextMenu={(e) => e.preventDefault()}
-                  onError={(e) => {
-                    const err = e.currentTarget.error;
-                    console.error('Audio inline error:', { code: err?.code, message: err?.message, src: e.currentTarget.currentSrc });
-                    // Don't set error here - let the useEffect handleError manage retries
-                    // setError will only be shown after all retries fail
-                  }}
-                  onLoadStart={() => console.log('Audio load started:', fileUrl)}
-                >
-                  {fileUrl && <source src={fileUrl} type="audio/mpeg" />}
-                  Seu navegador não suporta áudio HTML5.
-                </audio>
-
-                {/* Audio Player Visual */}
-                <div
-                  className="relative aspect-video w-full bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(220_80%_40%)] flex items-center justify-center"
-                  onContextMenu={(e) => e.preventDefault()}
-                >
-                  <div
-                    className="absolute inset-0 opacity-50"
-                    style={{
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                    }}
-                  />
-                  <div className="relative z-10 flex flex-col items-center gap-3">
-                    <div className="h-16 w-16 rounded-full bg-white/15 backdrop-blur flex items-center justify-center ring-1 ring-white/20">
-                      <Headphones className="h-8 w-8 text-white" />
-                    </div>
-                    <Button
-                      onClick={handlePlayPause}
-                      size="lg"
-                      className={`rounded-full w-20 h-20 shadow-2xl transition-all duration-300 ${
-                        isPlaying
-                          ? 'bg-white/20 hover:bg-white/30 scale-90'
-                          : 'bg-white/25 hover:bg-white/35 hover:scale-110'
-                      }`}
-                    >
-                      {isPlaying ? (
-                        <Pause className="h-10 w-10 text-white" />
-                      ) : (
-                        <Play className="h-10 w-10 text-white ml-1" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Progress Bar */}
-                {duration > 0 && (
-                  <div className="px-3 py-2 bg-gradient-to-r from-navy/5 dark:from-navy/20 to-background flex-shrink-0">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-medium text-muted-foreground w-12 text-right">
-                        {formatTime(currentTime)}
-                      </span>
-                      <div className="flex-1 h-2 bg-navy/10 dark:bg-navy/30 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-navy/80 to-navy rounded-full transition-all duration-300"
-                          style={{ width: `${progressPercentage}%` }}
-                        />
-                      </div>
-                      <span className="text-xs font-medium text-muted-foreground w-12">
-                        {formatTime(duration)}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          {(error || !fileUrl) && (
+            <div className="absolute inset-x-6 bottom-24 rounded-2xl bg-white/10 px-4 py-3 text-center text-xs text-white/90 ring-1 ring-white/15 backdrop-blur">
+              {error || 'Arquivo não encontrado no storage'}
+            </div>
+          )}
         </div>
       </div>
     </div>,
     document.body
   );
 };
+
 
 export default MediaPlayer;
