@@ -341,7 +341,9 @@ serve(async (req) => {
   }
 
   try {
+    console.log("chat: request received", req.method);
     const { messages, mission, retorno, revisao } = await req.json();
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
