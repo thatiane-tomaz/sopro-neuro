@@ -451,6 +451,21 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
           toast({ title: "Espera um instante", description: "Muitas mensagens em pouco tempo.", variant: "destructive" });
         } else if (resp.status === 402) {
           toast({ title: "Indisponível agora", description: "Tente novamente em alguns instantes.", variant: "destructive" });
+        } else if (resp.status === 401) {
+          toast({
+            title: "Sua sessão expirou",
+            description: "Entre novamente para continuar a conversa.",
+            variant: "destructive",
+          });
+          setMessages((prev) => prev.slice(0, -1));
+          setIsStreaming(false);
+          try {
+            await supabase.auth.signOut();
+          } catch {
+            // ignore: local storage is cleared by the redirect below anyway
+          }
+          navigate("/login", { replace: true });
+          return;
         } else {
           toast({ title: "Erro", description: "Não consegui responder agora. Tenta de novo?", variant: "destructive" });
         }
@@ -458,6 +473,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
         setIsStreaming(false);
         return;
       }
+
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
