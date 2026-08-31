@@ -21,6 +21,7 @@ export interface OnboardingData {
   habitEmotions: string[];
   habitMoments: string[];
   habitSubstances: string[];
+  cigaretteStory: string;
   journeyType: "reducao" | "abstinencia" | "";
 }
 
@@ -37,6 +38,7 @@ const Onboarding = () => {
     habitEmotions: [],
     habitMoments: [],
     habitSubstances: [],
+    cigaretteStory: "",
     journeyType: ""
   });
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
@@ -185,6 +187,7 @@ const Onboarding = () => {
             habitEmotions: data.habitEmotions,
             habitMoments: data.habitMoments,
             habitSubstances: data.habitSubstances,
+            cigaretteStory: data.cigaretteStory,
             habitosSelecionados: habitos_selecionados,
           },
           jornada_inicial: jornada,
