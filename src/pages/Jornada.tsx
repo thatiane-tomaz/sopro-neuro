@@ -35,6 +35,7 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import { getStartHereVideoUrl } from "@/lib/startHereVideo";
 import soproLogo from "@/assets/sopro-logo.webp";
+import { performLogout } from "@/lib/logout";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -422,8 +423,7 @@ export default function Jornada() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+    await performLogout(navigate);
   };
 
   if (

@@ -57,6 +57,7 @@ import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
 import soproLogo from "@/assets/sopro-logo.webp";
+import { performLogout } from "@/lib/logout";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -358,8 +359,7 @@ export default function Progresso() {
   const [customDate, setCustomDate] = useState<string>("");
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+    await performLogout(navigate);
   };
 
   const openDialog = (date?: string) => {
