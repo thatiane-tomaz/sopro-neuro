@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, X, Headphones, Volume2, Sofa, VolumeX, BellOff, BatteryCharging, Loader2 } from 'lucide-react';
+import { Play, Pause, X, Headphones, Sofa, BellOff, BatteryCharging, Loader2, RotateCcw, RotateCw } from 'lucide-react';
 import { useScrollLock } from '@/hooks/useScrollLock';
 
 
