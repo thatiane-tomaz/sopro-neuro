@@ -344,7 +344,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
       </div>
 
       {/* Input area (height adapts to content, capped at 66vh) */}
-      <div className="shrink-0 max-h-[66vh] overflow-y-auto border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+      <div ref={inputScrollRef} className="shrink-0 max-h-[66vh] overflow-y-auto border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         {!typing && current && (
           <>
             {isInfo && !isLast && current.key === "intro" && (
