@@ -496,8 +496,9 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder={current.placeholder}
                   rows={4}
-                  className="rounded-2xl bg-white border-white resize-none"
+                  className="rounded-2xl bg-white border-white resize-none text-[16px]"
                 />
+
                 <div className="flex items-center gap-2">
                   {current.optional && (
                     <Button
