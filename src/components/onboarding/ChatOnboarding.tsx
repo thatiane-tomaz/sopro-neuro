@@ -284,7 +284,11 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
   };
 
   const toggleMulti = (label: string) => {
-    setMultiSel((s) => (s.includes(label) ? s.filter((x) => x !== label) : [...s, label]));
+    setMultiSel((s) => {
+      if (label === "Nenhuma") return s.includes(label) ? [] : ["Nenhuma"];
+      const base = s.filter((x) => x !== "Nenhuma");
+      return base.includes(label) ? base.filter((x) => x !== label) : [...base, label];
+    });
   };
 
   const handleMultiSubmit = () => {
