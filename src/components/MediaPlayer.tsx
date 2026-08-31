@@ -426,44 +426,55 @@ const MediaPlayer = ({
           
           {/* Media Player */}
           <div
-            className="rounded-xl overflow-hidden bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5 flex-shrink-0"
+            className={`overflow-hidden ${
+              contentType === 'video'
+                ? 'flex-1 min-h-0 bg-black'
+                : 'rounded-xl bg-gradient-to-br from-muted/50 to-muted/30 border border-primary/5 flex-shrink-0'
+            }`}
             onContextMenu={(e) => e.preventDefault()}
           >
             {contentType === 'video' ? (
               <div className="relative h-full w-full flex items-center justify-center bg-black">
                 <video
                   ref={mediaRef as React.RefObject<HTMLVideoElement>}
-                  className="h-full w-full max-h-none object-contain"
+                  className="h-full w-full object-contain"
                   controls
                   preload="auto"
                   controlsList="nodownload noplaybackrate"
                   disablePictureInPicture
                   autoPlay
                   playsInline
-
                   onPlay={() => {
                     setIsPlaying(true);
                     setHasStartedPlaying(true);
-                    const el = mediaRef.current as HTMLVideoElement | null;
-                    if (el && typeof el.requestFullscreen === 'function') {
-                      el.requestFullscreen().catch(() => {});
-                    } else if (el && 'webkitEnterFullScreen' in el) {
-                      try { (el as any).webkitEnterFullScreen(); } catch {}
-                    }
                   }}
+                  onPlaying={() => setIsBuffering(false)}
+                  onCanPlay={() => setIsBuffering(false)}
+                  onWaiting={() => setIsBuffering(true)}
                   onPause={() => setIsPlaying(false)}
                   onContextMenu={(e) => e.preventDefault()}
                   onError={(e) => {
                     const err = e.currentTarget.error;
                     console.error('Video inline error:', { code: err?.code, message: err?.message, src: e.currentTarget.currentSrc });
                   }}
-                  onLoadStart={() => console.log('Video load started:', fileUrl)}
+                  onLoadStart={() => {
+                    setIsBuffering(true);
+                    console.log('Video load started:', fileUrl);
+                  }}
                 >
                   {fileUrl && <source src={fileUrl} type="video/mp4" />}
                   Seu navegador não suporta vídeo HTML5.
                 </video>
+
+                {isBuffering && !error && (
+                  <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70">
+                    <Loader2 className="h-9 w-9 animate-spin text-white/90" />
+                    <p className="text-xs font-medium text-white/80">Carregando vídeo...</p>
+                  </div>
+                )}
               </div>
             ) : (
+
               <div className="relative" onContextMenu={(e) => e.preventDefault()}>
                 <audio
                   ref={mediaRef as React.RefObject<HTMLAudioElement>}
