@@ -260,7 +260,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut({ scope: 'local' });
     if (error) {
       toast({
         title: "Erro ao sair",
