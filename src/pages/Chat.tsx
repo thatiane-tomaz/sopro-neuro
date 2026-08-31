@@ -16,15 +16,26 @@ import { supabase } from "@/integrations/supabase/client";
 
 async function getAccessToken(): Promise<string> {
   const { data } = await supabase.auth.getSession();
-  const session = data.session;
+  let session = data.session;
   const expiresAt = session?.expires_at ? session.expires_at * 1000 : 0;
   // Refresh proactively: stale tokens in the native webview caused 401s on the chat function.
   if (!session?.access_token || expiresAt - Date.now() < 60_000) {
     const { data: refreshed } = await supabase.auth.refreshSession();
-    if (refreshed.session?.access_token) return refreshed.session.access_token;
+    if (refreshed.session?.access_token) session = refreshed.session;
   }
-  return session?.access_token ?? "";
+  if (!session?.access_token) return "";
+
+  // Validate against the auth server: a locally stored token can reference a
+  // session that no longer exists (session_not_found), which the server rejects.
+  const { error } = await supabase.auth.getUser(session.access_token);
+  if (error) {
+    const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
+    if (!refreshError && refreshed.session?.access_token) return refreshed.session.access_token;
+    return "";
+  }
+  return session.access_token;
 }
+
 
 import brainDefault from "@/assets/brain/neo.webp";
 
@@ -440,6 +451,21 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
           toast({ title: "Espera um instante", description: "Muitas mensagens em pouco tempo.", variant: "destructive" });
         } else if (resp.status === 402) {
           toast({ title: "Indisponível agora", description: "Tente novamente em alguns instantes.", variant: "destructive" });
+        } else if (resp.status === 401) {
+          toast({
+            title: "Sua sessão expirou",
+            description: "Entre novamente para continuar a conversa.",
+            variant: "destructive",
+          });
+          setMessages((prev) => prev.slice(0, -1));
+          setIsStreaming(false);
+          try {
+            await supabase.auth.signOut();
+          } catch {
+            // ignore: local storage is cleared by the redirect below anyway
+          }
+          navigate("/login", { replace: true });
+          return;
         } else {
           toast({ title: "Erro", description: "Não consegui responder agora. Tenta de novo?", variant: "destructive" });
         }
@@ -447,6 +473,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
         setIsStreaming(false);
         return;
       }
+
 
       const reader = resp.body.getReader();
       const decoder = new TextDecoder();
