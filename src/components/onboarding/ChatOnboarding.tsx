@@ -192,10 +192,34 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
   const [typing, setTyping] = useState(true);
   const [inputText, setInputText] = useState("");
   const [multiSel, setMultiSel] = useState<string[]>([]);
+  const [visualViewport, setVisualViewport] = useState({ height: 0, offsetTop: 0 });
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputScrollRef = useRef<HTMLDivElement>(null);
 
   const current = steps[stepIndex];
+
+  // iOS browsers may calculate 100dvh behind the address and bottom bars.
+  // Track the actually visible viewport so the answer area remains on screen.
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const updateViewport = () => {
+      setVisualViewport({
+        height: Math.round(viewport?.height ?? window.innerHeight),
+        offsetTop: Math.round(viewport?.offsetTop ?? 0),
+      });
+    };
+
+    updateViewport();
+    viewport?.addEventListener("resize", updateViewport);
+    viewport?.addEventListener("scroll", updateViewport);
+    window.addEventListener("resize", updateViewport);
+
+    return () => {
+      viewport?.removeEventListener("resize", updateViewport);
+      viewport?.removeEventListener("scroll", updateViewport);
+      window.removeEventListener("resize", updateViewport);
+    };
+  }, []);
 
   // Show current bot message with typing delay
   useEffect(() => {
@@ -274,7 +298,13 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
   const isInfo = current?.kind === "info";
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] relative overflow-hidden flex flex-col">
+    <div
+      className="fixed inset-x-0 overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]"
+      style={{
+        top: visualViewport.offsetTop,
+        height: visualViewport.height || "100dvh",
+      }}
+    >
       {/* Background */}
       <div
         className="absolute inset-0 -z-20"
@@ -306,7 +336,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
       </div>
 
       {/* Messages (fills remaining space above input) */}
-      <div ref={scrollRef} className="flex-1 min-h-[22vh] overflow-y-auto px-4 py-5 space-y-3">
+      <div ref={scrollRef} className="min-h-0 overflow-y-auto overscroll-contain px-4 py-5 space-y-3">
         {messages.map((m, i) => (
           <div
             key={i}
@@ -344,8 +374,8 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
         )}
       </div>
 
-      {/* Input area (height adapts to content, capped at 66vh) */}
-      <div ref={inputScrollRef} className="shrink-0 max-h-[72vh] overflow-y-auto border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+      {/* Answer area stays visible; only its own long option lists can scroll. */}
+      <div ref={inputScrollRef} className="min-h-[80px] max-h-[62vh] overflow-y-auto overscroll-contain border-t border-white/60 backdrop-blur-md bg-white/60 px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
         {!typing && current && (
           <>
             {isInfo && !isLast && current.key === "intro" && (
