@@ -16,15 +16,26 @@ import { supabase } from "@/integrations/supabase/client";
 
 async function getAccessToken(): Promise<string> {
   const { data } = await supabase.auth.getSession();
-  const session = data.session;
+  let session = data.session;
   const expiresAt = session?.expires_at ? session.expires_at * 1000 : 0;
   // Refresh proactively: stale tokens in the native webview caused 401s on the chat function.
   if (!session?.access_token || expiresAt - Date.now() < 60_000) {
     const { data: refreshed } = await supabase.auth.refreshSession();
-    if (refreshed.session?.access_token) return refreshed.session.access_token;
+    if (refreshed.session?.access_token) session = refreshed.session;
   }
-  return session?.access_token ?? "";
+  if (!session?.access_token) return "";
+
+  // Validate against the auth server: a locally stored token can reference a
+  // session that no longer exists (session_not_found), which the server rejects.
+  const { error } = await supabase.auth.getUser(session.access_token);
+  if (error) {
+    const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
+    if (!refreshError && refreshed.session?.access_token) return refreshed.session.access_token;
+    return "";
+  }
+  return session.access_token;
 }
+
 
 import brainDefault from "@/assets/brain/neo.webp";
 
