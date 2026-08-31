@@ -337,12 +337,177 @@ const MediaPlayer = ({
 
   const progressPercentage = duration > 0 && isFinite(duration) ? (currentTime / duration) * 100 : 0;
 
+  const handleSeek = (value: number) => {
+    const media = mediaRef.current;
+    if (!media || !duration || !isFinite(duration)) return;
+    media.currentTime = Math.min(Math.max(value, 0), duration);
+    setCurrentTime(media.currentTime);
+  };
+
+  const skip = (seconds: number) => {
+    const media = mediaRef.current;
+    if (!media) return;
+    handleSeek(media.currentTime + seconds);
+  };
+
+  /* ---------------------------- HYPNOSIS LAYOUT ---------------------------- */
+  if (contentType === 'hypnosis') {
+    return createPortal(
+      <div className="fixed inset-0 z-[100] flex flex-col overflow-hidden animate-in fade-in-0 duration-300">
+        {/* Immersive backdrop */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(120% 80% at 50% 0%, hsl(258 75% 32%) 0%, hsl(240 70% 18%) 45%, hsl(230 60% 9%) 100%)',
+          }}
+        />
+        {/* Soft aurora blobs */}
+        <div className="pointer-events-none absolute -top-24 -left-16 h-72 w-72 rounded-full bg-[hsl(258_85%_65%/0.35)] blur-3xl animate-pulse-glow" />
+        <div className="pointer-events-none absolute bottom-0 -right-20 h-80 w-80 rounded-full bg-[hsl(190_85%_55%/0.22)] blur-3xl animate-pulse-glow" />
+
+        <div className="relative flex h-full flex-col px-6 pt-[max(env(safe-area-inset-top),20px)] pb-[max(env(safe-area-inset-bottom),24px)]">
+          {/* Top bar */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/55">
+                Hipnose
+              </p>
+              <h2 className="mt-1 text-xl font-bold leading-tight text-white text-balance">
+                {title}
+              </h2>
+            </div>
+            <button
+              onClick={handleClose}
+              aria-label="Fechar"
+              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-white/80 ring-1 ring-white/15 backdrop-blur transition active:scale-95"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Breathing orb */}
+          <div className="flex flex-1 flex-col items-center justify-center">
+            <div className="relative flex items-center justify-center">
+              <span
+                className={`absolute h-56 w-56 rounded-full bg-white/[0.06] ${isPlaying ? 'animate-breathe' : ''}`}
+              />
+              <span
+                className={`absolute h-44 w-44 rounded-full bg-white/[0.09] ${isPlaying ? 'animate-breathe' : ''}`}
+                style={{ animationDelay: '0.6s' }}
+              />
+              <button
+                onClick={handlePlayPause}
+                aria-label={isPlaying ? 'Pausar' : 'Reproduzir'}
+                className="relative flex h-28 w-28 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25 backdrop-blur-md shadow-[0_20px_60px_-15px_hsl(258_90%_60%/0.7)] transition active:scale-95"
+              >
+                {isPlaying ? (
+                  <Pause className="h-11 w-11 text-white" fill="currentColor" />
+                ) : (
+                  <Play className="ml-1 h-11 w-11 text-white" fill="currentColor" />
+                )}
+              </button>
+            </div>
+
+            <p className="mt-8 text-sm text-white/60 text-balance text-center">
+              {isPlaying
+                ? 'Respire fundo e apenas escute.'
+                : hasStartedPlaying
+                  ? 'Pausado. Toque para continuar.'
+                  : 'Toque para começar sua sessão.'}
+            </p>
+          </div>
+
+          {/* Progress + controls */}
+          <div className="mt-4">
+            <input
+              type="range"
+              min={0}
+              max={duration || 0}
+              step={1}
+              value={currentTime}
+              onChange={(e) => handleSeek(Number(e.target.value))}
+              aria-label="Progresso da hipnose"
+              className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/15 accent-white outline-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-lg"
+              style={{
+                background: `linear-gradient(to right, hsl(0 0% 100% / 0.9) ${progressPercentage}%, hsl(0 0% 100% / 0.15) ${progressPercentage}%)`,
+              }}
+            />
+            <div className="mt-2 flex items-center justify-between text-[11px] font-medium tabular-nums text-white/60">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <button
+                onClick={() => skip(-15)}
+                className="flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-white/85 ring-1 ring-white/15 backdrop-blur transition active:scale-95"
+              >
+                <RotateCcw className="h-3.5 w-3.5" /> 15s
+              </button>
+              <button
+                onClick={() => skip(15)}
+                className="flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-white/85 ring-1 ring-white/15 backdrop-blur transition active:scale-95"
+              >
+                15s <RotateCw className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            {/* Tips */}
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              {[
+                { icon: Headphones, label: 'Fones de ouvido' },
+                { icon: Sofa, label: 'Deite-se' },
+                { icon: BellOff, label: 'Não perturbe' },
+                { icon: BatteryCharging, label: 'Sem economia de bateria' },
+              ].map(({ icon: Icon, label }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.07] px-3 py-1.5 text-[11px] text-white/65 ring-1 ring-white/10"
+                >
+                  <Icon className="h-3 w-3" /> {label}
+                </span>
+              ))}
+            </div>
+
+            {error && (
+              <p className="mt-4 rounded-2xl bg-white/10 px-4 py-3 text-center text-xs text-white/85 ring-1 ring-white/15">
+                {error}
+              </p>
+            )}
+            {!fileUrl && (
+              <p className="mt-4 rounded-2xl bg-white/10 px-4 py-3 text-center text-xs text-white/85 ring-1 ring-white/15">
+                Arquivo não encontrado no storage
+              </p>
+            )}
+          </div>
+        </div>
+
+        <audio
+          ref={mediaRef as React.RefObject<HTMLAudioElement>}
+          className="sr-only"
+          preload="auto"
+          autoPlay
+          controlsList="nodownload noplaybackrate"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onContextMenu={(e) => e.preventDefault()}
+          onError={(e) => {
+            const err = e.currentTarget.error;
+            console.error('Audio inline error:', { code: err?.code, message: err?.message, src: e.currentTarget.currentSrc });
+          }}
+          onLoadStart={() => console.log('Audio load started:', fileUrl)}
+        >
+          {fileUrl && <source src={fileUrl} type="audio/mpeg" />}
+        </audio>
+      </div>,
+      document.body,
+    );
+  }
+
   return createPortal(
-    <div className={`fixed inset-0 z-[100] flex justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] backdrop-blur-sm ${
-      contentType === 'video'
-        ? 'items-stretch p-0'
-        : 'items-end px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 sm:items-center sm:pt-8'
-    }`}>
+    <div className="fixed inset-0 z-[100] flex items-stretch justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] p-0 backdrop-blur-sm">
+
       <div className={`relative my-auto flex w-full flex-col overflow-hidden bg-background shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200 ${
         contentType === 'video'
           ? 'h-full max-h-none rounded-none'
