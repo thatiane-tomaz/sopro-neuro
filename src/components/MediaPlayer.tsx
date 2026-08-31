@@ -72,8 +72,19 @@ const MediaPlayer = ({
         onCloseWithProgressRef.current(finalPercentage);
       }
     }
+    // Stop playback and leave any fullscreen state so we return straight to the app
+    try {
+      media?.pause();
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+      if (media && 'webkitExitFullscreen' in media) {
+        (media as any).webkitExitFullscreen?.();
+      }
+    } catch {}
     onClose();
   }, [onClose]);
+
 
   console.log('MediaPlayer opened with:', { title, fileUrl, contentType, interactionType });
   
