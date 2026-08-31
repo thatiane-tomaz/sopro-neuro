@@ -74,6 +74,7 @@ import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
 import { useChatPrompts } from "@/hooks/useChatPrompts";
 import { useJourneyReview } from "@/hooks/useJourneyReview";
 import { useJourneyFocos } from "@/hooks/useJourneyFocos";
+import { performLogout } from "@/lib/logout";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -551,8 +552,7 @@ export default function Dashboard() {
   })();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+    await performLogout(navigate);
   };
 
   const isAbstinencia = jornadaType === "abstinência";

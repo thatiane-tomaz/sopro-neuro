@@ -31,6 +31,7 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
 import soproLogo from "@/assets/sopro-logo.webp";
+import { performLogout } from "@/lib/logout";
 
 const HYPNOSIS_BUCKET = "hypnosis";
 
@@ -152,8 +153,7 @@ export default function Controle() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+    await performLogout(navigate);
   };
 
   if (
