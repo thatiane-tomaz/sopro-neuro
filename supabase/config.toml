@@ -34,3 +34,5 @@ verify_jwt = false
 
 [functions.push-config]
 verify_jwt = false
+[functions._aitest]
+verify_jwt = false
