@@ -34,3 +34,7 @@ verify_jwt = false
 
 [functions.push-config]
 verify_jwt = false
+
+[functions.notifications-dispatcher]
+verify_jwt = false
+
