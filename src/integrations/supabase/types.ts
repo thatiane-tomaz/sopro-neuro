@@ -662,8 +662,10 @@ export type Database = {
       notification_sends: {
         Row: {
           campaign_id: string
+          cancelled_at: string | null
           id: string
           kind: string
+          onesignal_notification_id: string | null
           onesignal_response: Json | null
           sent_at: string
           slot: string | null
@@ -671,8 +673,10 @@ export type Database = {
         }
         Insert: {
           campaign_id: string
+          cancelled_at?: string | null
           id?: string
           kind: string
+          onesignal_notification_id?: string | null
           onesignal_response?: Json | null
           sent_at?: string
           slot?: string | null
@@ -680,8 +684,10 @@ export type Database = {
         }
         Update: {
           campaign_id?: string
+          cancelled_at?: string | null
           id?: string
           kind?: string
+          onesignal_notification_id?: string | null
           onesignal_response?: Json | null
           sent_at?: string
           slot?: string | null
