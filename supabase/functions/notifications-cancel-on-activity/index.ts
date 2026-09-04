@@ -46,16 +46,25 @@ serve(async (req) => {
     const now = Date.now();
     const dayStart = spDayStart(now);
 
+    // 0) O aviso de missão liberada nunca é cancelado
+    const { data: missaoCamps } = await supabase
+      .from("notification_campaigns")
+      .select("id")
+      .eq("trigger_key", "missao_pronta");
+    const missaoIds = new Set((missaoCamps ?? []).map((c: any) => c.id as string));
+
     // 1) Mensagens ainda não enviadas (agendadas para daqui pra frente) e não canceladas
     let pendingQuery = supabase
       .from("notification_sends")
-      .select("id, user_id, kind, sent_at, onesignal_notification_id")
+      .select("id, user_id, campaign_id, kind, sent_at, onesignal_notification_id")
       .is("cancelled_at", null)
       .not("onesignal_notification_id", "is", null)
       .gt("sent_at", new Date(now + 60_000).toISOString());
     if (onlyUserId) pendingQuery = pendingQuery.eq("user_id", onlyUserId);
-    const { data: pending, error: pErr } = await pendingQuery;
+    const { data: pendingRaw, error: pErr } = await pendingQuery;
     if (pErr) throw pErr;
+    const pending = (pendingRaw ?? []).filter((p: any) => !missaoIds.has(p.campaign_id));
+
 
 
     if (!pending || pending.length === 0) {
