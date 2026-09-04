@@ -596,6 +596,107 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_campaigns: {
+        Row: {
+          active: boolean
+          created_at: string
+          frequency: string | null
+          id: string
+          journey: string
+          kind: string
+          message: string
+          min_hours_between: number
+          name: string
+          priority: number
+          send_at: string | null
+          sent_at: string | null
+          slot_hours: number[]
+          slot_minute: number
+          title: string
+          trigger_key: string | null
+          updated_at: string
+          weekday: number | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          frequency?: string | null
+          id?: string
+          journey?: string
+          kind: string
+          message: string
+          min_hours_between?: number
+          name: string
+          priority?: number
+          send_at?: string | null
+          sent_at?: string | null
+          slot_hours?: number[]
+          slot_minute?: number
+          title?: string
+          trigger_key?: string | null
+          updated_at?: string
+          weekday?: number | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          frequency?: string | null
+          id?: string
+          journey?: string
+          kind?: string
+          message?: string
+          min_hours_between?: number
+          name?: string
+          priority?: number
+          send_at?: string | null
+          sent_at?: string | null
+          slot_hours?: number[]
+          slot_minute?: number
+          title?: string
+          trigger_key?: string | null
+          updated_at?: string
+          weekday?: number | null
+        }
+        Relationships: []
+      }
+      notification_sends: {
+        Row: {
+          campaign_id: string
+          id: string
+          kind: string
+          onesignal_response: Json | null
+          sent_at: string
+          slot: string | null
+          user_id: string
+        }
+        Insert: {
+          campaign_id: string
+          id?: string
+          kind: string
+          onesignal_response?: Json | null
+          sent_at?: string
+          slot?: string | null
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string
+          id?: string
+          kind?: string
+          onesignal_response?: Json | null
+          sent_at?: string
+          slot?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_sends_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "notification_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       onboarding_responses: {
         Row: {
           age: string | null
