@@ -67,7 +67,7 @@ import SmokingLogDialog from "@/components/SmokingLogDialog";
 import MuralPreview from "@/components/mural/MuralPreview";
 import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
-import { scheduleDailySmokingReminder } from "@/services/dailySmokingReminder";
+import { cancelDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import soproLogo from "@/assets/sopro-logo.webp";
 import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
@@ -152,7 +152,7 @@ export default function Dashboard() {
   // Schedule the daily "how many yesterday?" local notification on native.
   useEffect(() => {
     if (!user) return;
-    scheduleDailySmokingReminder();
+    cancelDailySmokingReminder();
   }, [user]);
 
   // Determine journey type (redução/abstinência) — latest historico wins,
