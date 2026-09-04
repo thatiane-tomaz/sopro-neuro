@@ -12,13 +12,18 @@ const CRON_SECRET = Deno.env.get("CRON_SECRET");
 
 // Regra global: no máximo 1 push por pessoa a cada 24h.
 const GLOBAL_MIN_HOURS = 24;
+// Gatilhos imediatos (ex.: missão liberada) podem furar o limite diário,
+// respeitando apenas um intervalo curto para não empilhar avisos.
+const IMMEDIATE_MIN_HOURS = 6;
+const IMMEDIATE_TRIGGERS = ["missao_pronta"];
 
 const PRIORITY: Record<string, number> = {
-  esporadica: 10,
-  gatilho: 20,
+  gatilho: 10,
+  esporadica: 20,
   fixa: 30,
   rotativa: 40,
 };
+
 
 const HOUR_MS = 60 * 60 * 1000;
 
