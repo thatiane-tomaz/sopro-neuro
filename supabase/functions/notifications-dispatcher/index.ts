@@ -132,21 +132,28 @@ serve(async (req) => {
       subscribers.map((p: any) => [p.user_id as string, p.onesignal_player_id as string]),
     );
 
-    // 3) Histórico de envios (para o limite global e o intervalo por campanha)
+    // 3) Histórico de envios (limite global, intervalo por campanha e alternância)
     const historySince = new Date(now - 60 * 24 * HOUR_MS).toISOString();
     const { data: sends } = await supabase
       .from("notification_sends")
-      .select("user_id, campaign_id, sent_at")
-      .gte("sent_at", historySince);
+      .select("user_id, campaign_id, kind, sent_at")
+      .gte("sent_at", historySince)
+      .order("sent_at", { ascending: false });
 
     const lastAny = new Map<string, number>();
     const lastByCampaign = new Map<string, number>();
+    const lastKindByUser = new Map<string, string>();
     for (const s of sends ?? []) {
       const t = new Date(s.sent_at).getTime();
       const k = `${s.user_id}|${s.campaign_id}`;
       if (t > (lastAny.get(s.user_id) ?? 0)) lastAny.set(s.user_id, t);
       if (t > (lastByCampaign.get(k) ?? 0)) lastByCampaign.set(k, t);
+      // vem ordenado do mais recente para o mais antigo, exclui gatilhos da alternância
+      if (!lastKindByUser.has(s.user_id) && (s.kind === "fixa" || s.kind === "rotativa")) {
+        lastKindByUser.set(s.user_id, s.kind);
+      }
     }
+
 
     // Limite global: 1 push por pessoa a cada 24h
     const available = userIds.filter(
