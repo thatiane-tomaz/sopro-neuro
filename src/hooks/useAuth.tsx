@@ -72,6 +72,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               }
             })();
 
+            // Cancela mensagens agendadas para hoje, já que a pessoa está usando o app
+            supabase.functions.invoke('notifications-cancel-on-activity').catch(e => {
+              console.error('Error cancelling scheduled notifications:', e);
+            });
+
+
             // Check subscription status after sign in (non-blocking)
             supabase.functions.invoke('check-subscription').catch(e => {
               console.error('Error checking subscription:', e);
