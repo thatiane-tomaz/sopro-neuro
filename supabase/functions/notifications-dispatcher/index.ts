@@ -112,10 +112,13 @@ serve(async (req) => {
       if (c.kind === "esporadica") {
         return !c.sent_at && !!c.send_at && new Date(c.send_at).getTime() <= now;
       }
+      // Missão liberada: avaliada em toda rodada, não espera horário fixo
+      if (c.kind === "gatilho" && IMMEDIATE_TRIGGERS.includes(c.trigger_key ?? "")) return true;
       if (!matchesSlot(c)) return false;
       if (c.kind === "fixa" && c.frequency === "weekly") return c.weekday === weekday;
       return true;
     }) as Campaign[];
+
 
     if (campaigns.length === 0) {
       return json({ success: true, slot, sent: 0, message: "Nenhuma campanha para este horário" });
