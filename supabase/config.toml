@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.notifications-planner]
 verify_jwt = false
+
+[functions.notifications-cancel-on-activity]
+verify_jwt = false
