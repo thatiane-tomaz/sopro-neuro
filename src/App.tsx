@@ -58,6 +58,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <ErrorLoggerProvider>
+            <PushInitializer />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
