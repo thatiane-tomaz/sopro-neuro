@@ -238,11 +238,31 @@ serve(async (req) => {
     });
 
     const assignment = new Map<string, Campaign>();
-    const rotationTaken = new Set<string>();
+
+    // 6a) Prioridade máxima: missão liberada — sai na hora, sem esperar o slot
+    const immediateCampaigns = ordered.filter(
+      (c) => c.kind === "gatilho" && IMMEDIATE_TRIGGERS.includes(c.trigger_key ?? ""),
+    );
+    for (const c of immediateCampaigns) {
+      const aud = triggerAudience.get(c.trigger_key ?? "");
+      if (!aud) continue;
+      for (const uid of immediateAvailable) {
+        if (assignment.has(uid)) continue;
+        if (!aud.has(uid)) continue;
+        const userJourney = journeyByUser.get(uid) ?? "reducao";
+        if (c.journey !== "ambas" && c.journey !== userJourney) continue;
+        const lastForCampaign = lastByCampaign.get(`${uid}|${c.id}`) ?? 0;
+        const minHours = c.min_hours_between && c.min_hours_between > 0 ? c.min_hours_between : 72;
+        if (now - lastForCampaign < minHours * HOUR_MS) continue;
+        assignment.set(uid, c);
+      }
+    }
 
     for (const uid of available) {
+      if (assignment.has(uid)) continue;
       const userJourney = journeyByUser.get(uid) ?? "reducao";
       const rotativas: Campaign[] = [];
+      const lastKind = lastKindByUser.get(uid);
 
       for (const c of ordered) {
         if (c.journey !== "ambas" && c.journey !== userJourney) continue;
@@ -256,6 +276,8 @@ serve(async (req) => {
           rotativas.push(c);
           continue;
         }
+        // Alternância: se o último push foi o lembrete fixo, hoje é dia de rotativa
+        if (c.kind === "fixa" && lastKind === "fixa") continue;
         assignment.set(uid, c);
         break;
       }
@@ -267,9 +289,9 @@ serve(async (req) => {
             (lastByCampaign.get(`${uid}|${a.id}`) ?? 0) - (lastByCampaign.get(`${uid}|${b.id}`) ?? 0),
         );
         assignment.set(uid, rotativas[0]);
-        rotationTaken.add(uid);
       }
     }
+
 
     if (assignment.size === 0) {
       return json({ success: true, slot, sent: 0, message: "Ninguém elegível neste horário" });
