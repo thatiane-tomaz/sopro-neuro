@@ -25,9 +25,7 @@ serve(async (req) => {
 
   try {
     const provided = req.headers.get("Authorization")?.replace("Bearer ", "");
-    if (!provided || provided !== CRON_SECRET) {
-      return json({ error: "Unauthorized" }, 401);
-    }
+    if (!provided) return json({ error: "Unauthorized" }, 401);
 
     const body = await req.json().catch(() => ({}));
     const dryRun = body?.dryRun === true;
@@ -37,17 +35,28 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
+    // Aceita a chave do agendamento (todos os usuários) ou o login da própria pessoa (só ela)
+    let onlyUserId: string | null = null;
+    if (provided !== CRON_SECRET) {
+      const { data: userData, error: uErr } = await supabase.auth.getUser(provided);
+      if (uErr || !userData?.user) return json({ error: "Unauthorized" }, 401);
+      onlyUserId = userData.user.id;
+    }
+
     const now = Date.now();
     const dayStart = spDayStart(now);
 
     // 1) Mensagens ainda não enviadas (agendadas para daqui pra frente) e não canceladas
-    const { data: pending, error: pErr } = await supabase
+    let pendingQuery = supabase
       .from("notification_sends")
       .select("id, user_id, kind, sent_at, onesignal_notification_id")
       .is("cancelled_at", null)
       .not("onesignal_notification_id", "is", null)
       .gt("sent_at", new Date(now + 60_000).toISOString());
+    if (onlyUserId) pendingQuery = pendingQuery.eq("user_id", onlyUserId);
+    const { data: pending, error: pErr } = await pendingQuery;
     if (pErr) throw pErr;
+
 
     if (!pending || pending.length === 0) {
       return json({ success: true, cancelled: 0, message: "Nenhuma mensagem pendente" });
