@@ -12,13 +12,18 @@ const CRON_SECRET = Deno.env.get("CRON_SECRET");
 
 // Regra global: no máximo 1 push por pessoa a cada 24h.
 const GLOBAL_MIN_HOURS = 24;
+// Gatilhos imediatos (ex.: missão liberada) podem furar o limite diário,
+// respeitando apenas um intervalo curto para não empilhar avisos.
+const IMMEDIATE_MIN_HOURS = 6;
+const IMMEDIATE_TRIGGERS = ["missao_pronta"];
 
 const PRIORITY: Record<string, number> = {
-  esporadica: 10,
-  gatilho: 20,
+  gatilho: 10,
+  esporadica: 20,
   fixa: 30,
   rotativa: 40,
 };
+
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -107,10 +112,13 @@ serve(async (req) => {
       if (c.kind === "esporadica") {
         return !c.sent_at && !!c.send_at && new Date(c.send_at).getTime() <= now;
       }
+      // Missão liberada: avaliada em toda rodada, não espera horário fixo
+      if (c.kind === "gatilho" && IMMEDIATE_TRIGGERS.includes(c.trigger_key ?? "")) return true;
       if (!matchesSlot(c)) return false;
       if (c.kind === "fixa" && c.frequency === "weekly") return c.weekday === weekday;
       return true;
     }) as Campaign[];
+
 
     if (campaigns.length === 0) {
       return json({ success: true, slot, sent: 0, message: "Nenhuma campanha para este horário" });
@@ -132,40 +140,53 @@ serve(async (req) => {
       subscribers.map((p: any) => [p.user_id as string, p.onesignal_player_id as string]),
     );
 
-    // 3) Histórico de envios (para o limite global e o intervalo por campanha)
+    // 3) Histórico de envios (limite global, intervalo por campanha e alternância)
     const historySince = new Date(now - 60 * 24 * HOUR_MS).toISOString();
     const { data: sends } = await supabase
       .from("notification_sends")
-      .select("user_id, campaign_id, sent_at")
-      .gte("sent_at", historySince);
+      .select("user_id, campaign_id, kind, sent_at")
+      .gte("sent_at", historySince)
+      .order("sent_at", { ascending: false });
 
     const lastAny = new Map<string, number>();
     const lastByCampaign = new Map<string, number>();
+    const lastKindByUser = new Map<string, string>();
     for (const s of sends ?? []) {
       const t = new Date(s.sent_at).getTime();
       const k = `${s.user_id}|${s.campaign_id}`;
       if (t > (lastAny.get(s.user_id) ?? 0)) lastAny.set(s.user_id, t);
       if (t > (lastByCampaign.get(k) ?? 0)) lastByCampaign.set(k, t);
+      // vem ordenado do mais recente para o mais antigo, exclui gatilhos da alternância
+      if (!lastKindByUser.has(s.user_id) && (s.kind === "fixa" || s.kind === "rotativa")) {
+        lastKindByUser.set(s.user_id, s.kind);
+      }
     }
+
 
     // Limite global: 1 push por pessoa a cada 24h
     const available = userIds.filter(
       (id) => now - (lastAny.get(id) ?? 0) >= GLOBAL_MIN_HOURS * HOUR_MS,
     );
-    if (available.length === 0) {
-      return json({ success: true, slot, sent: 0, message: "Todos no intervalo de 24h" });
+    // Missão liberada é prioridade: respeita apenas um intervalo curto
+    const immediateAvailable = userIds.filter(
+      (id) => now - (lastAny.get(id) ?? 0) >= IMMEDIATE_MIN_HOURS * HOUR_MS,
+    );
+    const audienceUsers = Array.from(new Set([...available, ...immediateAvailable]));
+    if (audienceUsers.length === 0) {
+      return json({ success: true, slot, sent: 0, message: "Todos no intervalo mínimo" });
     }
 
     // 4) Jornada de cada usuário
     const { data: hist } = await supabase
       .from("historico_jornada_usuario")
       .select("user_id, jornada, created_at")
-      .in("user_id", available)
+      .in("user_id", audienceUsers)
       .order("created_at", { ascending: false });
     const journeyByUser = new Map<string, string>();
     for (const h of hist ?? []) {
       if (!journeyByUser.has(h.user_id)) journeyByUser.set(h.user_id, normalizeJourney(h.jornada));
     }
+
 
     // 5) Públicos dos gatilhos (calculados só se houver campanha do tipo)
     const triggerAudience = new Map<string, Set<string>>();
@@ -178,7 +199,7 @@ serve(async (req) => {
       const { data: tracks } = await supabase
         .from("journey_tracking")
         .select("user_id, interaction_type, started_at, finished_at")
-        .in("user_id", available)
+        .in("user_id", audienceUsers)
         .or("interaction_type.like.%missao_iniciada_semana_%,interaction_type.like.%missao_semana_%");
       const done = new Set<string>();
       const startedReady: { user: string; key: string }[] = [];
@@ -202,7 +223,7 @@ serve(async (req) => {
       const { data: sessions } = await supabase
         .from("app_sessions")
         .select("user_id, opened_at")
-        .in("user_id", available)
+        .in("user_id", audienceUsers)
         .order("opened_at", { ascending: false });
       const last = new Map<string, number>();
       for (const s of sessions ?? []) {
@@ -217,7 +238,7 @@ serve(async (req) => {
       const { data: logs } = await supabase
         .from("daily_smoking_logs")
         .select("user_id, log_date")
-        .in("user_id", available)
+        .in("user_id", audienceUsers)
         .order("log_date", { ascending: false });
       const last = new Map<string, string>();
       for (const l of logs ?? []) {
@@ -238,11 +259,31 @@ serve(async (req) => {
     });
 
     const assignment = new Map<string, Campaign>();
-    const rotationTaken = new Set<string>();
+
+    // 6a) Prioridade máxima: missão liberada — sai na hora, sem esperar o slot
+    const immediateCampaigns = ordered.filter(
+      (c) => c.kind === "gatilho" && IMMEDIATE_TRIGGERS.includes(c.trigger_key ?? ""),
+    );
+    for (const c of immediateCampaigns) {
+      const aud = triggerAudience.get(c.trigger_key ?? "");
+      if (!aud) continue;
+      for (const uid of immediateAvailable) {
+        if (assignment.has(uid)) continue;
+        if (!aud.has(uid)) continue;
+        const userJourney = journeyByUser.get(uid) ?? "reducao";
+        if (c.journey !== "ambas" && c.journey !== userJourney) continue;
+        const lastForCampaign = lastByCampaign.get(`${uid}|${c.id}`) ?? 0;
+        const minHours = c.min_hours_between && c.min_hours_between > 0 ? c.min_hours_between : 72;
+        if (now - lastForCampaign < minHours * HOUR_MS) continue;
+        assignment.set(uid, c);
+      }
+    }
 
     for (const uid of available) {
+      if (assignment.has(uid)) continue;
       const userJourney = journeyByUser.get(uid) ?? "reducao";
       const rotativas: Campaign[] = [];
+      const lastKind = lastKindByUser.get(uid);
 
       for (const c of ordered) {
         if (c.journey !== "ambas" && c.journey !== userJourney) continue;
@@ -256,6 +297,8 @@ serve(async (req) => {
           rotativas.push(c);
           continue;
         }
+        // Alternância: se o último push foi o lembrete fixo, hoje é dia de rotativa
+        if (c.kind === "fixa" && lastKind === "fixa") continue;
         assignment.set(uid, c);
         break;
       }
@@ -267,9 +310,9 @@ serve(async (req) => {
             (lastByCampaign.get(`${uid}|${a.id}`) ?? 0) - (lastByCampaign.get(`${uid}|${b.id}`) ?? 0),
         );
         assignment.set(uid, rotativas[0]);
-        rotationTaken.add(uid);
       }
     }
+
 
     if (assignment.size === 0) {
       return json({ success: true, slot, sent: 0, message: "Ninguém elegível neste horário" });
