@@ -258,19 +258,12 @@ serve(async (req) => {
       return json({ success: true, day: today.date, planned: 0, message: "Nada a agendar hoje" });
     }
 
-    // 7) Agenda no OneSignal: um envio por (campanha, horário)
-    const groups = new Map<string, { campaign: Campaign; at: number; users: string[] }>();
-    for (const p of plans) {
-      const key = `${p.campaign.id}|${Math.floor(p.at / 60_000)}`;
-      const g = groups.get(key) ?? { campaign: p.campaign, at: p.at, users: [] };
-      g.users.push(p.user);
-      groups.set(key, g);
-    }
-
+    // 7) Agenda no OneSignal: um envio individual por pessoa
+    //    (individual para que possa ser cancelado se a pessoa usar o app no dia)
     const results: any[] = [];
-    for (const g of groups.values()) {
-      const playerIds = g.users.map((u) => playerById.get(u)!).filter(Boolean);
-      if (playerIds.length === 0) continue;
+    for (const p of plans) {
+      const playerId = playerById.get(p.user);
+      if (!playerId) continue;
 
       let onesignalRes: any = { dryRun: true };
       if (!dryRun) {
@@ -282,47 +275,47 @@ serve(async (req) => {
           },
           body: JSON.stringify({
             app_id: ONESIGNAL_APP_ID,
-            include_player_ids: playerIds,
-            headings: { pt: g.campaign.title, en: g.campaign.title },
-            contents: { pt: g.campaign.message, en: g.campaign.message },
-            send_after: new Date(g.at).toISOString(),
+            include_player_ids: [playerId],
+            headings: { pt: p.campaign.title, en: p.campaign.title },
+            contents: { pt: p.campaign.message, en: p.campaign.message },
+            send_after: new Date(p.at).toISOString(),
           }),
         });
         onesignalRes = await res.json();
 
-        const scheduledIso = new Date(g.at).toISOString();
-        await supabase.from("notification_sends").insert(
-          g.users.map((u) => ({
-            campaign_id: g.campaign.id,
-            user_id: u,
-            kind: g.campaign.kind,
-            slot: scheduledIso.slice(11, 16),
-            onesignal_response: onesignalRes,
-            sent_at: scheduledIso,
-          })),
-        );
+        const scheduledIso = new Date(p.at).toISOString();
+        await supabase.from("notification_sends").insert({
+          campaign_id: p.campaign.id,
+          user_id: p.user,
+          kind: p.campaign.kind,
+          slot: scheduledIso.slice(11, 16),
+          onesignal_response: onesignalRes,
+          onesignal_notification_id: onesignalRes?.id ?? null,
+          sent_at: scheduledIso,
+        });
         await supabase
           .from("profiles")
           .update({ last_push_sent_at: scheduledIso })
-          .in("user_id", g.users);
-        if (g.campaign.kind === "esporadica") {
+          .eq("user_id", p.user);
+        if (p.campaign.kind === "esporadica") {
           await supabase
             .from("notification_campaigns")
             .update({ sent_at: new Date().toISOString() })
-            .eq("id", g.campaign.id);
+            .eq("id", p.campaign.id);
         }
       }
 
       results.push({
-        campaign: g.campaign.name,
-        kind: g.campaign.kind,
-        scheduled_for: new Date(g.at).toISOString(),
-        recipients: playerIds.length,
+        campaign: p.campaign.name,
+        kind: p.campaign.kind,
+        scheduled_for: new Date(p.at).toISOString(),
+        onesignal_id: onesignalRes?.id ?? null,
         onesignal: onesignalRes,
       });
     }
 
-    console.log(`dia=${today.date} grupos=${results.length} pessoas=${plans.length}`);
+    console.log(`dia=${today.date} agendados=${results.length}`);
+
     return json({ success: true, day: today.date, dryRun, planned: plans.length, results });
   } catch (error: any) {
     console.error("notifications-planner error:", error);
