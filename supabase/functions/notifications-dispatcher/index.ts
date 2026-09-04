@@ -152,20 +152,26 @@ serve(async (req) => {
     const available = userIds.filter(
       (id) => now - (lastAny.get(id) ?? 0) >= GLOBAL_MIN_HOURS * HOUR_MS,
     );
-    if (available.length === 0) {
-      return json({ success: true, slot, sent: 0, message: "Todos no intervalo de 24h" });
+    // Missão liberada é prioridade: respeita apenas um intervalo curto
+    const immediateAvailable = userIds.filter(
+      (id) => now - (lastAny.get(id) ?? 0) >= IMMEDIATE_MIN_HOURS * HOUR_MS,
+    );
+    const audienceUsers = Array.from(new Set([...available, ...immediateAvailable]));
+    if (audienceUsers.length === 0) {
+      return json({ success: true, slot, sent: 0, message: "Todos no intervalo mínimo" });
     }
 
     // 4) Jornada de cada usuário
     const { data: hist } = await supabase
       .from("historico_jornada_usuario")
       .select("user_id, jornada, created_at")
-      .in("user_id", available)
+      .in("user_id", audienceUsers)
       .order("created_at", { ascending: false });
     const journeyByUser = new Map<string, string>();
     for (const h of hist ?? []) {
       if (!journeyByUser.has(h.user_id)) journeyByUser.set(h.user_id, normalizeJourney(h.jornada));
     }
+
 
     // 5) Públicos dos gatilhos (calculados só se houver campanha do tipo)
     const triggerAudience = new Map<string, Set<string>>();
