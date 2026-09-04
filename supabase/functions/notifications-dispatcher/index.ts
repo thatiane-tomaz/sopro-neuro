@@ -191,7 +191,7 @@ serve(async (req) => {
       const { data: tracks } = await supabase
         .from("journey_tracking")
         .select("user_id, interaction_type, started_at, finished_at")
-        .in("user_id", available)
+        .in("user_id", audienceUsers)
         .or("interaction_type.like.%missao_iniciada_semana_%,interaction_type.like.%missao_semana_%");
       const done = new Set<string>();
       const startedReady: { user: string; key: string }[] = [];
@@ -215,7 +215,7 @@ serve(async (req) => {
       const { data: sessions } = await supabase
         .from("app_sessions")
         .select("user_id, opened_at")
-        .in("user_id", available)
+        .in("user_id", audienceUsers)
         .order("opened_at", { ascending: false });
       const last = new Map<string, number>();
       for (const s of sessions ?? []) {
@@ -230,7 +230,7 @@ serve(async (req) => {
       const { data: logs } = await supabase
         .from("daily_smoking_logs")
         .select("user_id, log_date")
-        .in("user_id", available)
+        .in("user_id", audienceUsers)
         .order("log_date", { ascending: false });
       const last = new Map<string, string>();
       for (const l of logs ?? []) {
