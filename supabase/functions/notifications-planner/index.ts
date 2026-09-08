@@ -89,49 +89,48 @@ serve(async (req) => {
     if (cErr) throw cErr;
     const campaigns = (rawCampaigns ?? []) as Campaign[];
 
-    // 2) Aparelhos inscritos
-    const { data: profiles, error: pErr } = await supabase
-      .from("profiles")
-      .select("user_id, onesignal_player_id")
-      .not("onesignal_player_id", "is", null);
-    if (pErr) throw pErr;
-    const subscribers = (profiles ?? []).filter((p: any) => !!p.onesignal_player_id);
+    // 2) Aparelhos inscritos (paginado: sem teto de 1.000 linhas)
+    const subscribers: any[] = [];
+    for (let from = 0; ; from += PAGE) {
+      const { data, error: pErr } = await supabase
+        .from("profiles")
+        .select("user_id, onesignal_player_id, last_push_sent_at, push_last_kind, push_last_rotativa_id")
+        .not("onesignal_player_id", "is", null)
+        .order("user_id", { ascending: true })
+        .range(from, from + PAGE - 1);
+      if (pErr) throw pErr;
+      subscribers.push(...(data ?? []).filter((p: any) => !!p.onesignal_player_id));
+      if ((data ?? []).length < PAGE) break;
+    }
     if (subscribers.length === 0) return json({ success: true, planned: 0, message: "Nenhum aparelho inscrito" });
 
     const userIds = subscribers.map((p: any) => p.user_id as string);
     const playerById = new Map<string, string>(
       subscribers.map((p: any) => [p.user_id as string, p.onesignal_player_id as string]),
     );
-
-    // 3) Histórico (limite geral, intervalo por campanha e alternância)
-    const { data: sends } = await supabase
-      .from("notification_sends")
-      .select("user_id, campaign_id, kind, sent_at")
-      .gte("sent_at", new Date(now - 60 * 24 * HOUR_MS).toISOString())
-      .order("sent_at", { ascending: false });
-
+    // Estado de rotação guardado no próprio perfil — dispensa varrer meses de histórico
     const lastAny = new Map<string, number>();
-    const lastByCampaign = new Map<string, number>();
     const lastKindByUser = new Map<string, string>();
-    for (const s of sends ?? []) {
-      const t = new Date(s.sent_at).getTime();
-      if (t > (lastAny.get(s.user_id) ?? 0)) lastAny.set(s.user_id, t);
-      const k = `${s.user_id}|${s.campaign_id}`;
-      if (t > (lastByCampaign.get(k) ?? 0)) lastByCampaign.set(k, t);
-      if (!lastKindByUser.has(s.user_id) && (s.kind === "fixa" || s.kind === "rotativa")) {
-        lastKindByUser.set(s.user_id, s.kind);
-      }
+    const lastRotativaByUser = new Map<string, string>();
+    for (const p of subscribers) {
+      if (p.last_push_sent_at) lastAny.set(p.user_id, new Date(p.last_push_sent_at).getTime());
+      if (p.push_last_kind) lastKindByUser.set(p.user_id, p.push_last_kind);
+      if (p.push_last_rotativa_id) lastRotativaByUser.set(p.user_id, p.push_last_rotativa_id);
     }
 
-    // 4) Jornada de cada pessoa
-    const { data: hist } = await supabase
-      .from("historico_jornada_usuario")
-      .select("user_id, jornada, created_at")
-      .in("user_id", userIds)
-      .order("created_at", { ascending: false });
+    // 3) Jornada de cada pessoa (paginado)
     const journeyByUser = new Map<string, string>();
-    for (const h of hist ?? []) {
-      if (!journeyByUser.has(h.user_id)) journeyByUser.set(h.user_id, normalizeJourney(h.jornada));
+    for (let from = 0; ; from += PAGE) {
+      const { data } = await supabase
+        .from("historico_jornada_usuario")
+        .select("user_id, jornada, created_at")
+        .order("created_at", { ascending: false })
+        .range(from, from + PAGE - 1);
+      const rows = data ?? [];
+      for (const h of rows) {
+        if (!journeyByUser.has(h.user_id)) journeyByUser.set(h.user_id, normalizeJourney(h.jornada));
+      }
+      if (rows.length < PAGE) break;
     }
 
     // 5) Quais missões liberam hoje (started_at + 72h) e ainda não foram concluídas
