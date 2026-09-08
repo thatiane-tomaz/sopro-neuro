@@ -39,6 +39,7 @@ type Campaign = {
   priority: number;
   send_at: string | null;
   sent_at: string | null;
+  created_at?: string | null;
 };
 
 // Offset do fuso de São Paulo em ms (sempre UTC-3)
