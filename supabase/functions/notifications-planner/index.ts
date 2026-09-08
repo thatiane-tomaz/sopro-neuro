@@ -192,12 +192,30 @@ serve(async (req) => {
     // 6a) Prioridade máxima: missão liberada — agendada para a hora exata da liberação
     const missaoCampaign = campaigns.find((c) => c.kind === "gatilho" && c.trigger_key === "missao_pronta");
     if (missaoCampaign) {
+      const minHours = missaoCampaign.min_hours_between > 0 ? missaoCampaign.min_hours_between : 72;
+      // Histórico curto: só desta campanha e só dentro da própria janela de repetição
+      const lastMissao = new Map<string, number>();
+      for (let from = 0; ; from += PAGE) {
+        const { data } = await supabase
+          .from("notification_sends")
+          .select("user_id, sent_at")
+          .eq("campaign_id", missaoCampaign.id)
+          .gte("sent_at", new Date(now - minHours * HOUR_MS).toISOString())
+          .order("sent_at", { ascending: false })
+          .range(from, from + PAGE - 1);
+        const rows = data ?? [];
+        for (const s of rows) {
+          const t = new Date(s.sent_at).getTime();
+          if (t > (lastMissao.get(s.user_id) ?? 0)) lastMissao.set(s.user_id, t);
+        }
+        if (rows.length < PAGE) break;
+      }
+
       for (const [uid, unlock] of missaoUnlockByUser) {
+        if (!playerById.has(uid)) continue;
         const userJourney = journeyByUser.get(uid) ?? "reducao";
         if (missaoCampaign.journey !== "ambas" && missaoCampaign.journey !== userJourney) continue;
-        const lastCamp = lastByCampaign.get(`${uid}|${missaoCampaign.id}`) ?? 0;
-        const minHours = missaoCampaign.min_hours_between > 0 ? missaoCampaign.min_hours_between : 72;
-        if (now - lastCamp < minHours * HOUR_MS) continue;
+        if (lastMissao.has(uid)) continue;
         // respiro curto em relação ao último push recebido
         const earliest = Math.max(unlock, (lastAny.get(uid) ?? 0) + IMMEDIATE_MIN_HOURS * HOUR_MS, now + 60_000);
         if (earliest > dayEnd) continue;
