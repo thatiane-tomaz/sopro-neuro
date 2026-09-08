@@ -138,15 +138,22 @@ serve(async (req) => {
     // 5) Quais missões liberam hoje (started_at + 72h) e ainda não foram concluídas
     const missaoUnlockByUser = new Map<string, number>();
     {
-      const { data: tracks } = await supabase
-        .from("journey_tracking")
-        .select("user_id, interaction_type, started_at, finished_at")
-        .in("user_id", userIds)
-        .or("interaction_type.like.%missao_iniciada_semana_%,interaction_type.like.%missao_semana_%");
+      const tracks: any[] = [];
+      for (let from = 0; ; from += PAGE) {
+        const { data } = await supabase
+          .from("journey_tracking")
+          .select("user_id, interaction_type, started_at, finished_at")
+          .or("interaction_type.like.%missao_iniciada_semana_%,interaction_type.like.%missao_semana_%")
+          .order("started_at", { ascending: false })
+          .range(from, from + PAGE - 1);
+        const rows = data ?? [];
+        tracks.push(...rows);
+        if (rows.length < PAGE) break;
+      }
 
       const done = new Set<string>();
       const pending: { user: string; key: string; unlock: number }[] = [];
-      for (const t of tracks ?? []) {
+      for (const t of tracks) {
         const type = t.interaction_type as string;
         if (type.includes("missao_iniciada_semana_")) {
           if (!t.finished_at) {
