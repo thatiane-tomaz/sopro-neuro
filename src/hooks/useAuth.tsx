@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from './use-toast';
@@ -63,9 +64,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             // Track app session - wrapped in async IIFE for proper error handling
             (async () => {
               try {
+                const platform = Capacitor.isNativePlatform() ? Capacitor.getPlatform() : 'web';
                 const { error } = await supabase
                   .from('app_sessions')
-                  .insert({ user_id: session.user.id });
+                  .insert({ user_id: session.user.id, platform } as any);
                 if (error) console.error('Error tracking app session:', error);
               } catch (e) {
                 console.error('Error tracking app session:', e);

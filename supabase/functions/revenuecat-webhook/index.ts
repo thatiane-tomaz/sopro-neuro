@@ -58,13 +58,27 @@ serve(async (req) => {
     const purchasedAt = event.purchased_at_ms ? new Date(event.purchased_at_ms) : null;
     const priceInPurchasedCurrency = event.price_in_purchased_currency;
     const email = event.subscriber_attributes?.["$email"]?.value;
+    const store = event.store;
+
+    // Map RevenueCat store to the platform values stored in the database
+    const platformFromStore = (store?: string): string | null => {
+      if (!store) return null;
+      const s = store.toLowerCase();
+      if (s === 'play_store') return 'android';
+      if (s === 'app_store') return 'ios';
+      if (s === 'mac_app_store') return 'ios';
+      return 'web';
+    };
+    const platform = platformFromStore(store);
 
     logStep("Event details", {
       eventType,
       appUserId,
       productId,
       expiresAt: expiresAt?.toISOString(),
-      email
+      email,
+      store,
+      platform
     });
 
     // Events that grant premium access
@@ -134,6 +148,7 @@ serve(async (req) => {
       expires_at: expiresAt?.toISOString() || null,
       started_at: purchasedAt?.toISOString() || new Date().toISOString(),
       amount_paid: priceInPurchasedCurrency ? Math.round(priceInPurchasedCurrency * 100) : null,
+      platform: platform,
       updated_at: new Date().toISOString()
     };
 
@@ -162,10 +177,14 @@ serve(async (req) => {
       logStep("Subscription created", { userId, status });
     }
 
-    // Update profile subscription status
+    // Update profile subscription status and platform when available
+    const profileUpdate: Record<string, any> = { subscription_status: status };
+    if (platform) {
+      profileUpdate.platform = platform;
+    }
     await supabaseClient
       .from('profiles')
-      .update({ subscription_status: status })
+      .update(profileUpdate)
       .eq('user_id', userId);
 
     return new Response(JSON.stringify({ success: true }), {
