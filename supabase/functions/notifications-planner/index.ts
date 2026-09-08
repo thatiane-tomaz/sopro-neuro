@@ -19,6 +19,8 @@ const GLOBAL_MIN_HOURS = 24;
 const IMMEDIATE_MIN_HOURS = 6;
 // Nada é agendado depois desta hora (fuso de São Paulo)
 const LAST_HOUR = 21;
+// Tamanho da página nas leituras (evita o teto de 1.000 linhas)
+const PAGE = 1000;
 
 type Campaign = {
   id: string;
