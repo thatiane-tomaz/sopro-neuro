@@ -244,41 +244,49 @@ serve(async (req) => {
       if (c.frequency === "weekly") return c.weekday === today.weekday;
       return true;
     });
-    const rotativas = campaigns.filter((c) => c.kind === "rotativa");
+    // Fila de rotativas em ordem fixa: sabendo a última, sabemos a próxima
+    const rotativas = campaigns
+      .filter((c) => c.kind === "rotativa")
+      .sort((a, b) => a.priority - b.priority || (a.created_at ?? "").localeCompare(b.created_at ?? ""));
+
+    // Próxima da fila depois da última enviada para esta pessoa
+    const nextRotativa = (uid: string, journey: string) => {
+      if (rotativas.length === 0) return null;
+      const lastId = lastRotativaByUser.get(uid);
+      const lastIdx = lastId ? rotativas.findIndex((c) => c.id === lastId) : -1;
+      for (let step = 1; step <= rotativas.length; step++) {
+        const c = rotativas[(lastIdx + step + rotativas.length) % rotativas.length];
+        if (c.journey === "ambas" || c.journey === journey) return c;
+      }
+      return null;
+    };
 
     for (const uid of userIds) {
       if (planned.has(uid)) continue;
       if (now - (lastAny.get(uid) ?? 0) < GLOBAL_MIN_HOURS * HOUR_MS) continue;
       const userJourney = journeyByUser.get(uid) ?? "reducao";
-      const fits = (c: Campaign) =>
-        (c.journey === "ambas" || c.journey === userJourney) &&
-        now - (lastByCampaign.get(`${uid}|${c.id}`) ?? 0) >= (c.min_hours_between ?? 0) * HOUR_MS;
 
-      const preferRotativa = lastKindByUser.get(uid) === "fixa";
-      const groups = preferRotativa ? [rotativas, fixas] : [fixas, rotativas];
+      const fixaOption = fixas.find((c) => c.journey === "ambas" || c.journey === userJourney) ?? null;
+      const rotativaOption = nextRotativa(uid, userJourney);
+      // Se a última foi a fixa, hoje é dia de rotativa — e vice-versa
+      const order = lastKindByUser.get(uid) === "fixa"
+        ? [rotativaOption, fixaOption]
+        : [fixaOption, rotativaOption];
 
       let chosen: { c: Campaign; at: number } | null = null;
-      for (const group of groups) {
-        const options = group.filter(fits);
-        if (options.length === 0) continue;
-        // rotativa: a menos recente para esta pessoa
-        options.sort(
-          (a, b) =>
-            (lastByCampaign.get(`${uid}|${a.id}`) ?? 0) - (lastByCampaign.get(`${uid}|${b.id}`) ?? 0),
-        );
-        for (const c of options) {
-          const at = pickSlot(c);
-          if (at !== null) {
-            chosen = { c, at };
-            break;
-          }
+      for (const c of order) {
+        if (!c) continue;
+        const at = pickSlot(c);
+        if (at !== null) {
+          chosen = { c, at };
+          break;
         }
-        if (chosen) break;
       }
       if (!chosen) continue;
       plans.push({ user: uid, campaign: chosen.c, at: chosen.at });
       planned.add(uid);
     }
+
 
     if (plans.length === 0) {
       return json({ success: true, day: today.date, planned: 0, message: "Nada a agendar hoje" });
