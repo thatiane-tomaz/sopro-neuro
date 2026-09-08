@@ -328,10 +328,13 @@ serve(async (req) => {
           onesignal_notification_id: onesignalRes?.id ?? null,
           sent_at: scheduledIso,
         });
-        await supabase
-          .from("profiles")
-          .update({ last_push_sent_at: scheduledIso })
-          .eq("user_id", p.user);
+        // Guarda o ponteiro da rotação: qual tipo e qual frase foram as últimas
+        const profileUpdate: Record<string, unknown> = { last_push_sent_at: scheduledIso };
+        if (p.campaign.kind === "fixa" || p.campaign.kind === "rotativa") {
+          profileUpdate.push_last_kind = p.campaign.kind;
+          if (p.campaign.kind === "rotativa") profileUpdate.push_last_rotativa_id = p.campaign.id;
+        }
+        await supabase.from("profiles").update(profileUpdate).eq("user_id", p.user);
         if (p.campaign.kind === "esporadica") {
           await supabase
             .from("notification_campaigns")
