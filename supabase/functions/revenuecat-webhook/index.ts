@@ -148,6 +148,7 @@ serve(async (req) => {
       expires_at: expiresAt?.toISOString() || null,
       started_at: purchasedAt?.toISOString() || new Date().toISOString(),
       amount_paid: priceInPurchasedCurrency ? Math.round(priceInPurchasedCurrency * 100) : null,
+      platform: platform,
       updated_at: new Date().toISOString()
     };
 
