@@ -51,16 +51,19 @@ export type Database = {
         Row: {
           id: string
           opened_at: string
+          platform: string | null
           user_id: string
         }
         Insert: {
           id?: string
           opened_at?: string
+          platform?: string | null
           user_id: string
         }
         Update: {
           id?: string
           opened_at?: string
+          platform?: string | null
           user_id?: string
         }
         Relationships: []
@@ -910,6 +913,7 @@ export type Database = {
           id: string
           last_push_sent_at: string | null
           onesignal_player_id: string | null
+          platform: string | null
           push_last_kind: string | null
           push_last_rotativa_id: string | null
           start_here_seen: boolean
@@ -928,6 +932,7 @@ export type Database = {
           id?: string
           last_push_sent_at?: string | null
           onesignal_player_id?: string | null
+          platform?: string | null
           push_last_kind?: string | null
           push_last_rotativa_id?: string | null
           start_here_seen?: boolean
@@ -946,6 +951,7 @@ export type Database = {
           id?: string
           last_push_sent_at?: string | null
           onesignal_player_id?: string | null
+          platform?: string | null
           push_last_kind?: string | null
           push_last_rotativa_id?: string | null
           start_here_seen?: boolean
@@ -1122,6 +1128,7 @@ export type Database = {
           expires_at: string | null
           id: string
           plan_type: string
+          platform: string | null
           previous_status:
             | Database["public"]["Enums"]["subscription_status"]
             | null
@@ -1144,6 +1151,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           plan_type?: string
+          platform?: string | null
           previous_status?:
             | Database["public"]["Enums"]["subscription_status"]
             | null
@@ -1166,6 +1174,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           plan_type?: string
+          platform?: string | null
           previous_status?:
             | Database["public"]["Enums"]["subscription_status"]
             | null
@@ -1175,6 +1184,51 @@ export type Database = {
           stripe_subscription_id?: string | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      subscriptions_daily: {
+        Row: {
+          accounts_created: number
+          accounts_created_android: number
+          accounts_created_freedom: number
+          accounts_created_ios: number
+          accounts_created_reduction: number
+          payments: number
+          payments_android: number
+          payments_freedom: number
+          payments_ios: number
+          payments_reduction: number
+          report_date: string
+          updated_at: string
+        }
+        Insert: {
+          accounts_created?: number
+          accounts_created_android?: number
+          accounts_created_freedom?: number
+          accounts_created_ios?: number
+          accounts_created_reduction?: number
+          payments?: number
+          payments_android?: number
+          payments_freedom?: number
+          payments_ios?: number
+          payments_reduction?: number
+          report_date: string
+          updated_at?: string
+        }
+        Update: {
+          accounts_created?: number
+          accounts_created_android?: number
+          accounts_created_freedom?: number
+          accounts_created_ios?: number
+          accounts_created_reduction?: number
+          payments?: number
+          payments_android?: number
+          payments_freedom?: number
+          payments_ios?: number
+          payments_reduction?: number
+          report_date?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1348,6 +1402,7 @@ export type Database = {
           expires_at: string | null
           id: string
           plan_type: string
+          platform: string | null
           previous_status:
             | Database["public"]["Enums"]["subscription_status"]
             | null
@@ -1369,6 +1424,7 @@ export type Database = {
         Args: { p_day: number; p_user_id: string }
         Returns: string
       }
+      get_user_journey: { Args: { p_user_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1385,6 +1441,10 @@ export type Database = {
         Returns: boolean
       }
       mark_start_here_seen: { Args: never; Returns: undefined }
+      recalculate_subscriptions_daily: {
+        Args: { p_from: string; p_to: string }
+        Returns: undefined
+      }
       register_login_and_award: { Args: never; Returns: Json }
     }
     Enums: {
