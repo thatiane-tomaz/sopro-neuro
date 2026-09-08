@@ -295,66 +295,128 @@ serve(async (req) => {
 
     // 7) Agenda no OneSignal: um envio individual por pessoa
     //    (individual para que possa ser cancelado se a pessoa usar o app no dia)
-    const results: any[] = [];
-    for (const p of plans) {
-      const playerId = playerById.get(p.user);
-      if (!playerId) continue;
+    //    Em vez de uma fila única, processa em blocos pequenos e em paralelo,
+    //    com orçamento de tempo: o que sobrar entra no próximo disparo.
+    const CHUNK = 20;                     // chamadas simultâneas ao OneSignal
+    const TIME_BUDGET_MS = 100_000;       // encerra antes do limite da função
+    const startedAt = Date.now();
 
-      let onesignalRes: any = { dryRun: true };
-      if (!dryRun) {
-        const res = await fetch("https://onesignal.com/api/v1/notifications", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
-          },
-          body: JSON.stringify({
-            app_id: ONESIGNAL_APP_ID,
-            include_player_ids: [playerId],
-            headings: { pt: p.campaign.title, en: p.campaign.title },
-            contents: { pt: p.campaign.message, en: p.campaign.message },
-            send_after: new Date(p.at).toISOString(),
-          }),
-        });
-        onesignalRes = await res.json();
+    const sample: any[] = [];
+    const esporadicasEnviadas = new Set<string>();
+    let scheduled = 0;
+    let failed = 0;
+    let remaining = 0;
 
-        const scheduledIso = new Date(p.at).toISOString();
-        await supabase.from("notification_sends").insert({
-          campaign_id: p.campaign.id,
-          user_id: p.user,
-          kind: p.campaign.kind,
-          slot: scheduledIso.slice(11, 16),
-          onesignal_response: onesignalRes,
-          onesignal_notification_id: onesignalRes?.id ?? null,
-          sent_at: scheduledIso,
-        });
-        // Guarda o ponteiro da rotação: qual tipo e qual frase foram as últimas
-        const profileUpdate: Record<string, unknown> = { last_push_sent_at: scheduledIso };
-        if (p.campaign.kind === "fixa" || p.campaign.kind === "rotativa") {
-          profileUpdate.push_last_kind = p.campaign.kind;
-          if (p.campaign.kind === "rotativa") profileUpdate.push_last_rotativa_id = p.campaign.id;
+    const runnable = plans.filter((p) => playerById.has(p.user));
+
+    for (let i = 0; i < runnable.length; i += CHUNK) {
+      if (Date.now() - startedAt > TIME_BUDGET_MS) {
+        remaining = runnable.length - i;
+        break;
+      }
+      const chunk = runnable.slice(i, i + CHUNK);
+
+      const settled = await Promise.all(chunk.map(async (p) => {
+        const playerId = playerById.get(p.user)!;
+        if (dryRun) return { p, onesignalRes: { dryRun: true } as any, ok: true };
+        try {
+          const res = await fetch("https://onesignal.com/api/v1/notifications", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
+            },
+            body: JSON.stringify({
+              app_id: ONESIGNAL_APP_ID,
+              include_player_ids: [playerId],
+              headings: { pt: p.campaign.title, en: p.campaign.title },
+              contents: { pt: p.campaign.message, en: p.campaign.message },
+              send_after: new Date(p.at).toISOString(),
+            }),
+          });
+          const onesignalRes = await res.json();
+          return { p, onesignalRes, ok: res.ok };
+        } catch (e: any) {
+          return { p, onesignalRes: { error: e.message }, ok: false };
         }
-        await supabase.from("profiles").update(profileUpdate).eq("user_id", p.user);
-        if (p.campaign.kind === "esporadica") {
-          await supabase
-            .from("notification_campaigns")
-            .update({ sent_at: new Date().toISOString() })
-            .eq("id", p.campaign.id);
+      }));
+
+      const okItems = settled.filter((s) => s.ok);
+      failed += settled.length - okItems.length;
+      scheduled += okItems.length;
+
+      if (!dryRun && okItems.length > 0) {
+        // Uma única gravação por bloco, em vez de uma por pessoa
+        await supabase.from("notification_sends").insert(
+          okItems.map(({ p, onesignalRes }) => {
+            const scheduledIso = new Date(p.at).toISOString();
+            return {
+              campaign_id: p.campaign.id,
+              user_id: p.user,
+              kind: p.campaign.kind,
+              slot: scheduledIso.slice(11, 16),
+              onesignal_response: onesignalRes,
+              onesignal_notification_id: onesignalRes?.id ?? null,
+              sent_at: scheduledIso,
+            };
+          }),
+        );
+
+        // Atualiza os perfis agrupados pelo mesmo ponteiro de rotação
+        const groups = new Map<string, { patch: Record<string, unknown>; ids: string[] }>();
+        for (const { p } of okItems) {
+          const scheduledIso = new Date(p.at).toISOString();
+          const patch: Record<string, unknown> = { last_push_sent_at: scheduledIso };
+          if (p.campaign.kind === "fixa" || p.campaign.kind === "rotativa") {
+            patch.push_last_kind = p.campaign.kind;
+            if (p.campaign.kind === "rotativa") patch.push_last_rotativa_id = p.campaign.id;
+          }
+          const key = JSON.stringify(patch);
+          const g = groups.get(key) ?? { patch, ids: [] };
+          g.ids.push(p.user);
+          groups.set(key, g);
+        }
+        for (const g of groups.values()) {
+          await supabase.from("profiles").update(g.patch).in("user_id", g.ids);
+        }
+
+        for (const { p } of okItems) {
+          if (p.campaign.kind === "esporadica") esporadicasEnviadas.add(p.campaign.id);
         }
       }
 
-      results.push({
-        campaign: p.campaign.name,
-        kind: p.campaign.kind,
-        scheduled_for: new Date(p.at).toISOString(),
-        onesignal_id: onesignalRes?.id ?? null,
-        onesignal: onesignalRes,
-      });
+      for (const { p, onesignalRes } of settled) {
+        if (sample.length >= 20) break;
+        sample.push({
+          campaign: p.campaign.name,
+          kind: p.campaign.kind,
+          scheduled_for: new Date(p.at).toISOString(),
+          onesignal_id: onesignalRes?.id ?? null,
+        });
+      }
     }
 
-    console.log(`dia=${today.date} agendados=${results.length}`);
+    if (!dryRun && esporadicasEnviadas.size > 0) {
+      await supabase
+        .from("notification_campaigns")
+        .update({ sent_at: new Date().toISOString() })
+        .in("id", [...esporadicasEnviadas]);
+    }
 
-    return json({ success: true, day: today.date, dryRun, planned: plans.length, results });
+    console.log(
+      `dia=${today.date} agendados=${scheduled} falhas=${failed} restantes=${remaining}`,
+    );
+
+    return json({
+      success: true,
+      day: today.date,
+      dryRun,
+      planned: runnable.length,
+      scheduled,
+      failed,
+      remaining,
+      sample,
+    });
   } catch (error: any) {
     console.error("notifications-planner error:", error);
     return json({ error: error.message }, 500);
