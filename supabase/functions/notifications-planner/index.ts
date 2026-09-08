@@ -19,6 +19,8 @@ const GLOBAL_MIN_HOURS = 24;
 const IMMEDIATE_MIN_HOURS = 6;
 // Nada é agendado depois desta hora (fuso de São Paulo)
 const LAST_HOUR = 21;
+// Tamanho da página nas leituras (evita o teto de 1.000 linhas)
+const PAGE = 1000;
 
 type Campaign = {
   id: string;
@@ -37,6 +39,7 @@ type Campaign = {
   priority: number;
   send_at: string | null;
   sent_at: string | null;
+  created_at?: string | null;
 };
 
 // Offset do fuso de São Paulo em ms (sempre UTC-3)
@@ -89,63 +92,69 @@ serve(async (req) => {
     if (cErr) throw cErr;
     const campaigns = (rawCampaigns ?? []) as Campaign[];
 
-    // 2) Aparelhos inscritos
-    const { data: profiles, error: pErr } = await supabase
-      .from("profiles")
-      .select("user_id, onesignal_player_id")
-      .not("onesignal_player_id", "is", null);
-    if (pErr) throw pErr;
-    const subscribers = (profiles ?? []).filter((p: any) => !!p.onesignal_player_id);
+    // 2) Aparelhos inscritos (paginado: sem teto de 1.000 linhas)
+    const subscribers: any[] = [];
+    for (let from = 0; ; from += PAGE) {
+      const { data, error: pErr } = await supabase
+        .from("profiles")
+        .select("user_id, onesignal_player_id, last_push_sent_at, push_last_kind, push_last_rotativa_id")
+        .not("onesignal_player_id", "is", null)
+        .order("user_id", { ascending: true })
+        .range(from, from + PAGE - 1);
+      if (pErr) throw pErr;
+      subscribers.push(...(data ?? []).filter((p: any) => !!p.onesignal_player_id));
+      if ((data ?? []).length < PAGE) break;
+    }
     if (subscribers.length === 0) return json({ success: true, planned: 0, message: "Nenhum aparelho inscrito" });
 
     const userIds = subscribers.map((p: any) => p.user_id as string);
     const playerById = new Map<string, string>(
       subscribers.map((p: any) => [p.user_id as string, p.onesignal_player_id as string]),
     );
-
-    // 3) Histórico (limite geral, intervalo por campanha e alternância)
-    const { data: sends } = await supabase
-      .from("notification_sends")
-      .select("user_id, campaign_id, kind, sent_at")
-      .gte("sent_at", new Date(now - 60 * 24 * HOUR_MS).toISOString())
-      .order("sent_at", { ascending: false });
-
+    // Estado de rotação guardado no próprio perfil — dispensa varrer meses de histórico
     const lastAny = new Map<string, number>();
-    const lastByCampaign = new Map<string, number>();
     const lastKindByUser = new Map<string, string>();
-    for (const s of sends ?? []) {
-      const t = new Date(s.sent_at).getTime();
-      if (t > (lastAny.get(s.user_id) ?? 0)) lastAny.set(s.user_id, t);
-      const k = `${s.user_id}|${s.campaign_id}`;
-      if (t > (lastByCampaign.get(k) ?? 0)) lastByCampaign.set(k, t);
-      if (!lastKindByUser.has(s.user_id) && (s.kind === "fixa" || s.kind === "rotativa")) {
-        lastKindByUser.set(s.user_id, s.kind);
-      }
+    const lastRotativaByUser = new Map<string, string>();
+    for (const p of subscribers) {
+      if (p.last_push_sent_at) lastAny.set(p.user_id, new Date(p.last_push_sent_at).getTime());
+      if (p.push_last_kind) lastKindByUser.set(p.user_id, p.push_last_kind);
+      if (p.push_last_rotativa_id) lastRotativaByUser.set(p.user_id, p.push_last_rotativa_id);
     }
 
-    // 4) Jornada de cada pessoa
-    const { data: hist } = await supabase
-      .from("historico_jornada_usuario")
-      .select("user_id, jornada, created_at")
-      .in("user_id", userIds)
-      .order("created_at", { ascending: false });
+    // 3) Jornada de cada pessoa (paginado)
     const journeyByUser = new Map<string, string>();
-    for (const h of hist ?? []) {
-      if (!journeyByUser.has(h.user_id)) journeyByUser.set(h.user_id, normalizeJourney(h.jornada));
+    for (let from = 0; ; from += PAGE) {
+      const { data } = await supabase
+        .from("historico_jornada_usuario")
+        .select("user_id, jornada, created_at")
+        .order("created_at", { ascending: false })
+        .range(from, from + PAGE - 1);
+      const rows = data ?? [];
+      for (const h of rows) {
+        if (!journeyByUser.has(h.user_id)) journeyByUser.set(h.user_id, normalizeJourney(h.jornada));
+      }
+      if (rows.length < PAGE) break;
     }
 
     // 5) Quais missões liberam hoje (started_at + 72h) e ainda não foram concluídas
     const missaoUnlockByUser = new Map<string, number>();
     {
-      const { data: tracks } = await supabase
-        .from("journey_tracking")
-        .select("user_id, interaction_type, started_at, finished_at")
-        .in("user_id", userIds)
-        .or("interaction_type.like.%missao_iniciada_semana_%,interaction_type.like.%missao_semana_%");
+      const tracks: any[] = [];
+      for (let from = 0; ; from += PAGE) {
+        const { data } = await supabase
+          .from("journey_tracking")
+          .select("user_id, interaction_type, started_at, finished_at")
+          .or("interaction_type.like.%missao_iniciada_semana_%,interaction_type.like.%missao_semana_%")
+          .order("started_at", { ascending: false })
+          .range(from, from + PAGE - 1);
+        const rows = data ?? [];
+        tracks.push(...rows);
+        if (rows.length < PAGE) break;
+      }
 
       const done = new Set<string>();
       const pending: { user: string; key: string; unlock: number }[] = [];
-      for (const t of tracks ?? []) {
+      for (const t of tracks) {
         const type = t.interaction_type as string;
         if (type.includes("missao_iniciada_semana_")) {
           if (!t.finished_at) {
@@ -184,12 +193,30 @@ serve(async (req) => {
     // 6a) Prioridade máxima: missão liberada — agendada para a hora exata da liberação
     const missaoCampaign = campaigns.find((c) => c.kind === "gatilho" && c.trigger_key === "missao_pronta");
     if (missaoCampaign) {
+      const minHours = missaoCampaign.min_hours_between > 0 ? missaoCampaign.min_hours_between : 72;
+      // Histórico curto: só desta campanha e só dentro da própria janela de repetição
+      const lastMissao = new Map<string, number>();
+      for (let from = 0; ; from += PAGE) {
+        const { data } = await supabase
+          .from("notification_sends")
+          .select("user_id, sent_at")
+          .eq("campaign_id", missaoCampaign.id)
+          .gte("sent_at", new Date(now - minHours * HOUR_MS).toISOString())
+          .order("sent_at", { ascending: false })
+          .range(from, from + PAGE - 1);
+        const rows = data ?? [];
+        for (const s of rows) {
+          const t = new Date(s.sent_at).getTime();
+          if (t > (lastMissao.get(s.user_id) ?? 0)) lastMissao.set(s.user_id, t);
+        }
+        if (rows.length < PAGE) break;
+      }
+
       for (const [uid, unlock] of missaoUnlockByUser) {
+        if (!playerById.has(uid)) continue;
         const userJourney = journeyByUser.get(uid) ?? "reducao";
         if (missaoCampaign.journey !== "ambas" && missaoCampaign.journey !== userJourney) continue;
-        const lastCamp = lastByCampaign.get(`${uid}|${missaoCampaign.id}`) ?? 0;
-        const minHours = missaoCampaign.min_hours_between > 0 ? missaoCampaign.min_hours_between : 72;
-        if (now - lastCamp < minHours * HOUR_MS) continue;
+        if (lastMissao.has(uid)) continue;
         // respiro curto em relação ao último push recebido
         const earliest = Math.max(unlock, (lastAny.get(uid) ?? 0) + IMMEDIATE_MIN_HOURS * HOUR_MS, now + 60_000);
         if (earliest > dayEnd) continue;
@@ -218,41 +245,49 @@ serve(async (req) => {
       if (c.frequency === "weekly") return c.weekday === today.weekday;
       return true;
     });
-    const rotativas = campaigns.filter((c) => c.kind === "rotativa");
+    // Fila de rotativas em ordem fixa: sabendo a última, sabemos a próxima
+    const rotativas = campaigns
+      .filter((c) => c.kind === "rotativa")
+      .sort((a, b) => a.priority - b.priority || (a.created_at ?? "").localeCompare(b.created_at ?? ""));
+
+    // Próxima da fila depois da última enviada para esta pessoa
+    const nextRotativa = (uid: string, journey: string) => {
+      if (rotativas.length === 0) return null;
+      const lastId = lastRotativaByUser.get(uid);
+      const lastIdx = lastId ? rotativas.findIndex((c) => c.id === lastId) : -1;
+      for (let step = 1; step <= rotativas.length; step++) {
+        const c = rotativas[(lastIdx + step + rotativas.length) % rotativas.length];
+        if (c.journey === "ambas" || c.journey === journey) return c;
+      }
+      return null;
+    };
 
     for (const uid of userIds) {
       if (planned.has(uid)) continue;
       if (now - (lastAny.get(uid) ?? 0) < GLOBAL_MIN_HOURS * HOUR_MS) continue;
       const userJourney = journeyByUser.get(uid) ?? "reducao";
-      const fits = (c: Campaign) =>
-        (c.journey === "ambas" || c.journey === userJourney) &&
-        now - (lastByCampaign.get(`${uid}|${c.id}`) ?? 0) >= (c.min_hours_between ?? 0) * HOUR_MS;
 
-      const preferRotativa = lastKindByUser.get(uid) === "fixa";
-      const groups = preferRotativa ? [rotativas, fixas] : [fixas, rotativas];
+      const fixaOption = fixas.find((c) => c.journey === "ambas" || c.journey === userJourney) ?? null;
+      const rotativaOption = nextRotativa(uid, userJourney);
+      // Se a última foi a fixa, hoje é dia de rotativa — e vice-versa
+      const order = lastKindByUser.get(uid) === "fixa"
+        ? [rotativaOption, fixaOption]
+        : [fixaOption, rotativaOption];
 
       let chosen: { c: Campaign; at: number } | null = null;
-      for (const group of groups) {
-        const options = group.filter(fits);
-        if (options.length === 0) continue;
-        // rotativa: a menos recente para esta pessoa
-        options.sort(
-          (a, b) =>
-            (lastByCampaign.get(`${uid}|${a.id}`) ?? 0) - (lastByCampaign.get(`${uid}|${b.id}`) ?? 0),
-        );
-        for (const c of options) {
-          const at = pickSlot(c);
-          if (at !== null) {
-            chosen = { c, at };
-            break;
-          }
+      for (const c of order) {
+        if (!c) continue;
+        const at = pickSlot(c);
+        if (at !== null) {
+          chosen = { c, at };
+          break;
         }
-        if (chosen) break;
       }
       if (!chosen) continue;
       plans.push({ user: uid, campaign: chosen.c, at: chosen.at });
       planned.add(uid);
     }
+
 
     if (plans.length === 0) {
       return json({ success: true, day: today.date, planned: 0, message: "Nada a agendar hoje" });
@@ -293,10 +328,13 @@ serve(async (req) => {
           onesignal_notification_id: onesignalRes?.id ?? null,
           sent_at: scheduledIso,
         });
-        await supabase
-          .from("profiles")
-          .update({ last_push_sent_at: scheduledIso })
-          .eq("user_id", p.user);
+        // Guarda o ponteiro da rotação: qual tipo e qual frase foram as últimas
+        const profileUpdate: Record<string, unknown> = { last_push_sent_at: scheduledIso };
+        if (p.campaign.kind === "fixa" || p.campaign.kind === "rotativa") {
+          profileUpdate.push_last_kind = p.campaign.kind;
+          if (p.campaign.kind === "rotativa") profileUpdate.push_last_rotativa_id = p.campaign.id;
+        }
+        await supabase.from("profiles").update(profileUpdate).eq("user_id", p.user);
         if (p.campaign.kind === "esporadica") {
           await supabase
             .from("notification_campaigns")

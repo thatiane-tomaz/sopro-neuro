@@ -910,6 +910,8 @@ export type Database = {
           id: string
           last_push_sent_at: string | null
           onesignal_player_id: string | null
+          push_last_kind: string | null
+          push_last_rotativa_id: string | null
           start_here_seen: boolean
           subscription_status: string | null
           updated_at: string
@@ -926,6 +928,8 @@ export type Database = {
           id?: string
           last_push_sent_at?: string | null
           onesignal_player_id?: string | null
+          push_last_kind?: string | null
+          push_last_rotativa_id?: string | null
           start_here_seen?: boolean
           subscription_status?: string | null
           updated_at?: string
@@ -942,6 +946,8 @@ export type Database = {
           id?: string
           last_push_sent_at?: string | null
           onesignal_player_id?: string | null
+          push_last_kind?: string | null
+          push_last_rotativa_id?: string | null
           start_here_seen?: boolean
           subscription_status?: string | null
           updated_at?: string
