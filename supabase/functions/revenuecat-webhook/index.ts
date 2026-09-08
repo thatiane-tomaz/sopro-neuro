@@ -177,10 +177,14 @@ serve(async (req) => {
       logStep("Subscription created", { userId, status });
     }
 
-    // Update profile subscription status
+    // Update profile subscription status and platform when available
+    const profileUpdate: Record<string, any> = { subscription_status: status };
+    if (platform) {
+      profileUpdate.platform = platform;
+    }
     await supabaseClient
       .from('profiles')
-      .update({ subscription_status: status })
+      .update(profileUpdate)
       .eq('user_id', userId);
 
     return new Response(JSON.stringify({ success: true }), {
