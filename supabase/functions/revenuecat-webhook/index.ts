@@ -58,13 +58,27 @@ serve(async (req) => {
     const purchasedAt = event.purchased_at_ms ? new Date(event.purchased_at_ms) : null;
     const priceInPurchasedCurrency = event.price_in_purchased_currency;
     const email = event.subscriber_attributes?.["$email"]?.value;
+    const store = event.store;
+
+    // Map RevenueCat store to the platform values stored in the database
+    const platformFromStore = (store?: string): string | null => {
+      if (!store) return null;
+      const s = store.toLowerCase();
+      if (s === 'play_store') return 'android';
+      if (s === 'app_store') return 'ios';
+      if (s === 'mac_app_store') return 'ios';
+      return 'web';
+    };
+    const platform = platformFromStore(store);
 
     logStep("Event details", {
       eventType,
       appUserId,
       productId,
       expiresAt: expiresAt?.toISOString(),
-      email
+      email,
+      store,
+      platform
     });
 
     // Events that grant premium access
