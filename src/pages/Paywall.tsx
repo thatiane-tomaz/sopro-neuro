@@ -6,6 +6,7 @@ import { usePurchases } from '@/hooks/usePurchases';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Crown, Check, Shield, Brain, Headphones, Loader2, RefreshCw, X } from 'lucide-react';
+import { trackEvent } from '@/lib/tracking';
 
 const Paywall = () => {
   const navigate = useNavigate();
@@ -35,6 +36,13 @@ const Paywall = () => {
     });
   }, [authLoading, subLoading, user, isPremium, canPurchase, isConfigured, products, isPurchasing]);
 
+  // Funil: quantas pessoas realmente chegam nesta tela
+  useEffect(() => {
+    if (!authLoading && user && !isPremium) {
+      trackEvent('paywall', 'view');
+    }
+  }, [authLoading, user, isPremium]);
+
   useEffect(() => {
     if (!subLoading && isPremium) {
       console.log('[Paywall] Redirecting to dashboard - user is premium');
@@ -51,8 +59,10 @@ const Paywall = () => {
 
   const handlePurchase = async () => {
     console.log('[Paywall] Purchase button clicked', { canPurchase, isConfigured, productsCount: products.length });
+    trackEvent('paywall', 'purchase_click');
     const success = await purchasePremium();
     console.log('[Paywall] Purchase result:', success);
+    trackEvent('paywall', success ? 'purchase_success' : 'purchase_fail');
     if (success) {
       navigate('/dashboard', { replace: true });
     }
@@ -60,11 +70,17 @@ const Paywall = () => {
 
   const handleRestore = async () => {
     console.log('[Paywall] Restore button clicked', { canPurchase, isConfigured });
+    trackEvent('paywall', 'restore_click');
     const success = await restorePurchases();
     console.log('[Paywall] Restore result:', success);
     if (success) {
       navigate('/dashboard', { replace: true });
     }
+  };
+
+  const handleClose = () => {
+    trackEvent('paywall', 'close');
+    navigate('/dashboard');
   };
 
   if (authLoading || subLoading) {
