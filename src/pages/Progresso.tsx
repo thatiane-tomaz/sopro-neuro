@@ -56,6 +56,8 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
+import ConsumptionEditDialog from "@/components/ConsumptionEditDialog";
+
 import soproLogo from "@/assets/sopro-logo.webp";
 import { performLogout } from "@/lib/logout";
 
@@ -86,6 +88,8 @@ export default function Progresso() {
   const [dateDialogOpen, setDateDialogOpen] = useState(false);
   const [pendingDate, setPendingDate] = useState<Date | undefined>();
   const [savingDate, setSavingDate] = useState(false);
+  const [consumoDialogOpen, setConsumoDialogOpen] = useState(false);
+
 
   // Journey history: define a jornada atual e os períodos em que o usuário
   // esteve na jornada de liberdade (abstinência). Esses dias contam como 0.
@@ -467,6 +471,15 @@ export default function Progresso() {
           />
         </div>
 
+        <button
+          onClick={() => setConsumoDialogOpen(true)}
+          className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-[12px] font-semibold text-[hsl(258_60%_50%)] active:scale-[0.99] transition-transform"
+        >
+          <Pencil className="h-3 w-3" />
+          Editar meu consumo e gasto
+        </button>
+
+
         {/* Register CTA — only when yesterday hasn't been logged */}
         {!yesterdayLogged && (
           <button
@@ -698,6 +711,16 @@ export default function Progresso() {
             : undefined
         }
       />
+
+      <ConsumptionEditDialog
+        open={consumoDialogOpen}
+        onOpenChange={setConsumoDialogOpen}
+        cigarettesPerDay={onboarding?.cigarettes_per_day ?? null}
+        vapesPerMonth={onboarding?.vapes_per_month ?? null}
+        weeklyCost={weeklyCostNum}
+        onSaved={() => refetchOnboarding?.()}
+      />
+
 
       <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
         <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
