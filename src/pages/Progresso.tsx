@@ -56,6 +56,8 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
+import ConsumptionEditDialog from "@/components/ConsumptionEditDialog";
+
 import soproLogo from "@/assets/sopro-logo.webp";
 import { performLogout } from "@/lib/logout";
 
@@ -86,6 +88,8 @@ export default function Progresso() {
   const [dateDialogOpen, setDateDialogOpen] = useState(false);
   const [pendingDate, setPendingDate] = useState<Date | undefined>();
   const [savingDate, setSavingDate] = useState(false);
+  const [consumoDialogOpen, setConsumoDialogOpen] = useState(false);
+
 
   // Journey history: define a jornada atual e os períodos em que o usuário
   // esteve na jornada de liberdade (abstinência). Esses dias contam como 0.
