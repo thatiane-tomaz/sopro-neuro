@@ -712,6 +712,16 @@ export default function Progresso() {
         }
       />
 
+      <ConsumptionEditDialog
+        open={consumoDialogOpen}
+        onOpenChange={setConsumoDialogOpen}
+        cigarettesPerDay={onboarding?.cigarettes_per_day ?? null}
+        vapesPerMonth={onboarding?.vapes_per_month ?? null}
+        weeklyCost={weeklyCostNum}
+        onSaved={() => refetchOnboarding?.()}
+      />
+
+
       <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
         <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
           <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-5 pb-4">
