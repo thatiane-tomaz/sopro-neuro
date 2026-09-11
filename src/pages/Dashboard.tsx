@@ -874,6 +874,12 @@ export default function Dashboard() {
             {tituloGatilho}
           </h1>
 
+          {!hasContentAccess && (focoAtualNumero ?? 1) === 1 && (
+            <p className="mt-2 rounded-xl bg-[hsl(150_70%_96%)] px-3 py-2 text-[11px] font-semibold text-[hsl(150_50%_30%)] ring-1 ring-[hsl(150_60%_88%)] text-balance">
+              Comece agora: o vídeo e a hipnose deste primeiro tema são gratuitos.
+            </p>
+          )}
+
           <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] flex items-stretch gap-2">
             {[
               hasVideo && {
