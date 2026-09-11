@@ -362,7 +362,8 @@ export default function Jornada() {
   const openMedia = async (idx: number, type: "video" | "hypnosis") => {
     const it = items[idx];
     if (!it) return;
-    if (!ensureContentAccess()) return;
+    // Amostra gratuita: primeiro tema da jornada liberado sem assinatura
+    if (!ensureContentAccess({ freePreview: idx === 0, source: type })) return;
     if (!canOpen(idx)) {
       toast({
         title: "Tema bloqueado",

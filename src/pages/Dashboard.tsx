@@ -134,7 +134,7 @@ export default function Dashboard() {
 
   // Abre o chat de IA em modal (opcionalmente já enviando a 1ª mensagem)
   const openChat = (seed?: string) => {
-    if (!ensureContentAccess()) return;
+    if (!ensureContentAccess({ source: "chat" })) return;
     setChatSeed(seed);
     setChatDraft("");
     setChatOpen(true);
@@ -274,7 +274,7 @@ export default function Dashboard() {
   }, [tick, missaoLocked, missaoUnlockAt]);
 
   const openMissionDialog = async () => {
-    if (!ensureContentAccess()) return;
+    if (!ensureContentAccess({ source: "missao" })) return;
     setMissionDialogOpen(true);
     if (!missaoStartTrack) {
       try {
@@ -463,7 +463,9 @@ export default function Dashboard() {
 
   const openMedia = async (type: "video" | "hypnosis") => {
     if (dayLocked) return;
-    if (!ensureContentAccess()) return;
+    // Amostra gratuita: vídeo e hipnose do primeiro foco liberados sem assinatura
+    const isFreePreview = (focoAtualNumero ?? 1) === 1;
+    if (!ensureContentAccess({ freePreview: isFreePreview, source: type })) return;
     const url = await getMediaUrl(type);
     if (!url) {
       toast({
