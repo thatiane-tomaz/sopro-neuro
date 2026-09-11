@@ -8,6 +8,7 @@ import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useContentAccess } from "@/hooks/useContentAccess";
+import { useContentTracking } from "@/hooks/useContentTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { getSignedMediaUrl } from "@/lib/mediaUrl";
 import { useToast } from "@/hooks/use-toast";
@@ -73,6 +74,7 @@ export default function Jornada() {
   const { isPremium, isExpired, loading: subLoading } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { ensureContentAccess } = useContentAccess();
+  const { trackContentView } = useContentTracking();
   const {
     trackingData,
     startTracking,
@@ -362,7 +364,8 @@ export default function Jornada() {
   const openMedia = async (idx: number, type: "video" | "hypnosis") => {
     const it = items[idx];
     if (!it) return;
-    if (!ensureContentAccess()) return;
+    // Amostra gratuita: primeiro tema da jornada liberado sem assinatura
+    if (!ensureContentAccess({ freePreview: idx === 0, source: type })) return;
     if (!canOpen(idx)) {
       toast({
         title: "Tema bloqueado",
@@ -383,6 +386,7 @@ export default function Jornada() {
       return;
     }
     const interactionType = interactionKey(it, type);
+    trackContentView(type, interactionType);
     setSelectedMedia({
       title: it.habito_titulo,
       fileUrl: url,

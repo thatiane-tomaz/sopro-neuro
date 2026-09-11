@@ -10,6 +10,7 @@ import { useOnboardingData } from "@/hooks/useOnboardingData";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useContentAccess } from "@/hooks/useContentAccess";
+import { useContentTracking } from "@/hooks/useContentTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { getSignedMediaUrl } from "@/lib/mediaUrl";
 import { useToast } from "@/hooks/use-toast";
@@ -106,6 +107,7 @@ export default function Dashboard() {
   const { loading: subLoading, isPremium, isExpired } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { hasContentAccess, ensureContentAccess } = useContentAccess();
+  const { trackContentView } = useContentTracking();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -134,7 +136,7 @@ export default function Dashboard() {
 
   // Abre o chat de IA em modal (opcionalmente já enviando a 1ª mensagem)
   const openChat = (seed?: string) => {
-    if (!ensureContentAccess()) return;
+    if (!ensureContentAccess({ source: "chat" })) return;
     setChatSeed(seed);
     setChatDraft("");
     setChatOpen(true);
@@ -274,7 +276,7 @@ export default function Dashboard() {
   }, [tick, missaoLocked, missaoUnlockAt]);
 
   const openMissionDialog = async () => {
-    if (!ensureContentAccess()) return;
+    if (!ensureContentAccess({ source: "missao" })) return;
     setMissionDialogOpen(true);
     if (!missaoStartTrack) {
       try {
@@ -463,7 +465,9 @@ export default function Dashboard() {
 
   const openMedia = async (type: "video" | "hypnosis") => {
     if (dayLocked) return;
-    if (!ensureContentAccess()) return;
+    // Amostra gratuita: vídeo e hipnose do primeiro foco liberados sem assinatura
+    const isFreePreview = (focoAtualNumero ?? 1) === 1;
+    if (!ensureContentAccess({ freePreview: isFreePreview, source: type })) return;
     const url = await getMediaUrl(type);
     if (!url) {
       toast({
@@ -476,6 +480,7 @@ export default function Dashboard() {
       return;
     }
     const interactionType = type === "video" ? videoInteraction : hipnoseInteraction;
+    trackContentView(type, interactionType);
     setSelectedMedia({
       title: tituloGatilho,
       fileUrl: url,
@@ -868,6 +873,12 @@ export default function Dashboard() {
           <h1 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
             {tituloGatilho}
           </h1>
+
+          {!hasContentAccess && (focoAtualNumero ?? 1) === 1 && (
+            <p className="mt-2 rounded-xl bg-[hsl(150_70%_96%)] px-3 py-2 text-[11px] font-semibold text-[hsl(150_50%_30%)] ring-1 ring-[hsl(150_60%_88%)] text-balance">
+              Comece agora: o vídeo e a hipnose deste primeiro tema são gratuitos.
+            </p>
+          )}
 
           <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] flex items-stretch gap-2">
             {[
