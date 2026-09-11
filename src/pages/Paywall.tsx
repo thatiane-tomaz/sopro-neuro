@@ -191,7 +191,7 @@ const Paywall = () => {
             ) : (
               <>
                 <Crown className="w-5 h-5 mr-2" />
-                Começar Agora
+                Liberar minha jornada
               </>
             )}
           </Button>
