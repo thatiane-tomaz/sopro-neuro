@@ -74,6 +74,7 @@ export default function Jornada() {
   const { isPremium, isExpired, loading: subLoading } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { ensureContentAccess } = useContentAccess();
+  const { trackContentView } = useContentTracking();
   const {
     trackingData,
     startTracking,
