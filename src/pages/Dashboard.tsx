@@ -107,6 +107,7 @@ export default function Dashboard() {
   const { loading: subLoading, isPremium, isExpired } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { hasContentAccess, ensureContentAccess } = useContentAccess();
+  const { trackContentView } = useContentTracking();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
