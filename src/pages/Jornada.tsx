@@ -386,6 +386,7 @@ export default function Jornada() {
       return;
     }
     const interactionType = interactionKey(it, type);
+    trackContentView(type, interactionType);
     setSelectedMedia({
       title: it.habito_titulo,
       fileUrl: url,
