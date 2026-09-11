@@ -467,6 +467,15 @@ export default function Progresso() {
           />
         </div>
 
+        <button
+          onClick={() => setConsumoDialogOpen(true)}
+          className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-[12px] font-semibold text-[hsl(258_60%_50%)] active:scale-[0.99] transition-transform"
+        >
+          <Pencil className="h-3 w-3" />
+          Editar meu consumo e gasto
+        </button>
+
+
         {/* Register CTA — only when yesterday hasn't been logged */}
         {!yesterdayLogged && (
           <button
