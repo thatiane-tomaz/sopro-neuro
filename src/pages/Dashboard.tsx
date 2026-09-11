@@ -10,6 +10,7 @@ import { useOnboardingData } from "@/hooks/useOnboardingData";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useContentAccess } from "@/hooks/useContentAccess";
+import { useContentTracking } from "@/hooks/useContentTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { getSignedMediaUrl } from "@/lib/mediaUrl";
 import { useToast } from "@/hooks/use-toast";
@@ -478,6 +479,7 @@ export default function Dashboard() {
       return;
     }
     const interactionType = type === "video" ? videoInteraction : hipnoseInteraction;
+    trackContentView(type, interactionType);
     setSelectedMedia({
       title: tituloGatilho,
       fileUrl: url,
