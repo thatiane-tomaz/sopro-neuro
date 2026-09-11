@@ -98,18 +98,18 @@ const Paywall = () => {
   const benefits = [
     {
       icon: Brain,
-      title: 'Jornada completa com todos os conteúdos',
-      description: 'Metodologia cientificamente comprovada'
+      title: 'Sua jornada completa, tema por tema',
+      description: 'Cada gatilho que você marcou vira um passo prático, no seu ritmo'
     },
     {
       icon: Headphones,
-      title: 'Todas as hipnoses exclusivas',
-      description: 'Áudios profissionais de alta qualidade'
+      title: 'Todas as hipnoses e vídeos',
+      description: 'Áudios guiados para ouvir sempre que a vontade aparecer'
     },
     {
       icon: Shield,
-      title: 'Técnicas para lidar com gatilhos',
-      description: 'Ferramentas práticas para o dia a dia'
+      title: 'Neo com você nos momentos difíceis',
+      description: 'Converse a qualquer hora e receba um plano para o seu gatilho'
     }
   ];
 
@@ -118,7 +118,7 @@ const Paywall = () => {
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => navigate('/dashboard')}
+        onClick={handleClose}
         className="fixed right-3 top-[calc(env(safe-area-inset-top)+10px)] z-50 h-11 w-11 rounded-full bg-background/80 backdrop-blur-md shadow-md"
         aria-label="Fechar"
       >
@@ -133,10 +133,10 @@ const Paywall = () => {
             </div>
           </div>
           <CardTitle className="text-xl font-bold text-balance">
-            Desbloqueie sua Transformação
+            Você já começou. Vamos até o fim?
           </CardTitle>
-          <CardDescription className="text-base mt-2">
-            Acesso completo ao programa
+          <CardDescription className="text-base mt-2 text-balance">
+            O primeiro tema é seu de graça. A assinatura libera todos os outros.
           </CardDescription>
         </CardHeader>
 
@@ -148,17 +148,21 @@ const Paywall = () => {
                   <benefit.icon className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-sm">{benefit.title}</h4>
-                  <p className="text-xs text-muted-foreground">{benefit.description}</p>
+                  <h4 className="font-medium text-sm text-balance">{benefit.title}</h4>
+                  <p className="text-xs text-muted-foreground text-balance">{benefit.description}</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="bg-muted/50 rounded-lg p-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              <Check className="w-4 h-4 inline mr-1 text-green-500" />
-              Cancele a qualquer momento
+          <div className="bg-muted/50 rounded-lg p-4 space-y-1.5">
+            <p className="text-sm text-muted-foreground flex items-start gap-2">
+              <Check className="w-4 h-4 mt-0.5 text-green-500 shrink-0" />
+              <span className="text-balance">Cancele quando quiser, direto na loja do seu celular</span>
+            </p>
+            <p className="text-sm text-muted-foreground flex items-start gap-2">
+              <Check className="w-4 h-4 mt-0.5 text-green-500 shrink-0" />
+              <span className="text-balance">Seu progresso e seus registros continuam salvos</span>
             </p>
           </div>
 
@@ -168,6 +172,9 @@ const Paywall = () => {
                 <span className="text-3xl font-bold text-primary">{priceString}</span>
                 <span className="text-muted-foreground">/mês</span>
               </div>
+              <p className="text-xs text-muted-foreground mt-1 text-balance">
+                Menos do que você gasta com cigarro em poucos dias
+              </p>
             </div>
           )}
 
