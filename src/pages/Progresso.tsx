@@ -34,7 +34,6 @@ import {
   yesterdayStr,
 } from "@/hooks/useSmokingLogs";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
