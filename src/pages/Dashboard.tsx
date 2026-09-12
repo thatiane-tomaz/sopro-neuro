@@ -751,7 +751,7 @@ export default function Dashboard() {
         {!dayLocked && sugestoesAtuais.length > 0 && (
           <div className="relative -mt-1 flex flex-col items-end gap-2">
             <span className="pr-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_35%_58%)]">
-              Responda ao Neo
+              PERGUNTE AO NEO
             </span>
             {sugestoesAtuais.map((p, i) => (
               <button
