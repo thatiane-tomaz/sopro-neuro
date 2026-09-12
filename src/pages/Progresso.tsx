@@ -533,7 +533,7 @@ export default function Progresso() {
             <div className="rounded-2xl bg-[hsl(258_70%_97%)] p-3 text-center ring-1 ring-black/[0.03]">
               <p className="text-[11px] text-[hsl(258_50%_40%)]">Média atual (3 dias)</p>
               <p className="text-lg font-bold text-[hsl(258_60%_40%)] leading-tight mt-0.5">
-                {stats.daysWithLog > 0 ? stats.avgPerDay.toFixed(1) : "—"}
+                {stats.daysWithLog > 0 ? Math.floor(stats.avgPerDay) : "—"}
                 <span className="text-xs font-medium text-[hsl(258_40%_50%)]">/dia</span>
               </p>
             </div>
