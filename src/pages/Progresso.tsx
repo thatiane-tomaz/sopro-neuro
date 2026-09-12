@@ -696,7 +696,7 @@ export default function Progresso() {
               <span className="text-center leading-relaxed">
                 Antes de começar a jornada
                 <br />
-                respostas: {baseline} cigarros/dia · {vapesPerMonth} vapes/mês · {formatBRLCompact(weeklyCostNum)}/semana
+                {baseline} cigarros/dia · {vapesPerMonth} vapes/mês · {formatBRLCompact(weeklyCostNum)}/semana
               </span>
               <button
                 onClick={() => setConsumoDialogOpen(true)}
