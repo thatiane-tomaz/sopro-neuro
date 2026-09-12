@@ -691,6 +691,19 @@ export default function Progresso() {
                 accent
               />
             </div>
+
+            <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
+              <span>
+                Base: {baseline} cigarros/dia · {vapesPerMonth} vapes/mês · {formatBRLCompact(weeklyCostNum)}/semana
+              </span>
+              <button
+                onClick={() => setConsumoDialogOpen(true)}
+                aria-label="Editar consumo e gasto"
+                className="p-1 rounded-md text-[hsl(258_60%_50%)] active:scale-95 transition-transform"
+              >
+                <Pencil className="h-3 w-3" />
+              </button>
+            </div>
           </Card>
         )}
 
