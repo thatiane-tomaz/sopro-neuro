@@ -694,7 +694,7 @@ export default function Progresso() {
 
             <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
               <span>
-                Base: {baseline} cigarros/dia · {vapesPerMonth} vapes/mês · {formatBRLCompact(weeklyCostNum)}/semana
+                Antes de começar: {baseline} cigarros/dia · {vapesPerMonth} vapes/mês · {formatBRLCompact(weeklyCostNum)}/semana
               </span>
               <button
                 onClick={() => setConsumoDialogOpen(true)}
