@@ -368,6 +368,7 @@ export default function Progresso() {
   const pickerMin = startDateStr ?? "";
   const pickerMax = yesterdayStr();
   const [customDate, setCustomDate] = useState<string>("");
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   const handleLogout = async () => {
     await performLogout(navigate);
