@@ -35,6 +35,11 @@ import {
 } from "@/hooks/useSmokingLogs";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -363,6 +368,7 @@ export default function Progresso() {
   const pickerMin = startDateStr ?? "";
   const pickerMax = yesterdayStr();
   const [customDate, setCustomDate] = useState<string>("");
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   const handleLogout = async () => {
     await performLogout(navigate);
@@ -630,14 +636,60 @@ export default function Progresso() {
                 Escolha uma data para registrar quantos cigarros fumou.
               </p>
               <div className="mt-2.5 flex items-stretch gap-2">
-                <input
-                  type="date"
-                  value={customDate}
-                  min={pickerMin}
-                  max={pickerMax}
-                  onChange={(e) => setCustomDate(e.target.value)}
-                  className="flex-1 min-w-0 rounded-xl bg-white px-3 py-2.5 text-sm shadow-[inset_0_0_0_1px_hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)]"
-                />
+                <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      className="flex-1 min-w-0 flex items-center gap-2 rounded-xl bg-white px-3 py-2.5 text-sm text-left shadow-[inset_0_0_0_1px_hsl(258_70%_92%)] active:scale-[0.99] transition-transform"
+                    >
+                      <CalendarIcon className="h-4 w-4 text-[hsl(258_60%_50%)] flex-shrink-0" />
+                      <span
+                        className={
+                          customDate ? "text-foreground" : "text-muted-foreground"
+                        }
+                      >
+                        {customDate
+                          ? format(
+                              new Date(customDate + "T00:00:00"),
+                              "dd 'de' MMMM",
+                              { locale: ptBR },
+                            )
+                          : "Escolher data"}
+                      </span>
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    align="start"
+                    className="w-auto p-0 z-50 bg-white"
+                  >
+                    <Calendar
+                      mode="single"
+                      locale={ptBR}
+                      selected={
+                        customDate
+                          ? new Date(customDate + "T00:00:00")
+                          : undefined
+                      }
+                      defaultMonth={
+                        customDate
+                          ? new Date(customDate + "T00:00:00")
+                          : new Date(pickerMax + "T00:00:00")
+                      }
+                      onSelect={(d) => {
+                        if (!d) return;
+                        setCustomDate(toLocalDateStr(d));
+                        setDatePickerOpen(false);
+                      }}
+                      disabled={(d) => {
+                        const s = toLocalDateStr(d);
+                        return (
+                          (!!pickerMin && s < pickerMin) || s > pickerMax
+                        );
+                      }}
+                      className="p-3 pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
                 <button
                   disabled={!customDate}
                   onClick={() => {
