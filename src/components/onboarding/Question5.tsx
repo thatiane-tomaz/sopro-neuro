@@ -54,6 +54,11 @@ const Question5 = ({ data, updateData, onNext, onPrev }: Question5Props) => {
       return;
     }
 
+    const normalized = normalizeWeeklyCost(parseFloat(inputValue.replace(',', '.')));
+    const finalValue = String(normalized);
+    setInputValue(finalValue);
+    updateData({ weeklyCost: finalValue });
+
     onNext();
   };
 
