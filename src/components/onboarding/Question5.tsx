@@ -13,14 +13,18 @@ interface Question5Props {
   onPrev: () => void;
 }
 
+// Se passar de 999, assume que a pessoa digitou com centavos (ex.: "5500" = R$ 55,00)
+const normalizeWeeklyCost = (n: number): number =>
+  Number.isFinite(n) && n > 999 ? Math.round(n / 100) : n;
+
 const weeklyCostSchema = z.object({
   weeklyCost: z.string()
     .trim()
     .nonempty({ message: "Por favor, informe quanto você gasta por semana" })
     .refine((val) => {
-      const num = parseFloat(val.replace(',', '.'));
-      return !isNaN(num) && num >= 0 && num <= 10000;
-    }, { message: "Digite um valor válido entre R$ 0,00 e R$ 10.000,00" })
+      const num = normalizeWeeklyCost(parseFloat(val.replace(',', '.')));
+      return !isNaN(num) && num >= 0 && num <= 999;
+    }, { message: "Digite um valor válido entre R$ 0 e R$ 999" })
 });
 
 const Question5 = ({ data, updateData, onNext, onPrev }: Question5Props) => {
@@ -49,6 +53,11 @@ const Question5 = ({ data, updateData, onNext, onPrev }: Question5Props) => {
       });
       return;
     }
+
+    const normalized = normalizeWeeklyCost(parseFloat(inputValue.replace(',', '.')));
+    const finalValue = String(normalized);
+    setInputValue(finalValue);
+    updateData({ weeklyCost: finalValue });
 
     onNext();
   };

@@ -37,11 +37,15 @@ const parseNumber = (value: unknown): number | null => {
   return null;
 };
 
+// Se passar de 999, assume que a pessoa digitou com centavos (ex.: "3500" = R$ 35,00)
+const normalizeWeeklyCost = (n: number): number =>
+  Number.isFinite(n) && n > 999 ? Math.round(n / 100) : n;
+
 const parseMoneyValue = (value: unknown): number | null => {
-  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'number' && Number.isFinite(value)) return normalizeWeeklyCost(value);
   if (typeof value === 'string' && value.trim()) {
     const parsed = Number.parseFloat(value.replace(',', '.'));
-    return Number.isFinite(parsed) ? parsed : null;
+    return Number.isFinite(parsed) ? normalizeWeeklyCost(parsed) : null;
   }
   return null;
 };

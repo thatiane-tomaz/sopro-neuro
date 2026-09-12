@@ -23,6 +23,10 @@ interface Props {
 
 const onlyDigits = (v: string) => v.replace(/\D/g, "").slice(0, 5);
 
+// Se passar de 999, assume que a pessoa digitou com centavos (ex.: "5500" = R$ 55,00)
+export const normalizeWeeklyCost = (n: number): number =>
+  Number.isFinite(n) && n > 999 ? Math.round(n / 100) : n;
+
 export default function ConsumptionEditDialog({
   open,
   onOpenChange,
@@ -45,12 +49,13 @@ export default function ConsumptionEditDialog({
     setCost(weeklyCost != null && weeklyCost > 0 ? String(Math.round(weeklyCost)) : "");
   }, [open, cigarettesPerDay, vapesPerMonth, weeklyCost]);
 
+  const costNormalized = normalizeWeeklyCost(Number(cost || "0"));
   const valid =
     cigs.trim() !== "" &&
     cost.trim() !== "" &&
     Number(cigs) <= 200 &&
     Number(vapes || "0") <= 200 &&
-    Number(cost) <= 10000;
+    costNormalized <= 999;
 
   const save = async () => {
     if (!user || !valid) return;
@@ -58,7 +63,7 @@ export default function ConsumptionEditDialog({
     try {
       const cigsNum = parseInt(cigs, 10);
       const vapesNum = parseInt(vapes || "0", 10);
-      const costNum = parseInt(cost, 10);
+      const costNum = normalizeWeeklyCost(parseInt(cost, 10));
 
       const { error } = await supabase
         .from("onboarding_responses")
