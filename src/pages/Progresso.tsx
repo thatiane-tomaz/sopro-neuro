@@ -148,12 +148,14 @@ export default function Progresso() {
   const vapesPerMonth = onboarding?.vapes_per_month ?? 0;
   const equivCigsPerDay = baseline + Math.ceil(vapesPerMonth / 30);
   const weeklyCostNum = (() => {
+    // Se passar de 999, assume que a pessoa digitou com centavos (ex.: "5500" = R$ 55,00)
+    const norm = (n: number) => (n > 999 ? Math.round(n / 100) : n);
     const v = onboarding?.weekly_cost_value;
-    if (typeof v === "number" && isFinite(v) && v > 0) return v;
+    if (typeof v === "number" && isFinite(v) && v > 0) return norm(v);
     const txt = onboarding?.weekly_cost;
     if (!txt) return 0;
     const parsed = parseFloat(String(txt).replace(",", "."));
-    return isFinite(parsed) && parsed > 0 ? parsed : 0;
+    return isFinite(parsed) && parsed > 0 ? norm(parsed) : 0;
   })();
   const costPerCig = baseline > 0 ? weeklyCostNum / 7 / baseline : 0;
 
