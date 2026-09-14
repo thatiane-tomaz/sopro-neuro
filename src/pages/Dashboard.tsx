@@ -97,8 +97,6 @@ export default function Dashboard() {
     trackingData,
     getCurrentDay,
     isDayCompleted,
-    isDayTimeLocked,
-    getDayCompletionTime,
     startTracking,
     updateProgress,
     isLoading: trackingLoading,
