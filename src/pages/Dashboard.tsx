@@ -97,8 +97,6 @@ export default function Dashboard() {
     trackingData,
     getCurrentDay,
     isDayCompleted,
-    isDayTimeLocked,
-    getDayCompletionTime,
     startTracking,
     updateProgress,
     isLoading: trackingLoading,
@@ -258,7 +256,7 @@ export default function Dashboard() {
     (t) => t.interaction_type === missaoStartInteraction
   );
   const missaoStartedAt = missaoStartTrack ? new Date(missaoStartTrack.started_at) : null;
-  const MISSAO_LOCK_MS = 3 * 24 * 60 * 60 * 1000;
+  const MISSAO_LOCK_MS = 24 * 60 * 60 * 1000;
   const missaoUnlockAt = missaoStartedAt
     ? new Date(missaoStartedAt.getTime() + MISSAO_LOCK_MS)
     : null;
@@ -268,11 +266,10 @@ export default function Dashboard() {
     if (!missaoLocked || !missaoUnlockAt) return null;
     const ms = missaoUnlockAt.getTime() - Date.now();
     if (ms <= 0) return null;
-    const d = Math.floor(ms / 86_400_000);
-    const h = Math.floor((ms % 86_400_000) / 3_600_000);
+    const h = Math.floor(ms / 3_600_000);
     const m = Math.floor((ms % 3_600_000) / 60_000);
     const s = Math.floor((ms % 60_000) / 1000);
-    return `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
+    return `${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
   }, [tick, missaoLocked, missaoUnlockAt]);
 
   const openMissionDialog = async () => {
@@ -393,27 +390,13 @@ export default function Dashboard() {
 
   const progressPct = weeklyProgressPct;
 
-  const dayLocked = isDayTimeLocked(currentDay) && !isAdmin;
+  const dayLocked = false;
 
   // Sem conteúdo gratuito: o Dashboard e as abas seguem navegáveis, mas
   // qualquer conteúdo (vídeo, hipnose, missão, chat) exige acesso ativo.
 
   const dayContent = dailyContent?.find((d) => d.day_number === currentDay);
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
-
-  // Countdown until current day unlocks (when locked)
-  const lockCountdown = useMemo(() => {
-    if (!dayLocked || currentDay <= 1) return null;
-    const prev = getDayCompletionTime(currentDay - 1);
-    if (!prev) return null;
-    const unlock = new Date(prev.getTime() + 6 * 60 * 60 * 1000);
-    const ms = unlock.getTime() - Date.now();
-    if (ms <= 0) return null;
-    const h = Math.floor(ms / 3_600_000);
-    const m = Math.floor((ms % 3_600_000) / 60_000);
-    const s = Math.floor((ms % 60_000) / 1000);
-    return `${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
-  }, [tick, dayLocked, currentDay]);
 
   // ----- Savings calculations -----
   const cigsPerDay = onboarding?.cigarettes_per_day || 0;
@@ -466,7 +449,6 @@ export default function Dashboard() {
   };
 
   const openMedia = async (type: "video" | "hypnosis") => {
-    if (dayLocked) return;
     // Amostra gratuita: vídeo e hipnose do primeiro foco liberados sem assinatura
     const isFreePreview = (focoAtualNumero ?? 1) === 1;
     if (!ensureContentAccess({ freePreview: isFreePreview, source: type })) return;
@@ -919,6 +901,10 @@ export default function Dashboard() {
                 </div>
               ))}
           </div>
+
+          <p className="mt-3 text-center text-[10px] leading-relaxed text-muted-foreground">
+            Termine o vídeo, a hipnose e a missão para liberar o próximo tema.
+          </p>
         </section>
 
         {/* Extras da jornada de abstinência: SOS + gatilhos (a lista abaixo termina com "voltar para redução") */}
@@ -1211,7 +1197,7 @@ export default function Dashboard() {
               </div>
               {missaoLocked && (
                 <p className="mt-4 text-center text-[11px] leading-relaxed text-muted-foreground">
-                  Viva sua missão por 3 dias. Depois desse período, você poderá conversar com o chat sobre a experiência.
+                  Viva sua missão por 24 horas. Depois desse período, você poderá conversar com o chat sobre a experiência.
                 </p>
               )}
             </div>

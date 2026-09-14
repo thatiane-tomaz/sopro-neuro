@@ -316,37 +316,14 @@ export const useJourneyTracking = () => {
 
   // Get time until next day unlocks
   const getTimeUntilNextUnlock = (): number | null => {
-    if (!trackingData) return null;
-    
-    const currentDay = getCurrentDay();
-    if (currentDay >= 21) return null; // All days unlocked
-    
-    // Get the completion time of the PREVIOUS day (the one that was just completed)
-    const previousDay = currentDay - 1;
-    if (previousDay < 1) return null;
-    
-    const completionTime = getDayCompletionTime(previousDay);
-    if (!completionTime) return null;
-    
-    const unlockTime = new Date(completionTime.getTime() + 6 * 60 * 60 * 1000);
-    const msUntilUnlock = unlockTime.getTime() - Date.now();
-    
-    console.log(`[getTimeUntilNextUnlock] day=${previousDay}, completionTime=${completionTime.toISOString()}, unlockTime=${unlockTime.toISOString()}, msLeft=${msUntilUnlock}`);
-    return msUntilUnlock > 0 ? msUntilUnlock : 0;
+    return null;
   };
 
-  // Check if a day is time-locked (6h wait after previous day completion)
+  // Check if a day is time-locked (no wait between days)
   const isDayTimeLocked = (day: number): boolean => {
-    if (day <= 1) return false; // Day 1 is never time-locked
-    
+    if (day <= 1) return false;
     const previousDay = day - 1;
-    if (!isDayCompleted(previousDay)) return true; // Previous day not done = locked
-    
-    const completionTime = getDayCompletionTime(previousDay);
-    if (!completionTime) return true;
-    
-    const unlockTime = new Date(completionTime.getTime() + 6 * 60 * 60 * 1000);
-    return Date.now() < unlockTime.getTime();
+    return !isDayCompleted(previousDay);
   };
 
   return {
