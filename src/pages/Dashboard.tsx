@@ -903,6 +903,10 @@ export default function Dashboard() {
                 </div>
               ))}
           </div>
+
+          <p className="mt-3 text-center text-[10px] leading-relaxed text-muted-foreground">
+            Termine o vídeo, a hipnose e a missão para liberar o próximo tema.
+          </p>
         </section>
 
         {/* Extras da jornada de abstinência: SOS + gatilhos (a lista abaixo termina com "voltar para redução") */}
