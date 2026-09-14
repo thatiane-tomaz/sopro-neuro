@@ -6,9 +6,7 @@ import { trackEvent } from "@/lib/tracking";
 
 /**
  * Acesso ao conteúdo do app (vídeos, hipnoses, missões e chat de IA).
- * Requer assinatura ativa, freelist ou admin — exceto a amostra gratuita do
- * primeiro foco da jornada (`freePreview`), liberada para todo mundo para que
- * a pessoa experimente o método antes de decidir assinar.
+ * Requer assinatura ativa, freelist ou admin. Não há conteúdo gratuito.
  */
 export const useContentAccess = () => {
   const navigate = useNavigate();
