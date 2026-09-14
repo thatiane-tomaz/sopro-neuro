@@ -883,7 +883,7 @@ export default function Dashboard() {
               hasMissao && {
                 key: "missao",
                 title: "Missão",
-                subtitle: "Pratique no mundo real.",
+                subtitle: "Viva uma nova vida. ",
                 iconBg: "from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]",
                 icon: <Sparkles className="h-5 w-5 text-white" />,
                 done: weeklyMissaoDone,
