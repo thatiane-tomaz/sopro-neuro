@@ -449,9 +449,8 @@ export default function Dashboard() {
   };
 
   const openMedia = async (type: "video" | "hypnosis") => {
-    // Amostra gratuita: vídeo e hipnose do primeiro foco liberados sem assinatura
-    const isFreePreview = (focoAtualNumero ?? 1) === 1;
-    if (!ensureContentAccess({ freePreview: isFreePreview, source: type })) return;
+    // Todo o conteúdo exige assinatura ativa
+    if (!ensureContentAccess({ source: type })) return;
     const url = await getMediaUrl(type);
     if (!url) {
       toast({
