@@ -898,9 +898,26 @@ export default function Dashboard() {
               ))}
           </div>
 
-          <p className="mt-3 text-center text-[10px] leading-relaxed text-muted-foreground">
-            Termine o vídeo, a hipnose e a missão para liberar o próximo tema.
-          </p>
+          {(() => {
+            const parts = [
+              hasVideo && "o vídeo",
+              hasHipnose && "a hipnose",
+              hasMissao && "a missão",
+            ].filter(Boolean) as string[];
+            const instruction =
+              parts.length === 1
+                ? `Termine ${parts[0]} para liberar o próximo tema.`
+                : parts.length === 2
+                  ? `Termine ${parts.join(" e ")} para liberar o próximo tema.`
+                  : parts.length === 3
+                    ? `Termine ${parts.slice(0, 2).join(", ")} e ${parts[2]} para liberar o próximo tema.`
+                    : "";
+            return instruction ? (
+              <p className="mt-3 text-center text-[10px] leading-relaxed text-muted-foreground">
+                {instruction}
+              </p>
+            ) : null;
+          })()}
         </section>
 
         {/* Extras da jornada de abstinência: SOS + gatilhos (a lista abaixo termina com "voltar para redução") */}
