@@ -19,16 +19,11 @@ export const useContentAccess = () => {
 
   /**
    * Retorna true se pode seguir; caso contrário leva ao paywall.
-   * @param options.freePreview conteúdo de amostra (primeiro foco) — sempre liberado
    * @param options.source rótulo do conteúdo bloqueado, para medir o funil
    */
-  const ensureContentAccess = (options?: { freePreview?: boolean; source?: string }) => {
+  const ensureContentAccess = (options?: { source?: string }) => {
     if (loading) return false;
     if (hasContentAccess) return true;
-    if (options?.freePreview) {
-      trackEvent("content", `free_preview_${options.source ?? "unknown"}`);
-      return true;
-    }
     trackEvent("content", `blocked_${options?.source ?? "unknown"}`);
     navigate("/paywall");
     return false;
