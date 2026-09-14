@@ -117,8 +117,8 @@ export function useJourneyFocos(jornadaType?: string) {
       objetivo_chat_missao: h.objetivo_chat_missao ?? null,
       posicao: h.posicao != null ? Number(h.posicao) : null,
       tema_fixo: !!h.tema_fixo,
-      hasVideo: h.video !== false,
-      hasHipnose: h.hipnose !== false,
+      hasVideo: h.video !== false && !!h.video_nome?.trim(),
+      hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
       hasMissao: h.missao !== false,
       isSelected,
     });

@@ -218,8 +218,8 @@ export default function Jornada() {
       posicao_original: h.posicao != null ? Number(h.posicao) : null,
       video_nome: h.video_nome ?? null,
       hipnose_nome: h.hipnose_nome ?? null,
-      hasVideo: h.video !== false,
-      hasHipnose: h.hipnose !== false,
+      hasVideo: h.video !== false && !!h.video_nome?.trim(),
+      hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
       isIntro: fixedIds.has(h.id),
       isSelected: true,
     }));
@@ -570,8 +570,8 @@ export default function Jornada() {
                   title={h.habito_titulo}
                   isIntro={false}
                   status="current"
-                  hasVideo={h.video !== false}
-                  hasHipnose={h.hipnose !== false}
+                  hasVideo={h.video !== false && !!h.video_nome?.trim()}
+                  hasHipnose={h.hipnose !== false && !!h.hipnose_nome?.trim()}
                   onVideo={() => openMediaReducao(h, "video")}
                   onHypnosis={() => openMediaReducao(h, "hypnosis")}
                   onMural={() =>
