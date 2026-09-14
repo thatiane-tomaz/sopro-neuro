@@ -1197,7 +1197,7 @@ export default function Dashboard() {
               </div>
               {missaoLocked && (
                 <p className="mt-4 text-center text-[11px] leading-relaxed text-muted-foreground">
-                  Viva sua missão por 3 dias. Depois desse período, você poderá conversar com o chat sobre a experiência.
+                  Viva sua missão por 24 horas. Depois desse período, você poderá conversar com o chat sobre a experiência.
                 </p>
               )}
             </div>
