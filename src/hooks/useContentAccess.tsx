@@ -6,9 +6,7 @@ import { trackEvent } from "@/lib/tracking";
 
 /**
  * Acesso ao conteúdo do app (vídeos, hipnoses, missões e chat de IA).
- * Requer assinatura ativa, freelist ou admin — exceto a amostra gratuita do
- * primeiro foco da jornada (`freePreview`), liberada para todo mundo para que
- * a pessoa experimente o método antes de decidir assinar.
+ * Requer assinatura ativa, freelist ou admin. Não há conteúdo gratuito.
  */
 export const useContentAccess = () => {
   const navigate = useNavigate();
@@ -21,16 +19,11 @@ export const useContentAccess = () => {
 
   /**
    * Retorna true se pode seguir; caso contrário leva ao paywall.
-   * @param options.freePreview conteúdo de amostra (primeiro foco) — sempre liberado
    * @param options.source rótulo do conteúdo bloqueado, para medir o funil
    */
-  const ensureContentAccess = (options?: { freePreview?: boolean; source?: string }) => {
+  const ensureContentAccess = (options?: { source?: string }) => {
     if (loading) return false;
     if (hasContentAccess) return true;
-    if (options?.freePreview) {
-      trackEvent("content", `free_preview_${options.source ?? "unknown"}`);
-      return true;
-    }
     trackEvent("content", `blocked_${options?.source ?? "unknown"}`);
     navigate("/paywall");
     return false;
