@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.increment_button_click(text, text) FROM anon;
