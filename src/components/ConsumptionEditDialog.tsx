@@ -113,7 +113,7 @@ export default function ConsumptionEditDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm rounded-3xl border-0 bg-white p-6 shadow-2xl">
+      <DialogContent className="max-w-sm max-h-[88dvh] overflow-y-auto overscroll-contain rounded-3xl border-0 bg-white p-6 shadow-2xl">
         <DialogHeader className="space-y-2">
           <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] flex items-center justify-center shadow-lg">
             <Wallet className="h-6 w-6 text-white" />
