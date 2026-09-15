@@ -1220,7 +1220,7 @@ export default function Dashboard() {
       )}
 
       <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
-        <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
+        <DialogContent className="max-w-sm max-h-[88dvh] overflow-y-auto overscroll-contain rounded-3xl p-0 border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
           <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_80%_97%)] px-5 pt-5 pb-4">
             <DialogHeader className="text-left space-y-1">
               <div className="h-10 w-10 rounded-2xl bg-white text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm mb-2">

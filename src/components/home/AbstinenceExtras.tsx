@@ -309,7 +309,7 @@ export default function AbstinenceExtras({
       )}
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent className="max-w-sm rounded-3xl border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
+        <DialogContent className="max-w-sm max-h-[88dvh] overflow-y-auto overscroll-contain rounded-3xl border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
           <DialogHeader className="text-left">
             <DialogTitle className="text-base font-bold">
               Percebeu que o hábito voltou?
