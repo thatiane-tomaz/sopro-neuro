@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.increment_button_click(text, text) TO authenticated, anon;
