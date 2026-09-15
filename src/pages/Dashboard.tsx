@@ -1123,7 +1123,7 @@ export default function Dashboard() {
               </p>
             </div>
           </div>
-          <DialogFooter className="px-5 pb-5 pt-3 flex-col gap-2 sm:flex-col sm:gap-2">
+          <DialogFooter className="px-5 pt-3 pb-[max(env(safe-area-inset-bottom),20px)] flex-col gap-2 sm:flex-col sm:gap-2">
             <Button
               className="w-full rounded-xl h-auto py-3 whitespace-nowrap text-[13px] leading-none bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
               disabled={switchingJornada}
