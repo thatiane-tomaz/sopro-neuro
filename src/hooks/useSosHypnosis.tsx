@@ -4,7 +4,8 @@ import { useBrainSparks } from '@/hooks/useBrainSparks';
 import { supabase } from '@/integrations/supabase/client';
 import { getSignedMediaUrl } from '@/lib/mediaUrl';
 
-const HYPNOSIS_BUCKET = 'hypnosis';
+const SOS_BUCKET = 'hipnoses_2';
+const SOS_FALLBACK_BUCKETS = ['hypnosis'];
 const getStorageKey = (userId: string) => `sos_next_index_${userId}`;
 const SOS_COUNT_CACHE_KEY = 'sos_total_count';
 const SOS_COUNT_CACHE_TTL = 1000 * 60 * 60; // 1 hour
@@ -30,11 +31,12 @@ export const useSosHypnosis = () => {
     const probe = async () => {
       let count = 0;
       try {
-        const { data, error } = await supabase.storage
-          .from(HYPNOSIS_BUCKET)
-          .list('', { limit: 1000 });
-        if (error || !data) return;
-        const names = new Set(data.map((f) => f.name.toLowerCase()));
+        const names = new Set<string>();
+        for (const bucket of [SOS_BUCKET, ...SOS_FALLBACK_BUCKETS]) {
+          const { data } = await supabase.storage.from(bucket).list('', { limit: 1000 });
+          (data || []).forEach((f) => names.add(f.name.toLowerCase()));
+        }
+        if (names.size === 0) return;
         for (let i = 1; i <= 20; i++) {
           if (names.has(`sos_${i}.mp3`)) count = i;
           else break;
@@ -86,7 +88,12 @@ export const useSosHypnosis = () => {
 
     award('sos_used', { sos_number: sosNumber });
 
-    const fileUrl = await getSignedMediaUrl(HYPNOSIS_BUCKET, `sos_${sosNumber}.MP3`, 'hypnosis');
+    const fileUrl = await getSignedMediaUrl(
+      SOS_BUCKET,
+      `sos_${sosNumber}.MP3`,
+      'hypnosis',
+      SOS_FALLBACK_BUCKETS,
+    );
 
     return {
       title: 'Hipnose SOS',
