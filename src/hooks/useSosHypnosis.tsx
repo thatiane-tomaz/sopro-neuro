@@ -4,7 +4,8 @@ import { useBrainSparks } from '@/hooks/useBrainSparks';
 import { supabase } from '@/integrations/supabase/client';
 import { getSignedMediaUrl } from '@/lib/mediaUrl';
 
-const HYPNOSIS_BUCKET = 'hypnosis';
+const SOS_BUCKET = 'hipnoses_2';
+const SOS_FALLBACK_BUCKETS = ['hypnosis'];
 const getStorageKey = (userId: string) => `sos_next_index_${userId}`;
 const SOS_COUNT_CACHE_KEY = 'sos_total_count';
 const SOS_COUNT_CACHE_TTL = 1000 * 60 * 60; // 1 hour
