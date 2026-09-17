@@ -88,7 +88,12 @@ export const useSosHypnosis = () => {
 
     award('sos_used', { sos_number: sosNumber });
 
-    const fileUrl = await getSignedMediaUrl(HYPNOSIS_BUCKET, `sos_${sosNumber}.MP3`, 'hypnosis');
+    const fileUrl = await getSignedMediaUrl(
+      SOS_BUCKET,
+      `sos_${sosNumber}.MP3`,
+      'hypnosis',
+      SOS_FALLBACK_BUCKETS,
+    );
 
     return {
       title: 'Hipnose SOS',
