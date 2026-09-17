@@ -31,11 +31,12 @@ export const useSosHypnosis = () => {
     const probe = async () => {
       let count = 0;
       try {
-        const { data, error } = await supabase.storage
-          .from(HYPNOSIS_BUCKET)
-          .list('', { limit: 1000 });
-        if (error || !data) return;
-        const names = new Set(data.map((f) => f.name.toLowerCase()));
+        const names = new Set<string>();
+        for (const bucket of [SOS_BUCKET, ...SOS_FALLBACK_BUCKETS]) {
+          const { data } = await supabase.storage.from(bucket).list('', { limit: 1000 });
+          (data || []).forEach((f) => names.add(f.name.toLowerCase()));
+        }
+        if (names.size === 0) return;
         for (let i = 1; i <= 20; i++) {
           if (names.has(`sos_${i}.mp3`)) count = i;
           else break;
