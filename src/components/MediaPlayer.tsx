@@ -113,6 +113,37 @@ const MediaPlayer = ({
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
+  // Register a media session so the OS treats this as ongoing playback
+  // (keeps audio alive in background / lock screen, like a music app)
+  useEffect(() => {
+    const ms = (navigator as any).mediaSession;
+    if (!ms) return;
+    try {
+      const MM = (window as any).MediaMetadata;
+      if (MM) {
+        ms.metadata = new MM({
+          title,
+          artist: 'Sopro Neuro',
+          album: contentType === 'hypnosis' ? 'Hipnose' : 'Vídeo',
+        });
+      }
+      ms.setActionHandler?.('play', () => mediaRef.current?.play().catch(() => {}));
+      ms.setActionHandler?.('pause', () => mediaRef.current?.pause());
+      ms.setActionHandler?.('seekbackward', null);
+      ms.setActionHandler?.('seekforward', null);
+      ms.setActionHandler?.('previoustrack', null);
+      ms.setActionHandler?.('nexttrack', null);
+    } catch {}
+
+    return () => {
+      try {
+        ms.metadata = null;
+        ms.setActionHandler?.('play', null);
+        ms.setActionHandler?.('pause', null);
+      } catch {}
+    };
+  }, [title, contentType]);
+
   useEffect(() => {
     const media = mediaRef.current;
     if (!media) return;
