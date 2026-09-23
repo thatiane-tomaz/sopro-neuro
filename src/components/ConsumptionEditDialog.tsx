@@ -119,10 +119,10 @@ export default function ConsumptionEditDialog({
             <Wallet className="h-6 w-6 text-white" />
           </div>
           <DialogTitle className="text-center text-lg font-bold text-balance">
-            Seu consumo e seu gasto
+            Quanto você consumia antes?
           </DialogTitle>
           <DialogDescription className="text-center text-xs text-balance">
-            Estes são os números que você informou antes de começar a jornada no app. Ajuste-os para que sua economia fique correta.
+            Dados de antes de começar a jornada no app. Ajuste-os para que sua economia fique correta.
           </DialogDescription>
         </DialogHeader>
 
