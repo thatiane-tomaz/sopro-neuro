@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, X, Headphones, Sofa, BellOff, BatteryCharging, Loader2, RotateCcw, RotateCw } from 'lucide-react';
 import { useScrollLock } from '@/hooks/useScrollLock';
+import { useKeepAwake } from '@/hooks/useKeepAwake';
 
 
 interface MediaPlayerProps {
