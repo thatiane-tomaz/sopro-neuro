@@ -122,7 +122,8 @@ export default function ConsumptionEditDialog({
             Quanto você consumia antes?
           </DialogTitle>
           <DialogDescription className="text-center text-xs text-balance">
-            Dados de antes de começar a jornada no app. Ajuste-os para que sua economia fique correta.
+            <span className="font-semibold">Dados de antes de começar a jornada no app.</span>{" "}
+            Ajuste-os para que sua economia fique correta.
           </DialogDescription>
         </DialogHeader>
 
