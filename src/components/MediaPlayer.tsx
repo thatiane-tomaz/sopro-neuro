@@ -63,6 +63,10 @@ const MediaPlayer = ({
   // Lock background scroll while the player modal is open
   useScrollLock(true);
 
+  // Keep the screen on while the player is open so the phone does not lock
+  // and interrupt the video/hypnosis (behaves like watching a movie)
+  useKeepAwake(true);
+
   // Handle close: save final progress before closing
   const handleClose = useCallback(() => {
     const media = mediaRef.current;
