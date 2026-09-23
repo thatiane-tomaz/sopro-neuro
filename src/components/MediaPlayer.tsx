@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, X, Headphones, Sofa, BellOff, BatteryCharging, Loader2, RotateCcw, RotateCw } from 'lucide-react';
 import { useScrollLock } from '@/hooks/useScrollLock';
+import { useKeepAwake } from '@/hooks/useKeepAwake';
 
 
 interface MediaPlayerProps {
@@ -62,6 +63,10 @@ const MediaPlayer = ({
   // Lock background scroll while the player modal is open
   useScrollLock(true);
 
+  // Keep the screen on while the player is open so the phone does not lock
+  // and interrupt the video/hypnosis (behaves like watching a movie)
+  useKeepAwake(true);
+
   // Handle close: save final progress before closing
   const handleClose = useCallback(() => {
     const media = mediaRef.current;
@@ -107,6 +112,37 @@ const MediaPlayer = ({
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
+
+  // Register a media session so the OS treats this as ongoing playback
+  // (keeps audio alive in background / lock screen, like a music app)
+  useEffect(() => {
+    const ms = (navigator as any).mediaSession;
+    if (!ms) return;
+    try {
+      const MM = (window as any).MediaMetadata;
+      if (MM) {
+        ms.metadata = new MM({
+          title,
+          artist: 'Sopro Neuro',
+          album: contentType === 'hypnosis' ? 'Hipnose' : 'Vídeo',
+        });
+      }
+      ms.setActionHandler?.('play', () => mediaRef.current?.play().catch(() => {}));
+      ms.setActionHandler?.('pause', () => mediaRef.current?.pause());
+      ms.setActionHandler?.('seekbackward', null);
+      ms.setActionHandler?.('seekforward', null);
+      ms.setActionHandler?.('previoustrack', null);
+      ms.setActionHandler?.('nexttrack', null);
+    } catch {}
+
+    return () => {
+      try {
+        ms.metadata = null;
+        ms.setActionHandler?.('play', null);
+        ms.setActionHandler?.('pause', null);
+      } catch {}
+    };
+  }, [title, contentType]);
 
   useEffect(() => {
     const media = mediaRef.current;
