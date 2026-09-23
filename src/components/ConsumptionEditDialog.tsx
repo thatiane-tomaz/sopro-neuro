@@ -122,7 +122,7 @@ export default function ConsumptionEditDialog({
             Seu consumo e seu gasto
           </DialogTitle>
           <DialogDescription className="text-center text-xs text-balance">
-            Ajuste os números para que sua economia fique correta.
+            Estes são os números que você informou antes de começar a jornada no app. Ajuste-os para que sua economia fique correta.
           </DialogDescription>
         </DialogHeader>
 
