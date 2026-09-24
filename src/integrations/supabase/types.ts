@@ -1381,7 +1381,22 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      user_current_status: {
+        Row: {
+          email: string | null
+          hipnose_status: string | null
+          jornada: string | null
+          jornada_concluida: boolean | null
+          missao_status: string | null
+          proximo_tema: string | null
+          tema_atual: string | null
+          tema_atual_posicao: number | null
+          ultima_sessao: string | null
+          user_id: string | null
+          video_status: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       award_sparks: {
