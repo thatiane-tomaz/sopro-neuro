@@ -91,10 +91,6 @@ const Paywall = () => {
     );
   }
 
-  const priceString = products.length > 0 
-    ? products[0].priceString 
-    : null;
-
   const benefits = [
     {
       icon: Brain,
@@ -166,17 +162,15 @@ const Paywall = () => {
             </p>
           </div>
 
-          {priceString && (
-            <div className="text-center">
-              <div className="flex items-baseline justify-center gap-1">
-                <span className="text-3xl font-bold text-primary">{priceString}</span>
-                <span className="text-muted-foreground">/mês</span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1 text-balance">
-                Menos do que você gasta com cigarro em poucos dias
-              </p>
+          <div className="text-center">
+            <div className="flex items-baseline justify-center gap-1">
+              <span className="text-3xl font-bold text-primary">R$ 14,90</span>
+              <span className="text-muted-foreground">/mês</span>
             </div>
-          )}
+            <p className="text-xs text-muted-foreground mt-1 text-balance">
+              Menos do que você gasta com cigarro em poucos dias
+            </p>
+          </div>
 
           <Button 
             onClick={handlePurchase}
