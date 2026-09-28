@@ -360,12 +360,14 @@ export const usePurchases = () => {
         }
         
         if (supabaseConfirmed) {
+          logPurchaseIssue('success', platform, { message: 'purchase ok' });
           toast({ title: "Compra realizada!", description: "Você agora tem acesso premium por 30 dias" });
           setState(prev => ({ ...prev, isPurchasing: false }));
           return true;
         } else {
           // RevenueCat says access but Supabase doesn't have it - likely subscription belongs to another account
           console.warn('[usePurchases] ⚠️ RevenueCat has access but Supabase subscription not found for this user');
+          logPurchaseIssue('not_linked', platform, { message: 'Loja confirmou, mas assinatura não chegou ao banco', ...access });
           toast({ 
             title: "Assinatura não vinculada", 
             description: "Sua assinatura da Apple está vinculada a outra conta. Faça login na conta original ou entre em contato com o suporte.", 
@@ -389,16 +391,8 @@ export const usePurchases = () => {
       console.error(`[usePurchases] ❌ Purchase error [${errorCode}]:`, errorMessage);
       if (error instanceof Error) console.error('[usePurchases] Stack:', error.stack);
 
-      try {
-        const { supabase } = await import('@/integrations/supabase/client');
-        await supabase.from('app_error_logs').insert({
-          error_message: `Purchase failed [${errorCode}]: ${errorMessage}`,
-          error_stack: error instanceof Error ? error.stack : JSON.stringify(error),
-          error_context: `usePurchases.purchasePremium | platform=${platform}`,
-          page_url: window.location.pathname,
-          platform,
-        });
-      } catch (_) { /* ignore */ }
+      const storeErr = extractStoreError(error);
+      await logPurchaseIssue(storeErr.userCancelled ? 'user_cancelled' : 'store_error', platform, storeErr);
 
       setState(prev => ({ ...prev, isPurchasing: false, error: errorMessage }));
       toast({ title: "Erro na compra", description: errorMessage, variant: "destructive" });
