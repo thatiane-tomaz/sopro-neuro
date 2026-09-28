@@ -49,6 +49,34 @@ const getRevenueCatAccess = (customerInfo?: RevenueCatCustomerInfo) => {
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+/** Grava uma etapa/erro do fluxo de compra com todos os detalhes da loja */
+const logPurchaseIssue = async (step: string, platform: string, details: Record<string, unknown>) => {
+  try {
+    const { supabase } = await import('@/integrations/supabase/client');
+    const { data } = await supabase.auth.getUser();
+    await supabase.from('app_error_logs').insert({
+      user_id: data.user?.id ?? null,
+      error_message: `[purchase:${step}] ${String(details.message ?? details.code ?? '')}`.slice(0, 500),
+      error_stack: JSON.stringify({ ...details, email: data.user?.email, at: new Date().toISOString() }).slice(0, 8000),
+      error_context: `purchase_flow | step=${step} | platform=${platform} | ua=${navigator.userAgent.slice(0, 120)}`,
+      page_url: window.location.pathname,
+      platform,
+    });
+  } catch (_) { /* ignore */ }
+};
+
+const extractStoreError = (error: unknown) => {
+  const e = (error && typeof error === 'object' ? error : {}) as Record<string, any>;
+  return {
+    message: error instanceof Error ? error.message : String(e.message ?? error),
+    code: e.code ?? 'unknown',
+    readableErrorCode: e.readableErrorCode ?? e.userInfo?.readableErrorCode,
+    underlyingErrorMessage: e.underlyingErrorMessage ?? e.userInfo?.underlyingErrorMessage,
+    userCancelled: !!e.userCancelled,
+    raw: (() => { try { return JSON.stringify(error); } catch { return String(error); } })(),
+  };
+};
+
 /** Wait for Capacitor platform to be fully ready */
 const waitForPlatformReady = async (): Promise<void> => {
   if (!Capacitor.isNativePlatform()) return;
