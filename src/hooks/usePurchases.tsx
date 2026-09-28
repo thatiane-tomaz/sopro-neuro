@@ -287,7 +287,10 @@ export const usePurchases = () => {
 
   // Purchase the premium product
   const purchasePremium = useCallback(async () => {
+    logPurchaseIssue('click', platform, { message: 'purchase started', isConfigured: state.isConfigured, productsCount: state.products.length });
+
     if (!canPurchase) {
+      logPurchaseIssue('not_native', platform, { message: 'Compras só no app nativo' });
       toast({ title: "Erro", description: "Compras só estão disponíveis no app nativo", variant: "destructive" });
       return false;
     }
@@ -297,6 +300,7 @@ export const usePurchases = () => {
       console.log('[usePurchases] Purchase: not configured yet, configuring on-demand...');
       const result = await configureRevenueCat();
       if (!result.success) {
+        logPurchaseIssue('configure_failed', platform, { message: result.errorDetail });
         toast({ title: "Erro ao conectar à loja", description: result.errorDetail || "Não foi possível conectar à loja.", variant: "destructive" });
         return false;
       }
