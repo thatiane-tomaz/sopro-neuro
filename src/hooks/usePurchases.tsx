@@ -49,6 +49,34 @@ const getRevenueCatAccess = (customerInfo?: RevenueCatCustomerInfo) => {
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+/** Grava uma etapa/erro do fluxo de compra com todos os detalhes da loja */
+const logPurchaseIssue = async (step: string, platform: string, details: Record<string, unknown>) => {
+  try {
+    const { supabase } = await import('@/integrations/supabase/client');
+    const { data } = await supabase.auth.getUser();
+    await supabase.from('app_error_logs').insert({
+      user_id: data.user?.id ?? null,
+      error_message: `[purchase:${step}] ${String(details.message ?? details.code ?? '')}`.slice(0, 500),
+      error_stack: JSON.stringify({ ...details, email: data.user?.email, at: new Date().toISOString() }).slice(0, 8000),
+      error_context: `purchase_flow | step=${step} | platform=${platform} | ua=${navigator.userAgent.slice(0, 120)}`,
+      page_url: window.location.pathname,
+      platform,
+    });
+  } catch (_) { /* ignore */ }
+};
+
+const extractStoreError = (error: unknown) => {
+  const e = (error && typeof error === 'object' ? error : {}) as Record<string, any>;
+  return {
+    message: error instanceof Error ? error.message : String(e.message ?? error),
+    code: e.code ?? 'unknown',
+    readableErrorCode: e.readableErrorCode ?? e.userInfo?.readableErrorCode,
+    underlyingErrorMessage: e.underlyingErrorMessage ?? e.userInfo?.underlyingErrorMessage,
+    userCancelled: !!e.userCancelled,
+    raw: (() => { try { return JSON.stringify(error); } catch { return String(error); } })(),
+  };
+};
+
 /** Wait for Capacitor platform to be fully ready */
 const waitForPlatformReady = async (): Promise<void> => {
   if (!Capacitor.isNativePlatform()) return;
@@ -259,7 +287,10 @@ export const usePurchases = () => {
 
   // Purchase the premium product
   const purchasePremium = useCallback(async () => {
+    logPurchaseIssue('click', platform, { message: 'purchase started', isConfigured: state.isConfigured, productsCount: state.products.length });
+
     if (!canPurchase) {
+      logPurchaseIssue('not_native', platform, { message: 'Compras só no app nativo' });
       toast({ title: "Erro", description: "Compras só estão disponíveis no app nativo", variant: "destructive" });
       return false;
     }
@@ -269,6 +300,7 @@ export const usePurchases = () => {
       console.log('[usePurchases] Purchase: not configured yet, configuring on-demand...');
       const result = await configureRevenueCat();
       if (!result.success) {
+        logPurchaseIssue('configure_failed', platform, { message: result.errorDetail });
         toast({ title: "Erro ao conectar à loja", description: result.errorDetail || "Não foi possível conectar à loja.", variant: "destructive" });
         return false;
       }
@@ -328,12 +360,14 @@ export const usePurchases = () => {
         }
         
         if (supabaseConfirmed) {
+          logPurchaseIssue('success', platform, { message: 'purchase ok' });
           toast({ title: "Compra realizada!", description: "Você agora tem acesso premium por 30 dias" });
           setState(prev => ({ ...prev, isPurchasing: false }));
           return true;
         } else {
           // RevenueCat says access but Supabase doesn't have it - likely subscription belongs to another account
           console.warn('[usePurchases] ⚠️ RevenueCat has access but Supabase subscription not found for this user');
+          logPurchaseIssue('not_linked', platform, { message: 'Loja confirmou, mas assinatura não chegou ao banco', ...access });
           toast({ 
             title: "Assinatura não vinculada", 
             description: "Sua assinatura da Apple está vinculada a outra conta. Faça login na conta original ou entre em contato com o suporte.", 
@@ -357,16 +391,8 @@ export const usePurchases = () => {
       console.error(`[usePurchases] ❌ Purchase error [${errorCode}]:`, errorMessage);
       if (error instanceof Error) console.error('[usePurchases] Stack:', error.stack);
 
-      try {
-        const { supabase } = await import('@/integrations/supabase/client');
-        await supabase.from('app_error_logs').insert({
-          error_message: `Purchase failed [${errorCode}]: ${errorMessage}`,
-          error_stack: error instanceof Error ? error.stack : JSON.stringify(error),
-          error_context: `usePurchases.purchasePremium | platform=${platform}`,
-          page_url: window.location.pathname,
-          platform,
-        });
-      } catch (_) { /* ignore */ }
+      const storeErr = extractStoreError(error);
+      await logPurchaseIssue(storeErr.userCancelled ? 'user_cancelled' : 'store_error', platform, storeErr);
 
       setState(prev => ({ ...prev, isPurchasing: false, error: errorMessage }));
       toast({ title: "Erro na compra", description: errorMessage, variant: "destructive" });
