@@ -257,6 +257,7 @@ export default function AbstinenceExtras({
             </button>
           ))}
         </div>
+        )}
       </section>
 
       {selectedMedia && (
