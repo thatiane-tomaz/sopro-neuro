@@ -32,10 +32,10 @@ export default function ProgressBrain({
   const interactive = typeof onClick === "function";
 
   if (compact) {
-    const box = 138;
-    const smallBrain = 100;
+    const box = 152;
+    const smallBrain = 114;
     return (
-      <div className="relative flex w-[138px] flex-col items-center">
+      <div className="relative flex w-[152px] flex-col items-center">
         <div className="relative flex items-center justify-center" style={{ width: box, height: box }}>
           {/* Soft glow behind brain */}
           <div
