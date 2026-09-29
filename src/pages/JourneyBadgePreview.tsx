@@ -30,9 +30,9 @@ const JourneyBadgePreview = () => {
 
         {/* Variante atual: redução */}
         <div className="mt-3 flex justify-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(220_80%_95%)] px-3 py-1 ring-1 ring-[hsl(220_60%_86%)]">
-            <TrendingDown className="h-3.5 w-3.5 text-[hsl(220_70%_48%)]" />
-            <span className="text-[11px] font-semibold text-[hsl(220_60%_38%)] text-balance">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur px-3 py-1.5 shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
+            <TrendingDown className="h-3.5 w-3.5 text-primary" />
+            <span className="text-[11px] font-semibold text-foreground/70 text-balance">
               Você está reduzindo
             </span>
           </div>
@@ -40,9 +40,9 @@ const JourneyBadgePreview = () => {
 
         {/* Variante atual: liberdade */}
         <div className="mt-2 flex justify-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(160_60%_95%)] px-3 py-1 ring-1 ring-[hsl(160_50%_85%)]">
-            <CheckCircle2 className="h-3.5 w-3.5 text-[hsl(160_60%_38%)]" />
-            <span className="text-[11px] font-semibold text-[hsl(160_55%_30%)] text-balance">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur px-3 py-1.5 shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
+            <CheckCircle2 className="h-3.5 w-3.5 text-[hsl(160_55%_45%)]" />
+            <span className="text-[11px] font-semibold text-foreground/70 text-balance">
               Você já é um ex-fumante
             </span>
           </div>
