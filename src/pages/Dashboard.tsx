@@ -832,7 +832,6 @@ export default function Dashboard() {
         {/* Bloco da IA: Neo à esquerda, perguntas sugeridas à direita */}
         <NeoBlock
           locked={dayLocked}
-          gancho={ganchoAtual}
           sugestoes={sugestoesAtuais}
           needsReview={needsReview}
           onOpenChat={openChat}

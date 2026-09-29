@@ -7,7 +7,6 @@ export default function NeoPreview() {
       <div className="mx-auto w-full max-w-[394px]">
         <NeoBlock
           locked={false}
-          gancho="Vamos entender o que disparou a vontade hoje?"
           sugestoes={[
             "Estou com vontade de fumar agora",
             "Me ajuda a relaxar sem cigarro",

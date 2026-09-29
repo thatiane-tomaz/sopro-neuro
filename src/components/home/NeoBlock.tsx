@@ -4,7 +4,6 @@ import ProgressBrain from "@/components/home/ProgressBrain";
 
 interface Props {
   locked: boolean;
-  gancho: string;
   sugestoes: string[];
   needsReview: boolean;
   onOpenChat: (seed?: string) => void;
@@ -17,7 +16,6 @@ interface Props {
  */
 export default function NeoBlock({
   locked,
-  gancho,
   sugestoes,
   needsReview,
   onOpenChat,
@@ -50,8 +48,6 @@ export default function NeoBlock({
                 locked={locked}
                 onClick={() => onOpenChat()}
                 ariaLabel="Conversar com Neo"
-                speechTitle="Neo · Chat de IA"
-                speechText={gancho}
               />
             </div>
 
