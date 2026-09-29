@@ -794,7 +794,7 @@ export default function Dashboard() {
                     const Icon = step.icon;
                     const isCurrent = nextStep?.key === step.key;
                     return (
-                      <div key={step.key} className="flex min-w-0 flex-1 items-start">
+                      <div key={step.key} className="relative flex min-w-0 flex-1 items-start">
                         <div className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center">
                           <div
                             className={`relative flex h-14 w-14 items-center justify-center rounded-full border transition-colors ${
@@ -817,7 +817,7 @@ export default function Dashboard() {
                           </span>
                         </div>
                         {index < steps.length - 1 && (
-                          <div className="mt-7 h-1 w-7 flex-shrink-0 rounded-full bg-[hsl(var(--lilac-soft))]" />
+                          <div className="absolute right-0 top-7 h-1 w-7 -translate-y-1/2 translate-x-1/2 flex-shrink-0 rounded-full bg-[hsl(var(--lilac-soft))]" />
                         )}
                       </div>
                     );
