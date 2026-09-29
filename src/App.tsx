@@ -19,7 +19,6 @@ const Controle = lazy(() => import("./pages/Controle"));
 const Progresso = lazy(() => import("./pages/Progresso"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Paywall = lazy(() => import("./pages/Paywall"));
-const PWPreview = lazy(() => import("./components/PaywallView").then(m => ({ default: () => <m.default isPurchasing={false} onPurchase={()=>{}} onRestore={()=>{}} onClose={()=>{}} /> })));
 const Settings = lazy(() => import("./pages/Settings"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -71,7 +70,6 @@ const App = () => (
                 <Route path="/progresso" element={<Progresso />} />
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/paywall" element={<Paywall />} />
-                <Route path="/__pw" element={<PWPreview />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/install" element={<Install />} />
                 <Route path="/email-confirmed" element={<EmailConfirmed />} />

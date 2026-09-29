@@ -10,7 +10,7 @@ interface Props {
 }
 
 const benefits = [
-  { icon: Brain, title: 'Sua jornada completa, tema por tema', text: 'Cada gatilho seu vira um passo prático' },
+  { icon: Brain, title: 'Jornada completa, passo a passo', text: 'Cada gatilho seu vira um passo prático' },
   { icon: Headphones, title: 'Hipnoses e vídeos guiados', text: 'Inclusive o SOS para quando a vontade aperta' },
   { icon: MessageCircle, title: 'Neo 24h com você', text: 'Um plano na hora para o seu momento difícil' },
 ];
