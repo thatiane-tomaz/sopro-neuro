@@ -10,9 +10,9 @@ interface Props {
 }
 
 const benefits = [
-  { icon: Brain, title: 'Jornada completa, passo a passo', text: 'Cada gatilho seu vira um passo prático' },
-  { icon: Headphones, title: 'Hipnoses e vídeos guiados', text: 'Inclusive o SOS para quando a vontade aperta' },
-  { icon: MessageCircle, title: 'Neo 24h com você', text: 'Um plano na hora para o seu momento difícil' },
+  { icon: Brain, title: 'Jornada completa e prática', text: 'Enfraqueça o que te prende ao cigarro.' },
+  { icon: Headphones, title: 'Hipnoses e vídeos de neurociência', text: 'Poucos minutos por dia mudam sua vida.' },
+  { icon: MessageCircle, title: 'Neo 24h com você', text: 'Você não está sozinho.' },
 ];
 
 const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) => (
@@ -39,7 +39,9 @@ const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) =>
           Respire livre do cigarro
         </h1>
         <p className="mt-3 text-base opacity-90 text-balance">
-          Seu plano já está pronto, montado a partir dos seus gatilhos.
+          Seu plano já está pronto,{"\u00a0"}
+          <br />
+          montado a partir dos seus gatilhos.
         </p>
       </div>
     </div>
@@ -56,7 +58,7 @@ const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) =>
             <span className="text-muted-foreground font-medium">/mês</span>
           </div>
           <p className="mt-2 text-sm font-semibold text-primary text-balance">
-            Menos de R$ 0,50 por dia, menos que um cigarro.
+            Baratinho para você não ter desculpa.
           </p>
         </div>
 
