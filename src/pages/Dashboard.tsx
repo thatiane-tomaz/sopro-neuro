@@ -713,7 +713,7 @@ export default function Dashboard() {
         >
         {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
         <section className="mt-3 rounded-3xl bg-card/80 px-4 py-4 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-          <div className="inline-flex items-center gap-1.5 text-[hsl(var(--lilac))]">
+          <div className="flex items-center gap-1.5 text-[hsl(var(--lilac))]">
             <Sparkles className="h-3 w-3 flex-shrink-0" />
             <span className="text-[11px] font-bold uppercase tracking-[0.14em]">
               {totalFocos > 0
@@ -723,8 +723,9 @@ export default function Dashboard() {
                   : "Jornada de Redução"}
             </span>
           </div>
+          <div className="mt-2.5 h-px w-full bg-[hsl(var(--lilac)/0.15)]" />
 
-          <h1 className="mt-1.5 text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+          <h1 className="mt-3 text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
             {tituloGatilho}
           </h1>
           {subtituloGatilho && (
