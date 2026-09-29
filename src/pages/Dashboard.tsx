@@ -732,8 +732,102 @@ export default function Dashboard() {
           }
           aria-hidden={abstinenciaBloqueada}
         >
+        {/* Foco atual — seção agrupada (header + conteúdos) */}
+        <section className="mt-3 rounded-3xl bg-white/80 backdrop-blur-md p-4 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.18)] ring-1 ring-black/[0.03]">
+          <div className="flex items-center justify-between gap-3">
+            <div className="inline-flex items-center gap-1.5 min-w-0">
+              <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
+              <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+                {totalFocos > 0
+                  ? `Foco atual · ${focoAtualNumero} de ${totalFocos}`
+                  : "Foco atual"}
+              </span>
+            </div>
+            {(() => {
+              const total = [hasVideo, hasHipnose, hasMissao].filter(Boolean).length;
+              const done = [
+                hasVideo && weeklyVideoDone,
+                hasHipnose && weeklyHipnoseDone,
+                hasMissao && weeklyMissaoDone,
+              ].filter(Boolean).length;
+              if (!total) return null;
+              return (
+                <span className="flex-shrink-0 rounded-full bg-[hsl(258_80%_97%)] px-2.5 py-1 text-[10px] font-bold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_92%)]">
+                  {done}/{total} concluídos
+                </span>
+              );
+            })()}
+          </div>
+
+          <h1 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+            {tituloGatilho}
+          </h1>
+
+
+
+
+          <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] flex items-stretch gap-2">
+            {[
+              hasVideo && {
+                key: "video",
+                title: "Vídeo",
+                subtitle: "Entenda seu cérebro.",
+                iconBg: "from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)]",
+                icon: <Play className="h-5 w-5 text-white fill-white" />,
+                done: weeklyVideoDone,
+                onClick: () => openMedia("video"),
+              },
+              hasHipnose && {
+                key: "hipnose",
+                title: "Hipnose",
+                subtitle: "Crie um novo padrão.",
+                iconBg: "from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)]",
+                icon: <Headphones className="h-5 w-5 text-white" />,
+                done: weeklyHipnoseDone,
+                onClick: () => openMedia("hypnosis"),
+              },
+              hasMissao && {
+                key: "missao",
+                title: "Missão",
+                subtitle: "Viva uma nova vida. ",
+                iconBg: "from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]",
+                icon: <Sparkles className="h-5 w-5 text-white" />,
+                done: weeklyMissaoDone,
+                onClick: openMissionDialog,
+              },
+            ]
+              .filter(Boolean)
+              .map((step: any, i: number) => (
+                <div key={step.key} className="flex items-stretch flex-1 min-w-0">
+                  <WeeklyStepCard step={i + 1} {...step} />
+                </div>
+              ))}
+          </div>
+
+          {(() => {
+            const parts = [
+              hasVideo && "o vídeo",
+              hasHipnose && "a hipnose",
+              hasMissao && "a missão",
+            ].filter(Boolean) as string[];
+            const instruction =
+              parts.length === 1
+                ? `Termine ${parts[0]} para liberar o próximo tema.`
+                : parts.length === 2
+                  ? `Termine ${parts.join(" e ")} para liberar o próximo tema.`
+                  : parts.length === 3
+                    ? `Termine ${parts.slice(0, 2).join(", ")} e ${parts[2]} para liberar o próximo tema.`
+                    : "";
+            return instruction ? (
+              <p className="mt-3 text-center text-[10px] leading-relaxed text-muted-foreground">
+                {instruction}
+              </p>
+            ) : null;
+          })()}
+        </section>
+
         {/* Bloco da IA: Neo + sugestões + composer em um único cartão */}
-        <section className="mt-3 relative overflow-hidden rounded-[28px] bg-gradient-to-b from-white/80 via-white/60 to-[hsl(258_80%_97%)]/70 px-3 pt-2 pb-3 ring-1 ring-white/70 backdrop-blur-xl shadow-[0_24px_60px_-32px_hsl(258_70%_45%/0.35)]">
+        <section className="mt-7 relative overflow-hidden rounded-[28px] bg-gradient-to-b from-white/80 via-white/60 to-[hsl(258_80%_97%)]/70 px-3 pt-2 pb-3 ring-1 ring-white/70 backdrop-blur-xl shadow-[0_24px_60px_-32px_hsl(258_70%_45%/0.35)]">
           <div
             aria-hidden
             className="pointer-events-none absolute -top-16 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-[hsl(258_80%_75%/0.25)] blur-3xl"
