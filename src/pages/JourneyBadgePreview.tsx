@@ -29,19 +29,19 @@ const JourneyBadgePreview = () => {
         </header>
 
         {/* Variante atual: liberdade (faixa integrada) */}
-        <div className="mt-3 relative overflow-hidden rounded-2xl bg-[hsl(180_60%_42%/0.07)] ring-1 ring-[hsl(180_60%_42%/0.12)] px-4 py-3 flex items-center gap-3">
-          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-accent text-accent-foreground flex items-center justify-center">
+        <div className="mt-3 relative overflow-hidden rounded-2xl bg-[hsl(200_70%_45%/0.07)] ring-1 ring-[hsl(200_70%_45%/0.12)] px-4 py-3 flex items-center gap-3">
+          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
             <CheckCircle2 className="h-5 w-5" />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[10px] font-bold uppercase tracking-wider leading-tight text-accent/60">
+            <span className="text-[10px] font-bold uppercase tracking-wider leading-tight text-primary/60">
               Jornada da Liberdade
             </span>
             <p className="text-sm font-bold text-foreground leading-tight text-balance">
               Você já é um ex-fumante
             </p>
           </div>
-          <div className="absolute -right-4 -bottom-6 h-20 w-20 rounded-full bg-accent/10 blur-2xl pointer-events-none" />
+          <div className="absolute -right-4 -bottom-6 h-20 w-20 rounded-full bg-primary/10 blur-2xl pointer-events-none" />
         </div>
 
         {/* Variante atual: redução (faixa integrada) */}
