@@ -50,7 +50,7 @@ export default function AbstinenceExtras({
   const [trackingId, setTrackingId] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
-  const [triggersExpanded, setTriggersExpanded] = useState(true);
+  const [triggersExpanded, setTriggersExpanded] = useState(false);
 
   const { data: triggers = [] } = useQuery({
     queryKey: ["triggers_content_active"],
