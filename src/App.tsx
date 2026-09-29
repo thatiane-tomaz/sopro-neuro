@@ -21,7 +21,6 @@ const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Paywall = lazy(() => import("./pages/Paywall"));
 const PaywallPreview = lazy(() => import("./pages/PaywallPreview"));
 const JourneyBadgePreview = lazy(() => import("./pages/JourneyBadgePreview"));
-const SosPreview = lazy(() => import("./pages/SosPreview"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -75,7 +74,6 @@ const App = () => (
                 <Route path="/paywall" element={<Paywall />} />
                 <Route path="/paywall-preview" element={<PaywallPreview />} />
                 <Route path="/badge-preview" element={<JourneyBadgePreview />} />
-                <Route path="/sos-preview" element={<SosPreview />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/install" element={<Install />} />
                 <Route path="/email-confirmed" element={<EmailConfirmed />} />
