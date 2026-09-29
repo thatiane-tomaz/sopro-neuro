@@ -20,6 +20,7 @@ const Progresso = lazy(() => import("./pages/Progresso"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Paywall = lazy(() => import("./pages/Paywall"));
 const PaywallPreview = lazy(() => import("./pages/PaywallPreview"));
+const JourneyBadgePreview = lazy(() => import("./pages/JourneyBadgePreview"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
