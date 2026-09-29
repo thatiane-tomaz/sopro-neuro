@@ -604,7 +604,7 @@ export default function Dashboard() {
               {isAbstinencia ? "Jornada da Liberdade" : "Jornada de Redução"}
             </span>
             <p className="text-sm font-bold text-foreground leading-tight text-balance">
-              {isAbstinencia ? "Você já é um ex-fumante" : "Você está reduzindo"}
+              {isAbstinencia ? "Você já é um ex-fumante" : "Você está diminuindo os cigarros"}
             </p>
           </div>
           <div className="absolute -right-4 -bottom-6 h-20 w-20 rounded-full bg-primary/10 blur-2xl pointer-events-none" />
