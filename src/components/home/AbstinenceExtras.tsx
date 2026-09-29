@@ -43,7 +43,6 @@ export default function AbstinenceExtras({
   const { isAdmin } = useIsAdmin();
   const { isPremium } = useSubscription();
   const { isFreelist } = useIsFreelist();
-  const { getSosHypnosis } = useSosHypnosis();
   const { startTracking, updateProgress } = useJourneyTracking();
   const queryClient = useQueryClient();
 
@@ -83,13 +82,6 @@ export default function AbstinenceExtras({
     } catch (e) {
       console.error(e);
     }
-  };
-
-  const handleSos = async () => {
-    if (!ensureAccess()) return;
-    const sos = await getSosHypnosis();
-    if (!sos.fileUrl) return;
-    openMedia(sos.title, sos.fileUrl, `sos_${sos.index + 1}`);
   };
 
   const handleTrigger = async (t: TriggerItem) => {
