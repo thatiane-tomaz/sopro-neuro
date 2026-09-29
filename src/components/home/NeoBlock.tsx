@@ -41,8 +41,8 @@ export default function NeoBlock({
       ) : (
         <>
           {/* Neo à esquerda · perguntas sugeridas à direita */}
-          <div className="relative flex items-start gap-1.5">
-            <div className="flex-shrink-0">
+          <div className="relative flex items-center gap-1.5">
+            <div className="flex-shrink-0 -mt-1">
               <ProgressBrain
                 compact
                 locked={locked}
@@ -52,7 +52,7 @@ export default function NeoBlock({
             </div>
 
             {sugestoes.length > 0 && (
-              <div className="flex min-w-0 flex-1 flex-col items-stretch gap-2 pt-1">
+              <div className="flex min-w-0 flex-1 flex-col items-stretch gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_35%_58%)]">
                   PERGUNTE AO NEO
                 </span>
