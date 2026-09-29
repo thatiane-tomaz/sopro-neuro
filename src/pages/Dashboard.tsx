@@ -69,6 +69,7 @@ import { getStartHereVideoUrl, startHereKeyForJornada } from "@/lib/startHereVid
 import SmokingLogDialog from "@/components/SmokingLogDialog";
 import MuralPreview from "@/components/mural/MuralPreview";
 import AbstinenceExtras from "@/components/home/AbstinenceExtras";
+import SosThinBlock from "@/components/home/SosThinBlock";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { cancelDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
@@ -827,6 +828,9 @@ export default function Dashboard() {
             ) : null;
           })()}
         </section>
+
+        {/* SOS fino — logo após o Foco atual (jornada de abstinência) */}
+        {isAbstinencia && <SosThinBlock />}
 
         {/* Bloco da IA: Neo + sugestões + composer em um único cartão */}
         <section className="mt-7 relative overflow-hidden rounded-[28px] bg-gradient-to-b from-white/80 via-white/60 to-[hsl(258_80%_97%)]/70 px-3 pt-2 pb-3 ring-1 ring-white/70 backdrop-blur-xl shadow-[0_24px_60px_-32px_hsl(258_70%_45%/0.35)]">
