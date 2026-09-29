@@ -2,7 +2,7 @@ import { getSignedMediaUrl } from "@/lib/mediaUrl";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronRight, Headphones, RotateCcw, Sparkles } from "lucide-react";
+import { ChevronDown, ChevronRight, Headphones, RotateCcw, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -50,6 +50,7 @@ export default function AbstinenceExtras({
   const [trackingId, setTrackingId] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
+  const [triggersExpanded, setTriggersExpanded] = useState(true);
 
   const { data: triggers = [] } = useQuery({
     queryKey: ["triggers_content_active"],
