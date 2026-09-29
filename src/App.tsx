@@ -19,6 +19,7 @@ const Controle = lazy(() => import("./pages/Controle"));
 const Progresso = lazy(() => import("./pages/Progresso"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Paywall = lazy(() => import("./pages/Paywall"));
+const PaywallPreview = lazy(() => import("./pages/PaywallPreview"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -70,6 +71,7 @@ const App = () => (
                 <Route path="/progresso" element={<Progresso />} />
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/paywall" element={<Paywall />} />
+                <Route path="/paywall-preview" element={<PaywallPreview />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/install" element={<Install />} />
                 <Route path="/email-confirmed" element={<EmailConfirmed />} />
