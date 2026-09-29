@@ -54,14 +54,13 @@ import {
   Ban,
   X,
   ChevronRight,
-  Send,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import MediaPlayer from "@/components/MediaPlayer";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import WaveBackground from "@/components/home/WaveBackground";
-import ProgressBrain from "@/components/home/ProgressBrain";
+import NeoBlock from "@/components/home/NeoBlock";
 import ChatPanel from "@/pages/Chat";
 import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
@@ -131,7 +130,6 @@ export default function Dashboard() {
   const [showQuitDatePicker, setShowQuitDatePicker] = useState(false);
   const [quitPickerDate, setQuitPickerDate] = useState<Date | undefined>(new Date());
   const [switchingJornada, setSwitchingJornada] = useState(false);
-  const [chatDraft, setChatDraft] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
   const [chatSeed, setChatSeed] = useState<string | undefined>(undefined);
 
@@ -139,7 +137,6 @@ export default function Dashboard() {
   const openChat = (seed?: string) => {
     if (!ensureContentAccess({ source: "chat" })) return;
     setChatSeed(seed);
-    setChatDraft("");
     setChatOpen(true);
   };
 
