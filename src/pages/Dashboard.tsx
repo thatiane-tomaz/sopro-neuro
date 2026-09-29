@@ -771,7 +771,7 @@ export default function Dashboard() {
               hasVideo && {
                 key: "video",
                 title: "Vídeo",
-                subtitle: "Entenda seu cérebro.",
+                subtitle: "Entenda \nseu cérebro.",
                 iconBg: "from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)]",
                 icon: <Play className="h-5 w-5 text-white fill-white" />,
                 done: weeklyVideoDone,
@@ -780,7 +780,7 @@ export default function Dashboard() {
               hasHipnose && {
                 key: "hipnose",
                 title: "Hipnose",
-                subtitle: "Crie um novo padrão.",
+                subtitle: "Crie um \nnovo padrão.",
                 iconBg: "from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)]",
                 icon: <Headphones className="h-5 w-5 text-white" />,
                 done: weeklyHipnoseDone,
@@ -789,7 +789,7 @@ export default function Dashboard() {
               hasMissao && {
                 key: "missao",
                 title: "Missão",
-                subtitle: "Viva uma nova vida. ",
+                subtitle: "Viva uma \nnova vida.",
                 iconBg: "from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]",
                 icon: <Sparkles className="h-5 w-5 text-white" />,
                 done: weeklyMissaoDone,
@@ -816,7 +816,7 @@ export default function Dashboard() {
                 : parts.length === 2
                   ? `Termine ${parts.join(" e ")} para liberar o próximo tema.`
                   : parts.length === 3
-                    ? `Termine ${parts.slice(0, 2).join(", ")} e ${parts[2]} para liberar o próximo tema.`
+                    ? `Termine ${parts.slice(0, 2).join(", ")} e ${parts[2]} para liberar o próximo.`
                     : "";
             return instruction ? (
               <p className="mt-3 text-center text-[10px] leading-relaxed text-muted-foreground">
