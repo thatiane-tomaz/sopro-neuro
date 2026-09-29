@@ -77,7 +77,6 @@ const App = () => (
                 <Route path="/paywall-preview" element={<PaywallPreview />} />
                 <Route path="/badge-preview" element={<JourneyBadgePreview />} />
                 <Route path="/neo-preview" element={<NeoPreview />} />
-                <Route path="/sos-preview" element={<SosPreview />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/install" element={<Install />} />
                 <Route path="/email-confirmed" element={<EmailConfirmed />} />
