@@ -207,34 +207,6 @@ export default function AbstinenceExtras({
     <>
       {mode === "extras" && (
         <>
-      {/* SOS */}
-      <button
-        onClick={handleSos}
-        className="mt-6 w-full text-left rounded-3xl p-5 shadow-[0_18px_50px_-18px_hsl(230_70%_40%/0.5)] ring-1 ring-white/10 active:scale-[0.99] transition-transform"
-        style={{
-          background: "linear-gradient(135deg, hsl(220, 90%, 55%), hsl(258, 70%, 55%))",
-        }}
-      >
-        <div className="flex items-center gap-3">
-          <div className="h-14 w-14 flex-shrink-0 rounded-full bg-white/15 backdrop-blur flex items-center justify-center ring-1 ring-white/20">
-            <Zap className="h-6 w-6 text-white" strokeWidth={2.5} fill="white" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white text-base font-bold leading-tight whitespace-nowrap">
-              Vontade de fumar agora?
-            </p>
-            <p className="text-white/85 text-xs leading-snug mt-1 whitespace-nowrap">
-              Hipnose rápida para alívio imediato.
-            </p>
-          </div>
-        </div>
-        <div className="mt-4 flex justify-end">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-bold text-[hsl(258_70%_50%)] shadow-md">
-            <Play className="h-4 w-4 fill-current" /> Iniciar agora
-          </span>
-        </div>
-      </button>
-
       {/* Triggers — mesma identidade visual da seção "Foco atual" */}
       <section className="mt-7 rounded-3xl bg-white/80 backdrop-blur-md p-4 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.18)] ring-1 ring-black/[0.03]">
         <div className="flex items-center justify-between gap-3">
