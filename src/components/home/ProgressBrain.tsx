@@ -14,6 +14,8 @@ interface Props {
   ariaLabel?: string;
   speechTitle?: string;
   speechText?: string;
+  /** Layout lateral compacto (bloco do Neo no Dashboard). */
+  compact?: boolean;
 }
 
 /** Neo mascot with an optional speech bubble. */
@@ -23,10 +25,89 @@ export default function ProgressBrain({
   ariaLabel,
   speechTitle,
   speechText,
+  compact = false,
 }: Props) {
   const size = 300;
   const brainSize = 158;
   const interactive = typeof onClick === "function";
+
+  if (compact) {
+    const box = 138;
+    const smallBrain = 100;
+    return (
+      <div className="relative flex w-[138px] flex-col items-center">
+        <div className="relative flex items-center justify-center" style={{ width: box, height: box }}>
+          {/* Soft glow behind brain */}
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{ background: "var(--gradient-brain-glow)" }}
+            aria-hidden="true"
+          />
+          {interactive ? (
+            <button
+              type="button"
+              onClick={onClick}
+              aria-label={ariaLabel ?? "Abrir jornada"}
+              className="relative rounded-full overflow-visible focus:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-transform active:scale-95 hover:scale-[1.02]"
+              style={{ width: smallBrain, height: smallBrain }}
+            >
+              <img
+                src={brainDefault}
+                alt="Neo"
+                width={smallBrain}
+                height={smallBrain}
+                loading="eager"
+                // @ts-expect-error fetchpriority is valid HTML
+                fetchpriority="high"
+                draggable={false}
+                className={`w-full h-full object-contain pointer-events-none animate-pulse-glow ${
+                  locked ? "grayscale opacity-60" : ""
+                }`}
+              />
+            </button>
+          ) : (
+            <img
+              src={brainDefault}
+              alt="Neo"
+              width={smallBrain}
+              height={smallBrain}
+              loading="eager"
+              className={`object-contain animate-pulse-glow ${locked ? "grayscale opacity-60" : ""}`}
+              style={{ width: smallBrain, height: smallBrain }}
+            />
+          )}
+          {locked && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-11 h-11 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
+                <Lock className="h-5 w-5 text-muted-foreground" />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {speechText && (
+          <div className="relative -mt-1 w-full rounded-[16px] bg-white/55 px-2.5 py-2 text-center ring-1 ring-white/50 shadow-[0_8px_22px_-16px_hsl(258_70%_45%/0.45)] backdrop-blur-md">
+            <span
+              aria-hidden
+              className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 bg-white/55 ring-1 ring-white/50 backdrop-blur-md"
+            />
+            <span
+              aria-hidden
+              className="absolute -top-[1px] left-1/2 h-2 w-8 -translate-x-1/2 bg-white/55 backdrop-blur-md"
+            />
+            {speechTitle && (
+              <span className="block text-[8px] font-black uppercase tracking-[0.16em] leading-none text-[hsl(258_60%_50%)] whitespace-nowrap">
+                {speechTitle}
+              </span>
+            )}
+            <span className="mt-1 block text-[10.5px] font-extrabold leading-snug text-foreground text-balance">
+              {speechText}
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   const speechBubble = speechText ? (
     <div className="absolute left-1/2 top-6 z-20 w-[238px] -translate-x-1/2 pointer-events-none">
