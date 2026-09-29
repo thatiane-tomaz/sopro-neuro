@@ -50,7 +50,7 @@ export default function AbstinenceExtras({
   const [trackingId, setTrackingId] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
-  const [triggersExpanded, setTriggersExpanded] = useState(true);
+  const [triggersExpanded, setTriggersExpanded] = useState(false);
 
   const { data: triggers = [] } = useQuery({
     queryKey: ["triggers_content_active"],
@@ -218,6 +218,9 @@ export default function AbstinenceExtras({
             <h2 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
               Hipnoses de Apoio
             </h2>
+            <p className="mt-0.5 text-xs text-muted-foreground leading-snug text-balance">
+              Se prepare para superar gatilhos específicos
+            </p>
           </div>
 
           <span
