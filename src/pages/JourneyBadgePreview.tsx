@@ -28,24 +28,36 @@ const JourneyBadgePreview = () => {
           </div>
         </header>
 
-        {/* Variante atual: redução */}
-        <div className="mt-3 flex justify-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur px-3 py-1.5 shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
-            <TrendingDown className="h-3.5 w-3.5 text-primary" />
-            <span className="text-[11px] font-semibold text-foreground/70 text-balance">
-              Você está reduzindo
-            </span>
+        {/* Variante atual: liberdade (faixa integrada) */}
+        <div className="mt-3 relative overflow-hidden rounded-2xl bg-[hsl(180_60%_42%/0.07)] ring-1 ring-[hsl(180_60%_42%/0.12)] px-4 py-3 flex items-center gap-3">
+          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-accent text-accent-foreground flex items-center justify-center">
+            <CheckCircle2 className="h-5 w-5" />
           </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[10px] font-bold uppercase tracking-wider leading-tight text-accent/60">
+              Jornada da Liberdade
+            </span>
+            <p className="text-sm font-bold text-foreground leading-tight text-balance">
+              Você já é um ex-fumante
+            </p>
+          </div>
+          <div className="absolute -right-4 -bottom-6 h-20 w-20 rounded-full bg-accent/10 blur-2xl pointer-events-none" />
         </div>
 
-        {/* Variante atual: liberdade */}
-        <div className="mt-2 flex justify-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur px-3 py-1.5 shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
-            <CheckCircle2 className="h-3.5 w-3.5 text-[hsl(160_55%_45%)]" />
-            <span className="text-[11px] font-semibold text-foreground/70 text-balance">
-              Você já é um ex-fumante
-            </span>
+        {/* Variante atual: redução (faixa integrada) */}
+        <div className="mt-2 relative overflow-hidden rounded-2xl bg-[hsl(200_70%_45%/0.07)] ring-1 ring-[hsl(200_70%_45%/0.12)] px-4 py-3 flex items-center gap-3">
+          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+            <TrendingDown className="h-5 w-5" />
           </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[10px] font-bold uppercase tracking-wider leading-tight text-primary/60">
+              Jornada de Redução
+            </span>
+            <p className="text-sm font-bold text-foreground leading-tight text-balance">
+              Você está reduzindo
+            </p>
+          </div>
+          <div className="absolute -right-4 -bottom-6 h-20 w-20 rounded-full bg-primary/10 blur-2xl pointer-events-none" />
         </div>
       </div>
     </div>
