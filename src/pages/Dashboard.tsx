@@ -590,23 +590,44 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Selo da jornada atual */}
-        <div className="mt-3 flex justify-center">
-          {isAbstinencia ? (
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur px-3 py-1.5 shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
-              <CheckCircle2 className="h-3.5 w-3.5 text-[hsl(160_55%_45%)]" />
-              <span className="text-[11px] font-semibold text-foreground/70 text-balance">
-                Você já é um ex-fumante
-              </span>
-            </div>
-          ) : (
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur px-3 py-1.5 shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
-              <TrendingDown className="h-3.5 w-3.5 text-primary" />
-              <span className="text-[11px] font-semibold text-foreground/70 text-balance">
-                Você está reduzindo
-              </span>
-            </div>
-          )}
+        {/* Selo da jornada atual — faixa integrada de largura total */}
+        <div
+          className={`mt-3 relative overflow-hidden rounded-2xl px-4 py-3 flex items-center gap-3 ${
+            isAbstinencia
+              ? "bg-[hsl(180_60%_42%/0.07)] ring-1 ring-[hsl(180_60%_42%/0.12)]"
+              : "bg-[hsl(200_70%_45%/0.07)] ring-1 ring-[hsl(200_70%_45%/0.12)]"
+          }`}
+        >
+          <div
+            className={`flex-shrink-0 h-9 w-9 rounded-full flex items-center justify-center ${
+              isAbstinencia
+                ? "bg-accent text-accent-foreground"
+                : "bg-primary text-primary-foreground"
+            }`}
+          >
+            {isAbstinencia ? (
+              <CheckCircle2 className="h-5 w-5" />
+            ) : (
+              <TrendingDown className="h-5 w-5" />
+            )}
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span
+              className={`text-[10px] font-bold uppercase tracking-wider leading-tight ${
+                isAbstinencia ? "text-accent/60" : "text-primary/60"
+              }`}
+            >
+              {isAbstinencia ? "Jornada da Liberdade" : "Jornada de Redução"}
+            </span>
+            <p className="text-sm font-bold text-foreground leading-tight text-balance">
+              {isAbstinencia ? "Você já é um ex-fumante" : "Você está reduzindo"}
+            </p>
+          </div>
+          <div
+            className={`absolute -right-4 -bottom-6 h-20 w-20 rounded-full blur-2xl pointer-events-none ${
+              isAbstinencia ? "bg-accent/10" : "bg-primary/10"
+            }`}
+          />
         </div>
 
         {/* Bloqueio da jornada de abstinência até definir a data */}
