@@ -742,7 +742,7 @@ export default function Dashboard() {
             </span>
           </div>
 
-          <h1 className="mt-1.5 text-balance text-lg font-bold leading-tight text-foreground">
+          <h1 className="mt-1.5 text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
             {tituloGatilho}
           </h1>
           {subtituloGatilho && (
