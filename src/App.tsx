@@ -22,7 +22,6 @@ const Paywall = lazy(() => import("./pages/Paywall"));
 const PaywallPreview = lazy(() => import("./pages/PaywallPreview"));
 const JourneyBadgePreview = lazy(() => import("./pages/JourneyBadgePreview"));
 const NeoPreview = lazy(() => import("./pages/NeoPreview"));
-const ReturnPreviewTmp = lazy(() => import("./pages/ReturnPreviewTmp"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
