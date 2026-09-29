@@ -590,6 +590,27 @@ export default function Dashboard() {
           </div>
         </header>
 
+        {/* Selo da jornada atual — faixa integrada de largura total */}
+        <div className="mt-3 relative overflow-hidden rounded-2xl bg-[hsl(200_70%_45%/0.07)] ring-1 ring-[hsl(200_70%_45%/0.12)] px-4 py-3 flex items-center gap-3">
+          <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+            {isAbstinencia ? (
+              <CheckCircle2 className="h-5 w-5" />
+            ) : (
+              <TrendingDown className="h-5 w-5" />
+            )}
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[10px] font-bold uppercase tracking-wider leading-tight text-primary/60">
+              {isAbstinencia ? "Jornada da Liberdade" : "Jornada de Redução"}
+            </span>
+            <p className="text-sm font-bold text-foreground leading-tight text-balance">
+              {isAbstinencia ? "Você já é um ex-fumante" : "Você está diminuindo os cigarros"}
+            </p>
+          </div>
+          <div className="absolute -right-4 -bottom-6 h-20 w-20 rounded-full bg-primary/10 blur-2xl pointer-events-none" />
+        </div>
+
+
 
         {/* Bloqueio da jornada de abstinência até definir a data */}
         {abstinenciaBloqueada && (
