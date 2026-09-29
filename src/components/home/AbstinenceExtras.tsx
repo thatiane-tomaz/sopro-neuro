@@ -201,19 +201,38 @@ export default function AbstinenceExtras({
         <>
       {/* Triggers — mesma identidade visual da seção "Foco atual" */}
       <section className="mt-7 rounded-3xl bg-white/80 backdrop-blur-md p-4 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.18)] ring-1 ring-black/[0.03]">
-        <div className="flex items-center justify-between gap-3">
-          <div className="inline-flex items-center gap-1.5 min-w-0">
-            <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
-            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-              Gatilhos
-            </span>
+        <button
+          type="button"
+          onClick={() => setTriggersExpanded((v) => !v)}
+          aria-expanded={triggersExpanded}
+          className="w-full flex items-center justify-between gap-3 text-left"
+        >
+          <div className="flex-1 min-w-0">
+            <div className="inline-flex items-center gap-1.5 min-w-0">
+              <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
+              <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+                Gatilhos
+              </span>
+            </div>
+
+            <h2 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
+              Hipnoses de Apoio
+            </h2>
           </div>
-        </div>
 
-        <h2 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
-          Hipnoses de Apoio
-        </h2>
+          <span
+            className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-[hsl(258_70%_96%)] ring-1 ring-[hsl(258_70%_90%)]"
+            aria-hidden="true"
+          >
+            <ChevronDown
+              className={`h-4 w-4 text-[hsl(258_60%_50%)] transition-transform duration-200 ${
+                triggersExpanded ? "rotate-180" : ""
+              }`}
+            />
+          </span>
+        </button>
 
+        {triggersExpanded && (
         <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] space-y-2">
           {triggers.map((t) => (
             <button
