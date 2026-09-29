@@ -49,6 +49,8 @@ import {
   Lock,
   Sparkles,
   Check,
+  CheckCircle2,
+  TrendingDown,
   Ban,
   X,
   ChevronRight,
