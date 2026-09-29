@@ -227,6 +227,7 @@ export default function Dashboard() {
 
   const posicao = (gatilho as any)?.posicao ?? focoAtualNumero ?? 1;
   const tituloGatilho: string = (gatilho as any)?.habito_titulo ?? "Sua jornada começa aqui";
+  const subtituloGatilho: string | null = (gatilho as any)?.subtitulo_habito?.trim() || null;
   const explicacaoDesafio: string =
     (gatilho as any)?.explicacao_missao ||
     "Observe esse hábito nos próximos dias: em quais momentos ele aparece, o que você sente antes e o que muda depois. Anote mentalmente os padrões para conversarmos sobre sua experiência.";
@@ -730,97 +731,123 @@ export default function Dashboard() {
           }
           aria-hidden={abstinenciaBloqueada}
         >
-        {/* Foco atual — seção agrupada (header + conteúdos) */}
-        <section className="mt-3 rounded-3xl bg-white/80 backdrop-blur-md p-4 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.18)] ring-1 ring-black/[0.03]">
-          <div className="flex items-center justify-between gap-3">
-            <div className="inline-flex items-center gap-1.5 min-w-0">
-              <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
-              <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-                {totalFocos > 0
-                  ? `Foco atual · ${focoAtualNumero} de ${totalFocos}`
-                  : "Foco atual"}
-              </span>
-            </div>
-            {(() => {
-              const total = [hasVideo, hasHipnose, hasMissao].filter(Boolean).length;
-              const done = [
-                hasVideo && weeklyVideoDone,
-                hasHipnose && weeklyHipnoseDone,
-                hasMissao && weeklyMissaoDone,
-              ].filter(Boolean).length;
-              if (!total) return null;
-              return (
-                <span className="flex-shrink-0 rounded-full bg-[hsl(258_80%_97%)] px-2.5 py-1 text-[10px] font-bold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_92%)]">
-                  {done}/{total} concluídos
-                </span>
-              );
-            })()}
+        {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
+        <section className="mt-3 rounded-3xl bg-card/90 px-5 py-5 shadow-[var(--shadow-primary)] ring-1 ring-border/60 backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 text-primary">
+            <Sparkles className="h-4 w-4 flex-shrink-0" />
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em]">
+              {totalFocos > 0
+                ? `Seu foco atual · ${focoAtualNumero} de ${totalFocos}`
+                : "Seu foco atual"}
+            </span>
           </div>
 
-          <h1 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+          <h1 className="mt-2 text-balance text-[25px] font-bold leading-tight text-primary">
             {tituloGatilho}
           </h1>
+          {subtituloGatilho && (
+            <p className="mt-1 text-balance text-sm leading-snug text-muted-foreground">
+              {subtituloGatilho}
+            </p>
+          )}
 
-
-
-
-          <div className="mt-3 pt-3 border-t border-[hsl(220_30%_94%)] flex items-stretch gap-2">
-            {[
+          {(() => {
+            const steps = [
               hasVideo && {
                 key: "video",
                 title: "Vídeo",
-                subtitle: "Entenda \nseu cérebro.",
-                iconBg: "from-[hsl(230_85%_60%)] to-[hsl(258_80%_65%)]",
-                icon: <Play className="h-5 w-5 text-white fill-white" />,
+                icon: Play,
                 done: weeklyVideoDone,
                 onClick: () => openMedia("video"),
+                actionLabel: "Começar com o vídeo",
               },
               hasHipnose && {
                 key: "hipnose",
                 title: "Hipnose",
-                subtitle: "Crie um \nnovo padrão.",
-                iconBg: "from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)]",
-                icon: <Headphones className="h-5 w-5 text-white" />,
+                icon: Headphones,
                 done: weeklyHipnoseDone,
                 onClick: () => openMedia("hypnosis"),
+                actionLabel: "Continuar com a hipnose",
               },
               hasMissao && {
                 key: "missao",
                 title: "Missão",
-                subtitle: "Viva uma \nnova vida.",
-                iconBg: "from-[hsl(280_75%_60%)] to-[hsl(320_70%_65%)]",
-                icon: <Sparkles className="h-5 w-5 text-white" />,
+                icon: Sparkles,
                 done: weeklyMissaoDone,
                 onClick: openMissionDialog,
+                actionLabel: "Continuar com a missão",
               },
-            ]
-              .filter(Boolean)
-              .map((step: any, i: number) => (
-                <div key={step.key} className="flex items-stretch flex-1 min-w-0">
-                  <WeeklyStepCard step={i + 1} {...step} />
-                </div>
-              ))}
-          </div>
+            ].filter(Boolean) as Array<{
+              key: string;
+              title: string;
+              icon: typeof Play;
+              done: boolean;
+              onClick: () => void;
+              actionLabel: string;
+            }>;
+            const nextStep = steps.find((step) => !step.done);
 
-          {(() => {
-            const parts = [
-              hasVideo && "o vídeo",
-              hasHipnose && "a hipnose",
-              hasMissao && "a missão",
-            ].filter(Boolean) as string[];
-            const instruction =
-              parts.length === 1
-                ? `Termine ${parts[0]} para liberar o próximo tema.`
-                : parts.length === 2
-                  ? `Termine ${parts.join(" e ")} para liberar o próximo tema.`
-                  : parts.length === 3
-                    ? `Termine ${parts.slice(0, 2).join(", ")} e ${parts[2]} para liberar o próximo.`
-                    : "";
-            return instruction ? (
-              <p className="mt-3 text-center text-[10px] leading-relaxed text-muted-foreground">
-                {instruction}
-              </p>
-            ) : null;
+            return (
+              <>
+                <div className="mt-5 flex items-start" aria-label="Etapas do foco atual">
+                  {steps.map((step, index) => {
+                    const Icon = step.icon;
+                    const isCurrent = nextStep?.key === step.key;
+                    return (
+                      <div key={step.key} className="flex min-w-0 flex-1 items-start">
+                        <div className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center">
+                          <div
+                            className={`relative flex h-14 w-14 items-center justify-center rounded-full border transition-colors ${
+                              isCurrent
+                                ? "border-primary bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-[var(--shadow-wellness)]"
+                                : step.done
+                                  ? "border-primary/20 bg-primary/10 text-primary/45"
+                                  : "border-primary/25 bg-card text-primary/65"
+                            }`}
+                          >
+                            <Icon className={`h-6 w-6 ${step.key === "video" ? "fill-current" : ""}`} />
+                            {step.done && (
+                              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-card">
+                                <Check className="h-3 w-3" strokeWidth={3} />
+                              </span>
+                            )}
+                          </div>
+                          <span className={`text-sm font-semibold ${isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
+                            {step.title}
+                          </span>
+                        </div>
+                        {index < steps.length - 1 && (
+                          <div className="mt-7 h-1 w-7 flex-shrink-0 rounded-full bg-primary/10" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {nextStep ? (
+                  <Button
+                    type="button"
+                    onClick={nextStep.onClick}
+                    className="mt-5 h-14 w-full rounded-full bg-gradient-to-r from-primary to-accent text-base font-bold text-primary-foreground shadow-[var(--shadow-wellness)]"
+                  >
+                    <nextStep.icon className="mr-2 h-5 w-5" />
+                    <span className="text-balance">{nextStep.actionLabel}</span>
+                    <ChevronRight className="ml-1 h-5 w-5" />
+                  </Button>
+                ) : (
+                  <div className="mt-5 flex h-14 items-center justify-center gap-2 rounded-full bg-primary/10 font-semibold text-primary">
+                    <CheckCircle2 className="h-5 w-5" />
+                    Foco concluído
+                  </div>
+                )}
+
+                {steps.length > 0 && (
+                  <p className="mt-3 text-center text-xs text-muted-foreground">
+                    {steps.filter((step) => step.done).length} de {steps.length} atividades concluídas
+                  </p>
+                )}
+              </>
+            );
           })()}
         </section>
 
@@ -1288,70 +1315,5 @@ function SavingsBlock({
         ))}
       </div>
     </div>
-  );
-}
-
-function WeeklyContentCard({
-  title,
-  subtitle,
-  icon,
-  iconBg,
-  done,
-  onClick,
-}: {
-  title: string;
-  subtitle: string;
-  icon: React.ReactNode;
-  iconBg: string;
-  done: boolean;
-  onClick: () => void;
-}) {
-  return <WeeklyStepCard step={1} title={title} subtitle={subtitle} icon={icon} iconBg={iconBg} done={done} onClick={onClick} />;
-}
-
-function WeeklyStepCard({
-  step,
-  title,
-  subtitle,
-  icon,
-  iconBg,
-  done,
-  onClick,
-}: {
-  step: number;
-  title: string;
-  subtitle: string;
-  icon: React.ReactNode;
-  iconBg: string;
-  done: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="relative w-full min-w-0 rounded-2xl bg-white/85 backdrop-blur-sm px-2 pt-4 pb-3 text-center shadow-[0_10px_30px_-15px_hsl(258_70%_45%/0.35)] ring-1 ring-black/[0.03] transition-transform active:scale-[0.98] flex flex-col items-center gap-2"
-    >
-      <span className="absolute top-1.5 left-1.5 h-5 w-5 rounded-full bg-[hsl(258_70%_55%)] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
-        {step}
-      </span>
-      <div className="relative flex-shrink-0 mt-1">
-        <div
-          className={`h-11 w-11 rounded-full bg-gradient-to-br ${iconBg} flex items-center justify-center shadow-md ${
-            done ? "opacity-40" : ""
-          }`}
-        >
-          <div className={done ? "opacity-50" : ""}>{icon}</div>
-        </div>
-        {done && (
-          <div className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-[hsl(258_70%_55%)] border-2 border-white flex items-center justify-center shadow-sm">
-            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-          </div>
-        )}
-      </div>
-      <div className="min-w-0 w-full">
-        <p className="font-semibold text-[13px] text-foreground">{title}</p>
-        <p className="text-[10px] text-muted-foreground leading-snug mt-0.5 line-clamp-2 [hyphens:auto]">{subtitle}</p>
-      </div>
-    </button>
   );
 }
