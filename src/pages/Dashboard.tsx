@@ -49,6 +49,8 @@ import {
   Lock,
   Sparkles,
   Check,
+  CheckCircle2,
+  TrendingDown,
   Ban,
   X,
   ChevronRight,
@@ -587,6 +589,25 @@ export default function Dashboard() {
             </DropdownMenu>
           </div>
         </header>
+
+        {/* Selo da jornada atual */}
+        <div className="mt-3 flex justify-center">
+          {isAbstinencia ? (
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(160_60%_95%)] px-3 py-1 ring-1 ring-[hsl(160_50%_85%)]">
+              <CheckCircle2 className="h-3.5 w-3.5 text-[hsl(160_60%_38%)]" />
+              <span className="text-[11px] font-semibold text-[hsl(160_55%_30%)] text-balance">
+                Você já é um ex-fumante
+              </span>
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(220_80%_95%)] px-3 py-1 ring-1 ring-[hsl(220_60%_86%)]">
+              <TrendingDown className="h-3.5 w-3.5 text-[hsl(220_70%_48%)]" />
+              <span className="text-[11px] font-semibold text-[hsl(220_60%_38%)] text-balance">
+                Você está reduzindo
+              </span>
+            </div>
+          )}
+        </div>
 
         {/* Bloqueio da jornada de abstinência até definir a data */}
         {abstinenciaBloqueada && (
