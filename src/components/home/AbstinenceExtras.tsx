@@ -284,13 +284,20 @@ export default function AbstinenceExtras({
         <div className="mt-8">
         <button
           onClick={() => setConfirmOpen(true)}
-          className="w-full flex items-center justify-start gap-2 rounded-2xl bg-white/70 backdrop-blur px-4 py-3 text-xs font-semibold text-[hsl(258_60%_45%)] ring-1 ring-[hsl(258_70%_90%)] shadow-sm active:scale-[0.98] transition-transform text-left leading-tight"
+          className="w-full flex items-center gap-3 rounded-2xl bg-white/70 backdrop-blur px-4 py-3.5 ring-1 ring-[hsl(258_70%_90%)] shadow-[0_10px_24px_-14px_hsl(258_60%_45%/0.45)] active:scale-[0.98] transition-transform text-left"
         >
-          <RotateCcw className="h-4 w-4 shrink-0" />
-          <span className="flex flex-col text-left">
-            <span>Voltei a fumar.</span>
-            <span>Quero retornar à jornada de redução.</span>
+          <span className="h-11 w-11 shrink-0 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-[0_8px_20px_-10px_hsl(258_70%_50%/0.6)]">
+            <RotateCcw className="h-5 w-5 text-white" />
           </span>
+          <span className="flex-1 min-w-0 flex flex-col">
+            <span className="text-[13px] font-bold text-[hsl(258_60%_45%)] leading-tight text-balance">
+              Voltou a fumar?
+            </span>
+            <span className="text-[11px] text-muted-foreground leading-snug mt-0.5 text-balance">
+              Retorne para a jornada de redução e se fortaleça para a próxima tentativa de parar de fumar.
+            </span>
+          </span>
+          <ChevronRight className="h-5 w-5 text-[hsl(258_60%_55%)] shrink-0" />
         </button>
         </div>
       )}
