@@ -73,7 +73,6 @@ import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { cancelDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import soproLogo from "@/assets/sopro-logo.webp";
-import { getDailyChatPrompt } from "@/lib/dailyChatPrompt";
 import { useChatPrompts } from "@/hooks/useChatPrompts";
 import { useJourneyReview } from "@/hooks/useJourneyReview";
 import { useJourneyFocos } from "@/hooks/useJourneyFocos";
@@ -187,9 +186,8 @@ export default function Dashboard() {
   const { gancho, sugestoes } = useChatPrompts(jornadaType === "abstinência");
   const { needsReview, revisao } = useJourneyReview(jornadaType);
 
-  // Revisão de gatilhos: substitui o gancho e as sugestões do Neo.
+  // Revisão de gatilhos: substitui as sugestões do Neo.
   const [revisaoChatOpen, setRevisaoChatOpen] = useState(false);
-  const ganchoAtual = needsReview ? "Vamos rever seus gatilhos?" : gancho ?? getDailyChatPrompt();
   const sugestoesAtuais = needsReview ? ["Sim, vamos!"] : sugestoes;
 
   // Prompt the user for yesterday's cigarette count once per session
