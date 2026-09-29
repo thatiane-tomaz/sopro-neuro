@@ -7,6 +7,7 @@ import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 export interface Foco {
   id: string;
   habito_titulo: string;
+  subtitulo_habito: string | null;
   explicacao_missao: string | null;
   video_nome: string | null;
   hipnose_nome: string | null;
@@ -111,6 +112,7 @@ export function useJourneyFocos(jornadaType?: string) {
     const toFoco = (h: any, isSelected: boolean): Foco => ({
       id: h.id,
       habito_titulo: h.habito_titulo,
+      subtitulo_habito: h.subtitulo_habito ?? null,
       explicacao_missao: h.explicacao_missao ?? null,
       video_nome: h.video_nome ?? null,
       hipnose_nome: h.hipnose_nome ?? null,

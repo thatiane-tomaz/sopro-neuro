@@ -402,6 +402,7 @@ export type Database = {
           missao: boolean
           objetivo_chat_missao: string | null
           posicao: string | null
+          subtitulo_habito: string | null
           tema_fixo: boolean | null
           tipo_usuario: string | null
           updated_at: string | null
@@ -417,6 +418,7 @@ export type Database = {
           missao?: boolean
           objetivo_chat_missao?: string | null
           posicao?: string | null
+          subtitulo_habito?: string | null
           tema_fixo?: boolean | null
           tipo_usuario?: string | null
           updated_at?: string | null
@@ -432,6 +434,7 @@ export type Database = {
           missao?: boolean
           objetivo_chat_missao?: string | null
           posicao?: string | null
+          subtitulo_habito?: string | null
           tema_fixo?: boolean | null
           tipo_usuario?: string | null
           updated_at?: string | null
