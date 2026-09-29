@@ -732,9 +732,9 @@ export default function Dashboard() {
           aria-hidden={abstinenciaBloqueada}
         >
         {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
-        <section className="mt-3 rounded-3xl bg-card/90 px-5 py-5 shadow-[var(--shadow-primary)] ring-1 ring-border/60 backdrop-blur-md">
-          <div className="inline-flex items-center gap-2 text-primary">
-            <Sparkles className="h-4 w-4 flex-shrink-0" />
+        <section className="mt-3 rounded-3xl bg-card/80 px-4 py-4 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+          <div className="inline-flex items-center gap-1.5 text-[hsl(var(--lilac))]">
+            <Sparkles className="h-3 w-3 flex-shrink-0" />
             <span className="text-[11px] font-bold uppercase tracking-[0.14em]">
               {totalFocos > 0
                 ? `Seu foco atual · ${focoAtualNumero} de ${totalFocos}`
@@ -742,11 +742,11 @@ export default function Dashboard() {
             </span>
           </div>
 
-          <h1 className="mt-2 text-balance text-[25px] font-bold leading-tight text-primary">
+          <h1 className="mt-1.5 text-balance text-lg font-bold leading-tight text-foreground">
             {tituloGatilho}
           </h1>
           {subtituloGatilho && (
-            <p className="mt-1 text-balance text-sm leading-snug text-muted-foreground">
+            <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
               {subtituloGatilho}
             </p>
           )}
@@ -789,7 +789,7 @@ export default function Dashboard() {
 
             return (
               <>
-                <div className="mt-5 flex items-start" aria-label="Etapas do foco atual">
+                <div className="mt-4 flex items-start" aria-label="Etapas do foco atual">
                   {steps.map((step, index) => {
                     const Icon = step.icon;
                     const isCurrent = nextStep?.key === step.key;
@@ -799,15 +799,15 @@ export default function Dashboard() {
                           <div
                             className={`relative flex h-14 w-14 items-center justify-center rounded-full border transition-colors ${
                               isCurrent
-                                ? "border-primary bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-[var(--shadow-wellness)]"
+                                ? "border-[hsl(var(--lilac))] bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-primary-foreground shadow-wellness"
                                 : step.done
-                                  ? "border-primary/20 bg-primary/10 text-primary/45"
-                                  : "border-primary/25 bg-card text-primary/65"
+                                  ? "border-[hsl(var(--lilac)/0.2)] bg-[hsl(var(--lilac-soft))] text-[hsl(var(--lilac)/0.45)]"
+                                  : "border-[hsl(var(--lilac)/0.25)] bg-card text-[hsl(var(--lilac)/0.65)]"
                             }`}
                           >
                             <Icon className={`h-6 w-6 ${step.key === "video" ? "fill-current" : ""}`} />
                             {step.done && (
-                              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-card">
+                              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--lilac))] text-primary-foreground ring-2 ring-card">
                                 <Check className="h-3 w-3" strokeWidth={3} />
                               </span>
                             )}
@@ -817,7 +817,7 @@ export default function Dashboard() {
                           </span>
                         </div>
                         {index < steps.length - 1 && (
-                          <div className="mt-7 h-1 w-7 flex-shrink-0 rounded-full bg-primary/10" />
+                          <div className="mt-7 h-1 w-7 flex-shrink-0 rounded-full bg-[hsl(var(--lilac-soft))]" />
                         )}
                       </div>
                     );
@@ -828,14 +828,14 @@ export default function Dashboard() {
                   <Button
                     type="button"
                     onClick={nextStep.onClick}
-                    className="mt-5 h-14 w-full rounded-full bg-gradient-to-r from-primary to-accent text-base font-bold text-primary-foreground shadow-[var(--shadow-wellness)]"
+                    className="mt-4 h-12 w-full rounded-full bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-sm font-bold text-primary-foreground shadow-wellness"
                   >
                     <nextStep.icon className="mr-2 h-5 w-5" />
                     <span className="text-balance">{nextStep.actionLabel}</span>
                     <ChevronRight className="ml-1 h-5 w-5" />
                   </Button>
                 ) : (
-                  <div className="mt-5 flex h-14 items-center justify-center gap-2 rounded-full bg-primary/10 font-semibold text-primary">
+                  <div className="mt-4 flex h-12 items-center justify-center gap-2 rounded-full bg-[hsl(var(--lilac-soft))] font-semibold text-[hsl(var(--lilac))]">
                     <CheckCircle2 className="h-5 w-5" />
                     Foco concluído
                   </div>
