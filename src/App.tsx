@@ -22,6 +22,7 @@ const Paywall = lazy(() => import("./pages/Paywall"));
 const PaywallPreview = lazy(() => import("./pages/PaywallPreview"));
 const JourneyBadgePreview = lazy(() => import("./pages/JourneyBadgePreview"));
 const NeoPreview = lazy(() => import("./pages/NeoPreview"));
+const ApoioPreviewTmp = lazy(() => import("./pages/ApoioPreviewTmp"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -76,7 +77,7 @@ const App = () => (
                 <Route path="/paywall-preview" element={<PaywallPreview />} />
                 <Route path="/badge-preview" element={<JourneyBadgePreview />} />
                 <Route path="/neo-preview" element={<NeoPreview />} />
-                <Route path="/apoio-preview-tmp" element={lazy(() => import("@/pages/ApoioPreviewTmp"))} />
+                <Route path="/apoio-preview-tmp" element={<ApoioPreviewTmp />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/install" element={<Install />} />
                 <Route path="/email-confirmed" element={<EmailConfirmed />} />
