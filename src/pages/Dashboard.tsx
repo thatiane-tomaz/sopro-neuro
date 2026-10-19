@@ -714,19 +714,19 @@ export default function Dashboard() {
         {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
         <section className="mt-3 rounded-3xl bg-card/80 px-4 py-4 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="inline-flex items-center gap-1 rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2.5 py-1 text-[11px] font-semibold text-[hsl(var(--electric-blue))]">
-              <Sparkles className="h-3 w-3 flex-shrink-0" />
-              {isAbstinencia ? "Jornada de Liberdade" : "Jornada de Redução"}
-              {totalFocos > 0 && (
-                <span className="font-medium opacity-70">· {focoAtualNumero}/{totalFocos}</span>
-              )}
-            </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(var(--lilac-soft))] px-2.5 py-1 text-[11px] font-semibold text-[hsl(var(--lilac))]">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--lilac)/0.6)]" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--lilac))]" />
               </span>
               Recomendado para hoje
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2.5 py-1 text-[11px] font-semibold text-[hsl(var(--electric-blue))]">
+              <Sparkles className="h-3 w-3 flex-shrink-0" />
+              {isAbstinencia ? "Jornada de Liberdade" : "Jornada de Redução"}
+              {totalFocos > 0 && (
+                <span className="font-medium opacity-70">· {focoAtualNumero}/{totalFocos}</span>
+              )}
             </span>
           </div>
 
