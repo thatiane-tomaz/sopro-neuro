@@ -83,6 +83,8 @@ export default function NeoBlock({
                 Converse com o Neo
               </h2>
               <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
+                Seu companheiro 24h!
+                <br />
                 Ele te ajuda a entender o vício e encontrar novas formas de viver.
               </p>
             </div>
