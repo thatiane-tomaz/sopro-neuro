@@ -234,6 +234,8 @@ export default function Jornada() {
       video_nome: h.video_nome ?? null,
       hipnose_nome: h.hipnose_nome ?? null,
       imagem_nome: h.imagem_nome ?? null,
+      explicacao_missao: h.explicacao_missao?.trim() || null,
+      objetivo_chat_missao: h.objetivo_chat_missao ?? null,
       hasVideo: h.video !== false && !!h.video_nome?.trim(),
       hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
       hasMissao: h.missao !== false,
