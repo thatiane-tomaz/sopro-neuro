@@ -76,16 +76,16 @@ export default function NeoBlock({
             </div>
             <div className="relative -mr-3 w-[136px] flex-shrink-0">
               {/* Nuvem lilás de fundo */}
-              <div aria-hidden className="pointer-events-none absolute -right-4 bottom-2 h-24 w-40 rounded-full bg-[hsl(258_80%_85%/0.55)] blur-xl" />
+              <div aria-hidden className="pointer-events-none absolute -right-6 -bottom-2 h-24 w-44 rounded-full bg-[hsl(258_80%_82%/0.6)] blur-xl" />
               <div aria-hidden className="pointer-events-none absolute -right-2 bottom-8 h-16 w-24 rounded-full bg-[hsl(258_85%_90%/0.8)] blur-md" />
               {/* Balãozinho */}
-              <div aria-hidden className="absolute left-0 top-3 z-10 flex h-7 w-11 items-center justify-center gap-1 rounded-full bg-[hsl(258_80%_94%)] shadow-[0_6px_14px_-8px_hsl(258_70%_45%/0.5)] ring-1 ring-white">
+              <div aria-hidden className="absolute -left-4 top-0 z-10 flex h-7 w-11 items-center justify-center gap-1 rounded-full bg-[hsl(258_80%_94%)] shadow-[0_6px_14px_-8px_hsl(258_70%_45%/0.5)] ring-1 ring-white">
                 <span className="h-1.5 w-1.5 rounded-full bg-[hsl(258_70%_60%)]" />
                 <span className="h-1.5 w-1.5 rounded-full bg-[hsl(258_70%_60%)]" />
                 <span className="h-1.5 w-1.5 rounded-full bg-[hsl(258_70%_60%)]" />
                 <span className="absolute -bottom-1 right-2 h-2.5 w-2.5 rotate-45 rounded-[2px] bg-[hsl(258_80%_94%)]" />
               </div>
-              <div className="relative -scale-x-100 -ml-2">
+              <div className="relative -scale-x-100 -ml-2 mt-3">
                 <ProgressBrain
                   compact
                   locked={locked}
