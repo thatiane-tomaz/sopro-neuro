@@ -52,6 +52,8 @@ type JornadaItem = {
   id: string;
   seq: number; // 1..N — used for interaction & media file mapping
   habito_titulo: string;
+  subtitulo_habito: string | null;
+  hasMissao: boolean;
   posicao_original: number | null;
   video_nome: string | null;
   hipnose_nome: string | null;
@@ -217,12 +219,14 @@ export default function Jornada() {
       id: h.id,
       seq: idx + 1,
       habito_titulo: h.habito_titulo,
+      subtitulo_habito: h.subtitulo_habito?.trim() || null,
       posicao_original: h.posicao != null ? Number(h.posicao) : null,
       video_nome: h.video_nome ?? null,
       hipnose_nome: h.hipnose_nome ?? null,
       imagem_nome: h.imagem_nome ?? null,
       hasVideo: h.video !== false && !!h.video_nome?.trim(),
       hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
+      hasMissao: h.missao !== false,
       isIntro: fixedIds.has(h.id),
       isSelected: true,
     }));
@@ -252,7 +256,7 @@ export default function Jornada() {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("habitos_jornada")
-        .select("id,habito_titulo,video_nome,video,hipnose_nome,hipnose,posicao,imagem_nome")
+        .select("id,habito_titulo,subtitulo_habito,video_nome,video,hipnose_nome,hipnose,posicao,imagem_nome")
         .eq("tipo_usuario", "redução");
       if (error) {
         console.error("hipnoses reducao error", error);
@@ -523,7 +527,7 @@ export default function Jornada() {
         )}
 
         {/* Themes list */}
-        <section className="mt-5 rounded-3xl bg-white/85 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] p-4">
+        <section className="mt-5 -mx-2 rounded-3xl bg-white/85 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] px-3 py-3">
           {items.length === 0 ? (
             <div className="py-10 text-center">
               <p className="text-sm text-muted-foreground">
@@ -531,23 +535,45 @@ export default function Jornada() {
               </p>
             </div>
           ) : (
-            items.map((it, i) => (
-              <ThemeRow
-                key={it.id}
-                index={i}
-                isLast={i === items.length - 1}
-                seq={it.seq}
-                title={it.habito_titulo}
-                imagemNome={it.imagem_nome}
-                isIntro={it.isIntro}
-                status={statusForIndex(i)}
-                hasVideo={it.hasVideo}
-                hasHipnose={it.hasHipnose}
-                onVideo={() => openMedia(i, "video")}
-                onHypnosis={() => openMedia(i, "hypnosis")}
-                onMural={() => openMural(i)}
-              />
-            ))
+            (() => {
+              const focusIndex = items.findIndex((_, i) => statusForIndex(i) !== "completed");
+              const labelFor = (i: number) => {
+                if (i === 0 && focusIndex !== 0) return "Já trabalhados";
+                if (focusIndex !== -1 && i === focusIndex + 1) return "Próximos temas da sua jornada";
+                return null;
+              };
+              return items.map((it, i) => {
+                const isFocus = i === focusIndex;
+                const pos = it.posicao_original ?? it.seq;
+                const acts = [
+                  it.hasVideo ? isFinished(interactionKey(it, "video")) : null,
+                  it.hasHipnose ? isFinished(interactionKey(it, "hypnosis")) : null,
+                  it.hasMissao ? isFinished(`${journeyKey}missao_semana_${pos}`) : null,
+                ].filter((v) => v !== null) as boolean[];
+                return (
+                  <ThemeRow
+                    key={it.id}
+                    isFirst={i === 0}
+                    isLast={i === items.length - 1}
+                    label={labelFor(i)}
+                    nextHasLabel={!!labelFor(i + 1)}
+                    seq={it.seq}
+                    title={it.habito_titulo}
+                    subtitle={it.subtitulo_habito}
+                    imagemNome={it.imagem_nome}
+                    isIntro={it.isIntro}
+                    status={statusForIndex(i)}
+                    isFocus={isFocus}
+                    activities={isFocus ? { done: acts.filter(Boolean).length, total: acts.length } : null}
+                    hasVideo={it.hasVideo}
+                    hasHipnose={it.hasHipnose}
+                    onVideo={() => openMedia(i, "video")}
+                    onHypnosis={() => openMedia(i, "hypnosis")}
+                    onMural={() => openMural(i)}
+                  />
+                );
+              });
+            })()
           )}
         </section>
 
@@ -568,10 +594,11 @@ export default function Jornada() {
               {(temasReducao ?? []).map((h: any, i: number) => (
                 <ThemeRow
                   key={h.id}
-                  index={i}
+                  isFirst={i === 0}
                   isLast={i === (temasReducao?.length ?? 0) - 1}
                   seq={i + 1}
                   title={h.habito_titulo}
+                  subtitle={h.subtitulo_habito ?? null}
                   imagemNome={h.imagem_nome ?? null}
                   isIntro={false}
                   status="current"
