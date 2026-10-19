@@ -78,7 +78,7 @@ export default function NeoBlock({
 
           {/* Cabeçalho: título/descrição à esquerda · Neo à direita */}
           <div className="relative flex items-center pl-2">
-            <div className="relative z-10 min-w-0 flex-1 py-2 pr-1">
+            <div className="relative z-10 min-w-0 flex-1 pr-1">
               <h2 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
                 Converse com o Neo
               </h2>
@@ -86,12 +86,12 @@ export default function NeoBlock({
                 Ele te ajuda a entender o vício e encontrar novas formas de viver.
               </p>
             </div>
-            <div className="relative -mr-3 -my-3 w-[136px] flex-shrink-0">
+            <div className="relative -mr-3 -mt-5 -mb-6 w-[136px] flex-shrink-0">
               {/* Balão de fala com reticências */}
               <svg
                 aria-hidden
                 viewBox="0 0 56 42"
-                className="absolute -left-3 top-3 z-10 h-[38px] w-[50px] drop-shadow-[0_6px_10px_hsl(258_70%_45%/0.25)]"
+                className="absolute -left-3 top-5 z-10 h-[38px] w-[50px] drop-shadow-[0_6px_10px_hsl(258_70%_45%/0.25)]"
               >
                 <path
                   d="M15 1h26a14 14 0 0 1 0 28h-3l6 10-13-10H15A14 14 0 0 1 15 1z"
