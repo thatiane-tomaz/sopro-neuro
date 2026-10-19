@@ -818,7 +818,7 @@ function ThemeRow({
           </div>
 
           {!isLocked && (
-            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+            <div className="mt-1.5 flex flex-wrap items-center gap-1.5 pl-[50px]">
               {hasVideo && (
                 <ActionChip
                   icon={<Play className="h-3.5 w-3.5 fill-current" />}
@@ -881,7 +881,7 @@ function ActionChip({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold shadow-sm active:scale-95 transition-transform ${styles.bg} ${styles.text} ${
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-sm active:scale-95 transition-transform ${styles.bg} ${styles.text} ${
         disabled ? "opacity-40 cursor-not-allowed" : ""
       }`}
     >
