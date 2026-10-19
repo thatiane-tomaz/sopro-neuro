@@ -351,21 +351,66 @@ export default function Jornada() {
     return v && h;
   };
 
-  const statusForIndex = (idx: number): DayStatus => {
-    if (itemCompleted(items[idx])) return "completed";
-    // Admin (e freelist) enxergam tudo liberado
-    if (isAdmin || isFreelist) return "current";
-    // current if all previous items are completed
-    for (let i = 0; i < idx; i++) {
-      if (!itemCompleted(items[i])) return "locked";
-    }
-    return "current";
+  // Todos os temas da jornada ficam sempre abertos (sem bloqueio sequencial).
+  // A assinatura continua sendo exigida ao abrir cada conteúdo.
+  const statusForIndex = (idx: number): DayStatus =>
+    itemCompleted(items[idx]) ? "completed" : "current";
+
+  const canOpen = (_idx: number) => true;
+
+  // ---- Popup de conteúdos do tema ----
+  const [sheet, setSheet] = useState<SheetTarget | null>(null);
+  const [sheetView, setSheetView] = useState<"options" | "mission">("options");
+  const [tick, setTick] = useState(0);
+  useScrollLock(!!sheet);
+  useEffect(() => {
+    if (!sheet || sheetView !== "mission") return;
+    const t = setInterval(() => setTick((v) => v + 1), 1000);
+    return () => clearInterval(t);
+  }, [sheet, sheetView]);
+
+  const openSheet = (target: SheetTarget) => {
+    setSheetView("options");
+    setSheet(target);
+  };
+  const closeSheet = () => {
+    setSheet(null);
+    setSheetView("options");
   };
 
-  const canOpen = (idx: number) => {
-    if (isAdmin || isFreelist) return true;
-    const s = statusForIndex(idx);
-    return s === "current" || s === "completed";
+  const missaoKeys = (it: JornadaItem) => {
+    const pos = it.posicao_original ?? it.seq;
+    return {
+      done: `${journeyKey}missao_semana_${pos}`,
+      start: `${journeyKey}missao_iniciada_semana_${pos}`,
+    };
+  };
+
+  const openMission = async (it: JornadaItem) => {
+    if (!ensureContentAccess({ source: "missao" })) return;
+    setSheetView("mission");
+    const keys = missaoKeys(it);
+    if (!trackingData?.some((t) => t.interaction_type === keys.start)) {
+      try {
+        await startTracking({ interactionType: keys.start });
+      } catch (e) {
+        console.error("Erro ao iniciar missão:", e);
+      }
+    }
+  };
+
+  const openMissionChat = (it: JornadaItem) => {
+    navigate("/chat", {
+      state: {
+        mission: {
+          habitoId: it.id,
+          habitoTitulo: it.habito_titulo,
+          explicacaoDesafio: it.explicacao_missao || DEFAULT_MISSAO_TEXT,
+          objetivoChatMissao: it.objetivo_chat_missao ?? "",
+          interactionType: missaoKeys(it).done,
+        },
+      },
+    });
   };
 
   // ---- Media ----
