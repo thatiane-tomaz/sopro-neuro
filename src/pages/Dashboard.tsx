@@ -725,7 +725,15 @@ export default function Dashboard() {
           </div>
           <div className="mt-2.5 h-px w-full bg-[hsl(var(--lilac)/0.15)]" />
 
-          <h1 className="mt-3 text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+          <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[hsl(var(--lilac-soft))] px-2.5 py-1 text-[11px] font-semibold text-[hsl(var(--lilac))]">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--lilac)/0.6)]" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--lilac))]" />
+            </span>
+            Recomendado para hoje
+          </span>
+
+          <h1 className="mt-2 text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
             {tituloGatilho}
           </h1>
           {subtituloGatilho && (
