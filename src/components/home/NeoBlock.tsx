@@ -86,7 +86,7 @@ export default function NeoBlock({
                 Ele te ajuda a entender o vício e encontrar novas formas de viver.
               </p>
             </div>
-            <div className="relative -mr-3 -mt-5 -mb-6 w-[136px] flex-shrink-0">
+            <div className="relative -mr-3 -mt-5 -mb-4 w-[136px] flex-shrink-0">
               {/* Balão de fala com reticências */}
               <svg
                 aria-hidden
