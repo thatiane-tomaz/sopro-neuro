@@ -59,6 +59,9 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import MediaPlayer from "@/components/MediaPlayer";
+import stepVideoImg from "@/assets/step-video.png";
+import stepHipnoseImg from "@/assets/step-hipnose.png";
+import stepMissaoImg from "@/assets/step-missao.png";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import WaveBackground from "@/components/home/WaveBackground";
 import NeoBlock from "@/components/home/NeoBlock";
@@ -745,6 +748,7 @@ export default function Dashboard() {
             const steps = [
               hasVideo && {
                 key: "video",
+                image: stepVideoImg,
                 title: "Entenda",
                 subtitle: "o que acontece no seu cérebro",
                 icon: Play,
@@ -754,6 +758,7 @@ export default function Dashboard() {
               },
               hasHipnose && {
                 key: "hipnose",
+                image: stepHipnoseImg,
                 title: "Transforme",
                 subtitle: "seus hábitos com Hipnose",
                 icon: Headphones,
@@ -763,6 +768,7 @@ export default function Dashboard() {
               },
               hasMissao && {
                 key: "missao",
+                image: stepMissaoImg,
                 title: "Experimente",
                 subtitle: "uma nova vida mais leve",
                 icon: ClipboardList,
@@ -774,6 +780,7 @@ export default function Dashboard() {
               key: string;
               title: string;
               subtitle: string;
+              image: string;
               icon: typeof Play;
               done: boolean;
               onClick: () => void;
@@ -785,29 +792,17 @@ export default function Dashboard() {
               <>
                 <div className="mt-4 flex items-start" aria-label="Etapas do foco atual">
                   {steps.map((step, index) => {
-                    const Icon = step.icon;
                     const isCurrent = nextStep?.key === step.key;
                     return (
                       <div key={step.key} className="relative flex min-w-0 flex-1 items-start">
                         <div className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center">
-                          <div className="relative flex h-16 w-16 items-center justify-center">
-                          <div className="pointer-events-none absolute -inset-2 rounded-[45%_55%_50%_50%] bg-gradient-to-br from-[hsl(var(--lilac-light)/0.7)] to-[hsl(var(--lilac-soft))] blur-[2px]" />
-                          <div
-                            className={`relative flex h-14 w-14 items-center justify-center rounded-full border transition-colors ${
-                              isCurrent
-                                ? "border-[hsl(var(--lilac))] bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-primary-foreground shadow-wellness"
-                                : step.done
-                                  ? "border-[hsl(var(--lilac)/0.2)] bg-[hsl(var(--lilac-soft))] text-[hsl(var(--lilac)/0.45)]"
-                                  : "border-[hsl(var(--lilac)/0.25)] bg-card text-[hsl(var(--lilac)/0.65)]"
-                            }`}
-                          >
-                            <Icon className={`h-6 w-6 ${step.key === "video" ? "fill-current" : ""}`} />
+                          <div className={`relative flex h-20 w-20 items-center justify-center transition-opacity ${!isCurrent && !step.done ? "opacity-80" : ""}`}>
+                            <img src={step.image} alt="" className="h-20 w-20 object-contain" draggable={false} />
                             {step.done && (
-                              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--lilac))] text-primary-foreground ring-2 ring-card">
+                              <span className="absolute right-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--lilac))] text-primary-foreground ring-2 ring-card">
                                 <Check className="h-3 w-3" strokeWidth={3} />
                               </span>
                             )}
-                          </div>
                           </div>
                           <span className={`text-sm font-semibold ${isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
                             {step.title}
@@ -817,7 +812,7 @@ export default function Dashboard() {
                           </span>
                         </div>
                         {index < steps.length - 1 && (
-                          <ArrowRight className="absolute right-0 top-8 h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.5)]" strokeWidth={2.5} />
+                          <ArrowRight className="absolute right-0 top-10 h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.55)]" strokeWidth={2.5} />
                         )}
                       </div>
                     );
