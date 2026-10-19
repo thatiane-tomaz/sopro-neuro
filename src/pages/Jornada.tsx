@@ -818,7 +818,7 @@ function ThemeRow({
           </div>
 
           {!isLocked && (
-            <div className="mt-1.5 flex flex-wrap items-center gap-1.5 pl-[50px]">
+            <div className={`mt-1.5 flex flex-wrap items-center gap-1.5 ${isFocus ? "pl-[58px]" : "pl-[50px]"}`}>
               {hasVideo && (
                 <ActionChip
                   icon={<Play className="h-3.5 w-3.5 fill-current" />}
