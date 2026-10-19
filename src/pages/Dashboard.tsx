@@ -763,7 +763,7 @@ export default function Dashboard() {
                 key: "missao",
                 title: "Experimente",
                 subtitle: "uma nova vida mais leve",
-                icon: Sparkles,
+                icon: ClipboardList,
                 done: weeklyMissaoDone,
                 onClick: openMissionDialog,
                 actionLabel: "Continuar com a missão",
@@ -788,6 +788,8 @@ export default function Dashboard() {
                     return (
                       <div key={step.key} className="relative flex min-w-0 flex-1 items-start">
                         <div className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center">
+                          <div className="relative flex h-16 w-16 items-center justify-center">
+                          <div className="pointer-events-none absolute -inset-2 rounded-[45%_55%_50%_50%] bg-gradient-to-br from-[hsl(var(--lilac-light)/0.7)] to-[hsl(var(--lilac-soft))] blur-[2px]" />
                           <div
                             className={`relative flex h-14 w-14 items-center justify-center rounded-full border transition-colors ${
                               isCurrent
@@ -804,6 +806,7 @@ export default function Dashboard() {
                               </span>
                             )}
                           </div>
+                          </div>
                           <span className={`text-sm font-semibold ${isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
                             {step.title}
                           </span>
@@ -812,7 +815,7 @@ export default function Dashboard() {
                           </span>
                         </div>
                         {index < steps.length - 1 && (
-                          <div className="absolute right-0 top-7 h-1 w-7 -translate-y-1/2 translate-x-1/2 flex-shrink-0 rounded-full bg-[hsl(var(--lilac-soft))]" />
+                          <ArrowRight className="absolute right-0 top-8 h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.5)]" strokeWidth={2.5} />
                         )}
                       </div>
                     );
