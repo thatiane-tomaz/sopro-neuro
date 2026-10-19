@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Send, MessageCircle } from "lucide-react";
 import ProgressBrain from "@/components/home/ProgressBrain";
+import neoCloud from "@/assets/neo-cloud-bg.png";
 
 // Cada opção abre o chat já com uma mensagem que direciona o Neo:
 // "bem" → reforçar e entender o que está ajudando na rotina;
@@ -64,9 +65,20 @@ export default function NeoBlock({
         </div>
       ) : (
         <>
+          {/* Nuvem lilás de fundo atrás do Neo (encosta na borda direita do card) */}
+          <img
+            src={neoCloud}
+            alt=""
+            aria-hidden
+            width={640}
+            height={357}
+            draggable={false}
+            className="pointer-events-none absolute -right-10 top-6 w-[250px] max-w-none select-none opacity-90"
+          />
+
           {/* Cabeçalho: título/descrição à esquerda · Neo à direita */}
-          <div className="relative flex items-center gap-0 pl-2">
-            <div className="relative z-10 min-w-0 flex-1 pt-2">
+          <div className="relative flex items-center pl-2">
+            <div className="relative z-10 min-w-0 flex-1 py-2 pr-1">
               <h2 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
                 Converse com o Neo
               </h2>
@@ -74,18 +86,25 @@ export default function NeoBlock({
                 Ele te ajuda a entender o vício e encontrar novas formas de viver.
               </p>
             </div>
-            <div className="relative -mr-3 w-[136px] flex-shrink-0">
-              {/* Nuvem lilás de fundo */}
-              <div aria-hidden className="pointer-events-none absolute -right-6 -bottom-2 h-24 w-44 rounded-full bg-[hsl(258_80%_82%/0.6)] blur-xl" />
-              <div aria-hidden className="pointer-events-none absolute -right-2 bottom-8 h-16 w-24 rounded-full bg-[hsl(258_85%_90%/0.8)] blur-md" />
-              {/* Balãozinho */}
-              <div aria-hidden className="absolute -left-4 top-0 z-10 flex h-7 w-11 items-center justify-center gap-1 rounded-full bg-[hsl(258_80%_94%)] shadow-[0_6px_14px_-8px_hsl(258_70%_45%/0.5)] ring-1 ring-white">
-                <span className="h-1.5 w-1.5 rounded-full bg-[hsl(258_70%_60%)]" />
-                <span className="h-1.5 w-1.5 rounded-full bg-[hsl(258_70%_60%)]" />
-                <span className="h-1.5 w-1.5 rounded-full bg-[hsl(258_70%_60%)]" />
-                <span className="absolute -bottom-1 right-2 h-2.5 w-2.5 rotate-45 rounded-[2px] bg-[hsl(258_80%_94%)]" />
-              </div>
-              <div className="relative -scale-x-100 -ml-2 mt-3">
+            <div className="relative -mr-3 -my-3 w-[136px] flex-shrink-0">
+              {/* Balão de fala com reticências */}
+              <svg
+                aria-hidden
+                viewBox="0 0 56 42"
+                className="absolute -left-3 top-3 z-10 h-[38px] w-[50px] drop-shadow-[0_6px_10px_hsl(258_70%_45%/0.25)]"
+              >
+                <path
+                  d="M15 1h26a14 14 0 0 1 0 28h-3l6 10-13-10H15A14 14 0 0 1 15 1z"
+                  fill="hsl(258 85% 96%)"
+                  stroke="hsl(0 0% 100%)"
+                  strokeWidth="1.5"
+                  strokeLinejoin="round"
+                />
+                <circle cx="19" cy="15" r="2.6" fill="hsl(var(--electric-blue))" />
+                <circle cx="28" cy="15" r="2.6" fill="hsl(var(--electric-blue))" />
+                <circle cx="37" cy="15" r="2.6" fill="hsl(var(--electric-blue))" />
+              </svg>
+              <div className="relative -scale-x-100">
                 <ProgressBrain
                   compact
                   locked={locked}
@@ -96,7 +115,7 @@ export default function NeoBlock({
             </div>
           </div>
 
-          <div className="relative -mt-3 rounded-3xl bg-white/85 px-3 pb-3 pt-3.5 ring-1 ring-white shadow-[0_10px_30px_-20px_hsl(258_70%_45%/0.35)]">
+          <div className="relative -mt-1 rounded-3xl bg-white/85 px-3 pb-3 pt-3.5 ring-1 ring-white shadow-[0_10px_30px_-20px_hsl(258_70%_45%/0.35)]">
             <p className="text-sm font-semibold text-foreground">
               Como está sua vontade de fumar hoje?
             </p>
