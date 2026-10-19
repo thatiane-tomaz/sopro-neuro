@@ -682,7 +682,7 @@ function ThemeThumb({
   );
 }
 
-export function ThemeRow({
+function ThemeRow({
   isFirst,
   isLast,
   label,
