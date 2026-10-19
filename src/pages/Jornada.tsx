@@ -968,7 +968,7 @@ function ThemeRow({
           <ThemeThumb
             imagemNome={imagemNome}
             isLocked={false}
-            sizeClass={isFocus ? "h-12 w-12" : "h-10 w-10"}
+            sizeClass={isFocus ? "h-16 w-16" : "h-14 w-14"}
           />
           <div className="min-w-0 flex-1">
             {isFocus && (
@@ -1039,7 +1039,7 @@ function ThemeSheet({
               <ChevronLeft className="h-4 w-4" />
             </button>
           )}
-          <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="h-14 w-14" />
+          <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="h-16 w-16" />
           <div className="min-w-0 flex-1 pr-9">
             <h2 className="text-balance text-base font-bold leading-tight text-[hsl(var(--electric-blue))]">
               {title}
