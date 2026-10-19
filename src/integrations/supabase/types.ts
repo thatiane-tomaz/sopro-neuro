@@ -399,6 +399,7 @@ export type Database = {
           hipnose: boolean
           hipnose_nome: string | null
           id: string
+          imagem_nome: string | null
           missao: boolean
           objetivo_chat_missao: string | null
           posicao: string | null
@@ -415,6 +416,7 @@ export type Database = {
           hipnose?: boolean
           hipnose_nome?: string | null
           id?: string
+          imagem_nome?: string | null
           missao?: boolean
           objetivo_chat_missao?: string | null
           posicao?: string | null
@@ -431,6 +433,7 @@ export type Database = {
           hipnose?: boolean
           hipnose_nome?: string | null
           id?: string
+          imagem_nome?: string | null
           missao?: boolean
           objetivo_chat_missao?: string | null
           posicao?: string | null
