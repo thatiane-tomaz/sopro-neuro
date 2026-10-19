@@ -21,14 +21,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Play,
-  Headphones,
   Lock,
   Check,
   User,
   LogOut,
   HelpCircle,
-  MessageCircleHeart,
   Info,
   Sparkles,
   ChevronRight,
@@ -870,7 +867,7 @@ function ThemeThumb({
   );
 }
 
-function ThemeRow({
+export function ThemeRow({
   isFirst,
   isLast,
   label,
@@ -1004,7 +1001,7 @@ type SheetOption = {
   onClick: () => void;
 };
 
-function ThemeSheet({
+export function ThemeSheet({
   title,
   subtitle,
   imagemNome,
@@ -1068,7 +1065,7 @@ function ThemeSheet({
   );
 }
 
-function SheetOptions({ options }: { options: SheetOption[] }) {
+export function SheetOptions({ options }: { options: SheetOption[] }) {
   return (
     <div className="space-y-2 px-4 pb-5 pt-4">
       {options.map((o) => (
@@ -1097,7 +1094,7 @@ function SheetOptions({ options }: { options: SheetOption[] }) {
   );
 }
 
-function MissionView({
+export function MissionView({
   text,
   done,
   locked,
