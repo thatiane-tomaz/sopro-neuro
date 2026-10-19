@@ -52,6 +52,8 @@ type JornadaItem = {
   id: string;
   seq: number; // 1..N — used for interaction & media file mapping
   habito_titulo: string;
+  subtitulo_habito: string | null;
+  hasMissao: boolean;
   posicao_original: number | null;
   video_nome: string | null;
   hipnose_nome: string | null;
@@ -217,12 +219,14 @@ export default function Jornada() {
       id: h.id,
       seq: idx + 1,
       habito_titulo: h.habito_titulo,
+      subtitulo_habito: h.subtitulo_habito?.trim() || null,
       posicao_original: h.posicao != null ? Number(h.posicao) : null,
       video_nome: h.video_nome ?? null,
       hipnose_nome: h.hipnose_nome ?? null,
       imagem_nome: h.imagem_nome ?? null,
       hasVideo: h.video !== false && !!h.video_nome?.trim(),
       hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
+      hasMissao: h.missao !== false,
       isIntro: fixedIds.has(h.id),
       isSelected: true,
     }));
@@ -252,7 +256,7 @@ export default function Jornada() {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("habitos_jornada")
-        .select("id,habito_titulo,video_nome,video,hipnose_nome,hipnose,posicao,imagem_nome")
+        .select("id,habito_titulo,subtitulo_habito,video_nome,video,hipnose_nome,hipnose,posicao,imagem_nome")
         .eq("tipo_usuario", "redução");
       if (error) {
         console.error("hipnoses reducao error", error);
@@ -523,7 +527,7 @@ export default function Jornada() {
         )}
 
         {/* Themes list */}
-        <section className="mt-5 rounded-3xl bg-white/85 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] p-4">
+        <section className="mt-5 -mx-2 rounded-3xl bg-white/85 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] px-3 py-3">
           {items.length === 0 ? (
             <div className="py-10 text-center">
               <p className="text-sm text-muted-foreground">
@@ -531,23 +535,45 @@ export default function Jornada() {
               </p>
             </div>
           ) : (
-            items.map((it, i) => (
-              <ThemeRow
-                key={it.id}
-                index={i}
-                isLast={i === items.length - 1}
-                seq={it.seq}
-                title={it.habito_titulo}
-                imagemNome={it.imagem_nome}
-                isIntro={it.isIntro}
-                status={statusForIndex(i)}
-                hasVideo={it.hasVideo}
-                hasHipnose={it.hasHipnose}
-                onVideo={() => openMedia(i, "video")}
-                onHypnosis={() => openMedia(i, "hypnosis")}
-                onMural={() => openMural(i)}
-              />
-            ))
+            (() => {
+              const focusIndex = items.findIndex((_, i) => statusForIndex(i) !== "completed");
+              const labelFor = (i: number) => {
+                if (i === 0 && focusIndex !== 0) return "Já trabalhados";
+                if (focusIndex !== -1 && i === focusIndex + 1) return "Próximos temas da sua jornada";
+                return null;
+              };
+              return items.map((it, i) => {
+                const isFocus = i === focusIndex;
+                const pos = it.posicao_original ?? it.seq;
+                const acts = [
+                  it.hasVideo ? isFinished(interactionKey(it, "video")) : null,
+                  it.hasHipnose ? isFinished(interactionKey(it, "hypnosis")) : null,
+                  it.hasMissao ? isFinished(`${journeyKey}missao_semana_${pos}`) : null,
+                ].filter((v) => v !== null) as boolean[];
+                return (
+                  <ThemeRow
+                    key={it.id}
+                    isFirst={i === 0}
+                    isLast={i === items.length - 1}
+                    label={labelFor(i)}
+                    nextHasLabel={!!labelFor(i + 1)}
+                    seq={it.seq}
+                    title={it.habito_titulo}
+                    subtitle={it.subtitulo_habito}
+                    imagemNome={it.imagem_nome}
+                    isIntro={it.isIntro}
+                    status={statusForIndex(i)}
+                    isFocus={isFocus}
+                    activities={isFocus ? { done: acts.filter(Boolean).length, total: acts.length } : null}
+                    hasVideo={it.hasVideo}
+                    hasHipnose={it.hasHipnose}
+                    onVideo={() => openMedia(i, "video")}
+                    onHypnosis={() => openMedia(i, "hypnosis")}
+                    onMural={() => openMural(i)}
+                  />
+                );
+              });
+            })()
           )}
         </section>
 
@@ -568,10 +594,11 @@ export default function Jornada() {
               {(temasReducao ?? []).map((h: any, i: number) => (
                 <ThemeRow
                   key={h.id}
-                  index={i}
+                  isFirst={i === 0}
                   isLast={i === (temasReducao?.length ?? 0) - 1}
                   seq={i + 1}
                   title={h.habito_titulo}
+                  subtitle={h.subtitulo_habito ?? null}
                   imagemNome={h.imagem_nome ?? null}
                   isIntro={false}
                   status="current"
@@ -615,11 +642,13 @@ export default function Jornada() {
 function ThemeThumb({
   imagemNome,
   isLocked,
+  sizeClass,
 }: {
   imagemNome: string | null;
   isLocked: boolean;
+  sizeClass: string;
 }) {
-  const thumb = getThemeImageThumbUrl(imagemNome);
+  const thumb = getThemeImageThumbUrl(imagemNome, 200);
   const original = getThemeImageUrl(imagemNome);
   const [src, setSrc] = useState<string | null>(thumb);
   const [failed, setFailed] = useState(false);
@@ -628,7 +657,7 @@ function ThemeThumb({
     return (
       <div
         aria-hidden
-        className={`h-14 w-14 flex-shrink-0 rounded-2xl bg-gradient-to-br from-[hsl(220_85%_95%)] to-[hsl(258_70%_93%)] ring-1 ring-white ${
+        className={`${sizeClass} flex-shrink-0 rounded-xl bg-gradient-to-br from-[hsl(220_85%_93%)] to-[hsl(258_70%_90%)] ${
           isLocked ? "opacity-60" : ""
         }`}
       />
@@ -646,7 +675,7 @@ function ThemeThumb({
         if (src !== original && original) setSrc(original);
         else setFailed(true);
       }}
-      className={`h-14 w-14 flex-shrink-0 rounded-2xl object-cover ring-1 ring-white shadow-[0_6px_16px_-8px_hsl(230_60%_40%/0.35)] ${
+      className={`${sizeClass} flex-shrink-0 rounded-xl object-cover shadow-[0_6px_16px_-8px_hsl(230_60%_40%/0.35)] ${
         isLocked ? "opacity-60 grayscale-[35%]" : ""
       }`}
     />
@@ -654,26 +683,36 @@ function ThemeThumb({
 }
 
 function ThemeRow({
-  index,
+  isFirst,
   isLast,
+  label,
+  nextHasLabel,
   seq,
   title,
+  subtitle,
   imagemNome,
   isIntro,
   status,
+  isFocus = false,
+  activities,
   hasVideo,
   hasHipnose,
   onVideo,
   onHypnosis,
   onMural,
 }: {
-  index: number;
+  isFirst: boolean;
   isLast: boolean;
+  label?: string | null;
+  nextHasLabel?: boolean;
   seq: number;
   title: string;
+  subtitle: string | null;
   imagemNome: string | null;
   isIntro: boolean;
   status: DayStatus;
+  isFocus?: boolean;
+  activities?: { done: number; total: number } | null;
   hasVideo: boolean;
   hasHipnose: boolean;
   onVideo: () => void;
@@ -682,26 +721,25 @@ function ThemeRow({
 }) {
   const isLocked = status === "locked";
   const isCompleted = status === "completed";
-  const isCurrent = status === "current";
 
   const accentFrom = isIntro ? "hsl(220, 90%, 55%)" : "hsl(230, 85%, 55%)";
-  const accentTo = isIntro ? "hsl(258, 80%, 60%)" : "hsl(258, 80%, 60%)";
+  const accentTo = "hsl(258, 80%, 60%)";
 
   const numberCircle = (() => {
     if (isCompleted) {
       return (
         <div
-          className="h-9 w-9 rounded-full flex items-center justify-center text-white shadow-md"
+          className="h-7 w-7 rounded-full flex items-center justify-center text-white shadow-md"
           style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
-          <Check className="h-4 w-4" strokeWidth={3} />
+          <Check className="h-3.5 w-3.5" strokeWidth={3} />
         </div>
       );
     }
-    if (isCurrent) {
+    if (isFocus) {
       return (
         <div
-          className="h-9 w-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md ring-4 ring-white"
+          className="h-9 w-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md ring-4 ring-[hsl(258_80%_94%)]"
           style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
           {seq}
@@ -709,81 +747,122 @@ function ThemeRow({
       );
     }
     return (
-      <div className="h-9 w-9 rounded-full flex items-center justify-center text-[hsl(220_20%_55%)] text-sm font-semibold bg-white border border-[hsl(220_30%_88%)] shadow-sm">
+      <div className="h-7 w-7 rounded-full flex items-center justify-center text-[hsl(220_20%_50%)] text-xs font-semibold bg-white border border-[hsl(220_30%_86%)] shadow-sm">
         {seq}
       </div>
     );
   })();
 
+  const lineColor = isCompleted ? accentTo : "hsl(220, 30%, 88%)";
+  const pct =
+    activities && activities.total > 0
+      ? Math.round((activities.done / activities.total) * 100)
+      : 0;
+
+  const cardClass = isFocus
+    ? "bg-gradient-to-br from-[hsl(258_85%_96%)] to-[hsl(228_85%_96%)] ring-1 ring-[hsl(258_70%_88%)] shadow-[0_12px_30px_-18px_hsl(258_70%_45%/0.45)]"
+    : "bg-[hsl(225_60%_97.5%)] ring-1 ring-[hsl(225_40%_92%)]";
+
   return (
-    <div className="relative">
-      {!isLast && (
-        <div
-          aria-hidden
-          className="absolute left-[17px] top-10 bottom-0 w-0.5 rounded-full"
-          style={{
-            background: isCompleted
-              ? `linear-gradient(to bottom, ${accentFrom}, ${accentTo})`
-              : isCurrent
-              ? `linear-gradient(to bottom, ${accentFrom}, hsl(220, 30%, 88%))`
-              : "hsl(220, 30%, 90%)",
-            opacity: isLocked ? 0.6 : 1,
-          }}
-        />
+    <div>
+      {label && (
+        <p className={`px-1 pb-1.5 text-xs font-medium text-muted-foreground ${isFirst ? "" : "pt-3"}`}>
+          {label}
+        </p>
       )}
 
-      <div className={`flex flex-col gap-2 py-3 ${index === 0 ? "pt-3" : ""}`}>
-        <div className="flex items-center gap-3">
-          <div className="flex-shrink-0 z-10">{numberCircle}</div>
-          <ThemeThumb imagemNome={imagemNome} isLocked={isLocked} />
-          <div className="flex-1 min-w-0">
-            <p
-              className={`text-sm leading-tight ${
-                isLocked
-                  ? "text-muted-foreground"
-                  : isCurrent
-                  ? "font-semibold text-foreground"
-                  : "text-foreground"
-              }`}
-            >
-              {title}
-            </p>
-          </div>
-          {isLocked && (
-            <Lock className="h-4 w-4 text-muted-foreground/60" aria-label="Bloqueado" />
-          )}
-        </div>
-
-        <div className="pl-12 flex items-center gap-2">
-          {hasVideo && (
-            <ActionChip
-              icon={<Play className={`h-3.5 w-3.5 ${!isLocked ? "fill-current" : ""}`} />}
-              label="Vídeo"
-              disabled={isLocked}
-              variant="video"
-              onClick={onVideo}
-            />
-          )}
-          {hasHipnose && (
-            <ActionChip
-              icon={<Headphones className="h-3.5 w-3.5" />}
-              label="Hipnose"
-              disabled={isLocked}
-              variant="hipnose"
-              onClick={onHypnosis}
-            />
-          )}
-          <ActionChip
-            icon={<MessageCircleHeart className="h-3.5 w-3.5" />}
-            label="Mural"
-            disabled={isLocked}
-            variant="mural"
-            onClick={onMural}
+      <div className="relative flex items-center gap-2.5 py-1.5">
+        {/* Linha da trilha (metade de cima / metade de baixo) */}
+        {!isFirst && !label && (
+          <div
+            aria-hidden
+            className="absolute left-[17px] top-0 h-1/2 w-0.5 -translate-x-1/2 rounded-full"
+            style={{ background: lineColor }}
           />
+        )}
+        {!isLast && !nextHasLabel && (
+          <div
+            aria-hidden
+            className="absolute left-[17px] top-1/2 bottom-0 w-0.5 -translate-x-1/2 rounded-full"
+            style={{ background: isCompleted ? accentTo : "hsl(220, 30%, 88%)" }}
+          />
+        )}
+
+        <div className="z-10 flex w-9 flex-shrink-0 justify-center">{numberCircle}</div>
+
+        <div className={`min-w-0 flex-1 rounded-2xl p-2.5 ${cardClass}`}>
+          <div className="flex items-center gap-3">
+            <ThemeThumb
+              imagemNome={imagemNome}
+              isLocked={isLocked}
+              sizeClass={isFocus ? "h-[76px] w-[76px]" : "h-14 w-14"}
+            />
+            <div className="min-w-0 flex-1">
+              {isFocus && (
+                <span className="mb-1 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[hsl(258_60%_45%)]">
+                  Seu foco atual
+                </span>
+              )}
+              <p
+                className={`text-balance text-sm font-semibold leading-tight ${
+                  isLocked ? "text-foreground/70" : "text-foreground"
+                }`}
+              >
+                {title}
+              </p>
+              {subtitle && (
+                <p className="mt-0.5 text-balance text-[11px] leading-snug text-muted-foreground">
+                  {subtitle}
+                </p>
+              )}
+            </div>
+            {isLocked && (
+              <Lock className="h-4 w-4 flex-shrink-0 text-muted-foreground/60" aria-label="Bloqueado" />
+            )}
+          </div>
+
+          {isFocus && activities && activities.total > 0 && (
+            <div className="mt-2.5">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/80">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] transition-all"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                {activities.done} de {activities.total} atividades concluídas
+              </p>
+            </div>
+          )}
+
+          {!isLocked && (
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+              {hasVideo && (
+                <ActionChip
+                  icon={<Play className="h-3.5 w-3.5 fill-current" />}
+                  label="Vídeo"
+                  variant="video"
+                  onClick={onVideo}
+                />
+              )}
+              {hasHipnose && (
+                <ActionChip
+                  icon={<Headphones className="h-3.5 w-3.5" />}
+                  label="Hipnose"
+                  variant="hipnose"
+                  onClick={onHypnosis}
+                />
+              )}
+              <ActionChip
+                icon={<MessageCircleHeart className="h-3.5 w-3.5" />}
+                label="Mural"
+                variant="mural"
+                onClick={onMural}
+              />
+            </div>
+          )}
         </div>
       </div>
-
-      {!isLast && <div className="ml-12 border-t border-[hsl(220_30%_94%)]" />}
     </div>
   );
 }
