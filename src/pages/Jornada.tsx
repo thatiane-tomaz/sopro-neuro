@@ -11,6 +11,7 @@ import { useContentAccess } from "@/hooks/useContentAccess";
 import { useContentTracking } from "@/hooks/useContentTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { getSignedMediaUrl } from "@/lib/mediaUrl";
+import { getThemeImageThumbUrl, getThemeImageUrl } from "@/lib/themeImage";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -54,6 +55,7 @@ type JornadaItem = {
   posicao_original: number | null;
   video_nome: string | null;
   hipnose_nome: string | null;
+  imagem_nome: string | null;
   hasVideo: boolean;
   hasHipnose: boolean;
   isIntro: boolean;
@@ -218,6 +220,7 @@ export default function Jornada() {
       posicao_original: h.posicao != null ? Number(h.posicao) : null,
       video_nome: h.video_nome ?? null,
       hipnose_nome: h.hipnose_nome ?? null,
+      imagem_nome: h.imagem_nome ?? null,
       hasVideo: h.video !== false && !!h.video_nome?.trim(),
       hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
       isIntro: fixedIds.has(h.id),
@@ -249,7 +252,7 @@ export default function Jornada() {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("habitos_jornada")
-        .select("id,habito_titulo,video_nome,video,hipnose_nome,hipnose,posicao")
+        .select("id,habito_titulo,video_nome,video,hipnose_nome,hipnose,posicao,imagem_nome")
         .eq("tipo_usuario", "redução");
       if (error) {
         console.error("hipnoses reducao error", error);
@@ -535,6 +538,7 @@ export default function Jornada() {
                 isLast={i === items.length - 1}
                 seq={it.seq}
                 title={it.habito_titulo}
+                imagemNome={it.imagem_nome}
                 isIntro={it.isIntro}
                 status={statusForIndex(i)}
                 hasVideo={it.hasVideo}
@@ -568,6 +572,7 @@ export default function Jornada() {
                   isLast={i === (temasReducao?.length ?? 0) - 1}
                   seq={i + 1}
                   title={h.habito_titulo}
+                  imagemNome={h.imagem_nome ?? null}
                   isIntro={false}
                   status="current"
                   hasVideo={h.video !== false && !!h.video_nome?.trim()}
@@ -607,11 +612,53 @@ export default function Jornada() {
 
 /* ---------- Sub-components ---------- */
 
+function ThemeThumb({
+  imagemNome,
+  isLocked,
+}: {
+  imagemNome: string | null;
+  isLocked: boolean;
+}) {
+  const thumb = getThemeImageThumbUrl(imagemNome);
+  const original = getThemeImageUrl(imagemNome);
+  const [src, setSrc] = useState<string | null>(thumb);
+  const [failed, setFailed] = useState(false);
+
+  if (!thumb || failed) {
+    return (
+      <div
+        aria-hidden
+        className={`h-14 w-14 flex-shrink-0 rounded-2xl bg-gradient-to-br from-[hsl(220_85%_95%)] to-[hsl(258_70%_93%)] ring-1 ring-white ${
+          isLocked ? "opacity-60" : ""
+        }`}
+      />
+    );
+  }
+
+  return (
+    <img
+      src={src ?? thumb}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      draggable={false}
+      onError={() => {
+        if (src !== original && original) setSrc(original);
+        else setFailed(true);
+      }}
+      className={`h-14 w-14 flex-shrink-0 rounded-2xl object-cover ring-1 ring-white shadow-[0_6px_16px_-8px_hsl(230_60%_40%/0.35)] ${
+        isLocked ? "opacity-60 grayscale-[35%]" : ""
+      }`}
+    />
+  );
+}
+
 function ThemeRow({
   index,
   isLast,
   seq,
   title,
+  imagemNome,
   isIntro,
   status,
   hasVideo,
@@ -624,6 +671,7 @@ function ThemeRow({
   isLast: boolean;
   seq: number;
   title: string;
+  imagemNome: string | null;
   isIntro: boolean;
   status: DayStatus;
   hasVideo: boolean;
@@ -687,6 +735,7 @@ function ThemeRow({
       <div className={`flex flex-col gap-2 py-3 ${index === 0 ? "pt-3" : ""}`}>
         <div className="flex items-center gap-3">
           <div className="flex-shrink-0 z-10">{numberCircle}</div>
+          <ThemeThumb imagemNome={imagemNome} isLocked={isLocked} />
           <div className="flex-1 min-w-0">
             <p
               className={`text-sm leading-tight ${
