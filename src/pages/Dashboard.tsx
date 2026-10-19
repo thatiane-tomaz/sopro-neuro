@@ -557,7 +557,7 @@ export default function Dashboard() {
     <div className="relative min-h-screen overflow-x-hidden pb-32">
       <WaveBackground />
 
-      <div className="mx-auto max-w-md animate-page-in px-5 pt-[env(safe-area-inset-top)]">
+      <div className="mx-auto max-w-md animate-page-in px-3 pt-[env(safe-area-inset-top)]">
         {/* Header */}
         <header className="flex items-center justify-between pt-4">
           <img src={soproLogo} alt="Sopro Neuro" className="h-10 w-auto" />
@@ -717,7 +717,7 @@ export default function Dashboard() {
           aria-hidden={abstinenciaBloqueada}
         >
         {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
-        <section className="mt-3 rounded-3xl bg-card/80 px-4 py-4 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+        <section className="mt-3 rounded-3xl bg-card/80 px-3.5 py-4 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
           <div className="flex flex-nowrap items-center gap-1">
             <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--lilac))]">
               <span className="relative flex h-1.5 w-1.5">
@@ -726,7 +726,7 @@ export default function Dashboard() {
               </span>
               Recomendado para hoje
             </span>
-            <span className="ml-auto inline-flex min-w-0 whitespace-nowrap items-center gap-1 rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--electric-blue))]">
+            <span className="ml-auto inline-flex whitespace-nowrap items-center gap-1 rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--electric-blue))]">
               <Sparkles className="h-3 w-3 flex-shrink-0" />
               {isAbstinencia ? "Jornada de Liberdade" : "Jornada de Redução"}
               {totalFocos > 0 && (
