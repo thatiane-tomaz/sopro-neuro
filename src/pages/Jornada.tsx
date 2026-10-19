@@ -729,17 +729,17 @@ function ThemeRow({
     if (isCompleted) {
       return (
         <div
-          className="h-7 w-7 rounded-full flex items-center justify-center text-white shadow-md"
+          className="h-5 w-5 rounded-full flex items-center justify-center text-white shadow-sm"
           style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
-          <Check className="h-3.5 w-3.5" strokeWidth={3} />
+          <Check className="h-3 w-3" strokeWidth={3} />
         </div>
       );
     }
     if (isFocus) {
       return (
         <div
-          className="h-9 w-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md ring-4 ring-[hsl(258_80%_94%)]"
+          className="h-6 w-6 rounded-full flex items-center justify-center text-white text-[11px] font-bold shadow-sm ring-2 ring-[hsl(258_80%_92%)]"
           style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
           {seq}
@@ -747,17 +747,13 @@ function ThemeRow({
       );
     }
     return (
-      <div className="h-7 w-7 rounded-full flex items-center justify-center text-[hsl(220_20%_50%)] text-xs font-semibold bg-white border border-[hsl(220_30%_86%)] shadow-sm">
+      <div className="h-5 w-5 rounded-full flex items-center justify-center text-[hsl(220_20%_55%)] text-[10px] font-semibold bg-white border border-[hsl(220_30%_88%)]">
         {seq}
       </div>
     );
   })();
 
-  const lineColor = isCompleted ? accentTo : "hsl(220, 30%, 88%)";
-  const pct =
-    activities && activities.total > 0
-      ? Math.round((activities.done / activities.total) * 100)
-      : 0;
+  const lineColor = isCompleted ? accentTo : "hsl(220, 30%, 90%)";
 
   const cardClass = isFocus
     ? "bg-gradient-to-br from-[hsl(258_85%_96%)] to-[hsl(228_85%_96%)] ring-1 ring-[hsl(258_70%_88%)] shadow-[0_12px_30px_-18px_hsl(258_70%_45%/0.45)]"
@@ -766,40 +762,40 @@ function ThemeRow({
   return (
     <div>
       {label && (
-        <p className={`px-1 pb-1.5 text-xs font-medium text-muted-foreground ${isFirst ? "" : "pt-3"}`}>
+        <p className={`px-1 pb-1 text-xs font-medium text-muted-foreground ${isFirst ? "" : "pt-2.5"}`}>
           {label}
         </p>
       )}
 
-      <div className="relative flex items-center gap-2.5 py-1.5">
+      <div className="relative flex items-center gap-1.5 py-1">
         {/* Linha da trilha (metade de cima / metade de baixo) */}
         {!isFirst && !label && (
           <div
             aria-hidden
-            className="absolute left-[17px] top-0 h-1/2 w-0.5 -translate-x-1/2 rounded-full"
+            className="absolute left-3 top-0 h-1/2 w-px -translate-x-1/2"
             style={{ background: lineColor }}
           />
         )}
         {!isLast && !nextHasLabel && (
           <div
             aria-hidden
-            className="absolute left-[17px] top-1/2 bottom-0 w-0.5 -translate-x-1/2 rounded-full"
-            style={{ background: isCompleted ? accentTo : "hsl(220, 30%, 88%)" }}
+            className="absolute left-3 top-1/2 bottom-0 w-px -translate-x-1/2"
+            style={{ background: lineColor }}
           />
         )}
 
-        <div className="z-10 flex w-9 flex-shrink-0 justify-center">{numberCircle}</div>
+        <div className="z-10 flex w-6 flex-shrink-0 justify-center">{numberCircle}</div>
 
-        <div className={`min-w-0 flex-1 rounded-2xl p-2.5 ${cardClass}`}>
-          <div className="flex items-center gap-3">
+        <div className={`min-w-0 flex-1 rounded-2xl px-2 py-1.5 ${cardClass}`}>
+          <div className="flex items-center gap-2.5">
             <ThemeThumb
               imagemNome={imagemNome}
               isLocked={isLocked}
-              sizeClass={isFocus ? "h-[76px] w-[76px]" : "h-14 w-14"}
+              sizeClass={isFocus ? "h-12 w-12" : "h-10 w-10"}
             />
             <div className="min-w-0 flex-1">
               {isFocus && (
-                <span className="mb-1 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[hsl(258_60%_45%)]">
+                <span className="mb-0.5 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[hsl(258_60%_45%)]">
                   Seu foco atual
                 </span>
               )}
@@ -820,20 +816,6 @@ function ThemeRow({
               <Lock className="h-4 w-4 flex-shrink-0 text-muted-foreground/60" aria-label="Bloqueado" />
             )}
           </div>
-
-          {isFocus && activities && activities.total > 0 && (
-            <div className="mt-2.5">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/80">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] transition-all"
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                {activities.done} de {activities.total} atividades concluídas
-              </p>
-            </div>
-          )}
 
           {!isLocked && (
             <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
