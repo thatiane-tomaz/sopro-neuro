@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -9,6 +9,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useContentAccess } from "@/hooks/useContentAccess";
 import { useContentTracking } from "@/hooks/useContentTracking";
+import { useScrollLock } from "@/hooks/useScrollLock";
 import { supabase } from "@/integrations/supabase/client";
 import { getSignedMediaUrl } from "@/lib/mediaUrl";
 import { getThemeImageThumbUrl, getThemeImageUrl } from "@/lib/themeImage";
@@ -30,6 +31,9 @@ import {
   MessageCircleHeart,
   Info,
   Sparkles,
+  ChevronRight,
+  ChevronLeft,
+  X,
 } from "lucide-react";
 import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
@@ -37,6 +41,10 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import { getStartHereVideoUrl } from "@/lib/startHereVideo";
 import soproLogo from "@/assets/sopro-logo.webp";
+import stepVideoImg from "@/assets/step-video.png";
+import stepHipnoseImg from "@/assets/step-hipnose.png";
+import stepMissaoImg from "@/assets/step-missao.png";
+import stepMuralImg from "@/assets/step-mural.png";
 import { performLogout } from "@/lib/logout";
 
 const getGreeting = () => {
@@ -874,12 +882,7 @@ function ThemeRow({
   isIntro,
   status,
   isFocus = false,
-  activities,
-  hasVideo,
-  hasHipnose,
-  onVideo,
-  onHypnosis,
-  onMural,
+  onOpen,
 }: {
   isFirst: boolean;
   isLast: boolean;
@@ -892,14 +895,8 @@ function ThemeRow({
   isIntro: boolean;
   status: DayStatus;
   isFocus?: boolean;
-  activities?: { done: number; total: number } | null;
-  hasVideo: boolean;
-  hasHipnose: boolean;
-  onVideo: () => void;
-  onHypnosis: () => void;
-  onMural: () => void;
+  onOpen: () => void;
 }) {
-  const isLocked = status === "locked";
   const isCompleted = status === "completed";
 
   const accentFrom = isIntro ? "hsl(220, 90%, 55%)" : "hsl(230, 85%, 55%)";
@@ -966,107 +963,200 @@ function ThemeRow({
 
         <div className="z-10 flex w-6 flex-shrink-0 justify-center">{numberCircle}</div>
 
-        <div className={`min-w-0 flex-1 rounded-2xl px-2 py-1.5 ${cardClass}`}>
-          <div className="flex items-center gap-2.5">
-            <ThemeThumb
-              imagemNome={imagemNome}
-              isLocked={isLocked}
-              sizeClass={isFocus ? "h-12 w-12" : "h-10 w-10"}
-            />
-            <div className="min-w-0 flex-1">
-              {isFocus && (
-                <span className="mb-0.5 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[hsl(258_60%_45%)]">
-                  Seu foco atual
-                </span>
-              )}
-              <p
-                className={`text-balance text-sm font-semibold leading-tight ${
-                  isLocked ? "text-foreground/70" : "text-foreground"
-                }`}
-              >
-                {title}
+        <button
+          type="button"
+          onClick={onOpen}
+          className={`flex min-w-0 flex-1 items-center gap-2.5 rounded-2xl px-2 py-1.5 text-left transition-transform active:scale-[0.98] ${cardClass}`}
+        >
+          <ThemeThumb
+            imagemNome={imagemNome}
+            isLocked={false}
+            sizeClass={isFocus ? "h-12 w-12" : "h-10 w-10"}
+          />
+          <div className="min-w-0 flex-1">
+            {isFocus && (
+              <span className="mb-0.5 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[hsl(258_60%_45%)]">
+                Seu foco atual
+              </span>
+            )}
+            <p className="text-balance text-sm font-semibold leading-tight text-foreground">
+              {title}
+            </p>
+            {subtitle && (
+              <p className="mt-0.5 text-balance text-[11px] leading-snug text-muted-foreground">
+                {subtitle}
               </p>
-              {subtitle && (
-                <p className="mt-0.5 text-balance text-[11px] leading-snug text-muted-foreground">
-                  {subtitle}
-                </p>
-              )}
-            </div>
-            {isLocked && (
-              <Lock className="h-4 w-4 flex-shrink-0 text-muted-foreground/60" aria-label="Bloqueado" />
             )}
           </div>
-
-          {!isLocked && (
-            <div className={`mt-1.5 flex flex-wrap items-center gap-1.5 ${isFocus ? "pl-[58px]" : "pl-[50px]"}`}>
-              {hasVideo && (
-                <ActionChip
-                  icon={<Play className="h-3.5 w-3.5 fill-current" />}
-                  label="Vídeo"
-                  variant="video"
-                  onClick={onVideo}
-                />
-              )}
-              {hasHipnose && (
-                <ActionChip
-                  icon={<Headphones className="h-3.5 w-3.5" />}
-                  label="Hipnose"
-                  variant="hipnose"
-                  onClick={onHypnosis}
-                />
-              )}
-              <ActionChip
-                icon={<MessageCircleHeart className="h-3.5 w-3.5" />}
-                label="Mural"
-                variant="mural"
-                onClick={onMural}
-              />
-            </div>
-          )}
-        </div>
+          <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground/50" aria-hidden />
+        </button>
       </div>
     </div>
   );
 }
 
-function ActionChip({
-  icon,
-  label,
-  disabled,
-  variant,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  disabled?: boolean;
-  variant: "video" | "hipnose" | "mural";
+type SheetOption = {
+  key: string;
+  image: string;
+  title: string;
+  subtitle: string;
+  done: boolean;
   onClick: () => void;
-}) {
-  const styles = {
-    video: {
-      bg: "bg-gradient-to-br from-[hsl(220_85%_60%)] to-[hsl(230_85%_55%)]",
-      text: "text-white",
-    },
-    hipnose: {
-      bg: "bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_60%)]",
-      text: "text-white",
-    },
-    mural: {
-      bg: "bg-white ring-1 ring-[hsl(258_70%_88%)]",
-      text: "text-[hsl(258_60%_45%)]",
-    },
-  }[variant];
+};
 
+function ThemeSheet({
+  title,
+  subtitle,
+  imagemNome,
+  onClose,
+  onBack,
+  children,
+}: {
+  title: string;
+  subtitle: string | null;
+  imagemNome: string | null;
+  onClose: () => void;
+  onBack?: () => void;
+  children: React.ReactNode;
+}) {
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-sm active:scale-95 transition-transform ${styles.bg} ${styles.text} ${
-        disabled ? "opacity-40 cursor-not-allowed" : ""
-      }`}
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-[hsl(258_40%_10%/0.55)] px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 backdrop-blur-sm sm:items-center"
+      onClick={onClose}
     >
-      {icon}
-      {label}
-    </button>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        onClick={(e) => e.stopPropagation()}
+        className="relative max-h-[88dvh] w-full max-w-md overflow-y-auto overscroll-contain rounded-3xl bg-white shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 slide-in-from-bottom-6 duration-200"
+      >
+        <div className="flex items-center gap-3 bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-4 pb-4 pt-4">
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              aria-label="Voltar"
+              className="-ml-1 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] active:scale-95"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+          )}
+          <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="h-14 w-14" />
+          <div className="min-w-0 flex-1 pr-9">
+            <h2 className="text-balance text-base font-bold leading-tight text-[hsl(var(--electric-blue))]">
+              {title}
+            </h2>
+            {subtitle && (
+              <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
+                {subtitle}
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar"
+            className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] active:scale-95"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function SheetOptions({ options }: { options: SheetOption[] }) {
+  return (
+    <div className="space-y-2 px-4 pb-5 pt-4">
+      {options.map((o) => (
+        <button
+          key={o.key}
+          type="button"
+          onClick={o.onClick}
+          className="flex w-full items-center gap-3 rounded-2xl bg-[hsl(225_60%_97.5%)] px-3 py-2 text-left ring-1 ring-[hsl(225_40%_92%)] transition-transform active:scale-[0.98]"
+        >
+          <div className="relative h-14 w-14 flex-shrink-0">
+            <img src={o.image} alt="" className="h-14 w-14 object-contain" draggable={false} />
+            {o.done && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-white shadow-sm ring-2 ring-white">
+                <Check className="h-3 w-3" strokeWidth={3} />
+              </span>
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold leading-tight text-foreground">{o.title}</p>
+            <p className="mt-0.5 text-balance text-xs leading-snug text-muted-foreground">{o.subtitle}</p>
+          </div>
+          <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground/50" aria-hidden />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function MissionView({
+  text,
+  done,
+  locked,
+  countdown,
+  onLater,
+  onChat,
+}: {
+  text: string;
+  done: boolean;
+  locked: boolean;
+  countdown: string | null;
+  onLater: () => void;
+  onChat: () => void;
+}) {
+  return (
+    <div className="px-4 pb-5 pt-4">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[hsl(258_50%_55%)]">
+        Sua missão
+      </p>
+      <div className="mt-2 rounded-2xl bg-[hsl(258_80%_97%)] px-4 py-4 ring-1 ring-[hsl(258_70%_92%)]">
+        <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/85">{text}</p>
+      </div>
+      <div className="mt-4 space-y-2">
+        <button
+          type="button"
+          onClick={onLater}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-[hsl(258_60%_42%)] shadow-sm ring-1 ring-[hsl(258_70%_88%)] transition-transform active:scale-[0.98]"
+        >
+          Ainda vou viver essa missão
+        </button>
+        <button
+          type="button"
+          onClick={onChat}
+          disabled={locked || done}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_28px_-12px_hsl(258_70%_40%/0.7)] transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
+        >
+          {done ? (
+            <>
+              <Check className="h-4 w-4" strokeWidth={3} />
+              Missão concluída
+            </>
+          ) : locked ? (
+            <>
+              <Lock className="h-4 w-4" />
+              Disponível em {countdown}
+            </>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4" />
+              Concluir a missão
+            </>
+          )}
+        </button>
+      </div>
+      {locked && !done && (
+        <p className="mt-3 text-balance text-center text-[11px] leading-relaxed text-muted-foreground">
+          Viva sua missão por 24 horas. Depois desse período, você poderá conversar com o chat sobre a experiência.
+        </p>
+      )}
+    </div>
   );
 }
