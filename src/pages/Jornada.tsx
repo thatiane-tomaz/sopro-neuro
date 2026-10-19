@@ -720,7 +720,7 @@ export default function Jornada() {
                 key: "mural",
                 image: stepMuralImg,
                 title: "Compartilhe",
-                subtitle: "sua experiência e inspire outras pessoas",
+                subtitle: "sua jornada com outras pessoas",
                 done: false,
                 onClick: () => {
                   closeSheet();
@@ -783,7 +783,7 @@ export default function Jornada() {
               key: "mural",
               image: stepMuralImg,
               title: "Compartilhe",
-              subtitle: "sua experiência e inspire outras pessoas",
+              subtitle: "sua jornada com outras pessoas",
               done: false,
               onClick: () => {
                 closeSheet();
@@ -867,7 +867,7 @@ function ThemeThumb({
   );
 }
 
-export function ThemeRow({
+function ThemeRow({
   isFirst,
   isLast,
   label,
@@ -1001,7 +1001,7 @@ type SheetOption = {
   onClick: () => void;
 };
 
-export function ThemeSheet({
+function ThemeSheet({
   title,
   subtitle,
   imagemNome,
@@ -1065,7 +1065,7 @@ export function ThemeSheet({
   );
 }
 
-export function SheetOptions({ options }: { options: SheetOption[] }) {
+function SheetOptions({ options }: { options: SheetOption[] }) {
   return (
     <div className="space-y-2 px-4 pb-5 pt-4">
       {options.map((o) => (
@@ -1094,7 +1094,7 @@ export function SheetOptions({ options }: { options: SheetOption[] }) {
   );
 }
 
-export function MissionView({
+function MissionView({
   text,
   done,
   locked,
