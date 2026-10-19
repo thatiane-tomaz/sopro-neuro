@@ -11,19 +11,19 @@ const MOODS = [
     emoji: "😌",
     label: "Estou bem",
     seed: "Hoje estou bem com a minha vontade de fumar. Me ajuda a entender o que na minha rotina está me fazendo bem, para eu continuar assim?",
-    cls: "bg-[hsl(150_60%_95%)] ring-[hsl(150_45%_85%)] text-[hsl(150_35%_25%)]",
+    cls: "bg-[hsl(230_85%_96%)] ring-[hsl(230_80%_88%)] text-[hsl(230_55%_38%)]",
   },
   {
     emoji: "😐",
     label: "Senti vontade",
     seed: "Hoje senti vontade de fumar. Me ajuda a entender o que está acontecendo e o que posso fazer para melhorar?",
-    cls: "bg-[hsl(42_95%_94%)] ring-[hsl(42_80%_82%)] text-[hsl(32_50%_28%)]",
+    cls: "bg-[hsl(var(--lilac-soft))] ring-[hsl(var(--lilac-light))] text-[hsl(258_45%_38%)]",
   },
   {
     emoji: "😣",
     label: "Está difícil",
     seed: "Hoje está difícil, a vontade de fumar está forte. Me ajuda a entender o que está acontecendo e o que posso fazer agora para melhorar?",
-    cls: "bg-[hsl(0_85%_96%)] ring-[hsl(0_70%_88%)] text-[hsl(0_45%_35%)]",
+    cls: "bg-[hsl(285_70%_95%)] ring-[hsl(285_60%_87%)] text-[hsl(285_40%_36%)]",
   },
 ];
 
