@@ -2,10 +2,28 @@ import { useState } from "react";
 import { Send, MessageCircle } from "lucide-react";
 import ProgressBrain from "@/components/home/ProgressBrain";
 
+// Cada opção abre o chat já com uma mensagem que direciona o Neo:
+// "bem" → reforçar e entender o que está ajudando na rotina;
+// "vontade"/"difícil" → entender o que está acontecendo e o que fazer para melhorar.
 const MOODS = [
-  { emoji: "😌", label: "Estou bem", seed: "Estou bem hoje.", cls: "bg-[hsl(150_60%_95%)] ring-[hsl(150_45%_85%)] text-[hsl(150_35%_25%)]" },
-  { emoji: "😐", label: "Senti vontade", seed: "Senti vontade de fumar hoje.", cls: "bg-[hsl(42_95%_94%)] ring-[hsl(42_80%_82%)] text-[hsl(32_50%_28%)]" },
-  { emoji: "😣", label: "Está difícil", seed: "Hoje está difícil.", cls: "bg-[hsl(0_85%_96%)] ring-[hsl(0_70%_88%)] text-[hsl(0_45%_35%)]" },
+  {
+    emoji: "😌",
+    label: "Estou bem",
+    seed: "Hoje estou bem com a minha vontade de fumar. Me ajuda a entender o que na minha rotina está me fazendo bem, para eu continuar assim?",
+    cls: "bg-[hsl(150_60%_95%)] ring-[hsl(150_45%_85%)] text-[hsl(150_35%_25%)]",
+  },
+  {
+    emoji: "😐",
+    label: "Senti vontade",
+    seed: "Hoje senti vontade de fumar. Me ajuda a entender o que está acontecendo e o que posso fazer para melhorar?",
+    cls: "bg-[hsl(42_95%_94%)] ring-[hsl(42_80%_82%)] text-[hsl(32_50%_28%)]",
+  },
+  {
+    emoji: "😣",
+    label: "Está difícil",
+    seed: "Hoje está difícil, a vontade de fumar está forte. Me ajuda a entender o que está acontecendo e o que posso fazer agora para melhorar?",
+    cls: "bg-[hsl(0_85%_96%)] ring-[hsl(0_70%_88%)] text-[hsl(0_45%_35%)]",
+  },
 ];
 
 interface Props {
@@ -47,28 +65,40 @@ export default function NeoBlock({
       ) : (
         <>
           {/* Cabeçalho: título/descrição à esquerda · Neo à direita */}
-          <div className="relative flex items-center gap-1 pl-2">
-            <div className="min-w-0 flex-1 pt-2">
-              <h2 className="text-balance text-lg font-bold leading-tight text-[hsl(258_45%_22%)]">
+          <div className="relative flex items-center gap-0 pl-2">
+            <div className="relative z-10 min-w-0 flex-1 pt-2">
+              <h2 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
                 Converse com o Neo
               </h2>
-              <p className="mt-1 text-balance text-[12px] leading-snug text-muted-foreground">
+              <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
                 Seu assistente para entender seus gatilhos, tirar dúvidas e encontrar novas formas de lidar com o cigarro.
               </p>
             </div>
-            <div className="-mr-2 flex-shrink-0">
-              <ProgressBrain
-                compact
-                locked={locked}
-                onClick={() => onOpenChat()}
-                ariaLabel="Conversar com Neo"
-              />
+            <div className="relative -mr-3 w-[136px] flex-shrink-0">
+              {/* Nuvem lilás de fundo */}
+              <div aria-hidden className="pointer-events-none absolute -right-6 -bottom-2 h-24 w-44 rounded-full bg-[hsl(258_80%_82%/0.6)] blur-xl" />
+              <div aria-hidden className="pointer-events-none absolute -right-2 bottom-8 h-16 w-24 rounded-full bg-[hsl(258_85%_90%/0.8)] blur-md" />
+              {/* Balãozinho */}
+              <div aria-hidden className="absolute -left-4 top-0 z-10 flex h-7 w-11 items-center justify-center gap-1 rounded-full bg-[hsl(258_80%_94%)] shadow-[0_6px_14px_-8px_hsl(258_70%_45%/0.5)] ring-1 ring-white">
+                <span className="h-1.5 w-1.5 rounded-full bg-[hsl(258_70%_60%)]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[hsl(258_70%_60%)]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[hsl(258_70%_60%)]" />
+                <span className="absolute -bottom-1 right-2 h-2.5 w-2.5 rotate-45 rounded-[2px] bg-[hsl(258_80%_94%)]" />
+              </div>
+              <div className="relative -scale-x-100 -ml-2 mt-3">
+                <ProgressBrain
+                  compact
+                  locked={locked}
+                  onClick={() => onOpenChat()}
+                  ariaLabel="Conversar com Neo"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="relative -mt-2 rounded-3xl bg-white/80 px-3 pb-3 pt-3.5 ring-1 ring-white shadow-[0_10px_30px_-20px_hsl(258_70%_45%/0.35)]">
-            <p className="text-sm font-bold text-[hsl(258_45%_22%)]">
-              Como você está se sentindo hoje?
+          <div className="relative -mt-3 rounded-3xl bg-white/85 px-3 pb-3 pt-3.5 ring-1 ring-white shadow-[0_10px_30px_-20px_hsl(258_70%_45%/0.35)]">
+            <p className="text-sm font-semibold text-foreground">
+              Como está sua vontade de fumar hoje?
             </p>
             <div className="mt-2.5 grid grid-cols-3 gap-2">
               {MOODS.map((m) => (
@@ -84,6 +114,22 @@ export default function NeoBlock({
               ))}
             </div>
 
+            {sugestoes.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {sugestoes.slice(0, 2).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => (needsReview ? onOpenReview() : onOpenChat(p))}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-left text-[11px] font-medium leading-snug text-[hsl(258_45%_32%)] ring-1 ring-[hsl(258_60%_90%)] active:scale-[0.97] transition-transform"
+                  >
+                    <MessageCircle className="h-3.5 w-3.5 flex-shrink-0 text-[hsl(258_70%_55%)]" />
+                    {p}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -92,7 +138,7 @@ export default function NeoBlock({
                 setDraft("");
                 onOpenChat(text);
               }}
-              className="mt-3 flex items-center gap-2"
+              className="mt-2.5 flex items-center gap-2"
             >
               <input
                 value={draft}
@@ -110,22 +156,6 @@ export default function NeoBlock({
                 <Send className="h-5 w-5" />
               </button>
             </form>
-
-            {sugestoes.length > 0 && (
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {sugestoes.slice(0, 2).map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => (needsReview ? onOpenReview() : onOpenChat(p))}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-left text-[11px] font-medium leading-snug text-[hsl(258_45%_32%)] ring-1 ring-[hsl(258_60%_90%)] active:scale-[0.97] transition-transform"
-                  >
-                    <MessageCircle className="h-3.5 w-3.5 flex-shrink-0 text-[hsl(258_70%_55%)]" />
-                    {p}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         </>
       )}
