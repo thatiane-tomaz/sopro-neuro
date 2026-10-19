@@ -71,7 +71,7 @@ export default function NeoBlock({
                 Converse com o Neo
               </h2>
               <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
-                Seu assistente para entender seus gatilhos, tirar dúvidas e encontrar novas formas de lidar com o cigarro.
+                Ele te ajuda a entender o vício e encontrar novas formas de viver.
               </p>
             </div>
             <div className="relative -mr-3 w-[136px] flex-shrink-0">
