@@ -599,37 +599,23 @@ export default function Jornada() {
                 if (focusIndex !== -1 && i === focusIndex + 1) return "Próximos temas da sua jornada";
                 return null;
               };
-              return items.map((it, i) => {
-                const isFocus = i === focusIndex;
-                const pos = it.posicao_original ?? it.seq;
-                const acts = [
-                  it.hasVideo ? isFinished(interactionKey(it, "video")) : null,
-                  it.hasHipnose ? isFinished(interactionKey(it, "hypnosis")) : null,
-                  it.hasMissao ? isFinished(`${journeyKey}missao_semana_${pos}`) : null,
-                ].filter((v) => v !== null) as boolean[];
-                return (
-                  <ThemeRow
-                    key={it.id}
-                    isFirst={i === 0}
-                    isLast={i === items.length - 1}
-                    label={labelFor(i)}
-                    nextHasLabel={!!labelFor(i + 1)}
-                    seq={it.seq}
-                    title={it.habito_titulo}
-                    subtitle={it.subtitulo_habito}
-                    imagemNome={it.imagem_nome}
-                    isIntro={it.isIntro}
-                    status={statusForIndex(i)}
-                    isFocus={isFocus}
-                    activities={isFocus ? { done: acts.filter(Boolean).length, total: acts.length } : null}
-                    hasVideo={it.hasVideo}
-                    hasHipnose={it.hasHipnose}
-                    onVideo={() => openMedia(i, "video")}
-                    onHypnosis={() => openMedia(i, "hypnosis")}
-                    onMural={() => openMural(i)}
-                  />
-                );
-              });
+              return items.map((it, i) => (
+                <ThemeRow
+                  key={it.id}
+                  isFirst={i === 0}
+                  isLast={i === items.length - 1}
+                  label={labelFor(i)}
+                  nextHasLabel={!!labelFor(i + 1)}
+                  seq={it.seq}
+                  title={it.habito_titulo}
+                  subtitle={it.subtitulo_habito}
+                  imagemNome={it.imagem_nome}
+                  isIntro={it.isIntro}
+                  status={statusForIndex(i)}
+                  isFocus={i === focusIndex}
+                  onOpen={() => openSheet({ kind: "journey", idx: i })}
+                />
+              ));
             })()
           )}
         </section>
@@ -658,14 +644,12 @@ export default function Jornada() {
                   subtitle={h.subtitulo_habito ?? null}
                   imagemNome={h.imagem_nome ?? null}
                   isIntro={false}
-                  status="current"
-                  hasVideo={h.video !== false && !!h.video_nome?.trim()}
-                  hasHipnose={h.hipnose !== false && !!h.hipnose_nome?.trim()}
-                  onVideo={() => openMediaReducao(h, "video")}
-                  onHypnosis={() => openMediaReducao(h, "hypnosis")}
-                  onMural={() =>
-                    navigate(`/mural?tema=${encodeURIComponent(h.habito_titulo)}`)
+                  status={
+                    isFinished(`video_apoio_${h.id}`) || isFinished(`hipnose_apoio_${h.id}`)
+                      ? "completed"
+                      : "current"
                   }
+                  onOpen={() => openSheet({ kind: "extra", h })}
                 />
               ))}
             </div>
@@ -674,6 +658,145 @@ export default function Jornada() {
       </div>
 
       <BottomNav />
+
+      {sheet &&
+        (() => {
+          if (sheet.kind === "journey") {
+            const idx = sheet.idx;
+            const it = items[idx];
+            if (!it) return null;
+            const mKeys = missaoKeys(it);
+            const missaoDone = isFinished(mKeys.done);
+            const startTrack = trackingData?.find((t) => t.interaction_type === mKeys.start);
+            const unlockAt = startTrack
+              ? new Date(startTrack.started_at).getTime() + MISSAO_LOCK_MS
+              : null;
+            void tick;
+            const msLeft = unlockAt ? unlockAt - Date.now() : 0;
+            const missaoLocked = !isAdmin && !!unlockAt && msLeft > 0;
+            const countdown = missaoLocked
+              ? `${String(Math.floor(msLeft / 3_600_000)).padStart(2, "0")}h ${String(
+                  Math.floor((msLeft % 3_600_000) / 60_000),
+                ).padStart(2, "0")}m ${String(Math.floor((msLeft % 60_000) / 1000)).padStart(2, "0")}s`
+              : null;
+
+            const options: SheetOption[] = [
+              it.hasVideo && {
+                key: "video",
+                image: stepVideoImg,
+                title: "Entenda",
+                subtitle: "o que acontece no seu cérebro",
+                done: isFinished(interactionKey(it, "video")),
+                onClick: () => {
+                  closeSheet();
+                  openMedia(idx, "video");
+                },
+              },
+              it.hasHipnose && {
+                key: "hipnose",
+                image: stepHipnoseImg,
+                title: "Transforme",
+                subtitle: "seus hábitos com Hipnose",
+                done: isFinished(interactionKey(it, "hypnosis")),
+                onClick: () => {
+                  closeSheet();
+                  openMedia(idx, "hypnosis");
+                },
+              },
+              it.hasMissao && {
+                key: "missao",
+                image: stepMissaoImg,
+                title: "Experimente",
+                subtitle: "uma nova vida mais leve",
+                done: missaoDone,
+                onClick: () => openMission(it),
+              },
+              {
+                key: "mural",
+                image: stepMuralImg,
+                title: "Compartilhe",
+                subtitle: "sua experiência e inspire outras pessoas",
+                done: false,
+                onClick: () => {
+                  closeSheet();
+                  openMural(idx);
+                },
+              },
+            ].filter(Boolean) as SheetOption[];
+
+            return (
+              <ThemeSheet
+                title={it.habito_titulo}
+                subtitle={it.subtitulo_habito}
+                imagemNome={it.imagem_nome}
+                onClose={closeSheet}
+                onBack={sheetView === "mission" ? () => setSheetView("options") : undefined}
+              >
+                {sheetView === "mission" ? (
+                  <MissionView
+                    text={it.explicacao_missao || DEFAULT_MISSAO_TEXT}
+                    done={missaoDone}
+                    locked={missaoLocked}
+                    countdown={countdown}
+                    onLater={closeSheet}
+                    onChat={() => openMissionChat(it)}
+                  />
+                ) : (
+                  <SheetOptions options={options} />
+                )}
+              </ThemeSheet>
+            );
+          }
+
+          const h = sheet.h;
+          const hasV = h.video !== false && !!h.video_nome?.trim();
+          const hasH = h.hipnose !== false && !!h.hipnose_nome?.trim();
+          const options: SheetOption[] = [
+            hasV && {
+              key: "video",
+              image: stepVideoImg,
+              title: "Entenda",
+              subtitle: "o que acontece no seu cérebro",
+              done: isFinished(`video_apoio_${h.id}`),
+              onClick: () => {
+                closeSheet();
+                openMediaReducao(h, "video");
+              },
+            },
+            hasH && {
+              key: "hipnose",
+              image: stepHipnoseImg,
+              title: "Transforme",
+              subtitle: "seus hábitos com Hipnose",
+              done: isFinished(`hipnose_apoio_${h.id}`),
+              onClick: () => {
+                closeSheet();
+                openMediaReducao(h, "hypnosis");
+              },
+            },
+            {
+              key: "mural",
+              image: stepMuralImg,
+              title: "Compartilhe",
+              subtitle: "sua experiência e inspire outras pessoas",
+              done: false,
+              onClick: () => {
+                closeSheet();
+                navigate(`/mural?tema=${encodeURIComponent(h.habito_titulo)}`);
+              },
+            },
+          ].filter(Boolean) as SheetOption[];
+          return (
+            <ThemeSheet
+              title={h.habito_titulo}
+              subtitle={h.subtitulo_habito ?? null}
+              imagemNome={h.imagem_nome ?? null}
+              onClose={closeSheet}
+            >
+              <SheetOptions options={options} />
+            </ThemeSheet>
+          );
+        })()}
 
       {selectedMedia && (
         <MediaPlayer
