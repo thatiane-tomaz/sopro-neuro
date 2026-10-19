@@ -58,11 +58,21 @@ type JornadaItem = {
   video_nome: string | null;
   hipnose_nome: string | null;
   imagem_nome: string | null;
+  explicacao_missao: string | null;
+  objetivo_chat_missao: string | null;
   hasVideo: boolean;
   hasHipnose: boolean;
   isIntro: boolean;
   isSelected: boolean;
 };
+
+type SheetTarget =
+  | { kind: "journey"; idx: number }
+  | { kind: "extra"; h: any };
+
+const MISSAO_LOCK_MS = 24 * 60 * 60 * 1000;
+const DEFAULT_MISSAO_TEXT =
+  "Observe esse hábito nos próximos dias: em quais momentos ele aparece, o que você sente antes e o que muda depois. Anote mentalmente os padrões para conversarmos sobre sua experiência.";
 
 const JORNADA_MAP: Record<string, string> = {
   abstinencia: "abstinência",
