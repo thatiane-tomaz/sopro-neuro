@@ -743,7 +743,8 @@ export default function Dashboard() {
             const steps = [
               hasVideo && {
                 key: "video",
-                title: "Vídeo",
+                title: "Entenda",
+                subtitle: "o que acontece no seu cérebro",
                 icon: Play,
                 done: weeklyVideoDone,
                 onClick: () => openMedia("video"),
@@ -751,7 +752,8 @@ export default function Dashboard() {
               },
               hasHipnose && {
                 key: "hipnose",
-                title: "Hipnose",
+                title: "Transforme",
+                subtitle: "seus hábitos com Hipnose",
                 icon: Headphones,
                 done: weeklyHipnoseDone,
                 onClick: () => openMedia("hypnosis"),
@@ -759,7 +761,8 @@ export default function Dashboard() {
               },
               hasMissao && {
                 key: "missao",
-                title: "Missão",
+                title: "Experimente",
+                subtitle: "uma nova vida mais leve",
                 icon: Sparkles,
                 done: weeklyMissaoDone,
                 onClick: openMissionDialog,
@@ -768,6 +771,7 @@ export default function Dashboard() {
             ].filter(Boolean) as Array<{
               key: string;
               title: string;
+              subtitle: string;
               icon: typeof Play;
               done: boolean;
               onClick: () => void;
@@ -802,6 +806,9 @@ export default function Dashboard() {
                           </div>
                           <span className={`text-sm font-semibold ${isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
                             {step.title}
+                          </span>
+                          <span className="-mt-1.5 max-w-[7.5rem] text-balance text-[11px] leading-tight text-muted-foreground">
+                            {step.subtitle}
                           </span>
                         </div>
                         {index < steps.length - 1 && (
