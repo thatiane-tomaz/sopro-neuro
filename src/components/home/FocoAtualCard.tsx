@@ -115,13 +115,10 @@ export default function FocoAtualCard({
                 className="flex min-w-0 flex-1 flex-col items-center rounded-2xl text-center transition-transform active:scale-95"
               >
                 <span
-                  className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${
-                    isCurrent
-                      ? "bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-primary-foreground"
-                      : "bg-[hsl(var(--lilac-soft))] text-[hsl(var(--lilac))]"
+                  className={`whitespace-nowrap text-xs font-bold ${
+                    isCurrent ? "text-[hsl(var(--electric-blue))]" : "text-[hsl(var(--lilac))]"
                   }`}
                 >
-                  {step.done && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
                   Passo {index + 1}: {step.label}
                 </span>
                 <div className="relative mt-1.5 flex h-[72px] w-[72px] items-center justify-center">
@@ -132,6 +129,11 @@ export default function FocoAtualCard({
                     className={`h-[104px] w-[104px] max-w-none object-contain ${step.done && !isCurrent ? "opacity-70" : ""}`}
                     draggable={false}
                   />
+                  {step.done && (
+                    <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--lilac))] text-primary-foreground ring-2 ring-card">
+                      <Check className="h-3 w-3" strokeWidth={3} />
+                    </span>
+                  )}
                 </div>
                 <span className="mt-1 max-w-[7.5rem] text-balance text-xs font-medium leading-tight text-muted-foreground">
                   <span className="font-semibold text-foreground">{step.verb}</span> {step.rest}
