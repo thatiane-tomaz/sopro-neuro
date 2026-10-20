@@ -77,7 +77,7 @@ export default function NeoBlock({
           />
 
           {/* Cabeçalho: título/descrição à esquerda · Neo à direita */}
-          <div className="relative flex items-center pl-2">
+          <div className="relative flex items-start pl-2">
             <div className="relative z-10 min-w-0 flex-1 pr-1">
               <h2 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
                 Converse com o Neo
