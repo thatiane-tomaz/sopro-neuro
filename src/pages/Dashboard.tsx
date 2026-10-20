@@ -750,6 +750,8 @@ export default function Dashboard() {
           imagemGatilho={getThemeImageThumbUrl((gatilho as any)?.imagem_nome, 128)}
           focoAtualNumero={focoAtualNumero}
           totalFocos={totalFocos}
+          focosConcluidos={focosConcluidos}
+          onOpenJornada={() => navigate("/jornada")}
           steps={([
             hasHipnose && {
               key: "hipnose",

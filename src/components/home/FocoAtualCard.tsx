@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Check, CheckCircle2, ChevronRight, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, ChevronRight, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export interface FocoStep {
@@ -23,6 +23,8 @@ interface Props {
   imagemGatilho: string | null;
   focoAtualNumero: number;
   totalFocos: number;
+  focosConcluidos: number;
+  onOpenJornada: () => void;
   steps: FocoStep[];
 }
 
@@ -36,6 +38,8 @@ export default function FocoAtualCard({
   imagemGatilho,
   focoAtualNumero,
   totalFocos,
+  focosConcluidos,
+  onOpenJornada,
   steps,
 }: Props) {
   const [imgFailed, setImgFailed] = useState(false);
@@ -44,45 +48,58 @@ export default function FocoAtualCard({
 
   return (
     <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-      <div className="flex flex-nowrap items-center gap-1">
-        <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--lilac))]">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--lilac)/0.6)]" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--lilac))]" />
-          </span>
-          Recomendado para hoje
-        </span>
-        <span className="ml-auto inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--electric-blue))]">
-          <Sparkles className="h-3 w-3 flex-shrink-0" />
-          <span>Jornada Personalizada</span>
-          {totalFocos > 0 && <span className="font-medium opacity-70">· {focoAtualNumero}/{totalFocos}</span>}
-        </span>
-      </div>
-
-      <h1 className="mt-3 text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+      <h1 className="whitespace-nowrap text-[17px] font-bold leading-tight tracking-tight text-[hsl(var(--electric-blue))]">
         Método Sopro para Enfraquecer o Vício
       </h1>
 
-      {/* Gatilho atual: o que muda a cada etapa da jornada */}
-      <div className="mt-3 flex items-center gap-3 rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] p-2.5 ring-1 ring-[hsl(var(--lilac)/0.15)]">
-        {imagemGatilho && !imgFailed && (
-          <img
-            src={imagemGatilho}
-            alt=""
-            onError={() => setImgFailed(true)}
-            className="h-12 w-12 flex-shrink-0 rounded-xl object-cover"
-            draggable={false}
-          />
-        )}
-        <div className="min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--lilac))]">
-            Gatilho atual
-          </p>
-          <p className="text-balance text-sm font-bold leading-snug text-foreground">{tituloGatilho}</p>
-          {subtituloGatilho && (
-            <p className="mt-0.5 text-balance text-xs leading-snug text-muted-foreground">{subtituloGatilho}</p>
+      {/* Gatilho atual + entrada para a jornada completa */}
+      <div className="mt-3 overflow-hidden rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] ring-1 ring-[hsl(var(--lilac)/0.15)]">
+        <div className="flex items-center gap-3 p-2.5">
+          {imagemGatilho && !imgFailed && (
+            <img
+              src={imagemGatilho}
+              alt=""
+              onError={() => setImgFailed(true)}
+              className="h-12 w-12 flex-shrink-0 rounded-xl object-cover"
+              draggable={false}
+            />
           )}
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--lilac))]">
+              {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
+            </p>
+            <p className="text-balance text-sm font-bold leading-snug text-foreground">{tituloGatilho}</p>
+            {subtituloGatilho && (
+              <p className="mt-0.5 text-balance text-xs leading-snug text-muted-foreground">{subtituloGatilho}</p>
+            )}
+          </div>
         </div>
+        {totalFocos > 0 && (
+          <button
+            type="button"
+            onClick={onOpenJornada}
+            className="flex w-full items-center gap-3 border-t border-[hsl(var(--lilac)/0.15)] px-2.5 py-2 text-left transition-colors active:bg-[hsl(var(--lilac)/0.1)]"
+          >
+            <div className="flex flex-1 gap-1" aria-hidden>
+              {Array.from({ length: totalFocos }).map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1.5 flex-1 rounded-full ${
+                    i === focoAtualNumero - 1
+                      ? "bg-[hsl(var(--electric-blue))]"
+                      : i < focosConcluidos
+                        ? "bg-[hsl(var(--lilac))]"
+                        : "bg-[hsl(var(--lilac)/0.2)]"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="inline-flex flex-shrink-0 items-center text-xs font-semibold text-[hsl(var(--electric-blue))]">
+              Ver sua jornada
+              <ChevronRight className="h-4 w-4" />
+            </span>
+          </button>
+        )}
       </div>
 
       {/* Passos do método */}
