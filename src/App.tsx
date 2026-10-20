@@ -15,7 +15,6 @@ import Dashboard from "./pages/Dashboard";
 // Rotas secundárias carregadas sob demanda (code splitting)
 const Jornada = lazy(() => import("./pages/Jornada"));
 const Chat = lazy(() => import("./pages/Chat"));
-const Controle = lazy(() => import("./pages/Controle"));
 const Progresso = lazy(() => import("./pages/Progresso"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Paywall = lazy(() => import("./pages/Paywall"));
@@ -69,7 +68,6 @@ const App = () => (
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/jornada" element={<Jornada />} />
                 <Route path="/chat" element={<Chat />} />
-                <Route path="/controle" element={<Controle />} />
                 <Route path="/progresso" element={<Progresso />} />
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/paywall" element={<Paywall />} />
