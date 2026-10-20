@@ -10,6 +10,7 @@ import {
   LogOut,
   Pencil,
   Plus,
+  Sparkles,
   TrendingDown,
   User,
 } from "lucide-react";
