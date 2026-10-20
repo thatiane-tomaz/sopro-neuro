@@ -95,7 +95,6 @@ export default function Controle() {
     fileUrl: string,
     interactionType: string,
   ) => {
-    if (!ensureAccess()) return;
     setSelectedMedia({
       title,
       fileUrl,
