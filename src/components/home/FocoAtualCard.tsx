@@ -140,7 +140,7 @@ export default function FocoAtualCard({
           className="mt-4 h-12 w-full rounded-full bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-sm font-bold text-primary-foreground shadow-wellness"
         >
           <nextStep.icon className="mr-2 h-5 w-5" />
-          <span className="text-balance">{nextStep.actionLabel}</span>
+          <span className="text-balance">Fazer passo {steps.indexOf(nextStep) + 1}: {nextStep.label}</span>
           <ChevronRight className="ml-1 h-5 w-5" />
         </Button>
       ) : (
