@@ -729,11 +729,13 @@ export default function Dashboard() {
               <Sparkles className="h-3 w-3" />
               Entenda para se libertar
             </span>
-            <p className="mt-0.5 text-sm font-bold leading-tight text-[hsl(var(--electric-blue))]">
-              Por que o cigarro te deixa mais ansioso?
-            </p>
+            <div className="mt-0.5 flex items-start gap-1">
+              <p className="min-w-0 flex-1 text-sm font-bold leading-tight text-[hsl(var(--electric-blue))]">
+                Por que o cigarro te deixa mais ansioso?
+              </p>
+              <ChevronRight className="-mt-0.5 h-5 w-5 flex-shrink-0 text-[hsl(var(--lilac))]" />
+            </div>
           </div>
-          <ChevronRight className="h-5 w-5 flex-shrink-0 text-[hsl(var(--lilac))]" />
         </button>
 
         {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
