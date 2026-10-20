@@ -79,7 +79,7 @@ Atenciosamente.`;
         icon={<CreditCard className="h-5 w-5" />}
         title="Importante sobre sua assinatura"
       >
-        <div className="space-y-2 text-sm text-muted-foreground">
+        <div className="space-y-2 text-sm font-medium text-muted-foreground">
           <p>
             A exclusão da conta <strong className="text-foreground">não cancela automaticamente</strong> sua assinatura e pagamentos recorrentes.
             Para evitar cobranças futuras, cancele sua assinatura antes de excluir a conta.
@@ -105,7 +105,7 @@ Atenciosamente.`;
 
       {/* O que será excluído */}
       <AccountCard icon={<Trash2 className="h-5 w-5" />} title="O que será excluído" tone="danger">
-        <ul className="space-y-2 text-sm text-muted-foreground">
+        <ul className="space-y-2 text-sm font-medium text-muted-foreground">
           {[
             "Sua conta de usuário",
             "Dados de perfil (nome, email)",
@@ -138,7 +138,7 @@ Atenciosamente.`;
         ) : (
           <div className="mt-4 space-y-3">
             <h3 className="text-sm font-bold text-foreground">Como solicitar</h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm font-medium text-muted-foreground">
               Para solicitar a exclusão da sua conta, envie um email para nossa equipe de suporte.
               Processaremos sua solicitação em até 30 dias conforme a LGPD.
             </p>
@@ -156,7 +156,7 @@ Atenciosamente.`;
         )}
       </AccountCard>
 
-      <p className="rounded-3xl bg-card/60 p-4 text-sm text-muted-foreground ring-1 ring-border/40 backdrop-blur">
+      <p className="rounded-3xl bg-card/60 p-4 text-sm font-medium text-muted-foreground ring-1 ring-border/40 backdrop-blur">
         <strong className="text-foreground">Importante:</strong> A exclusão é permanente e não pode ser desfeita.
         Após a exclusão, você precisará criar uma nova conta caso deseje usar o aplicativo novamente.
       </p>

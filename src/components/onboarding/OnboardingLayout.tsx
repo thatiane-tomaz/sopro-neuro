@@ -68,7 +68,7 @@ const OnboardingLayout = ({
                 {title}
               </h2>
               {subtitle && (
-                <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
+                <p className="mt-2 text-sm font-medium text-muted-foreground">{subtitle}</p>
               )}
             </div>
 

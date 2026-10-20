@@ -44,7 +44,7 @@ const CancelSubscription = () => {
       {/* Aviso */}
       <section className="flex items-start gap-3 rounded-3xl border border-[hsl(var(--lilac)/0.2)] bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] p-4">
         <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-[hsl(var(--lilac))]" />
-        <p className="text-balance text-sm text-muted-foreground">
+        <p className="text-balance text-sm font-medium text-muted-foreground">
           O acesso ao conteúdo continua disponível até o{" "}
           <strong className="text-foreground">fim do período atual</strong> que já foi pago.
         </p>

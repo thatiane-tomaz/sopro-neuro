@@ -287,7 +287,7 @@ const Login = () => {
         <button
           type="button"
           onClick={() => setShowForgotPassword(false)}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-2"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground mb-2"
         >
           <ArrowLeft className="h-4 w-4" /> Voltar
         </button>
@@ -526,7 +526,7 @@ function AuthHeader({ title, subtitle }: { title?: string; subtitle?: string }) 
           {title}
         </h1>
       )}
-      {subtitle && <p className="text-sm text-muted-foreground mt-1.5 leading-snug">{subtitle}</p>}
+      {subtitle && <p className="text-sm font-medium text-muted-foreground mt-1.5 leading-snug">{subtitle}</p>}
     </div>
   );
 }

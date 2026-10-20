@@ -41,7 +41,7 @@ const FAQ = () => {
           </div>
 
           <div className="p-5 space-y-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm font-medium text-muted-foreground">
               Se o vídeo ou a hipnose trava durante a reprodução, isso geralmente está relacionado 
               às configurações do seu celular que interrompem a conexão de internet ou suspendem o app 
               em segundo plano. Siga os passos abaixo para resolver:
@@ -150,7 +150,7 @@ const FAQ = () => {
           </div>
 
           <div className="p-5 space-y-4">
-            <p className="text-sm text-muted-foreground text-balance">
+            <p className="text-sm font-medium text-muted-foreground text-balance">
               A assinatura é cobrada pela loja do seu celular, então o cancelamento precisa ser feito
               diretamente por lá. Excluir o app ou a sua conta <strong>não cancela</strong> a cobrança.
               O acesso continua enquanto não houver cancelamento da assinatura.

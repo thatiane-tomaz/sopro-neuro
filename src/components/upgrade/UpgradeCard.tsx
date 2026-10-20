@@ -25,10 +25,10 @@ const UpgradeCard = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">✓ Jornada completa com todos os conteúdos</p>
-          <p className="text-sm text-muted-foreground">✓ Todas as hipnoses exclusivas</p>
-          <p className="text-sm text-muted-foreground">✓ Explicações sobre neurociência do vício</p>
-          <p className="text-sm text-muted-foreground">✓ Técnicas práticas para lidar com abstinência e gatilhos</p>
+          <p className="text-sm font-medium text-muted-foreground">✓ Jornada completa com todos os conteúdos</p>
+          <p className="text-sm font-medium text-muted-foreground">✓ Todas as hipnoses exclusivas</p>
+          <p className="text-sm font-medium text-muted-foreground">✓ Explicações sobre neurociência do vício</p>
+          <p className="text-sm font-medium text-muted-foreground">✓ Técnicas práticas para lidar com abstinência e gatilhos</p>
         </div>
         <SubscriptionButton size="lg" />
       </CardContent>
@@ -55,7 +55,7 @@ export const ContentAccessWrapper = ({ day, children, contentType, contentId }: 
             <Lock className="w-12 h-12 text-muted-foreground mx-auto" />
             <div>
               <h3 className="text-lg font-semibold">Conteúdo Premium</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm font-medium text-muted-foreground">
                 {isNativeIOS 
                   ? "Este conteúdo requer acesso premium"
                   : "Faça upgrade para acessar este conteúdo"

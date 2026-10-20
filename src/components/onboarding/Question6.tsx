@@ -67,7 +67,7 @@ const Question6 = ({ data, updateData, onNext, onPrev }: Question6Props) => {
       <div className="w-full max-w-md space-y-6">
         {/* Progress */}
         <div className="space-y-2">
-          <div className="flex justify-between text-sm text-muted-foreground">
+          <div className="flex justify-between text-sm font-medium text-muted-foreground">
             <span>Pergunta 6 de 10</span>
             <span>60%</span>
           </div>
@@ -80,7 +80,7 @@ const Question6 = ({ data, updateData, onNext, onPrev }: Question6Props) => {
             <CardTitle className="text-xl text-foreground">
               Quando você pensa em parar de fumar, o que mais te preocupa?
             </CardTitle>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm font-medium text-muted-foreground mt-2">
               É normal ter mais de um medo
             </p>
           </CardHeader>

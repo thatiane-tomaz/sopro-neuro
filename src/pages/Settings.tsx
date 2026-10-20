@@ -135,7 +135,7 @@ const Settings = () => {
             {displayName && (
               <p className="truncate text-base font-bold leading-tight text-foreground">{displayName}</p>
             )}
-            <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+            <p className="truncate text-sm font-medium text-muted-foreground">{user.email}</p>
           </div>
         </div>
         <p className="mt-3 break-all rounded-2xl bg-muted/60 px-3 py-2 text-sm text-muted-foreground font-medium">

@@ -77,7 +77,7 @@ const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) =>
           ))}
         </div>
 
-        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+        <div className="flex flex-col gap-2 text-sm font-medium text-muted-foreground">
           <p className="flex items-center gap-2"><Check className="w-4 h-4 text-accent shrink-0" /> Cancele quando quiser, direto na loja</p>
           <p className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-accent shrink-0" /> Pagamento seguro pela Apple ou Google</p>
         </div>
@@ -94,7 +94,7 @@ const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) =>
           )}
         </Button>
 
-        <Button variant="ghost" onClick={onRestore} disabled={isPurchasing} className="w-full text-sm text-muted-foreground">
+        <Button variant="ghost" onClick={onRestore} disabled={isPurchasing} className="w-full text-sm font-medium text-muted-foreground">
           <RefreshCw className="w-4 h-4 mr-2" /> Restaurar compras
         </Button>
 
