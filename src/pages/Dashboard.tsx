@@ -598,7 +598,7 @@ export default function Dashboard() {
 
         {/* Bloqueio da jornada de abstinência até definir a data */}
         {abstinenciaBloqueada && (
-          <Card className="mt-6 p-5 bg-white/95 backdrop-blur-md border-0 shadow-[0_20px_60px_-18px_hsl(258_70%_45%/0.35)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
+          <Card className="mt-6 p-3.5 bg-white/95 backdrop-blur-md border-0 shadow-[0_20px_60px_-18px_hsl(258_70%_45%/0.35)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
             <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[hsl(258_80%_95%)] to-[hsl(220_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
                 <CalendarIcon className="h-6 w-6" />
@@ -693,7 +693,7 @@ export default function Dashboard() {
             type="button"
             onClick={openStartHereVideo}
             disabled={loadingStartHere}
-            className="mt-4 w-full flex items-center gap-3 rounded-2xl bg-white/70 px-3.5 py-2.5 text-left ring-1 ring-white/80 backdrop-blur-md shadow-[0_12px_30px_-22px_hsl(258_70%_45%/0.4)] active:scale-[0.99] transition-transform"
+            className="mt-4 w-full flex items-center gap-3 rounded-2xl bg-white/70 p-3.5 text-left ring-1 ring-white/80 backdrop-blur-md shadow-[0_12px_30px_-22px_hsl(258_70%_45%/0.4)] active:scale-[0.99] transition-transform"
           >
             <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] text-white shadow-sm">
               <Play className="h-4 w-4" />
@@ -721,9 +721,9 @@ export default function Dashboard() {
         {/* Pílulas de conteúdo — entrada (título temporário) */}
         <button
           type="button"
-          className="mt-3 flex w-full items-center gap-2 overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] py-0.5 pl-1 pr-2 text-left border border-[hsl(var(--lilac)/0.2)] active:scale-[0.99] transition-transform"
+          className="mt-3 flex min-h-[90px] w-full items-center gap-2 overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] py-3.5 pl-1 pr-3.5 text-left border border-[hsl(var(--lilac)/0.2)] active:scale-[0.99] transition-transform"
         >
-          <img src={neoIdeiaImg} alt="" aria-hidden width={88} height={62} draggable={false} className="h-[62px] w-[88px] flex-shrink-0 object-contain" />
+          <img src={neoIdeiaImg} alt="" aria-hidden width={88} height={62} draggable={false} className="-my-2 h-[76px] w-[96px] flex-shrink-0 object-contain" />
           <div className="flex min-w-0 flex-1 items-center self-stretch">
             <div className="relative flex h-[18px] w-full items-start gap-1">
               <span className="absolute bottom-full left-0 mb-1 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-0.5 text-[10px] font-semibold text-[hsl(var(--lilac))]">
@@ -739,7 +739,7 @@ export default function Dashboard() {
         </button>
 
         {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
-        <section className="mt-3 rounded-3xl bg-card/80 px-3.5 py-4 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
           <div className="flex flex-nowrap items-center gap-1">
             <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--lilac))]">
               <span className="relative flex h-1.5 w-1.5">
@@ -988,7 +988,7 @@ export default function Dashboard() {
         {isAbstinencia && <AbstinenceExtras mode="return" />}
         {/* CTA — Decidir parar de fumar */}
         {showQuitCTA && !showQuitDatePicker && (
-          <Card className="mt-6 p-5 bg-[hsl(45_80%_97%)] backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.04] rounded-2xl overflow-hidden relative">
+          <Card className="mt-6 p-3.5 bg-[hsl(45_80%_97%)] backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.04] rounded-2xl overflow-hidden relative">
             <div className="relative z-10">
               <h3 className="text-base font-bold text-foreground leading-snug">
                 Pronto para seu próximo passo?
@@ -1015,7 +1015,7 @@ export default function Dashboard() {
 
         {/* Inline date picker (fallback — usado apenas para redução) */}
         {showQuitDatePicker && !lastCigDate && !isAbstinencia && (
-          <Card className="mt-6 p-5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
+          <Card className="mt-6 p-3.5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-2xl bg-[hsl(258_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
                 <CalendarIcon className="h-5 w-5" />
