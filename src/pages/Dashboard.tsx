@@ -256,6 +256,24 @@ export default function Dashboard() {
   const weeklyHipnoseDone = isInteractionFinished(hipnoseInteraction);
   const weeklyMissaoDone = isInteractionFinished(missaoInteraction);
 
+  // Compartilhe: conta como feito quando a pessoa já postou no mural deste tema
+  // (em qualquer status). Não é exigido para avançar ao próximo foco.
+  const focoTituloParaMural: string | null = (gatilho as any)?.habito_titulo ?? null;
+  const { data: weeklyMuralDone = false } = useQuery({
+    queryKey: ["mural-own-post", user?.id, focoTituloParaMural],
+    enabled: !!user?.id && !!focoTituloParaMural,
+    queryFn: async () => {
+      const { count, error } = await (supabase as any)
+        .from("mural_posts")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user!.id)
+        .eq("habito_titulo", focoTituloParaMural);
+      if (error) throw error;
+      return (count ?? 0) > 0;
+    },
+    staleTime: 60_000,
+  });
+
   // Mission unlock: 3 days after user first opens the mission dialog.
   const missaoStartTrack = trackingData?.find(
     (t) => t.interaction_type === missaoStartInteraction
