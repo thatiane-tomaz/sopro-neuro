@@ -629,6 +629,103 @@ export type Database = {
         }
         Relationships: []
       }
+      neo_explica: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          jornada: string | null
+          ordem: number
+          pasta: string
+          segundos_por_imagem: number
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          jornada?: string | null
+          ordem?: number
+          pasta: string
+          segundos_por_imagem?: number
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          jornada?: string | null
+          ordem?: number
+          pasta?: string
+          segundos_por_imagem?: number
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      neo_explica_estado: {
+        Row: {
+          exibido_em: string
+          explica_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          exibido_em?: string
+          explica_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          exibido_em?: string
+          explica_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "neo_explica_estado_explica_id_fkey"
+            columns: ["explica_id"]
+            isOneToOne: false
+            referencedRelation: "neo_explica"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      neo_explica_views: {
+        Row: {
+          aberto_em: string
+          concluido_em: string | null
+          explica_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          aberto_em?: string
+          concluido_em?: string | null
+          explica_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          aberto_em?: string
+          concluido_em?: string | null
+          explica_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "neo_explica_views_explica_id_fkey"
+            columns: ["explica_id"]
+            isOneToOne: false
+            referencedRelation: "neo_explica"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_campaigns: {
         Row: {
           active: boolean
