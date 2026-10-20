@@ -564,7 +564,7 @@ export default function Jornada() {
             <p className="text-sm text-muted-foreground mt-1 text-balance">
               {isAbstinencia
                 ? "Aprenda a lidar com a vontade de fumar, supere antigos gatilhos e fortaleça sua vida sem cigarro."
-                : "Enfraqueça os hábitos e crenças que te prendem ao cigarro e prepare-se para parar no seu tempo."}
+                : "Enfraqueça os hábitos e crenças que te prendem ao cigarro. Prepare-se para parar no seu tempo."}
             </p>
           </div>
           <button
