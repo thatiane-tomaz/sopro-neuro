@@ -51,7 +51,7 @@ export default function FocoAtualCard({
       <h1 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
         Método Sopro Neuro
       </h1>
-      <p className="mt-1 text-pretty text-[13px] font-medium leading-snug text-muted-foreground">
+      <p className="mt-1 text-pretty text-sm font-medium leading-snug text-muted-foreground">
         Siga os passos para enfraquecer os gatilhos que te prendem ao cigarro.
       </p>
 
@@ -68,12 +68,12 @@ export default function FocoAtualCard({
             />
           )}
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--lilac))]">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--lilac))]">
               {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
             </p>
-            <p className="text-pretty text-sm font-bold leading-snug text-foreground">{tituloGatilho}</p>
+            <p className="text-pretty text-base font-bold leading-snug text-foreground">{tituloGatilho}</p>
             {subtituloGatilho && (
-              <p className="mt-0.5 text-pretty text-[13px] font-medium leading-snug text-muted-foreground">{subtituloGatilho}</p>
+              <p className="mt-0.5 text-pretty text-sm font-medium leading-snug text-muted-foreground">{subtituloGatilho}</p>
             )}
           </div>
         </div>
@@ -112,7 +112,7 @@ export default function FocoAtualCard({
                     </span>
                   )}
                 </div>
-                <span className="mt-1 max-w-[7.5rem] text-balance text-xs font-medium leading-tight text-muted-foreground">
+                <span className="mt-1 max-w-[7.5rem] text-balance text-sm font-medium leading-tight text-muted-foreground">
                   <span className="font-semibold text-foreground">{step.verb}</span> {step.rest}
                 </span>
               </button>
@@ -154,7 +154,7 @@ export default function FocoAtualCard({
               />
             ))}
           </div>
-          <p className="text-xs font-medium text-muted-foreground">
+          <p className="text-sm font-medium text-muted-foreground">
             {doneCount} de {steps.length} passos concluídos
           </p>
         </div>

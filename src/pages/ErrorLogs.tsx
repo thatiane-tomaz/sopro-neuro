@@ -111,19 +111,19 @@ const ErrorLogs = () => {
         <div className="grid grid-cols-3 gap-3 mb-4">
           <div className="bg-card rounded-lg p-3 text-center border border-border">
             <p className="text-2xl font-bold text-foreground">{logs.length}</p>
-            <p className="text-[13px] text-muted-foreground font-medium">Total</p>
+            <p className="text-sm text-muted-foreground font-medium">Total</p>
           </div>
           <div className="bg-card rounded-lg p-3 text-center border border-border">
             <p className="text-2xl font-bold text-foreground">
               {new Set(logs.map(l => l.error_message)).size}
             </p>
-            <p className="text-[13px] text-muted-foreground font-medium">Únicos</p>
+            <p className="text-sm text-muted-foreground font-medium">Únicos</p>
           </div>
           <div className="bg-card rounded-lg p-3 text-center border border-border">
             <p className="text-2xl font-bold text-foreground">
               {new Set(logs.filter(l => l.user_id).map(l => l.user_id)).size}
             </p>
-            <p className="text-[13px] text-muted-foreground font-medium">Usuários</p>
+            <p className="text-sm text-muted-foreground font-medium">Usuários</p>
           </div>
         </div>
 
@@ -175,34 +175,34 @@ const ErrorLogs = () => {
                         {log.platform}
                       </Badge>
                     )}
-                    <span className="text-[11px] text-muted-foreground whitespace-nowrap font-medium">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap font-medium">
                       {formatDate(log.created_at)}
                     </span>
                   </div>
                 </div>
 
                 {log.page_url && (
-                  <p className="text-[11px] text-muted-foreground mt-1 font-medium">{log.page_url}</p>
+                  <p className="text-xs text-muted-foreground mt-1 font-medium">{log.page_url}</p>
                 )}
 
                 {expandedId === log.id && (
                   <div className="mt-3 space-y-2">
                     {log.error_context && (
                       <div>
-                        <p className="text-[11px] text-muted-foreground font-medium">Contexto:</p>
+                        <p className="text-xs text-muted-foreground font-medium">Contexto:</p>
                         <p className="text-xs text-foreground">{log.error_context}</p>
                       </div>
                     )}
                     {log.error_stack && (
                       <div>
-                        <p className="text-[11px] text-muted-foreground font-medium">Stack:</p>
-                        <pre className="text-[11px] text-muted-foreground bg-muted/50 p-2 rounded overflow-x-auto max-h-40 whitespace-pre-wrap font-medium">
+                        <p className="text-xs text-muted-foreground font-medium">Stack:</p>
+                        <pre className="text-xs text-muted-foreground bg-muted/50 p-2 rounded overflow-x-auto max-h-40 whitespace-pre-wrap font-medium">
                           {log.error_stack}
                         </pre>
                       </div>
                     )}
                     {log.user_id && (
-                      <p className="text-[11px] text-muted-foreground font-medium">
+                      <p className="text-xs text-muted-foreground font-medium">
                         User: {log.user_id.substring(0, 8)}...
                       </p>
                     )}

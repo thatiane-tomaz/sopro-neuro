@@ -138,7 +138,7 @@ const Settings = () => {
             <p className="truncate text-sm text-muted-foreground">{user.email}</p>
           </div>
         </div>
-        <p className="mt-3 break-all rounded-2xl bg-muted/60 px-3 py-2 text-xs text-muted-foreground font-medium">
+        <p className="mt-3 break-all rounded-2xl bg-muted/60 px-3 py-2 text-sm text-muted-foreground font-medium">
           ID do usuário: {user.id}
         </p>
       </AccountCard>
@@ -151,7 +151,7 @@ const Settings = () => {
       >
         <form onSubmit={handlePasswordChange} className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="newPassword" className="px-1 text-[13px] font-semibold text-muted-foreground">
+            <Label htmlFor="newPassword" className="px-1 text-sm font-semibold text-muted-foreground">
               Nova senha
             </Label>
             <div className="relative">
@@ -168,7 +168,7 @@ const Settings = () => {
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="confirmPassword" className="px-1 text-[13px] font-semibold text-muted-foreground">
+            <Label htmlFor="confirmPassword" className="px-1 text-sm font-semibold text-muted-foreground">
               Confirmar nova senha
             </Label>
             <div className="relative">
@@ -197,7 +197,7 @@ const Settings = () => {
       >
         <form onSubmit={handleEmailChange} className="space-y-3">
           <div className="space-y-1.5">
-            <Label htmlFor="currentEmail" className="px-1 text-[13px] font-semibold text-muted-foreground">
+            <Label htmlFor="currentEmail" className="px-1 text-sm font-semibold text-muted-foreground">
               Email atual
             </Label>
             <div className="relative">
@@ -212,7 +212,7 @@ const Settings = () => {
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="newEmail" className="px-1 text-[13px] font-semibold text-muted-foreground">
+            <Label htmlFor="newEmail" className="px-1 text-sm font-semibold text-muted-foreground">
               Novo email
             </Label>
             <div className="relative">

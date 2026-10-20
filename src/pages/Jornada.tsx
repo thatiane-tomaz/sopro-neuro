@@ -542,7 +542,7 @@ export default function Jornada() {
               <p className="text-sm font-semibold text-foreground leading-tight">
                 {getGreeting()}{firstName ? `, ${firstName}!` : "!"}
               </p>
-              <p className="text-xs text-muted-foreground leading-tight font-medium">
+              <p className="text-sm text-muted-foreground leading-tight font-medium">
                 Seu cérebro está aprendendo<br />uma nova forma de viver.
               </p>
             </div>
@@ -695,6 +695,7 @@ export default function Jornada() {
             const options: SheetOption[] = [
               it.hasHipnose && {
                 key: "hipnose",
+                stepName: "Hipnose",
                 image: stepHipnoseImg,
                 title: "Transforme",
                 subtitle: "seus hábitos com Hipnose",
@@ -706,6 +707,7 @@ export default function Jornada() {
               },
               it.hasMissao && {
                 key: "missao",
+                stepName: "Missão",
                 image: stepMissaoImg,
                 title: "Experimente",
                 subtitle: "uma nova vida mais leve",
@@ -714,6 +716,7 @@ export default function Jornada() {
               },
               {
                 key: "mural",
+                stepName: "Mural",
                 image: stepMuralImg,
                 title: "Compartilhe",
                 subtitle: "sua jornada com outras pessoas",
@@ -754,6 +757,7 @@ export default function Jornada() {
           const options: SheetOption[] = [
             hasH && {
               key: "hipnose",
+                stepName: "Hipnose",
               image: stepHipnoseImg,
               title: "Transforme",
               subtitle: "seus hábitos com Hipnose",
@@ -765,6 +769,7 @@ export default function Jornada() {
             },
             {
               key: "mural",
+                stepName: "Mural",
               image: stepMuralImg,
               title: "Compartilhe",
               subtitle: "sua jornada com outras pessoas",
@@ -920,7 +925,7 @@ function ThemeRow({
   return (
     <div>
       {label && (
-        <p className={`px-1 pb-1 text-[13px] font-medium text-muted-foreground ${isFirst ? "" : "pt-2.5"}`}>
+        <p className={`px-1 pb-1 text-sm font-medium text-muted-foreground ${isFirst ? "" : "pt-2.5"}`}>
           {label}
         </p>
       )}
@@ -964,7 +969,7 @@ function ThemeRow({
               {title}
             </p>
             {subtitle && (
-              <p className="mt-0.5 text-balance text-xs leading-snug text-muted-foreground font-medium">
+              <p className="mt-0.5 text-balance text-sm leading-snug text-muted-foreground font-medium">
                 {subtitle}
               </p>
             )}
@@ -978,6 +983,8 @@ function ThemeRow({
 
 type SheetOption = {
   key: string;
+  /** Nome do passo do método: "Hipnose", "Missão", "Mural". */
+  stepName: string;
   image: string;
   title: string;
   subtitle: string;
@@ -1029,7 +1036,7 @@ function ThemeSheet({
               {title}
             </h2>
             {subtitle && (
-              <p className="mt-1 text-balance text-[13px] leading-relaxed text-muted-foreground font-medium">
+              <p className="mt-1 text-balance text-sm leading-relaxed text-muted-foreground font-medium">
                 {subtitle}
               </p>
             )}
@@ -1052,7 +1059,7 @@ function ThemeSheet({
 function SheetOptions({ options }: { options: SheetOption[] }) {
   return (
     <div className="space-y-2 px-4 pb-5 pt-4">
-      {options.map((o) => (
+      {options.map((o, index) => (
         <button
           key={o.key}
           type="button"
@@ -1068,8 +1075,11 @@ function SheetOptions({ options }: { options: SheetOption[] }) {
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold leading-tight text-foreground">{o.title}</p>
-            <p className="mt-0.5 text-balance text-[13px] leading-snug text-muted-foreground font-medium">{o.subtitle}</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-[hsl(var(--lilac))]">
+              Passo {index + 1} · {o.stepName}
+            </p>
+            <p className="mt-0.5 text-sm font-semibold leading-tight text-foreground">{o.title}</p>
+            <p className="mt-0.5 text-balance text-sm leading-snug text-muted-foreground font-medium">{o.subtitle}</p>
           </div>
           <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground/50" aria-hidden />
         </button>
@@ -1134,7 +1144,7 @@ function MissionView({
         </button>
       </div>
       {locked && !done && (
-        <p className="mt-3 text-balance text-center text-xs leading-relaxed text-muted-foreground font-medium">
+        <p className="mt-3 text-balance text-center text-sm leading-relaxed text-muted-foreground font-medium">
           Viva sua missão por 24 horas. Depois desse período, você poderá conversar com o chat sobre a experiência.
         </p>
       )}

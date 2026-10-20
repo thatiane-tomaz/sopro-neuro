@@ -399,7 +399,7 @@ export default function Progresso() {
                 {getGreeting()}
                 {firstName ? `, ${firstName}!` : "!"}
               </p>
-              <p className="text-xs text-muted-foreground leading-tight font-medium">
+              <p className="text-sm text-muted-foreground leading-tight font-medium">
                 Cada registro é um<br />passo de consciência.
               </p>
             </div>
@@ -500,7 +500,7 @@ export default function Progresso() {
               <p className="text-sm font-bold leading-tight text-[hsl(var(--electric-blue))]">
                 Registrar ontem
               </p>
-              <p className="mt-0.5 text-balance text-[13px] leading-snug text-muted-foreground font-medium">
+              <p className="mt-0.5 text-balance text-sm leading-snug text-muted-foreground font-medium">
                 Quantos cigarros você fumou ontem?
               </p>
             </div>
@@ -525,24 +525,24 @@ export default function Progresso() {
           {/* Start & current average stats */}
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-2xl bg-muted/60 p-3 text-center">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Início</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Início</p>
               <p className="mt-0.5 text-lg font-bold leading-tight text-foreground tabular-nums">
                 {baseline}
-                <span className="text-[13px] font-medium text-muted-foreground">/dia</span>
+                <span className="text-sm font-medium text-muted-foreground">/dia</span>
               </p>
             </div>
             <div className="rounded-2xl bg-[hsl(var(--lilac-soft)/0.8)] p-3 text-center">
               <p className="text-[10px] font-semibold uppercase tracking-wide text-[hsl(var(--lilac))]">Média atual (3 dias)</p>
               <p className="mt-0.5 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] tabular-nums">
                 {stats.daysWithLog > 0 ? Math.floor(stats.avgPerDay) : "—"}
-                <span className="text-[13px] font-medium text-muted-foreground">/dia</span>
+                <span className="text-sm font-medium text-muted-foreground">/dia</span>
               </p>
             </div>
           </div>
 
           <div className="mt-3 h-52 -mx-2">
             {chartData.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-[13px] text-muted-foreground font-medium">
+              <div className="h-full flex items-center justify-center text-sm text-muted-foreground font-medium">
                 Complete o onboarding para começar o acompanhamento.
               </div>
             ) : (
@@ -636,7 +636,7 @@ export default function Progresso() {
               <p className="text-sm font-semibold text-foreground">
                 Registrar outro dia
               </p>
-              <p className="mt-0.5 text-balance text-[13px] text-muted-foreground font-medium">
+              <p className="mt-0.5 text-balance text-sm text-muted-foreground font-medium">
                 Escolha uma data para registrar quantos cigarros fumou.
               </p>
               <div className="mt-2.5 flex items-stretch gap-2">
@@ -716,7 +716,7 @@ export default function Progresso() {
             <h2 className="text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
               Seu potencial ao parar de fumar
             </h2>
-            <p className="mt-1 text-balance text-[13px] leading-relaxed text-muted-foreground font-medium">
+            <p className="mt-1 text-balance text-sm leading-relaxed text-muted-foreground font-medium">
               O quanto você deixa de fumar e economiza.
             </p>
 
@@ -742,7 +742,7 @@ export default function Progresso() {
             </div>
 
             <div className="mt-3 flex items-center gap-2 rounded-2xl bg-muted/50 py-2 pl-3 pr-1">
-              <p className="min-w-0 flex-1 text-xs leading-relaxed text-muted-foreground font-medium">
+              <p className="min-w-0 flex-1 text-sm leading-relaxed text-muted-foreground font-medium">
                 <span className="font-semibold text-foreground/80">Antes de começar a jornada</span>
                 <br />
                 {baseline} cigarros/dia · {vapesPerMonth} vapes/mês · {formatBRLCompact(weeklyCostNum)}/semana
@@ -759,7 +759,7 @@ export default function Progresso() {
         )}
 
         {!startDateStr && (
-          <p className="mt-4 text-center text-[13px] text-muted-foreground font-medium">
+          <p className="mt-4 text-center text-sm text-muted-foreground font-medium">
             Complete o onboarding para começar seu acompanhamento diário.
           </p>
         )}
@@ -798,7 +798,7 @@ export default function Progresso() {
               <DialogTitle className="text-base font-bold text-foreground text-balance">
                 Data do último cigarro
               </DialogTitle>
-              <DialogDescription className="text-[13px] text-muted-foreground text-balance font-medium">
+              <DialogDescription className="text-sm text-muted-foreground text-balance font-medium">
                 Ajuste o dia em que você fumou pela última vez.
               </DialogDescription>
             </DialogHeader>
@@ -856,7 +856,7 @@ function StatCard({
         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-card text-[hsl(var(--lilac))] shadow-sm">
           {icon}
         </div>
-        <p className="text-balance text-left text-xs font-medium leading-tight text-muted-foreground">
+        <p className="text-balance text-left text-sm font-medium leading-tight text-muted-foreground">
           {label}
         </p>
       </div>
@@ -885,7 +885,7 @@ function PotentialTile({
           : "bg-[hsl(var(--lilac-soft)/0.7)]")
       }
     >
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {label}
       </p>
       <p

@@ -53,7 +53,7 @@ function PostCard({
             <p className="text-[12px] font-semibold text-foreground truncate">
               {post.author_name || "Anônimo"}
             </p>
-            <p className="text-[11px] text-muted-foreground font-medium">
+            <p className="text-xs text-muted-foreground font-medium">
               {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: ptBR })}
               {post.day_number ? ` · Dia ${post.day_number}` : ""}
             </p>
@@ -163,7 +163,7 @@ export default function Mural() {
           <h1 className="text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
             {tema ? tema : (<>Um espaço para<br />compartilhar a jornada</>)}
           </h1>
-          <p className="text-[13px] text-muted-foreground mt-2 leading-relaxed">
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
             Você não está sozinho!
           </p>
         </div>
@@ -199,7 +199,7 @@ export default function Mural() {
                 <Sparkles className="h-6 w-6" />
               </div>
               <p className="mt-3 font-bold text-foreground">O mural ainda está em branco</p>
-              <p className="mt-1 text-[13px] text-muted-foreground leading-relaxed">
+              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
                 Seja a primeira pessoa a compartilhar uma experiência que possa inspirar quem está começando.
               </p>
             </div>
@@ -219,7 +219,7 @@ export default function Mural() {
               <DialogTitle className="text-base font-bold text-foreground">
                 Compartilhe no mural
               </DialogTitle>
-              <DialogDescription className="text-[13px] text-muted-foreground font-medium">
+              <DialogDescription className="text-sm text-muted-foreground font-medium">
                 Uma frase pode inspirar outra pessoa hoje.
               </DialogDescription>
             </DialogHeader>
@@ -233,7 +233,7 @@ export default function Mural() {
               rows={5}
               className="resize-none rounded-xl border-[hsl(258_70%_92%)] focus-visible:ring-[hsl(258_70%_70%)]"
             />
-            <div className="flex justify-end text-xs text-muted-foreground font-medium">
+            <div className="flex justify-end text-sm text-muted-foreground font-medium">
               {content.length}/{MAX_LEN}
             </div>
           </div>
