@@ -67,10 +67,16 @@ export default function FocoAtualCard({
               draggable={false}
             />
           )}
-          <div className="min-w-0">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--lilac))]">
-              {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
-            </p>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--lilac))]">
+                {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
+              </p>
+              <button type="button" onClick={onOpenJornada} className="-my-1 inline-flex flex-shrink-0 items-center py-1 text-xs font-semibold text-[hsl(var(--electric-blue))]">
+                Ver jornada
+                <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
             <p className="text-pretty text-base font-bold leading-snug text-foreground">{tituloGatilho}</p>
             {subtituloGatilho && (
               <p className="mt-0.5 text-pretty text-sm font-medium leading-snug text-muted-foreground">{subtituloGatilho}</p>
@@ -161,32 +167,6 @@ export default function FocoAtualCard({
       )}
 </div>
       </div>
-        {totalFocos > 0 && (
-          <button
-            type="button"
-            onClick={onOpenJornada}
-            className="flex w-full items-center gap-3 mt-3 rounded-2xl px-1 py-1 text-left transition-colors active:bg-[hsl(var(--lilac)/0.1)]"
-          >
-            <div className="flex flex-1 gap-1" aria-hidden>
-              {Array.from({ length: totalFocos }).map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-1.5 flex-1 rounded-full ${
-                    i === focoAtualNumero - 1
-                      ? "bg-[hsl(var(--electric-blue))]"
-                      : i < focosConcluidos
-                        ? "bg-[hsl(var(--lilac))]"
-                        : "bg-[hsl(var(--lilac)/0.2)]"
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="inline-flex flex-shrink-0 items-center text-xs font-semibold text-[hsl(var(--electric-blue))]">
-              Ver sua jornada
-              <ChevronRight className="h-4 w-4" />
-            </span>
-          </button>
-        )}
     </section>
   );
 }
