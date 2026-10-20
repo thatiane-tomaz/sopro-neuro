@@ -73,6 +73,7 @@ export function useCreateMuralPost() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mural-posts"] });
+      qc.invalidateQueries({ queryKey: ["mural-own-post"] });
       award("mural_post");
     },
   });
@@ -88,6 +89,9 @@ export function useDeleteMuralPost() {
         .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["mural-posts"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["mural-posts"] });
+      qc.invalidateQueries({ queryKey: ["mural-own-post"] });
+    },
   });
 }

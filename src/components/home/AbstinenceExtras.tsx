@@ -284,7 +284,7 @@ export default function AbstinenceExtras({
         <div className="mt-8">
         <button
           onClick={() => setConfirmOpen(true)}
-          className="w-full flex items-center gap-3 rounded-2xl bg-white/70 backdrop-blur px-4 py-3.5 ring-1 ring-[hsl(258_70%_90%)] shadow-[0_10px_24px_-14px_hsl(258_60%_45%/0.45)] active:scale-[0.98] transition-transform text-left"
+          className="w-full flex items-center gap-3 rounded-2xl bg-white/70 backdrop-blur p-3.5 ring-1 ring-[hsl(258_70%_90%)] shadow-[0_10px_24px_-14px_hsl(258_60%_45%/0.45)] active:scale-[0.98] transition-transform text-left"
         >
           <span className="h-11 w-11 shrink-0 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-[0_8px_20px_-10px_hsl(258_70%_50%/0.6)]">
             <RotateCcw className="h-5 w-5 text-white" />
