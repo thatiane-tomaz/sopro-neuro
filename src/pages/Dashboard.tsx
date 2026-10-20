@@ -784,8 +784,7 @@ export default function Dashboard() {
 
           {(() => {
             // Conteúdos do tema: Transforme (hipnose), Experimente (missão) e
-            // Compartilhe (mural). Todos ficam liberados ao mesmo tempo; o mural
-            // não conta como atividade concluída.
+            // Compartilhe (mural). Todos ficam liberados ao mesmo tempo.
             const steps = [
               hasHipnose && {
                 key: "hipnose",
@@ -815,8 +814,8 @@ export default function Dashboard() {
                 title: "Compartilhe",
                 subtitle: "sua jornada com outras pessoas",
                 icon: MessageCircleHeart,
-                done: false,
-                countsAsActivity: false,
+                done: weeklyMuralDone,
+                countsAsActivity: true,
                 onClick: () =>
                   navigate(`/mural?tema=${encodeURIComponent(tituloGatilho)}`),
                 actionLabel: "Compartilhe no mural",
@@ -832,8 +831,10 @@ export default function Dashboard() {
               onClick: () => void;
               actionLabel: string;
             }>;
+            // As 3 atividades contam no total, mas o foco já é concluído com
+            // hipnose + missão (o mural é opcional para avançar).
             const activities = steps.filter((step) => step.countsAsActivity);
-            const nextStep = activities.find((step) => !step.done);
+            const nextStep = steps.find((step) => !step.done);
 
             return (
               <>
