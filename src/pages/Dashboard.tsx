@@ -71,7 +71,7 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import { getStartHereVideoUrl, startHereKeyForJornada } from "@/lib/startHereVideo";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
-import MuralPreview from "@/components/mural/MuralPreview";
+import neoIdeiaImg from "@/assets/neo-ideia.png";
 import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import SosThinBlock from "@/components/home/SosThinBlock";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
@@ -718,6 +718,24 @@ export default function Dashboard() {
           }
           aria-hidden={abstinenciaBloqueada}
         >
+        {/* Pílulas de conteúdo — entrada (título temporário) */}
+        <button
+          type="button"
+          className="mt-3 flex w-full items-center gap-3 rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] py-2.5 pl-3.5 pr-2 text-left text-primary-foreground shadow-primary active:scale-[0.99] transition-transform"
+        >
+          <div className="min-w-0 flex-1">
+            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-primary-foreground/20 px-2 py-0.5 text-[10px] font-semibold">
+              <Sparkles className="h-3 w-3" />
+              Entenda para se Libertar
+            </span>
+            <p className="mt-1.5 text-balance text-sm font-bold leading-snug">
+              Por que o cigarro te deixa mais ansioso?
+            </p>
+          </div>
+          <img src={neoIdeiaImg} alt="" aria-hidden width={64} height={64} draggable={false} className="h-16 w-16 flex-shrink-0 object-contain" />
+          <ChevronRight className="h-5 w-5 flex-shrink-0 opacity-80" />
+        </button>
+
         {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
         <section className="mt-3 rounded-3xl bg-card/80 px-3.5 py-4 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
           <div className="flex flex-nowrap items-center gap-1">
@@ -925,8 +943,6 @@ export default function Dashboard() {
 
         {/* Extras da jornada de abstinência: SOS + gatilhos (a lista abaixo termina com "voltar para redução") */}
 
-        {/* Mural — experiências compartilhadas */}
-        <MuralPreview habitoTitulo={tituloGatilho} />
 
         {/* Entradas de acompanhamento */}
         {!isAbstinencia && (
