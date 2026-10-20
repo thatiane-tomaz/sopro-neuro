@@ -88,7 +88,7 @@ export default function Controle() {
     refetchOnWindowFocus: false,
   });
 
-  const { ensureContentAccess } = useContentAccess();
+  const { ensureContentAccess, hasContentAccess } = useContentAccess();
 
   const openMedia = async (
     title: string,
@@ -112,7 +112,8 @@ export default function Controle() {
   const handleSos = async () => {
     if (!ensureContentAccess({ source: "sos", sample: { kind: "hipnose", id: SOS_SAMPLE_ID } }))
       return;
-    const sos = await getSosHypnosis();
+    // Sem assinatura, a hipnose grátis do SOS é sempre a mesma
+    const sos = await getSosHypnosis(hasContentAccess ? undefined : { fixedIndex: 0 });
     if (!sos.fileUrl) return;
     openMedia(sos.title, sos.fileUrl, `sos_${sos.index + 1}`);
   };
