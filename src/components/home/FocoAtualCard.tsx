@@ -49,10 +49,10 @@ export default function FocoAtualCard({
   return (
     <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
       <h1 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
-        Seu Método Sopro
+        Método Sopro Neuro
       </h1>
       <p className="mt-1 text-balance text-[13px] font-medium leading-snug text-muted-foreground">
-        Siga os passos para enfraquecer os hábitos que te prendem ao cigarro.
+        Siga os passos para enfraquecer os gatilhos que te prendem ao cigarro.
       </p>
 
       {/* Gatilho atual + entrada para a jornada completa */}
