@@ -51,7 +51,7 @@ export default function FocoAtualCard({
       <h1 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
         Método Sopro Neuro
       </h1>
-      <p className="mt-1 text-balance text-[13px] font-medium leading-snug text-muted-foreground">
+      <p className="mt-1 text-pretty text-[13px] font-medium leading-snug text-muted-foreground">
         Siga os passos para enfraquecer os gatilhos que te prendem ao cigarro.
       </p>
 
@@ -71,9 +71,9 @@ export default function FocoAtualCard({
             <p className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--lilac))]">
               {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
             </p>
-            <p className="text-balance text-sm font-bold leading-snug text-foreground">{tituloGatilho}</p>
+            <p className="text-pretty text-sm font-bold leading-snug text-foreground">{tituloGatilho}</p>
             {subtituloGatilho && (
-              <p className="mt-0.5 text-balance text-[13px] font-medium leading-snug text-muted-foreground">{subtituloGatilho}</p>
+              <p className="mt-0.5 text-pretty text-[13px] font-medium leading-snug text-muted-foreground">{subtituloGatilho}</p>
             )}
           </div>
         </div>
