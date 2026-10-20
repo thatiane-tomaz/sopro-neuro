@@ -721,19 +721,19 @@ export default function Dashboard() {
         {/* Pílulas de conteúdo — entrada (título temporário) */}
         <button
           type="button"
-          className="mt-3 flex w-full items-center gap-3 rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] py-2.5 pl-3.5 pr-2 text-left text-primary-foreground shadow-primary active:scale-[0.99] transition-transform"
+          className="mt-3 flex w-full items-center gap-2 overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] py-1 pl-1 pr-2 text-left ring-1 ring-[hsl(var(--lilac)/0.25)] shadow-primary backdrop-blur-md active:scale-[0.99] transition-transform"
         >
+          <img src={neoIdeiaImg} alt="" aria-hidden width={88} height={62} draggable={false} className="h-[62px] w-[88px] flex-shrink-0 object-contain" />
           <div className="min-w-0 flex-1">
-            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-primary-foreground/20 px-2 py-0.5 text-[10px] font-semibold">
+            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-0.5 text-[10px] font-semibold text-[hsl(var(--lilac))]">
               <Sparkles className="h-3 w-3" />
               Entenda para se Libertar
             </span>
-            <p className="mt-1.5 text-balance text-sm font-bold leading-snug">
+            <p className="mt-1 text-balance text-sm font-bold leading-snug text-[hsl(var(--electric-blue))]">
               Por que o cigarro te deixa mais ansioso?
             </p>
           </div>
-          <img src={neoIdeiaImg} alt="" aria-hidden width={64} height={64} draggable={false} className="h-16 w-16 flex-shrink-0 object-contain" />
-          <ChevronRight className="h-5 w-5 flex-shrink-0 opacity-80" />
+          <ChevronRight className="h-5 w-5 flex-shrink-0 text-[hsl(var(--lilac))]" />
         </button>
 
         {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
