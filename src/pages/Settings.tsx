@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { Navigate, Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AccountShell,
+  AccountCard,
+  accountInputClass,
+  accountPrimaryButtonClass,
+} from "@/components/account/AccountShell";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,7 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { X, Lock, Mail, Trash2, RefreshCw } from "lucide-react";
+import { Lock, Mail, Trash2, RefreshCw } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useToast } from "@/hooks/use-toast";
@@ -117,157 +120,141 @@ const Settings = () => {
     setIsLoading(false);
   };
 
+  const displayName = (profile?.display_name || "").trim();
+  const initial = (displayName || user.email || "?").charAt(0).toUpperCase();
+
   return (
-    <div className="min-h-screen bg-gradient-hero">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex justify-end mb-4">
-            <Link to="/dashboard" aria-label="Fechar">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-11 w-11 rounded-full bg-white/90 backdrop-blur text-primary hover:bg-white shadow-sm"
-              >
-                <X className="h-5 w-5" />
-              </Button>
-            </Link>
+    <AccountShell title="Sua conta" subtitle="Gerencie seus dados de acesso e a segurança da sua conta.">
+      {/* Informações da conta */}
+      <AccountCard>
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-lg font-bold text-primary-foreground shadow-wellness">
+            {initial}
           </div>
-
-          <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-2xl">Configurações da Conta</CardTitle>
-              <CardDescription>Gerencie suas informações pessoais e segurança</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="security" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="security">Segurança</TabsTrigger>
-                  <TabsTrigger value="account">Conta</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="security">
-                  <div className="space-y-6">
-                    <form onSubmit={handlePasswordChange} className="space-y-4">
-                      <h3 className="text-lg font-semibold">Alterar senha</h3>
-                      <div className="space-y-2">
-                        <Label htmlFor="newPassword">Nova senha</Label>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            id="newPassword"
-                            type="password"
-                            placeholder="Mínimo 6 caracteres com letra e número"
-                            className="pl-10"
-                            value={passwordData.newPassword}
-                            onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="confirmPassword">Confirmar nova senha</Label>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                          <Input
-                            id="confirmPassword"
-                            type="password"
-                            placeholder="••••••••"
-                            className="pl-10"
-                            value={passwordData.confirmPassword}
-                            onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                            required
-                          />
-                        </div>
-                      </div>
-                      <Button type="submit" disabled={isLoading}>
-                        {isLoading ? "Atualizando..." : "Atualizar senha"}
-                      </Button>
-                    </form>
-
-                    <div className="border-t pt-6">
-                      <form onSubmit={handleEmailChange} className="space-y-4">
-                        <h3 className="text-lg font-semibold">Alterar email</h3>
-                        <div className="space-y-2">
-                          <Label htmlFor="currentEmail">Email atual</Label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              id="currentEmail"
-                              type="email"
-                              value={user.email || ""}
-                              className="pl-10 bg-muted"
-                              disabled
-                            />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="newEmail">Novo email</Label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                            <Input
-                              id="newEmail"
-                              type="email"
-                              placeholder="novo@email.com"
-                              className="pl-10"
-                              value={emailData.newEmail}
-                              onChange={(e) => setEmailData({ newEmail: e.target.value })}
-                              required
-                            />
-                          </div>
-                        </div>
-                        <Button type="submit" disabled={isLoading}>
-                          {isLoading ? "Atualizando..." : "Atualizar email"}
-                        </Button>
-                      </form>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="account">
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Informações da conta</h3>
-                      <div className="space-y-2 text-sm">
-                        <p><strong>Email:</strong> {user.email}</p>
-                        <p><strong>ID do usuário:</strong> {user.id}</p>
-                      </div>
-                    </div>
-
-                    {/* Delete Account Section */}
-                    <div className="border-t pt-6">
-                      <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4">
-                        <div className="flex items-start gap-3">
-                          <Trash2 className="w-5 h-5 text-destructive mt-0.5" />
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-destructive">Excluir Conta</h4>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              Ao excluir sua conta, todos os seus dados serão permanentemente removidos. Esta ação não pode ser desfeita.
-                            </p>
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              className="mt-3"
-                              onClick={() => setShowDeleteDialog(true)}
-                            >
-                              Excluir minha conta
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+          <div className="min-w-0">
+            {displayName && (
+              <p className="truncate text-base font-bold leading-tight text-foreground">{displayName}</p>
+            )}
+            <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+          </div>
         </div>
-      </div>
+        <p className="mt-3 break-all rounded-2xl bg-muted/60 px-3 py-2 text-[11px] text-muted-foreground">
+          ID do usuário: {user.id}
+        </p>
+      </AccountCard>
+
+      {/* Alterar senha */}
+      <AccountCard
+        icon={<Lock className="h-5 w-5" />}
+        title="Alterar senha"
+        description="Mínimo 6 caracteres, com letra e número."
+      >
+        <form onSubmit={handlePasswordChange} className="space-y-3">
+          <div className="space-y-1.5">
+            <Label htmlFor="newPassword" className="px-1 text-xs font-semibold text-muted-foreground">
+              Nova senha
+            </Label>
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[hsl(var(--lilac))]" />
+              <Input
+                id="newPassword"
+                type="password"
+                placeholder="Mínimo 6 caracteres com letra e número"
+                className={accountInputClass}
+                value={passwordData.newPassword}
+                onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                required
+              />
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="confirmPassword" className="px-1 text-xs font-semibold text-muted-foreground">
+              Confirmar nova senha
+            </Label>
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[hsl(var(--lilac))]" />
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                className={accountInputClass}
+                value={passwordData.confirmPassword}
+                onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                required
+              />
+            </div>
+          </div>
+          <button type="submit" disabled={isLoading} className={accountPrimaryButtonClass}>
+            {isLoading ? "Atualizando..." : "Atualizar senha"}
+          </button>
+        </form>
+      </AccountCard>
+
+      {/* Alterar email */}
+      <AccountCard
+        icon={<Mail className="h-5 w-5" />}
+        title="Alterar email"
+      >
+        <form onSubmit={handleEmailChange} className="space-y-3">
+          <div className="space-y-1.5">
+            <Label htmlFor="currentEmail" className="px-1 text-xs font-semibold text-muted-foreground">
+              Email atual
+            </Label>
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="currentEmail"
+                type="email"
+                value={user.email || ""}
+                className={`${accountInputClass} opacity-70`}
+                disabled
+              />
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="newEmail" className="px-1 text-xs font-semibold text-muted-foreground">
+              Novo email
+            </Label>
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[hsl(var(--lilac))]" />
+              <Input
+                id="newEmail"
+                type="email"
+                placeholder="novo@email.com"
+                className={accountInputClass}
+                value={emailData.newEmail}
+                onChange={(e) => setEmailData({ newEmail: e.target.value })}
+                required
+              />
+            </div>
+          </div>
+          <button type="submit" disabled={isLoading} className={accountPrimaryButtonClass}>
+            {isLoading ? "Atualizando..." : "Atualizar email"}
+          </button>
+        </form>
+      </AccountCard>
+
+      {/* Excluir conta */}
+      <AccountCard
+        icon={<Trash2 className="h-5 w-5" />}
+        title="Excluir conta"
+        description="Todos os seus dados serão removidos para sempre. Esta ação não pode ser desfeita."
+        tone="danger"
+      >
+        <button
+          type="button"
+          onClick={() => setShowDeleteDialog(true)}
+          className="h-11 w-full rounded-full bg-destructive/10 text-sm font-bold text-destructive ring-1 ring-destructive/20 transition-transform active:scale-[0.98]"
+        >
+          Excluir minha conta
+        </button>
+      </AccountCard>
 
       {/* Delete Account Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className="w-[calc(100vw-24px)] max-w-md rounded-3xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
+            <AlertDialogTitle className="flex items-center gap-2 text-balance">
               <Trash2 className="w-5 h-5 text-destructive" />
               Excluir Conta
             </AlertDialogTitle>
@@ -283,11 +270,11 @@ const Settings = () => {
           </AlertDialogHeader>
 
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleteLoading}>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleteLoading} className="rounded-full">Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteAccount}
               disabled={isDeleteLoading}
-              className="bg-destructive hover:bg-destructive/90"
+              className="rounded-full bg-destructive hover:bg-destructive/90"
             >
               {isDeleteLoading ? (
                 <>
@@ -301,7 +288,7 @@ const Settings = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </AccountShell>
   );
 };
 

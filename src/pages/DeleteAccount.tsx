@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { X, Trash2, Mail, RefreshCw, CreditCard } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Trash2, Mail, RefreshCw, CreditCard } from "lucide-react";
+import { AccountShell, AccountCard } from "@/components/account/AccountShell";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -70,128 +69,101 @@ Atenciosamente.`;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex justify-end mb-4">
-            <Link to={user ? "/dashboard" : "/"} aria-label="Fechar">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-11 w-11 rounded-full bg-white/90 backdrop-blur text-primary hover:bg-white shadow-sm"
-              >
-                <X className="h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
-
-          <Card className="shadow-glow border-white/20 bg-white/95 backdrop-blur-sm">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
-                <Trash2 className="w-8 h-8 text-destructive" />
-              </div>
-              <CardTitle className="text-2xl">Exclusão de Conta e Dados</CardTitle>
-              <CardDescription>
-                Solicite a exclusão permanente da sua conta e todos os dados associados
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Subscription Warning */}
-              <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <CreditCard className="w-5 h-5 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-amber-800 dark:text-amber-400">
-                      Importante sobre sua assinatura
-                    </p>
-                    <p className="text-sm text-amber-700 dark:text-amber-500/90">
-                      A exclusão da conta <strong>não cancela automaticamente</strong> sua assinatura e pagamentos recorrentes. 
-                      Para evitar cobranças futuras, cancele sua assinatura antes de excluir a conta.
-                    </p>
-                    <p className="text-sm text-amber-700 dark:text-amber-500/90">
-                      O cancelamento é feito na loja onde você assinou:
-                    </p>
-                    <ul className="text-sm text-amber-700 dark:text-amber-500/90 space-y-1">
-                      <li>
-                        <strong>iPhone:</strong> Ajustes → seu nome (Apple ID) → Assinaturas → SoPro Neuro → Cancelar assinatura
-                      </li>
-                      <li>
-                        <strong>Android:</strong> Google Play Store → foto do perfil → Pagamentos e assinaturas → Assinaturas → SoPro Neuro → Cancelar assinatura
-                      </li>
-                    </ul>
-                    <p className="text-sm text-amber-700 dark:text-amber-500/90">
-                      O acesso ao conteúdo continua disponível até o fim do período atual que já foi pago.
-                    </p>
-                    <Link to="/cancel-subscription" className="inline-flex items-center text-sm font-medium text-amber-800 dark:text-amber-400 hover:underline">
-                      Ver como cancelar assinatura →
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="font-semibold text-lg">O que será excluído:</h3>
-                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                  <li>Sua conta de usuário</li>
-                  <li>Dados de perfil (nome, email)</li>
-                  <li>Histórico de progresso na jornada</li>
-                  <li>Respostas do onboarding</li>
-                  <li>Feedback e avaliações</li>
-                  <li>Dados de assinatura no app</li>
-                </ul>
-              </div>
-
-              {/* If user is logged in, show direct delete button */}
-              {user ? (
-                <div className="border-t pt-6">
-                  <Button 
-                    className="w-full" 
-                    variant="destructive"
-                    onClick={() => setShowDeleteDialog(true)}
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Excluir minha conta
-                  </Button>
-                  <p className="text-xs text-center text-muted-foreground mt-4">
-                    Esta ação é permanente e não pode ser desfeita.
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div className="space-y-4">
-                    <h3 className="font-semibold text-lg">Como solicitar:</h3>
-                    <p className="text-muted-foreground">
-                      Para solicitar a exclusão da sua conta, envie um email para nossa equipe de suporte. 
-                      Processaremos sua solicitação em até 30 dias conforme a LGPD.
-                    </p>
-                  </div>
-
-                  <div className="border-t pt-6">
-                    <a href={mailtoLink}>
-                      <Button className="w-full" variant="destructive">
-                        <Mail className="w-4 h-4 mr-2" />
-                        Enviar solicitação de exclusão
-                      </Button>
-                    </a>
-                    <p className="text-xs text-center text-muted-foreground mt-4">
-                      Ou envie um email diretamente para: <strong>{supportEmail}</strong>
-                    </p>
-                  </div>
-                </>
-              )}
-
-              <div className="bg-muted/50 rounded-lg p-4 text-sm text-muted-foreground">
-                <strong>Importante:</strong> A exclusão é permanente e não pode ser desfeita. 
-                Após a exclusão, você precisará criar uma nova conta caso deseje usar o aplicativo novamente.
-              </div>
-            </CardContent>
-          </Card>
+    <AccountShell
+      title="Exclusão de conta e dados"
+      subtitle="Solicite a exclusão permanente da sua conta e de todos os dados associados."
+      closeTo={user ? "/dashboard" : "/"}
+    >
+      {/* Aviso sobre a assinatura */}
+      <AccountCard
+        icon={<CreditCard className="h-5 w-5" />}
+        title="Importante sobre sua assinatura"
+      >
+        <div className="space-y-2 text-sm text-muted-foreground">
+          <p>
+            A exclusão da conta <strong className="text-foreground">não cancela automaticamente</strong> sua assinatura e pagamentos recorrentes.
+            Para evitar cobranças futuras, cancele sua assinatura antes de excluir a conta.
+          </p>
+          <p>O cancelamento é feito na loja onde você assinou:</p>
+          <ul className="space-y-1.5 rounded-2xl bg-muted/60 p-3">
+            <li>
+              <strong className="text-foreground">iPhone:</strong> Ajustes → seu nome (Apple ID) → Assinaturas → SoPro Neuro → Cancelar assinatura
+            </li>
+            <li>
+              <strong className="text-foreground">Android:</strong> Google Play Store → foto do perfil → Pagamentos e assinaturas → Assinaturas → SoPro Neuro → Cancelar assinatura
+            </li>
+          </ul>
+          <p>O acesso ao conteúdo continua disponível até o fim do período atual que já foi pago.</p>
+          <Link
+            to="/cancel-subscription"
+            className="inline-flex items-center text-sm font-semibold text-[hsl(var(--electric-blue))]"
+          >
+            Ver como cancelar assinatura →
+          </Link>
         </div>
-      </div>
+      </AccountCard>
+
+      {/* O que será excluído */}
+      <AccountCard icon={<Trash2 className="h-5 w-5" />} title="O que será excluído" tone="danger">
+        <ul className="space-y-2 text-sm text-muted-foreground">
+          {[
+            "Sua conta de usuário",
+            "Dados de perfil (nome, email)",
+            "Histórico de progresso na jornada",
+            "Respostas do onboarding",
+            "Feedback e avaliações",
+            "Dados de assinatura no app",
+          ].map((item) => (
+            <li key={item} className="flex items-center gap-2.5">
+              <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-destructive/60" />
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        {user ? (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setShowDeleteDialog(true)}
+              className="flex h-12 w-full items-center justify-center rounded-full bg-destructive text-sm font-bold text-destructive-foreground transition-transform active:scale-[0.98]"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Excluir minha conta
+            </button>
+            <p className="mt-3 text-center text-xs text-muted-foreground">
+              Esta ação é permanente e não pode ser desfeita.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-4 space-y-3">
+            <h3 className="text-sm font-bold text-foreground">Como solicitar</h3>
+            <p className="text-sm text-muted-foreground">
+              Para solicitar a exclusão da sua conta, envie um email para nossa equipe de suporte.
+              Processaremos sua solicitação em até 30 dias conforme a LGPD.
+            </p>
+            <a
+              href={mailtoLink}
+              className="flex h-12 w-full items-center justify-center rounded-full bg-destructive text-sm font-bold text-destructive-foreground transition-transform active:scale-[0.98]"
+            >
+              <Mail className="mr-2 h-4 w-4" />
+              Enviar solicitação de exclusão
+            </a>
+            <p className="text-center text-xs text-muted-foreground">
+              Ou envie um email diretamente para: <strong>{supportEmail}</strong>
+            </p>
+          </div>
+        )}
+      </AccountCard>
+
+      <p className="rounded-3xl bg-card/60 p-4 text-sm text-muted-foreground ring-1 ring-border/40 backdrop-blur">
+        <strong className="text-foreground">Importante:</strong> A exclusão é permanente e não pode ser desfeita.
+        Após a exclusão, você precisará criar uma nova conta caso deseje usar o aplicativo novamente.
+      </p>
 
       {/* Delete Account Confirmation Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className="w-[calc(100vw-24px)] max-w-md rounded-3xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <Trash2 className="w-5 h-5 text-destructive" />
@@ -213,11 +185,11 @@ Atenciosamente.`;
           </AlertDialogHeader>
 
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleteLoading}>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleteLoading} className="rounded-full">Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteAccount}
               disabled={isDeleteLoading}
-              className="bg-destructive hover:bg-destructive/90"
+              className="rounded-full bg-destructive hover:bg-destructive/90"
             >
               {isDeleteLoading ? (
                 <>
@@ -231,7 +203,7 @@ Atenciosamente.`;
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </AccountShell>
   );
 };
 
