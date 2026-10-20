@@ -38,7 +38,6 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import { getStartHereVideoUrl } from "@/lib/startHereVideo";
 import soproLogo from "@/assets/sopro-logo.webp";
-import stepVideoImg from "@/assets/step-video.png";
 import stepHipnoseImg from "@/assets/step-hipnose.png";
 import stepMissaoImg from "@/assets/step-missao.png";
 import stepMuralImg from "@/assets/step-mural.png";
@@ -241,7 +240,8 @@ export default function Jornada() {
       imagem_nome: h.imagem_nome ?? null,
       explicacao_missao: h.explicacao_missao?.trim() || null,
       objetivo_chat_missao: h.objetivo_chat_missao ?? null,
-      hasVideo: h.video !== false && !!h.video_nome?.trim(),
+      // Os temas não têm mais vídeo (Transforme, Experimente e Compartilhe).
+      hasVideo: false,
       hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
       hasMissao: h.missao !== false,
       isIntro: fixedIds.has(h.id),
@@ -348,12 +348,13 @@ export default function Jornada() {
     });
   };
 
+  // Tema concluído = hipnose e missão existentes concluídas (mesma regra da
+  // tela inicial). O mural não conta para a conclusão.
   const itemCompleted = (it: JornadaItem) => {
-    const needsVideo = it.hasVideo;
-    const needsHip = it.hasHipnose;
-    const v = needsVideo ? isFinished(interactionKey(it, "video")) : true;
-    const h = needsHip ? isFinished(interactionKey(it, "hypnosis")) : true;
-    return v && h;
+    const checks: boolean[] = [];
+    if (it.hasHipnose) checks.push(isFinished(interactionKey(it, "hypnosis")));
+    if (it.hasMissao) checks.push(isFinished(missaoKeys(it).done));
+    return checks.length > 0 && checks.every(Boolean);
   };
 
   // Todos os temas da jornada ficam sempre abertos (sem bloqueio sequencial).
@@ -686,17 +687,6 @@ export default function Jornada() {
               : null;
 
             const options: SheetOption[] = [
-              it.hasVideo && {
-                key: "video",
-                image: stepVideoImg,
-                title: "Entenda",
-                subtitle: "o que acontece no seu cérebro",
-                done: isFinished(interactionKey(it, "video")),
-                onClick: () => {
-                  closeSheet();
-                  openMedia(idx, "video");
-                },
-              },
               it.hasHipnose && {
                 key: "hipnose",
                 image: stepHipnoseImg,
@@ -754,20 +744,8 @@ export default function Jornada() {
           }
 
           const h = sheet.h;
-          const hasV = h.video !== false && !!h.video_nome?.trim();
           const hasH = h.hipnose !== false && !!h.hipnose_nome?.trim();
           const options: SheetOption[] = [
-            hasV && {
-              key: "video",
-              image: stepVideoImg,
-              title: "Entenda",
-              subtitle: "o que acontece no seu cérebro",
-              done: isFinished(`video_apoio_${h.id}`),
-              onClick: () => {
-                closeSheet();
-                openMediaReducao(h, "video");
-              },
-            },
             hasH && {
               key: "hipnose",
               image: stepHipnoseImg,

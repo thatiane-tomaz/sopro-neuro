@@ -91,7 +91,7 @@ export function useJourneyReview(jornadaType?: string) {
       const pos = h.posicao != null ? Number(h.posicao) : null;
       if (pos == null) return false;
       const checks: boolean[] = [];
-      if (h.video !== false && !!h.video_nome?.trim()) checks.push(isDone(`video_semana_${pos}`));
+      // Os temas não têm mais vídeo: só hipnose e missão contam.
       if (h.hipnose !== false && !!h.hipnose_nome?.trim()) checks.push(isDone(`hipnose_semana_${pos}`));
       if (h.missao !== false) checks.push(isDone(`missao_semana_${pos}`));
       return checks.length > 0 && checks.every(Boolean);
