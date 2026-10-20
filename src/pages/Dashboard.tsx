@@ -10,6 +10,12 @@ import { useOnboardingData } from "@/hooks/useOnboardingData";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useContentAccess } from "@/hooks/useContentAccess";
+import {
+  hypnosisSampleId,
+  missionSampleId,
+  newFreeChatSampleId,
+  videoSampleId,
+} from "@/lib/freeSamples";
 import { useContentTracking } from "@/hooks/useContentTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { getSignedMediaUrl } from "@/lib/mediaUrl";
@@ -136,10 +142,17 @@ export default function Dashboard() {
   const [switchingJornada, setSwitchingJornada] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatSeed, setChatSeed] = useState<string | undefined>(undefined);
+  const [chatSampleId, setChatSampleId] = useState<string | undefined>(undefined);
 
-  // Abre o chat de IA em modal (opcionalmente já enviando a 1ª mensagem)
+  // Abre o chat de IA em modal (opcionalmente já enviando a 1ª mensagem).
+  // Cada abertura é uma conversa nova; sem assinatura só a 1ª é grátis.
   const openChat = (seed?: string) => {
-    if (!ensureContentAccess({ source: "chat" })) return;
+    const sampleId = newFreeChatSampleId();
+    if (
+      !ensureContentAccess({ source: "chat", sample: { kind: "neo", id: sampleId }, claim: false })
+    )
+      return;
+    setChatSampleId(sampleId);
     setChatSeed(seed);
     setChatOpen(true);
   };
@@ -296,7 +309,14 @@ export default function Dashboard() {
   }, [tick, missaoLocked, missaoUnlockAt]);
 
   const openMissionDialog = async () => {
-    if (!ensureContentAccess({ source: "missao" })) return;
+    if (
+      !ensureContentAccess({
+        source: "missao",
+        sample: { kind: "neo", id: missionSampleId((gatilho as any)?.id) },
+        claim: false,
+      })
+    )
+      return;
     setMissionDialogOpen(true);
     if (!missaoStartTrack) {
       try {
@@ -472,8 +492,12 @@ export default function Dashboard() {
   };
 
   const openMedia = async (type: "video" | "hypnosis") => {
-    // Todo o conteúdo exige assinatura ativa
-    if (!ensureContentAccess({ source: type })) return;
+    // Sem assinatura: 1 hipnose e 1 explicação grátis (a primeira que abrir)
+    const sample =
+      type === "video"
+        ? { kind: "explicacao" as const, id: videoSampleId((gatilho as any)?.video_nome) }
+        : { kind: "hipnose" as const, id: hypnosisSampleId((gatilho as any)?.hipnose_nome) };
+    if (!ensureContentAccess({ source: type, sample })) return;
     const url = await getMediaUrl(type);
     if (!url) {
       toast({
@@ -907,6 +931,7 @@ export default function Dashboard() {
             {chatOpen && (
               <ChatPanel
                 embedded
+                sampleId={chatSampleId}
                 initialMessage={chatSeed}
                 greetingText={gancho ?? undefined}
                 onClose={() => {
