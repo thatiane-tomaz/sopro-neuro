@@ -17,6 +17,8 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useSosHypnosis } from "@/hooks/useSosHypnosis";
+import { useContentAccess } from "@/hooks/useContentAccess";
+import { hypnosisSampleId, SOS_SAMPLE_ID } from "@/lib/freeSamples";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -86,13 +88,7 @@ export default function Controle() {
     refetchOnWindowFocus: false,
   });
 
-  const canPlay = isAdmin || isPremium || isFreelist;
-
-  const ensureAccess = () => {
-    if (canPlay) return true;
-    navigate("/paywall");
-    return false;
-  };
+  const { ensureContentAccess } = useContentAccess();
 
   const openMedia = async (
     title: string,
@@ -115,14 +111,21 @@ export default function Controle() {
   };
 
   const handleSos = async () => {
-    if (!ensureAccess()) return;
+    if (!ensureContentAccess({ source: "sos", sample: { kind: "hipnose", id: SOS_SAMPLE_ID } }))
+      return;
     const sos = await getSosHypnosis();
     if (!sos.fileUrl) return;
     openMedia(sos.title, sos.fileUrl, `sos_${sos.index + 1}`);
   };
 
   const handleTrigger = async (t: TriggerItem) => {
-    if (!ensureAccess()) return;
+    if (
+      !ensureContentAccess({
+        source: "gatilho",
+        sample: { kind: "hipnose", id: hypnosisSampleId(t.file_name) },
+      })
+    )
+      return;
     const url = await getSignedMediaUrl("hipnoses_2", t.file_name, "hypnosis", [
       HYPNOSIS_BUCKET,
       "hipnoses_2",
