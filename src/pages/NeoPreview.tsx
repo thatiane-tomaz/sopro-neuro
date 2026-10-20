@@ -23,6 +23,8 @@ export default function NeoPreview() {
           imagemGatilho={neoIdeia}
           focoAtualNumero={2}
           totalFocos={7}
+          focosConcluidos={1}
+          onOpenJornada={() => {}}
           steps={[
             { key: "hipnose", label: "Hipnose", verb: "Transforme", rest: "seus hábitos", image: stepHipnose, icon: Headphones, done: true, onClick: () => {}, actionLabel: "Continuar com a hipnose" },
             { key: "missao", label: "Missão", verb: "Experimente", rest: "uma vida mais leve", image: stepMissao, icon: ClipboardList, done: false, onClick: () => {}, actionLabel: "Continuar com a missão" },
