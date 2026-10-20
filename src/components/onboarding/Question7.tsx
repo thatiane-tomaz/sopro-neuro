@@ -56,7 +56,7 @@ const Question7 = ({ data, updateData, onNext, onPrev }: Question7Props) => {
               <RadioGroupItem id={`journey-${opt.value}`} value={opt.value} className="mt-1" />
               <div className="flex-1">
                 <div className="font-semibold text-foreground text-sm">{opt.label}</div>
-                <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{opt.description}</div>
+                <div className="text-[13px] text-muted-foreground mt-1 leading-relaxed font-medium">{opt.description}</div>
               </div>
             </Label>
           );

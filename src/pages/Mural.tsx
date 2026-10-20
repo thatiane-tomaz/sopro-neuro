@@ -53,7 +53,7 @@ function PostCard({
             <p className="text-[12px] font-semibold text-foreground truncate">
               {post.author_name || "Anônimo"}
             </p>
-            <p className="text-[10px] text-muted-foreground">
+            <p className="text-[11px] text-muted-foreground font-medium">
               {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: ptBR })}
               {post.day_number ? ` · Dia ${post.day_number}` : ""}
             </p>
@@ -219,7 +219,7 @@ export default function Mural() {
               <DialogTitle className="text-base font-bold text-foreground">
                 Compartilhe no mural
               </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground">
+              <DialogDescription className="text-[13px] text-muted-foreground font-medium">
                 Uma frase pode inspirar outra pessoa hoje.
               </DialogDescription>
             </DialogHeader>
@@ -233,7 +233,7 @@ export default function Mural() {
               rows={5}
               className="resize-none rounded-xl border-[hsl(258_70%_92%)] focus-visible:ring-[hsl(258_70%_70%)]"
             />
-            <div className="flex justify-end text-[11px] text-muted-foreground">
+            <div className="flex justify-end text-xs text-muted-foreground font-medium">
               {content.length}/{MAX_LEN}
             </div>
           </div>

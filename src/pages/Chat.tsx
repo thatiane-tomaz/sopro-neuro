@@ -784,7 +784,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
             {isStreaming ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
           </button>
         </form>
-        <p className="mx-auto max-w-md text-center text-[10px] text-muted-foreground mt-2 px-4">
+        <p className="mx-auto max-w-md text-center text-[11px] text-muted-foreground mt-2 px-4 font-medium">
           Sou seu amigo virtual. Em caso de emergência ou crise, ligue 188 (CVV).
         </p>
       </div>
@@ -811,7 +811,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
                 "Vamos lá"
               )}
             </Button>
-            <p className="text-center text-[11px] text-muted-foreground mt-2">
+            <p className="text-center text-xs text-muted-foreground mt-2 font-medium">
               Leia com calma. Ao tocar em Vamos lá sua nova jornada de redução começa.
             </p>
           </div>

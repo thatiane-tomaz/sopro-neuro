@@ -131,7 +131,7 @@ Atenciosamente.`;
               <Trash2 className="mr-2 h-4 w-4" />
               Excluir minha conta
             </button>
-            <p className="mt-3 text-center text-xs text-muted-foreground">
+            <p className="mt-3 text-center text-[13px] text-muted-foreground font-medium">
               Esta ação é permanente e não pode ser desfeita.
             </p>
           </div>
@@ -149,7 +149,7 @@ Atenciosamente.`;
               <Mail className="mr-2 h-4 w-4" />
               Enviar solicitação de exclusão
             </a>
-            <p className="text-center text-xs text-muted-foreground">
+            <p className="text-center text-[13px] text-muted-foreground font-medium">
               Ou envie um email diretamente para: <strong>{supportEmail}</strong>
             </p>
           </div>

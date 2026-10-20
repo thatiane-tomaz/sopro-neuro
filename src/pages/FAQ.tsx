@@ -35,7 +35,7 @@ const FAQ = () => {
               </div>
               <div>
                 <h2 className="font-semibold text-foreground">Vídeo ou hipnose travando</h2>
-                <p className="text-xs text-muted-foreground">Soluções para interrupções durante a reprodução</p>
+                <p className="text-[13px] text-muted-foreground font-medium">Soluções para interrupções durante a reprodução</p>
               </div>
             </div>
           </div>
@@ -54,10 +54,10 @@ const FAQ = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">1. Desative a Economia de Bateria</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-[13px] text-muted-foreground mt-1 font-medium">
                   {!isIOS && <><strong>Android:</strong> Configurações → Apps → SoPro Neuro → Bateria → Sem restrições<br/></>}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-[13px] text-muted-foreground mt-1 font-medium">
                   <strong>iPhone:</strong> Ajustes → Bateria → Desative "Modo de Baixa Energia"
                 </p>
               </div>
@@ -70,10 +70,10 @@ const FAQ = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">2. Mantenha o WiFi ativo durante a suspensão</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-[13px] text-muted-foreground mt-1 font-medium">
                   {!isIOS && <><strong>Android:</strong> Configurações → WiFi → Avançado → Manter WiFi durante suspensão → Sempre<br/></>}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-[13px] text-muted-foreground mt-1 font-medium">
                   <strong>iPhone:</strong> O WiFi permanece ativo por padrão. Se usar dados móveis, 
                   verifique se o sinal está estável.
                 </p>
@@ -88,10 +88,10 @@ const FAQ = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">3. Desative "Apps em suspensão"</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-[13px] text-muted-foreground mt-1 font-medium">
                   <strong>Samsung:</strong> Configurações → Cuidados com o dispositivo → Bateria → Limites de uso em segundo plano → Remova o SoPro da lista
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-[13px] text-muted-foreground mt-1 font-medium">
                   <strong>Xiaomi:</strong> Configurações → Apps → Gerenciar apps → SoPro → Economia de bateria → Sem restrições
                 </p>
               </div>
@@ -105,7 +105,7 @@ const FAQ = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">4. Ative o "Não Perturbe"</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-[13px] text-muted-foreground mt-1 font-medium">
                   Notificações de outros apps podem interromper a reprodução do áudio. 
                   Ative o modo "Não Perturbe" antes de iniciar a hipnose.
                 </p>
@@ -119,7 +119,7 @@ const FAQ = () => {
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">5. Use fones de ouvido</p>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-[13px] text-muted-foreground mt-1 font-medium">
                   Fones de ouvido (com fio ou Bluetooth) ajudam a manter o foco do áudio no app 
                   e evitam que o sistema redirecione o som para outro aplicativo.
                 </p>
@@ -127,7 +127,7 @@ const FAQ = () => {
             </div>
 
             <div className="bg-muted/50 rounded-xl p-4 mt-2">
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[13px] text-muted-foreground font-medium">
                 💡 <strong>Dica:</strong> Se o problema persistir, tente fechar outros apps antes de iniciar 
                 a sessão e certifique-se de estar em uma rede WiFi estável.
               </p>
@@ -144,7 +144,7 @@ const FAQ = () => {
               </div>
               <div>
                 <h2 className="font-semibold text-foreground text-balance">Como cancelar a assinatura e parar de pagar</h2>
-                <p className="text-xs text-muted-foreground text-balance">O cancelamento é feito na loja onde você assinou</p>
+                <p className="text-[13px] text-muted-foreground text-balance font-medium">O cancelamento é feito na loja onde você assinou</p>
               </div>
             </div>
           </div>
@@ -161,7 +161,7 @@ const FAQ = () => {
                 <Apple className="h-4 w-4 text-primary" />
                 <p className="text-sm font-medium text-foreground">iPhone / iPad (App Store)</p>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[13px] text-muted-foreground font-medium">
                 Ajustes → toque no seu nome (Apple ID) → Assinaturas → SoPro Neuro → Cancelar assinatura
               </p>
             </div>
@@ -172,14 +172,14 @@ const FAQ = () => {
                   <Smartphone className="h-4 w-4 text-primary" />
                   <p className="text-sm font-medium text-foreground">Android (Google Play Store)</p>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[13px] text-muted-foreground font-medium">
                   Google Play Store → foto do perfil → Pagamentos e assinaturas → Assinaturas → SoPro Neuro → Cancelar assinatura
                 </p>
               </div>
             )}
 
             <div className="bg-muted/50 rounded-xl p-4">
-              <p className="text-xs text-muted-foreground text-balance">
+              <p className="text-[13px] text-muted-foreground text-balance font-medium">
                 💡 <strong>Importante:</strong> use a mesma conta {isIOS ? 'Apple' : 'Apple ou Google'} com a qual você
                 fez a compra. Se não encontrar a assinatura, ela pode ter sido feita em outra conta da loja.
               </p>
@@ -203,7 +203,7 @@ const FAQ = () => {
             </div>
             <div>
               <p className="text-sm font-medium text-foreground">Ainda tem dúvidas?</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[13px] text-muted-foreground font-medium">
                 Envie sua pergunta para{' '}
                 <a 
                   href="mailto:contato@soproneuro.com.br" 

@@ -49,7 +49,7 @@ const OnboardingLayout = ({
 
       {/* Progress */}
       <div className="w-full max-w-md mx-auto space-y-2 animate-fade-in">
-        <div className="flex justify-between text-xs font-medium text-muted-foreground">
+        <div className="flex justify-between text-[13px] font-medium text-muted-foreground">
           <span>{step} de {total}</span>
           <span>{pct}%</span>
         </div>

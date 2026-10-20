@@ -612,7 +612,7 @@ export default function Dashboard() {
               <p className="text-sm font-semibold text-foreground leading-tight">
                 {getGreeting()}{firstName ? `, ${firstName}!` : "!"}
               </p>
-              <p className="text-[11px] text-muted-foreground leading-tight">
+              <p className="text-xs text-muted-foreground leading-tight font-medium">
                 Seu cérebro está aprendendo<br />uma nova forma de viver.
               </p>
             </div>
@@ -664,7 +664,7 @@ export default function Dashboard() {
 
             {!showQuitDatePicker ? (
               <>
-                <p className="mt-3 text-[12px] text-muted-foreground leading-relaxed text-pretty">
+                <p className="mt-3 text-[13px] text-muted-foreground leading-relaxed text-pretty font-medium">
                   Escolher parar de fumar é uma conquista enorme. Registre a data do seu último cigarro para marcar o início da sua nova fase.
                 </p>
                 <Button
@@ -691,7 +691,7 @@ export default function Dashboard() {
                 </div>
                 {quitPickerDate && (
                   <div className="mt-2 rounded-xl bg-[hsl(258_80%_97%)] px-3 py-2 text-center">
-                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
                     <p className="text-sm font-semibold text-foreground mt-0.5">
                       {format(quitPickerDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                     </p>
@@ -724,7 +724,7 @@ export default function Dashboard() {
               </>
             )}
 
-            <p className="mt-3 text-[11px] text-muted-foreground text-center flex items-center justify-center gap-1">
+            <p className="mt-3 text-xs text-muted-foreground text-center flex items-center justify-center gap-1 font-medium">
               <Lock className="h-3 w-3" />
               Conteúdos serão liberados após informar a data.
             </p>
@@ -867,7 +867,7 @@ export default function Dashboard() {
                 <p className="text-sm font-bold text-foreground leading-tight whitespace-nowrap">
                   Acompanhe sua evolução
                 </p>
-                <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug whitespace-nowrap">
+                <p className="text-xs text-muted-foreground mt-0.5 leading-snug whitespace-nowrap font-medium">
                   Veja seu gráfico de consumo e economia.
                 </p>
               </div>
@@ -934,7 +934,7 @@ export default function Dashboard() {
                 <h3 className="text-sm font-bold text-foreground leading-tight">
                   Quando foi seu último cigarro?
                 </h3>
-                <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+                <p className="text-xs text-muted-foreground mt-0.5 leading-snug font-medium">
                   Escolha o dia para começarmos sua nova jornada.
                 </p>
               </div>
@@ -951,7 +951,7 @@ export default function Dashboard() {
             </div>
             {quitPickerDate && (
               <div className="mt-2 rounded-xl bg-[hsl(258_80%_97%)] px-3 py-2 text-center">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
+                <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
                 <p className="text-sm font-semibold text-foreground mt-0.5">
                   {format(quitPickerDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                 </p>
@@ -1024,7 +1024,7 @@ export default function Dashboard() {
               <DialogTitle className="text-lg font-bold text-foreground text-center text-balance">
                 O ritual do último cigarro
               </DialogTitle>
-              <DialogDescription className="text-[12px] text-muted-foreground text-center text-balance px-2">
+              <DialogDescription className="text-[13px] text-muted-foreground text-center text-balance px-2 font-medium">
                 Um gesto simbólico que marca uma virada real na sua mente.
               </DialogDescription>
             </DialogHeader>
@@ -1138,7 +1138,7 @@ export default function Dashboard() {
                 </button>
               </div>
               {missaoLocked && (
-                <p className="mt-4 text-center text-[11px] leading-relaxed text-muted-foreground">
+                <p className="mt-4 text-center text-xs leading-relaxed text-muted-foreground font-medium">
                   Viva sua missão por 24 horas. Depois desse período, você poderá conversar com o chat sobre a experiência.
                 </p>
               )}
@@ -1157,7 +1157,7 @@ export default function Dashboard() {
               <DialogTitle className="text-base font-bold text-foreground">
                 Sua data de mudança
               </DialogTitle>
-              <DialogDescription className="text-xs text-muted-foreground">
+              <DialogDescription className="text-[13px] text-muted-foreground font-medium">
                 Selecione o dia em que você fumou pela última vez.
               </DialogDescription>
             </DialogHeader>
@@ -1175,7 +1175,7 @@ export default function Dashboard() {
           </div>
           {pendingDate && (
             <div className="mx-5 mb-3 rounded-xl bg-[hsl(258_80%_97%)] px-3 py-2 text-center">
-              <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
+              <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
               <p className="text-sm font-semibold text-foreground mt-0.5">
                 {format(pendingDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
               </p>
@@ -1236,7 +1236,7 @@ function SavingsBlock({
             className="rounded-xl bg-white px-3 py-2 shadow-[0_2px_8px_-4px_hsl(258_60%_40%/0.12)]"
           >
             {r.label && (
-              <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">
+              <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-medium">
                 {r.label}
               </p>
             )}

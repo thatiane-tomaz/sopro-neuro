@@ -82,7 +82,7 @@ export default function NeoBlock({
               <h2 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
                 Converse com o Neo
               </h2>
-              <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
+              <p className="mt-1 text-balance text-[13px] leading-relaxed text-muted-foreground font-medium">
                 Converse sobre seus gatilhos, tire dúvidas e descubra novas formas de lidar com o cigarro.
               </p>
             </div>

@@ -71,7 +71,7 @@ const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) =>
               </div>
               <div>
                 <p className="font-semibold text-sm text-foreground">{b.title}</p>
-                <p className="text-xs text-muted-foreground text-balance">{b.text}</p>
+                <p className="text-[13px] text-muted-foreground text-balance font-medium">{b.text}</p>
               </div>
             </div>
           ))}
@@ -100,12 +100,12 @@ const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) =>
 
         {/* Termos obrigatórios (Apple 3.1.2) */}
         <div className="text-center space-y-2">
-          <div className="text-[10px] text-muted-foreground leading-relaxed space-y-1">
+          <div className="text-[11px] text-muted-foreground leading-relaxed space-y-1 font-medium">
             <p>A assinatura é renovada automaticamente a menos que a renovação automática seja desativada pelo menos 24 horas antes do final do período atual.</p>
             <p>O pagamento será cobrado na sua conta do iTunes na confirmação da compra. O valor da renovação será cobrado dentro de 24 horas antes do final do período atual.</p>
             <p>Você pode gerenciar e cancelar suas assinaturas acessando as configurações da sua conta na App Store após a compra.</p>
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[13px] text-muted-foreground font-medium">
             <Link to="/terms" className="underline">Termos de Uso</Link>{' • '}
             <Link to="/privacy" className="underline">Política de Privacidade</Link>
           </p>

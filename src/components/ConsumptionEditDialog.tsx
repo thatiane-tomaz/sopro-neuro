@@ -129,7 +129,7 @@ export default function ConsumptionEditDialog({
 
         <div className="mt-1 space-y-3">
           <div>
-            <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Cigarros por dia
             </label>
             <input
@@ -143,7 +143,7 @@ export default function ConsumptionEditDialog({
           </div>
 
           <div>
-            <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Vapes por mês
             </label>
             <input
@@ -157,7 +157,7 @@ export default function ConsumptionEditDialog({
           </div>
 
           <div>
-            <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Gasto por semana (em reais)
             </label>
             <div className="relative mt-1">
@@ -173,7 +173,7 @@ export default function ConsumptionEditDialog({
                 className="w-full rounded-xl bg-white pl-10 pr-3 py-2.5 text-base shadow-[inset_0_0_0_1px_hsl(258_70%_92%)] focus:outline-none focus:ring-2 focus:ring-[hsl(258_70%_70%)]"
               />
             </div>
-            <p className="mt-1 text-[11px] text-muted-foreground">
+            <p className="mt-1 text-xs text-muted-foreground font-medium">
               Somente reais inteiros, sem centavos. Ex.: 55 = R$ 55,00
             </p>
           </div>

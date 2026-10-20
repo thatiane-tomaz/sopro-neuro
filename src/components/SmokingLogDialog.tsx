@@ -81,7 +81,7 @@ export default function SmokingLogDialog({
         </div>
 
         <div className="mt-3">
-          <label className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+          <label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Outro valor
           </label>
           <input
@@ -114,7 +114,7 @@ export default function SmokingLogDialog({
 
         <button
           onClick={() => onOpenChange(false)}
-          className="mt-2 text-xs text-muted-foreground hover:text-foreground"
+          className="mt-2 text-[13px] text-muted-foreground hover:text-foreground font-medium"
         >
           Prefiro registrar depois
         </button>

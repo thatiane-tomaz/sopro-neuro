@@ -45,7 +45,7 @@ All colors MUST be HSL.
     --gradient-brain-glow: radial-gradient(circle, hsl(258 70% 75% / 0.35), transparent 70%);
 
     --muted: 210 18% 93%;
-    --muted-foreground: 215 18% 45%;
+    --muted-foreground: 215 22% 37%;
 
     /* Navy forte */
     --navy: 200 70% 32%;
