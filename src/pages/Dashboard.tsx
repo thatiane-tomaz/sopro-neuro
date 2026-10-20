@@ -77,7 +77,7 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import { getStartHereVideoUrl, startHereKeyForJornada } from "@/lib/startHereVideo";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
-import neoIdeiaImg from "@/assets/neo-ideia.png";
+import NeoExplicaCard from "@/components/home/NeoExplicaCard";
 import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import SosThinBlock from "@/components/home/SosThinBlock";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
