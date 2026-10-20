@@ -25,7 +25,7 @@ export const useContentAccess = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
-  const { isPremium, loading: subLoading } = useSubscription();
+  const { isPremium, isExpired, loading: subLoading } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
 
   const hasContentAccess = isAdmin || isPremium || isFreelist;
@@ -55,12 +55,15 @@ export const useContentAccess = () => {
 
   const loading = adminLoading || subLoading || freelistLoading || (!!userId && claimsLoading);
 
+  // Amostras grátis só para quem nunca assinou (assinatura vencida não ganha)
+  const samplesAllowed = !isExpired;
+
   const canUseSample = (sample: SampleRequest) =>
-    hasContentAccess || canUseFreeSample(claims, sample.kind, sample.id);
+    hasContentAccess || (samplesAllowed && canUseFreeSample(claims, sample.kind, sample.id));
 
   /** Registra o conteúdo grátis escolhido (só na primeira vez de cada tipo). */
   const claimSample = async (sample: SampleRequest) => {
-    if (hasContentAccess || !userId) return;
+    if (hasContentAccess || !userId || !samplesAllowed) return;
     if (claims[sample.kind]) return;
     queryClient.setQueryData<FreeSampleClaims>(claimsKey, (old) => ({
       ...(old ?? {}),
@@ -91,7 +94,7 @@ export const useContentAccess = () => {
   }) => {
     if (loading) return false;
     if (hasContentAccess) return true;
-    if (options?.sample && canUseFreeSample(claims, options.sample.kind, options.sample.id)) {
+    if (options?.sample && canUseSample(options.sample)) {
       if (options.claim !== false) void claimSample(options.sample);
       return true;
     }
