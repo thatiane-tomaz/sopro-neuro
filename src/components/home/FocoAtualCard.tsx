@@ -48,7 +48,7 @@ export default function FocoAtualCard({
 
   return (
     <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-      <h1 className="whitespace-nowrap text-[17px] font-bold leading-tight tracking-tight text-[hsl(var(--electric-blue))]">
+      <h1 className="whitespace-nowrap text-[clamp(15px,4.4vw,17px)] font-bold leading-tight tracking-tight text-[hsl(var(--electric-blue))]">
         Método Sopro para Enfraquecer o Vício
       </h1>
 
