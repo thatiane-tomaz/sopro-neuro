@@ -59,7 +59,7 @@ export default function SmokingLogDialog({
           <DialogTitle className="text-center text-lg font-bold">
             {title ?? "Quantos cigarros você fumou ontem?"}
           </DialogTitle>
-          <DialogDescription className="text-center text-xs">
+          <DialogDescription className="text-center text-sm">
             {description ?? "Seu registro honesto é o combustível da sua evolução."}
           </DialogDescription>
         </DialogHeader>

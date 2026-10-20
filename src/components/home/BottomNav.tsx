@@ -27,7 +27,7 @@ export default function BottomNav() {
       }`}
     >
       <Icon className={`h-5 w-5 transition-transform ${active ? "scale-110" : ""}`} strokeWidth={active ? 2.4 : 2} />
-      <span className={`text-[11px] tracking-tight ${active ? "font-semibold" : "font-medium"}`}>{label}</span>
+      <span className={`text-sm tracking-tight ${active ? "font-semibold" : "font-medium"}`}>{label}</span>
     </button>
   );
 

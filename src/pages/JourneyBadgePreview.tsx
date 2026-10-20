@@ -34,7 +34,7 @@ const JourneyBadgePreview = () => {
             <CheckCircle2 className="h-5 w-5" />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[10px] font-bold uppercase tracking-wider leading-tight text-primary/60">
+            <span className="text-sm font-bold uppercase tracking-wider leading-tight text-primary/60">
               Jornada da Liberdade
             </span>
             <p className="text-sm font-bold text-foreground leading-tight text-balance">
@@ -50,7 +50,7 @@ const JourneyBadgePreview = () => {
             <TrendingDown className="h-5 w-5" />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[10px] font-bold uppercase tracking-wider leading-tight text-primary/60">
+            <span className="text-sm font-bold uppercase tracking-wider leading-tight text-primary/60">
               Jornada de Redução
             </span>
             <p className="text-sm font-bold text-foreground leading-tight text-balance">

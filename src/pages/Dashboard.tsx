@@ -650,7 +650,7 @@ export default function Dashboard() {
               <div className="flex-1 min-w-0">
                 <div className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(258_80%_96%)] px-2 py-0.5 ring-1 ring-[hsl(258_70%_90%)]">
                   <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
-                  <span className="text-[9px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+                  <span className="text-sm font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
                     Ritual do último cigarro
                   </span>
                 </div>
@@ -691,7 +691,7 @@ export default function Dashboard() {
                 </div>
                 {quitPickerDate && (
                   <div className="mt-2 rounded-xl bg-[hsl(258_80%_97%)] px-3 py-2 text-center">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
+                    <p className="text-sm uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
                     <p className="text-sm font-semibold text-foreground mt-0.5">
                       {format(quitPickerDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                     </p>
@@ -876,7 +876,7 @@ export default function Dashboard() {
         )}
 
           {phaseNumber !== 1 && lastCigDate && (
-            <div className="mt-4 flex items-start justify-between gap-3 text-xs bg-[hsl(258_80%_97%)] rounded-2xl px-3 py-2.5">
+            <div className="mt-4 flex items-start justify-between gap-3 text-sm bg-[hsl(258_80%_97%)] rounded-2xl px-3 py-2.5">
               <div className="flex-1 min-w-0">
                 <p className="text-muted-foreground">O dia da sua mudança de vida foi</p>
                 <p className="mt-0.5 text-sm font-semibold text-foreground">
@@ -908,7 +908,7 @@ export default function Dashboard() {
               </p>
               <button
                 onClick={() => setRitualDialogOpen(true)}
-                className="mt-4 w-full flex items-center justify-center gap-2 rounded-full px-3 py-3 text-[11px] font-bold text-white shadow-[0_10px_28px_-10px_hsl(258_70%_40%/0.55)] active:scale-95 transition-transform text-center leading-tight whitespace-nowrap"
+                className="mt-4 w-full flex items-center justify-center gap-2 rounded-full px-3 py-3 text-sm font-bold text-white shadow-[0_10px_28px_-10px_hsl(258_70%_40%/0.55)] active:scale-95 transition-transform text-center leading-tight whitespace-nowrap"
                 style={{
                   background: "linear-gradient(135deg, hsl(258, 70%, 55%), hsl(280, 65%, 55%))",
                 }}
@@ -951,7 +951,7 @@ export default function Dashboard() {
             </div>
             {quitPickerDate && (
               <div className="mt-2 rounded-xl bg-[hsl(258_80%_97%)] px-3 py-2 text-center">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
+                <p className="text-sm uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
                 <p className="text-sm font-semibold text-foreground mt-0.5">
                   {format(quitPickerDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                 </p>
@@ -1031,10 +1031,10 @@ export default function Dashboard() {
           </div>
           <div className="px-5 pt-4 pb-2 space-y-3">
             <div className="rounded-2xl bg-[hsl(258_80%_97%)] px-4 py-3.5 ring-1 ring-[hsl(258_70%_92%)]">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(258_60%_45%)]">
+              <p className="text-sm font-bold uppercase tracking-[0.14em] text-[hsl(258_60%_45%)]">
                 Faça o ritual
               </p>
-              <p className="mt-1 text-[13px] leading-relaxed text-foreground/85">
+              <p className="mt-1 text-sm leading-relaxed text-foreground/85">
                 Escolha um lugar tranquilo, respire fundo e viva conscientemente esse último cigarro.
                 Repare no cheiro, no gosto, no que você sente. Depois, diga em voz alta:
                 <span className="font-semibold text-foreground"> “esse é o meu último”</span>.
@@ -1042,10 +1042,10 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="rounded-2xl bg-[hsl(220_80%_97%)] px-4 py-3.5 ring-1 ring-[hsl(220_70%_92%)]">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[hsl(220_60%_45%)]">
+              <p className="text-sm font-bold uppercase tracking-[0.14em] text-[hsl(220_60%_45%)]">
                 Sua jornada vai mudar
               </p>
-              <p className="mt-1 text-[13px] leading-relaxed text-foreground/85">
+              <p className="mt-1 text-sm leading-relaxed text-foreground/85">
                 A partir dessa data, o app vai focar em te ajudar nos primeiros dias de liberdade,
                 com conteúdos, hábitos e missões pensados para atravessar as fissuras e sustentar sua nova identidade.
               </p>
@@ -1053,7 +1053,7 @@ export default function Dashboard() {
           </div>
           <DialogFooter className="px-5 pt-3 pb-[max(env(safe-area-inset-bottom),20px)] flex-col gap-2 sm:flex-col sm:gap-2">
             <Button
-              className="w-full rounded-xl h-auto py-3 whitespace-nowrap text-[13px] leading-none bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
+              className="w-full rounded-xl h-auto py-3 whitespace-nowrap text-sm leading-none bg-gradient-to-br from-[hsl(258_70%_55%)] to-[hsl(280_70%_60%)] text-white shadow-md"
               disabled={switchingJornada}
               onClick={async () => {
                 const ok = await switchToAbstinencia();
@@ -1067,7 +1067,7 @@ export default function Dashboard() {
               🎉 Já fumei meu último cigarro
             </Button>
             <Button
-              className="w-full rounded-xl h-auto py-3 whitespace-nowrap text-[13px] leading-none bg-gradient-to-br from-[hsl(200_75%_48%)] to-[hsl(210_75%_55%)] text-primary-foreground shadow-md hover:opacity-95"
+              className="w-full rounded-xl h-auto py-3 whitespace-nowrap text-sm leading-none bg-gradient-to-br from-[hsl(200_75%_48%)] to-[hsl(210_75%_55%)] text-primary-foreground shadow-md hover:opacity-95"
               disabled={switchingJornada}
               onClick={async () => {
                 const ok = await switchToAbstinencia();
@@ -1097,7 +1097,7 @@ export default function Dashboard() {
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-[hsl(258_65%_52%)] shadow-sm ring-1 ring-black/[0.03]">
                 <Sparkles className="h-8 w-8" />
               </div>
-              <p className="mt-5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-[hsl(258_50%_55%)]">
+              <p className="mt-5 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[hsl(258_50%_55%)]">
                 Sua missão
               </p>
               <h2 className="mt-2 text-center text-2xl font-bold leading-tight text-foreground">
@@ -1175,7 +1175,7 @@ export default function Dashboard() {
           </div>
           {pendingDate && (
             <div className="mx-5 mb-3 rounded-xl bg-[hsl(258_80%_97%)] px-3 py-2 text-center">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
+              <p className="text-sm uppercase tracking-wide text-muted-foreground font-medium">Selecionado</p>
               <p className="text-sm font-semibold text-foreground mt-0.5">
                 {format(pendingDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
               </p>
@@ -1227,7 +1227,7 @@ function SavingsBlock({
         <div className="h-8 w-8 rounded-lg bg-white text-[hsl(258_60%_50%)] flex items-center justify-center flex-shrink-0 shadow-sm">
           {icon}
         </div>
-        <p className="text-xs font-medium text-foreground leading-tight">{label}</p>
+        <p className="text-sm font-medium text-foreground leading-tight">{label}</p>
       </div>
       <div className={`mt-3 grid ${isSingle ? "grid-cols-1" : "grid-cols-2"} gap-2`}>
         {rows.map((r, i) => (
@@ -1236,7 +1236,7 @@ function SavingsBlock({
             className="rounded-xl bg-white px-3 py-2 shadow-[0_2px_8px_-4px_hsl(258_60%_40%/0.12)]"
           >
             {r.label && (
-              <p className="text-xs uppercase tracking-wide text-muted-foreground font-medium">
+              <p className="text-sm uppercase tracking-wide text-muted-foreground font-medium">
                 {r.label}
               </p>
             )}

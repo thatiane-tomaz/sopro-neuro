@@ -69,10 +69,10 @@ export default function FocoAtualCard({
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--lilac))]">
+              <p className="text-sm font-bold uppercase tracking-wider text-[hsl(var(--lilac))]">
                 {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
               </p>
-              <button type="button" onClick={onOpenJornada} className="-my-1 inline-flex flex-shrink-0 items-center py-1 text-xs font-semibold text-[hsl(var(--electric-blue))]">
+              <button type="button" onClick={onOpenJornada} className="-my-1 inline-flex flex-shrink-0 items-center py-1 text-sm font-semibold text-[hsl(var(--electric-blue))]">
                 Ver jornada
                 <ChevronRight className="h-3.5 w-3.5" />
               </button>
@@ -101,8 +101,8 @@ export default function FocoAtualCard({
                     isCurrent ? "text-[hsl(var(--electric-blue))]" : "text-[hsl(var(--lilac))]"
                   }`}
                 >
-                  <span className="whitespace-nowrap text-[13px] font-semibold opacity-80">Passo {index + 1}</span>
-                  <span className="whitespace-nowrap text-xs font-bold">{step.label}</span>
+                  <span className="whitespace-nowrap text-sm font-semibold opacity-80">Passo {index + 1}</span>
+                  <span className="whitespace-nowrap text-sm font-bold">{step.label}</span>
                 </span>
                 <div className="relative mt-1.5 flex h-[72px] w-[72px] items-center justify-center">
                   <img

@@ -142,11 +142,11 @@ export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onC
             ))}
           </div>
           <div className="mt-3 flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-background/20 px-2 py-0.5 text-[10px] font-semibold text-background backdrop-blur">
+            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-background/20 px-2 py-0.5 text-sm font-semibold text-background backdrop-blur">
               <Sparkles className="h-3 w-3" />
               Neo Explica
             </span>
-            <p className="min-w-0 flex-1 truncate text-xs font-semibold text-background">{titulo}</p>
+            <p className="min-w-0 flex-1 truncate text-sm font-semibold text-background">{titulo}</p>
             <button
               type="button"
               onClick={() => onClose(false)}

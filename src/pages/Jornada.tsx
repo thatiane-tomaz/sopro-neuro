@@ -588,7 +588,7 @@ export default function Jornada() {
               <Sparkles className="h-4 w-4" />
             </div>
             <div className="flex-1">
-              <p className="text-[13px] font-semibold text-foreground leading-tight">
+              <p className="text-sm font-semibold text-foreground leading-tight">
                 {totalDone} de {items.length} temas concluídos
               </p>
             </div>
@@ -637,7 +637,7 @@ export default function Jornada() {
           <section className="mt-5 rounded-3xl bg-white/85 backdrop-blur-md shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] p-4">
             <div className="inline-flex items-center gap-1.5">
               <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
-              <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+              <span className="text-sm font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
                 Extras
               </span>
             </div>
@@ -902,7 +902,7 @@ function ThemeRow({
     if (isFocus) {
       return (
         <div
-          className="h-6 w-6 rounded-full flex items-center justify-center text-white text-[11px] font-bold shadow-sm ring-2 ring-[hsl(258_80%_92%)]"
+          className="h-6 w-6 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm ring-2 ring-[hsl(258_80%_92%)]"
           style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
           {seq}
@@ -910,7 +910,7 @@ function ThemeRow({
       );
     }
     return (
-      <div className="h-5 w-5 rounded-full flex items-center justify-center text-[hsl(220_20%_55%)] text-[10px] font-semibold bg-white border border-[hsl(220_30%_88%)]">
+      <div className="h-5 w-5 rounded-full flex items-center justify-center text-[hsl(220_20%_55%)] text-sm font-semibold bg-white border border-[hsl(220_30%_88%)]">
         {seq}
       </div>
     );
@@ -961,7 +961,7 @@ function ThemeRow({
           />
           <div className="min-w-0 flex-1">
             {isFocus && (
-              <span className="mb-0.5 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[hsl(258_60%_45%)]">
+              <span className="mb-0.5 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-0.5 text-sm font-bold uppercase tracking-[0.1em] text-[hsl(258_60%_45%)]">
                 Seu foco atual
               </span>
             )}
@@ -1075,7 +1075,7 @@ function SheetOptions({ options }: { options: SheetOption[] }) {
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-bold uppercase tracking-wide text-[hsl(var(--lilac))]">
+            <p className="text-sm font-bold uppercase tracking-wide text-[hsl(var(--lilac))]">
               Passo {index + 1} · {o.stepName}
             </p>
             <p className="mt-0.5 text-sm font-semibold leading-tight text-foreground">{o.title}</p>
@@ -1105,7 +1105,7 @@ function MissionView({
 }) {
   return (
     <div className="px-4 pb-5 pt-4">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[hsl(258_50%_55%)]">
+      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[hsl(258_50%_55%)]">
         Sua missão
       </p>
       <div className="mt-2 rounded-2xl bg-[hsl(258_80%_97%)] px-4 py-4 ring-1 ring-[hsl(258_70%_92%)]">

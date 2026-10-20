@@ -62,11 +62,11 @@ export default function MuralPreview({ habitoTitulo }: { habitoTitulo?: string |
         <div className="flex items-center justify-between">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur px-2.5 py-1 ring-1 ring-[hsl(258_70%_88%)]">
             <MessageCircleHeart className="h-3 w-3 text-[hsl(258_65%_52%)]" />
-            <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+            <span className="text-sm font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
               Mural
             </span>
           </div>
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[hsl(258_60%_45%)]">
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-[hsl(258_60%_45%)]">
             Ver tudo <ArrowRight className="h-3 w-3" />
           </span>
         </div>
@@ -74,14 +74,14 @@ export default function MuralPreview({ habitoTitulo }: { habitoTitulo?: string |
         <h3 className="mt-3 text-[15px] font-bold text-foreground leading-snug">
           Você não está sozinho nessa
         </h3>
-        <p className="mt-1 text-[12px] text-foreground/70 leading-snug whitespace-nowrap">
+        <p className="mt-1 text-sm text-foreground/70 leading-snug whitespace-nowrap">
           Veja quem já passou por isso
         </p>
 
         <div className="mt-4 rounded-2xl bg-white/85 backdrop-blur-sm p-3.5 ring-1 ring-white/70 shadow-[0_6px_18px_-10px_hsl(258_70%_45%/0.35)]">
           <div className="flex items-start gap-2.5">
             <div
-              className="h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-sm"
+              className="h-8 w-8 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-sm"
               style={{
                 background: `linear-gradient(135deg, hsl(${hue} 75% 55%), hsl(${(hue + 40) % 360} 75% 60%))`,
               }}
@@ -89,11 +89,11 @@ export default function MuralPreview({ habitoTitulo }: { habitoTitulo?: string |
               {initial}
             </div>
             <div className="min-w-0">
-              <p className="text-[13px] leading-relaxed text-foreground/85 italic">
+              <p className="text-sm leading-relaxed text-foreground/85 italic">
                 “{excerpt}”
               </p>
               {current.author_name && (
-                <p className="mt-1.5 text-[11px] font-semibold text-[hsl(258_60%_45%)]">
+                <p className="mt-1.5 text-sm font-semibold text-[hsl(258_60%_45%)]">
                   {current.author_name}
                 </p>
               )}
@@ -116,7 +116,7 @@ export default function MuralPreview({ habitoTitulo }: { habitoTitulo?: string |
           </div>
         )}
 
-        <div className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-semibold text-foreground/70">
+        <div className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-foreground/70">
           <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
           Sua vitória pode ajudar alguém
         </div>

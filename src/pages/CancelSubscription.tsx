@@ -24,7 +24,7 @@ const Steps = ({ steps }: { steps: React.ReactNode[] }) => (
   <ol className="space-y-2.5">
     {steps.map((step, i) => (
       <li key={i} className="flex items-start gap-3">
-        <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-xs font-bold text-primary-foreground">
+        <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-sm font-bold text-primary-foreground">
           {i + 1}
         </span>
         <p className="pt-0.5 text-sm text-foreground">{step}</p>

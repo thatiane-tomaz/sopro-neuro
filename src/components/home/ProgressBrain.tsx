@@ -96,11 +96,11 @@ export default function ProgressBrain({
               className="absolute -top-[1px] left-1/2 h-2 w-8 -translate-x-1/2 bg-white/55 backdrop-blur-md"
             />
             {speechTitle && (
-              <span className="block text-[8px] font-black uppercase tracking-[0.16em] leading-none text-[hsl(258_60%_50%)] whitespace-nowrap">
+              <span className="block text-sm font-black uppercase tracking-[0.16em] leading-none text-[hsl(258_60%_50%)] whitespace-nowrap">
                 {speechTitle}
               </span>
             )}
-            <span className="mt-1 block text-[10.5px] font-extrabold leading-snug text-foreground text-balance">
+            <span className="mt-1 block text-sm font-extrabold leading-snug text-foreground text-balance">
               {speechText}
             </span>
           </div>
@@ -113,11 +113,11 @@ export default function ProgressBrain({
     <div className="absolute left-1/2 top-6 z-20 w-[238px] -translate-x-1/2 pointer-events-none">
       <div className="relative rounded-[22px] bg-white/55 px-4 py-2.5 text-center ring-1 ring-white/50 shadow-[0_8px_22px_-16px_hsl(258_70%_45%/0.45)] backdrop-blur-md">
         {speechTitle && (
-          <span className="block text-[9px] font-black uppercase tracking-[0.16em] leading-none text-[hsl(258_60%_50%)] whitespace-nowrap">
+          <span className="block text-sm font-black uppercase tracking-[0.16em] leading-none text-[hsl(258_60%_50%)] whitespace-nowrap">
             {speechTitle}
           </span>
         )}
-        <span className="mt-1 block text-[13px] font-extrabold leading-snug text-foreground text-balance">
+        <span className="mt-1 block text-sm font-extrabold leading-snug text-foreground text-balance">
           {speechText}
         </span>
         <span

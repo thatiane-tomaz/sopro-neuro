@@ -42,7 +42,7 @@ function PostCard({
       <div className="relative">
         <div className="flex items-center gap-2">
           <div
-            className="h-7 w-7 rounded-full flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0 shadow-sm"
+            className="h-7 w-7 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-sm"
             style={{
               background: `linear-gradient(135deg, hsl(${hue} 75% 55%), hsl(${(hue + 40) % 360} 75% 60%))`,
             }}
@@ -50,10 +50,10 @@ function PostCard({
             {initial}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-semibold text-foreground truncate">
+            <p className="text-sm font-semibold text-foreground truncate">
               {post.author_name || "Anônimo"}
             </p>
-            <p className="text-xs text-muted-foreground font-medium">
+            <p className="text-sm text-muted-foreground font-medium">
               {formatDistanceToNow(new Date(post.created_at), { addSuffix: true, locale: ptBR })}
               {post.day_number ? ` · Dia ${post.day_number}` : ""}
             </p>
@@ -68,7 +68,7 @@ function PostCard({
             </button>
           )}
         </div>
-        <p className="mt-3 text-[13.5px] leading-relaxed text-foreground/85 whitespace-pre-wrap">
+        <p className="mt-3 text-sm leading-relaxed text-foreground/85 whitespace-pre-wrap">
           {post.content}
         </p>
       </div>
@@ -152,7 +152,7 @@ export default function Mural() {
           </button>
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur px-3 py-1.5 ring-1 ring-[hsl(258_70%_88%)]">
             <MessageCircleHeart className="h-3.5 w-3.5 text-[hsl(258_65%_52%)]" />
-            <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+            <span className="text-sm font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
               Mural
             </span>
           </div>

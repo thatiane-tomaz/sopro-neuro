@@ -351,7 +351,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
         </div>
         <div className="flex-1 min-w-0">
           <div className="font-semibold text-sm text-foreground">Neo</div>
-          <div className="text-xs text-emerald-600 font-medium">online agora</div>
+          <div className="text-sm text-emerald-600 font-medium">online agora</div>
         </div>
       </div>
 
