@@ -142,7 +142,7 @@ export default function FocoAtualCard({
               </button>
               {index < steps.length - 1 && (
                 <ArrowRight
-                  className="pointer-events-none absolute right-0 top-[3.6rem] h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.55)]"
+                  className="pointer-events-none absolute right-0 top-[4.6rem] h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.55)]"
                   strokeWidth={2.5}
                 />
               )}
