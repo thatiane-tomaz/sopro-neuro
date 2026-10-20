@@ -8,6 +8,7 @@ import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useContentAccess } from "@/hooks/useContentAccess";
+import { hypnosisSampleId, missionSampleId, videoSampleId } from "@/lib/freeSamples";
 import { useContentTracking } from "@/hooks/useContentTracking";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { supabase } from "@/integrations/supabase/client";
@@ -393,7 +394,14 @@ export default function Jornada() {
   };
 
   const openMission = async (it: JornadaItem) => {
-    if (!ensureContentAccess({ source: "missao" })) return;
+    if (
+      !ensureContentAccess({
+        source: "missao",
+        sample: { kind: "neo", id: missionSampleId(it.id) },
+        claim: false,
+      })
+    )
+      return;
     setSheetView("mission");
     const keys = missaoKeys(it);
     if (!trackingData?.some((t) => t.interaction_type === keys.start)) {
@@ -434,8 +442,12 @@ export default function Jornada() {
   const openMedia = async (idx: number, type: "video" | "hypnosis") => {
     const it = items[idx];
     if (!it) return;
-    // Todo o conteúdo exige assinatura ativa
-    if (!ensureContentAccess({ source: type })) return;
+    // Sem assinatura: 1 hipnose e 1 explicação grátis (a primeira que abrir)
+    const sample =
+      type === "video"
+        ? { kind: "explicacao" as const, id: videoSampleId(it.video_nome) }
+        : { kind: "hipnose" as const, id: hypnosisSampleId(it.hipnose_nome) };
+    if (!ensureContentAccess({ source: type, sample })) return;
     if (!canOpen(idx)) {
       toast({
         title: "Tema bloqueado",

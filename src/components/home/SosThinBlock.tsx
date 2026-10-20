@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { useSubscription } from "@/hooks/useSubscription";
-import { useIsFreelist } from "@/hooks/useIsFreelist";
+import { useContentAccess } from "@/hooks/useContentAccess";
+import { SOS_SAMPLE_ID } from "@/lib/freeSamples";
 import { useSosHypnosis } from "@/hooks/useSosHypnosis";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import MediaPlayer from "@/components/MediaPlayer";
@@ -16,16 +15,12 @@ import MediaPlayer from "@/components/MediaPlayer";
 export default function SosThinBlock() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isAdmin } = useIsAdmin();
-  const { isPremium } = useSubscription();
-  const { isFreelist } = useIsFreelist();
+  const { ensureContentAccess } = useContentAccess();
   const { getSosHypnosis } = useSosHypnosis();
   const { startTracking, updateProgress } = useJourneyTracking();
 
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [trackingId, setTrackingId] = useState<string | null>(null);
-
-  const canPlay = isAdmin || isPremium || isFreelist;
 
   const openMedia = async (title: string, fileUrl: string, interactionType: string) => {
     setSelectedMedia({ title, fileUrl, contentType: "hypnosis" as const, interactionType });
@@ -38,10 +33,9 @@ export default function SosThinBlock() {
   };
 
   const handleSos = async () => {
-    if (!canPlay) {
-      navigate("/paywall");
+    // Sem assinatura: o SOS pode ser a hipnose grátis da pessoa
+    if (!ensureContentAccess({ source: "sos", sample: { kind: "hipnose", id: SOS_SAMPLE_ID } }))
       return;
-    }
     const sos = await getSosHypnosis();
     if (!sos.fileUrl) return;
     openMedia(sos.title, sos.fileUrl, `sos_${sos.index + 1}`);

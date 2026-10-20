@@ -9,6 +9,8 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useIsFreelist } from "@/hooks/useIsFreelist";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useContentAccess, type SampleRequest } from "@/hooks/useContentAccess";
+import { missionSampleId, newFreeChatSampleId } from "@/lib/freeSamples";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import { useToast } from "@/hooks/use-toast";
@@ -84,6 +86,8 @@ interface ChatProps {
   greetingText?: string;
   /** Called when the user closes an embedded chat. */
   onClose?: () => void;
+  /** Identificador desta conversa, usado na conversa grátis de quem não assina. */
+  sampleId?: string;
   /** Revisão de gatilhos: usuário concluiu todos os focos da jornada de redução. */
   revisao?: {
     habitos: Array<{ titulo: string; tema_fixo: boolean }>;
@@ -92,7 +96,7 @@ interface ChatProps {
   };
 }
 
-export default function Chat({ embedded = false, initialMessage, greetingText, onClose, revisao: revisaoProp }: ChatProps = {}) {
+export default function Chat({ embedded = false, initialMessage, greetingText, onClose, revisao: revisaoProp, sampleId: sampleIdProp }: ChatProps = {}) {
   const navigate = useNavigate();
   const location = useLocation();
   const mission = (location.state as any)?.mission as MissionContext | undefined;
@@ -118,6 +122,16 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
   const { isPremium, loading: subLoading } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { isAdmin, loading: adminLoading } = useIsAdmin();
+  const { canUseSample, claimSample, loading: accessLoading } = useContentAccess();
+  const freeChatIdRef = useRef<string>(sampleIdProp ?? newFreeChatSampleId());
+  // Sem assinatura: 1 conversa com o Neo grátis (conversa livre ou missão).
+  // Revisão e retorno de jornada continuam exigindo assinatura.
+  const chatSample: SampleRequest | null =
+    retorno || revisao
+      ? null
+      : mission
+        ? { kind: "neo", id: missionSampleId(mission.habitoId) }
+        : { kind: "neo", id: freeChatIdRef.current };
   const { getCurrentDay, startTracking, updateProgress } = useJourneyTracking();
   const { award } = useBrainSparks();
   const { toast } = useToast();
@@ -258,10 +272,18 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
+  // Missão: a conversa grátis é registrada assim que a missão começa
+  useEffect(() => {
+    if (accessLoading || !mission || !chatSample) return;
+    if (canUseSample(chatSample)) void claimSample(chatSample);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessLoading, mission?.habitoId]);
+
   if (authLoading) return null;
   if (!user) return <Navigate to="/login" replace />;
-  if (subLoading || freelistLoading || adminLoading) return null;
-  if (!isAdmin && !isFreelist && !isPremium) return <Navigate to="/paywall" replace />;
+  if (subLoading || freelistLoading || adminLoading || accessLoading) return null;
+  if (!isAdmin && !isFreelist && !isPremium && (!chatSample || !canUseSample(chatSample)))
+    return <Navigate to="/paywall" replace />;
 
   const speak = async (text: string) => {
     if (!voiceEnabled || !text.trim()) return;
@@ -393,6 +415,8 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
     const trimmed = text.trim();
     if (!trimmed || isStreaming) return;
 
+    // Conversa livre: a conversa grátis é registrada na 1ª mensagem enviada
+    if (chatSample && !mission) void claimSample(chatSample);
     const userMsg: Msg = { role: "user", content: trimmed };
     const next = [...messages, userMsg];
     setMessages(next);
