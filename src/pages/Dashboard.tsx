@@ -724,16 +724,16 @@ export default function Dashboard() {
           className="mt-3 flex w-full items-center gap-2 overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] py-0.5 pl-1 pr-2 text-left border border-[hsl(var(--lilac)/0.2)] active:scale-[0.99] transition-transform"
         >
           <img src={neoIdeiaImg} alt="" aria-hidden width={88} height={62} draggable={false} className="h-[62px] w-[88px] flex-shrink-0 object-contain" />
-          <div className="min-w-0 flex-1">
-            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-0.5 text-[10px] font-semibold text-[hsl(var(--lilac))]">
-              <Sparkles className="h-3 w-3" />
-              Entenda para se libertar
-            </span>
-            <div className="mt-0.5 flex items-start gap-1">
-              <p className="min-w-0 flex-1 text-sm font-bold leading-tight text-[hsl(var(--electric-blue))]">
+          <div className="flex min-w-0 flex-1 items-center self-stretch">
+            <div className="relative flex h-[18px] w-full items-start gap-1">
+              <span className="absolute bottom-full left-0 mb-1 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-0.5 text-[10px] font-semibold text-[hsl(var(--lilac))]">
+                <Sparkles className="h-3 w-3" />
+                Entenda para se libertar
+              </span>
+              <p className="min-w-0 flex-1 text-sm font-bold leading-[18px] text-[hsl(var(--electric-blue))]">
                 Por que o cigarro te deixa mais ansioso?
               </p>
-              <ChevronRight className="-mt-0.5 h-5 w-5 flex-shrink-0 text-[hsl(var(--lilac))]" />
+              <ChevronRight className="h-[18px] w-[18px] flex-shrink-0 text-[hsl(var(--lilac))]" />
             </div>
           </div>
         </button>
