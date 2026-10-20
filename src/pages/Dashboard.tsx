@@ -852,7 +852,7 @@ export default function Dashboard() {
                           </span>
                         </button>
                         {index < steps.length - 1 && (
-                          <ArrowRight className="pointer-events-none absolute right-0 top-10 h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.55)]" strokeWidth={2.5} />
+                          <ArrowRight className="pointer-events-none absolute right-0 top-[4.25rem] h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.55)]" strokeWidth={2.5} />
                         )}
                       </div>
                     );
