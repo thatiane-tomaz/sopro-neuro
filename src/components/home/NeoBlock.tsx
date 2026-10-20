@@ -83,7 +83,7 @@ export default function NeoBlock({
                 Converse com o Neo
               </h2>
               <p className="mt-1 text-pretty text-sm leading-relaxed text-muted-foreground font-medium">
-                Entenda seus gatilhos, tire dúvidas e descubra novas formas de lidar com o cigarro.
+                Entenda seus gatilhos, descubra novas formas{"\u00a0"}<br />de lidar com o cigarro.
               </p>
             </div>
             <div className="relative -mr-3 -mt-5 -mb-4 w-[136px] flex-shrink-0">
