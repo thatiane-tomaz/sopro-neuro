@@ -128,7 +128,8 @@ export default function FocoAtualCard({
                   <img
                     src={step.image}
                     alt=""
-                    className={`h-[72px] w-[72px] object-contain ${step.done && !isCurrent ? "opacity-70" : ""}`}
+                    style={{ clipPath: "circle(33% at 50% 50%)" }}
+                    className={`h-[104px] w-[104px] max-w-none object-contain ${step.done && !isCurrent ? "opacity-70" : ""}`}
                     draggable={false}
                   />
                 </div>
