@@ -26,3 +26,4 @@ export const newFreeChatSampleId = () =>
   `livre:${typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : Date.now()}`;
 export const videoSampleId = (fileName: string | null | undefined) =>
   `video:${(fileName ?? "").trim().replace(/\.[a-z0-9]{2,5}$/i, "").toLowerCase()}`;
+export const neoExplicaSampleId = (explicaId: string) => `explica:${explicaId}`;
