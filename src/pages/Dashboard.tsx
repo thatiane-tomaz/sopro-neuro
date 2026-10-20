@@ -768,7 +768,7 @@ export default function Dashboard() {
               key: "missao",
               label: "Missão",
               verb: "Experimente",
-              rest: "uma vida mais leve",
+              rest: "uma nova vida",
               image: stepMissaoImg,
               icon: ClipboardList,
               done: weeklyMissaoDone,
