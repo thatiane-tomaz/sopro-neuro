@@ -15,7 +15,7 @@ import MediaPlayer from "@/components/MediaPlayer";
 export default function SosThinBlock() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { ensureContentAccess } = useContentAccess();
+  const { ensureContentAccess, hasContentAccess } = useContentAccess();
   const { getSosHypnosis } = useSosHypnosis();
   const { startTracking, updateProgress } = useJourneyTracking();
 
@@ -36,7 +36,8 @@ export default function SosThinBlock() {
     // Sem assinatura: o SOS pode ser a hipnose grátis da pessoa
     if (!ensureContentAccess({ source: "sos", sample: { kind: "hipnose", id: SOS_SAMPLE_ID } }))
       return;
-    const sos = await getSosHypnosis();
+    // Sem assinatura, a hipnose grátis do SOS é sempre a mesma
+    const sos = await getSosHypnosis(hasContentAccess ? undefined : { fixedIndex: 0 });
     if (!sos.fileUrl) return;
     openMedia(sos.title, sos.fileUrl, `sos_${sos.index + 1}`);
   };

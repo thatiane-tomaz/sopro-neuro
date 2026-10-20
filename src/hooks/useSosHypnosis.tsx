@@ -76,7 +76,22 @@ export const useSosHypnosis = () => {
     return getNextIndex();
   });
 
-  const getSosHypnosis = useCallback(async (): Promise<{ title: string; fileUrl: string | null; index: number }> => {
+  /**
+   * @param options.fixedIndex toca sempre o mesmo SOS, sem avançar a rotação
+   * (usado na hipnose grátis de quem não assina).
+   */
+  const getSosHypnosis = useCallback(async (options?: { fixedIndex?: number }): Promise<{ title: string; fileUrl: string | null; index: number }> => {
+    if (options?.fixedIndex !== undefined) {
+      const idx = options.fixedIndex;
+      award('sos_used', { sos_number: idx + 1 });
+      const fileUrl = await getSignedMediaUrl(
+        SOS_BUCKET,
+        `sos_${idx + 1}.MP3`,
+        'hypnosis',
+        SOS_FALLBACK_BUCKETS,
+      );
+      return { title: 'Hipnose SOS', fileUrl, index: idx };
+    }
     const currentIndex = getNextIndex() % totalSos;
     const sosNumber = currentIndex + 1;
 
