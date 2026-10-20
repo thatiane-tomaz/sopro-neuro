@@ -388,7 +388,7 @@ export default function Progresso() {
     <div className="relative min-h-screen overflow-x-hidden pb-32">
       <WaveBackground />
 
-      <div className="mx-auto max-w-md animate-page-in px-5 pt-[env(safe-area-inset-top)]">
+      <div className="mx-auto max-w-md animate-page-in px-3 pt-[env(safe-area-inset-top)]">
         {/* Header */}
         <header className="flex items-center justify-between pt-4">
           <img src={soproLogo} alt="Sopro Neuro" className="h-10 w-auto" />
@@ -424,8 +424,8 @@ export default function Progresso() {
         </header>
 
         {/* Title */}
-        <div className="mt-6">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
+        <div className="mt-6 px-2">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
             Seu progresso
           </h1>
           <p className="text-sm text-muted-foreground mt-1 text-balance">
@@ -435,99 +435,106 @@ export default function Progresso() {
 
         {/* Smoke free counter */}
         {!isReducao && smokeFreeDays !== null && (
-          <Card className="mt-5 overflow-hidden border-0 rounded-3xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-5 text-white shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.5)]">
+          <section className="mt-4 overflow-hidden rounded-3xl border border-[hsl(var(--lilac)/0.2)] bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] p-4">
             <div className="flex flex-col items-center text-center">
-              <div className="flex items-end justify-center gap-2">
-                <span className="text-6xl font-bold leading-none tracking-tight">
+              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
+                <Sparkles className="h-3 w-3" />
+                Sem fumar
+              </span>
+              <div className="mt-2 flex items-end justify-center gap-1.5">
+                <span className="bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] bg-clip-text text-6xl font-bold leading-none tracking-tight text-transparent">
                   {smokeFreeDays}
                 </span>
-                <span className="pb-1.5 text-base font-medium opacity-90">
+                <span className="pb-1.5 text-base font-semibold text-[hsl(var(--electric-blue))]">
                   {smokeFreeDays === 1 ? "dia" : "dias"}
                 </span>
               </div>
-              <p className="mt-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] opacity-85">
-                Sem fumar
-              </p>
-              <div className="mt-3 flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 backdrop-blur">
-                <CalendarIcon className="h-3.5 w-3.5 opacity-90" />
-                <span className="text-[11px] font-medium">
+              <div className="mt-3 flex items-center gap-1.5 rounded-full bg-card/70 py-1 pl-3 pr-1 ring-1 ring-border/40 backdrop-blur">
+                <CalendarIcon className="h-3.5 w-3.5 text-[hsl(var(--lilac))]" />
+                <span className="text-[11px] font-medium text-foreground/80">
                   Último cigarro em {lastCigLabel}
                 </span>
                 <button
                   onClick={openDateDialog}
                   aria-label="Alterar a data do último cigarro"
-                  className="flex min-h-[24px] min-w-[24px] items-center justify-center rounded-full opacity-80 transition-transform active:scale-95"
+                  className="flex h-7 w-7 items-center justify-center rounded-full text-[hsl(var(--lilac))] transition-transform active:scale-95"
                 >
                   <Pencil className="h-3 w-3" />
                 </button>
               </div>
             </div>
-          </Card>
+          </section>
         )}
 
         {/* Savings — cigs avoided + money saved */}
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <StatCard
-            icon={<Cigarette className="h-4 w-4" />}
-            label="Cigarros evitados"
-            value={stats.avoided.toLocaleString("pt-BR")}
-          />
-          <StatCard
-            icon={<DollarSign className="h-4 w-4" />}
-            label="Dinheiro economizado"
-            value={formatBRL(stats.money)}
-          />
-        </div>
-
-
+        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+          <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--electric-blue))]">
+            <Sparkles className="h-3 w-3" />
+            Suas conquistas
+          </span>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <StatCard
+              icon={<Cigarette className="h-4 w-4" />}
+              label="Cigarros evitados"
+              value={stats.avoided.toLocaleString("pt-BR")}
+            />
+            <StatCard
+              icon={<DollarSign className="h-4 w-4" />}
+              label="Dinheiro economizado"
+              value={formatBRL(stats.money)}
+            />
+          </div>
+        </section>
 
         {/* Register CTA — only when yesterday hasn't been logged */}
         {!yesterdayLogged && (
           <button
             onClick={() => openDialog(yesterdayStr())}
-            className="mt-4 w-full rounded-2xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] p-4 text-left text-white shadow-[0_14px_38px_-14px_hsl(258_70%_45%/0.55)] active:scale-[0.99] transition-transform flex items-center gap-3"
+            className="mt-3 flex w-full items-center gap-3 rounded-3xl bg-card/80 p-3.5 text-left shadow-primary ring-1 ring-border/40 backdrop-blur-md transition-transform active:scale-[0.99]"
           >
-            <div className="h-11 w-11 rounded-full bg-white/20 flex items-center justify-center backdrop-blur">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-primary-foreground shadow-wellness">
               <Plus className="h-5 w-5" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold leading-tight">Registrar ontem</p>
-              <p className="text-[11px] text-white/85 leading-snug mt-0.5">
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold leading-tight text-[hsl(var(--electric-blue))]">
+                Registrar ontem
+              </p>
+              <p className="mt-0.5 text-balance text-xs leading-snug text-muted-foreground">
                 Quantos cigarros você fumou ontem?
               </p>
             </div>
-            <ChevronRight className="h-5 w-5 opacity-80" />
+            <ChevronRight className="h-5 w-5 flex-shrink-0 text-[hsl(var(--lilac))]" />
           </button>
         )}
 
         {/* Chart */}
-        <Card className="mt-5 p-4 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-foreground text-sm">
+        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
               Cigarros por dia
-            </h3>
+            </h2>
             {stats.avoided > 0 && (
-              <div className="flex items-center gap-1 rounded-full bg-[hsl(140_60%_95%)] px-2.5 py-1 text-[11px] font-semibold text-[hsl(140_50%_35%)]">
+              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--lilac))]">
                 <TrendingDown className="h-3 w-3" />
                 em queda
-              </div>
+              </span>
             )}
           </div>
 
-          {/* Start & current average stats — prominently placed right above the chart */}
+          {/* Start & current average stats */}
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <div className="rounded-2xl bg-[hsl(220_30%_97%)] p-3 text-center ring-1 ring-black/[0.03]">
-              <p className="text-[11px] text-muted-foreground">Início</p>
-              <p className="text-lg font-bold text-foreground leading-tight mt-0.5">
+            <div className="rounded-2xl bg-muted/60 p-3 text-center">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Início</p>
+              <p className="mt-0.5 text-lg font-bold leading-tight text-foreground tabular-nums">
                 {baseline}
                 <span className="text-xs font-medium text-muted-foreground">/dia</span>
               </p>
             </div>
-            <div className="rounded-2xl bg-[hsl(258_70%_97%)] p-3 text-center ring-1 ring-black/[0.03]">
-              <p className="text-[11px] text-[hsl(258_50%_40%)]">Média atual (3 dias)</p>
-              <p className="text-lg font-bold text-[hsl(258_60%_40%)] leading-tight mt-0.5">
+            <div className="rounded-2xl bg-[hsl(var(--lilac-soft)/0.8)] p-3 text-center">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-[hsl(var(--lilac))]">Média atual (3 dias)</p>
+              <p className="mt-0.5 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] tabular-nums">
                 {stats.daysWithLog > 0 ? Math.floor(stats.avgPerDay) : "—"}
-                <span className="text-xs font-medium text-[hsl(258_40%_50%)]">/dia</span>
+                <span className="text-xs font-medium text-muted-foreground">/dia</span>
               </p>
             </div>
           </div>
@@ -545,8 +552,12 @@ export default function Progresso() {
                 >
                   <defs>
                     <linearGradient id="cigFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(258 80% 60%)" stopOpacity={0.4} />
-                      <stop offset="100%" stopColor="hsl(258 80% 60%)" stopOpacity={0} />
+                      <stop offset="0%" stopColor="hsl(258 70% 65%)" stopOpacity={0.35} />
+                      <stop offset="100%" stopColor="hsl(258 70% 65%)" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="cigStroke" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(230 85% 60%)" />
+                      <stop offset="100%" stopColor="hsl(258 70% 65%)" />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 30% 92%)" vertical={false} />
@@ -568,7 +579,7 @@ export default function Progresso() {
                   <Tooltip
                     contentStyle={{
                       borderRadius: 12,
-                      border: "1px solid hsl(258 70% 92%)",
+                      border: "1px solid hsl(258 80% 92%)",
                       fontSize: 12,
                     }}
                     formatter={(v: any) =>
@@ -579,7 +590,7 @@ export default function Progresso() {
                   {baseline > 0 && (
                     <ReferenceLine
                       y={baseline}
-                      stroke="hsl(220 15% 65%)"
+                      stroke="hsl(220 15% 70%)"
                       strokeDasharray="4 4"
                       label={{
                         value: "Início",
@@ -592,7 +603,7 @@ export default function Progresso() {
                   <Area
                     type="monotone"
                     dataKey="count"
-                    stroke="hsl(258 80% 55%)"
+                    stroke="url(#cigStroke)"
                     strokeWidth={2.5}
                     fill="url(#cigFill)"
                     connectNulls
@@ -605,11 +616,13 @@ export default function Progresso() {
                           cx={cx}
                           cy={cy}
                           r={payload?.logged ? 3.5 : 0}
-                          fill="hsl(258 80% 55%)"
+                          fill="hsl(258 70% 65%)"
+                          stroke="white"
+                          strokeWidth={1.5}
                         />
                       );
                     }}
-                    activeDot={{ r: 5 }}
+                    activeDot={{ r: 5, fill: "hsl(230 85% 60%)" }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -618,14 +631,11 @@ export default function Progresso() {
 
           {/* Backfill any past day — open date picker */}
           {startDateStr && (
-            <div className="mt-4 pt-4 border-t border-[hsl(220_30%_94%)]">
-              <div className="flex items-center gap-2">
-                <Pencil className="h-3.5 w-3.5 text-[hsl(258_60%_50%)]" />
-                <p className="text-xs font-semibold text-foreground">
-                  Registrar outro dia
-                </p>
-              </div>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
+            <div className="mt-3 border-t border-border/50 pt-3">
+              <p className="text-sm font-semibold text-foreground">
+                Registrar outro dia
+              </p>
+              <p className="mt-0.5 text-balance text-xs text-muted-foreground">
                 Escolha uma data para registrar quantos cigarros fumou.
               </p>
               <div className="mt-2.5 flex items-stretch gap-2">
@@ -633,9 +643,9 @@ export default function Progresso() {
                   <PopoverTrigger asChild>
                     <button
                       type="button"
-                      className="flex-1 min-w-0 flex items-center gap-2 rounded-xl bg-white px-3 py-2.5 text-sm text-left shadow-[inset_0_0_0_1px_hsl(258_70%_92%)] active:scale-[0.99] transition-transform"
+                      className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-full bg-[hsl(var(--lilac-soft)/0.6)] px-4 text-left text-sm ring-1 ring-[hsl(var(--lilac)/0.2)] transition-transform active:scale-[0.99]"
                     >
-                      <CalendarIcon className="h-4 w-4 text-[hsl(258_60%_50%)] flex-shrink-0" />
+                      <CalendarIcon className="h-4 w-4 flex-shrink-0 text-[hsl(var(--lilac))]" />
                       <span
                         className={
                           customDate ? "text-foreground" : "text-muted-foreground"
@@ -690,31 +700,24 @@ export default function Progresso() {
                     openDialog(customDate);
                     setCustomDate("");
                   }}
-                  className="rounded-xl bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] px-4 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_hsl(258_70%_45%/0.6)] active:scale-95 transition-transform disabled:opacity-50 disabled:active:scale-100"
+                  className="h-11 rounded-full bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] px-5 text-sm font-bold text-primary-foreground shadow-wellness transition-transform active:scale-95 disabled:opacity-50 disabled:active:scale-100"
                 >
                   Registrar
                 </button>
               </div>
             </div>
           )}
-        </Card>
+        </section>
 
-        {/* Potencial ao parar de fumar — moved to the end */}
+        {/* Potencial ao parar de fumar */}
         {equivCigsPerDay > 0 && (
-          <Card className="mt-5 p-4 bg-white/90 backdrop-blur-md border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.22)] ring-1 ring-black/[0.03] rounded-3xl">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[hsl(258_80%_60%)] to-[hsl(230_85%_60%)] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-                <TrendingDown className="h-4 w-4" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground text-sm leading-tight">
-                  Seu potencial ao parar de fumar
-                </h3>
-                <p className="text-[11px] text-muted-foreground leading-tight">
-                  O quanto você deixa de fumar e economiza.
-                </p>
-              </div>
-            </div>
+          <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+            <h2 className="text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+              Seu potencial ao parar de fumar
+            </h2>
+            <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
+              O quanto você deixa de fumar e economiza.
+            </p>
 
             <div className="mt-3 grid grid-cols-2 gap-2">
               <PotentialTile
@@ -737,21 +740,21 @@ export default function Progresso() {
               />
             </div>
 
-            <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
-              <span className="text-center leading-relaxed">
-                Antes de começar a jornada
+            <div className="mt-3 flex items-center gap-2 rounded-2xl bg-muted/50 py-2 pl-3 pr-1">
+              <p className="min-w-0 flex-1 text-[11px] leading-relaxed text-muted-foreground">
+                <span className="font-semibold text-foreground/80">Antes de começar a jornada</span>
                 <br />
                 {baseline} cigarros/dia · {vapesPerMonth} vapes/mês · {formatBRLCompact(weeklyCostNum)}/semana
-              </span>
+              </p>
               <button
                 onClick={() => setConsumoDialogOpen(true)}
                 aria-label="Editar consumo e gasto"
-                className="p-1 rounded-md text-[hsl(258_60%_50%)] active:scale-95 transition-transform"
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-card text-[hsl(var(--lilac))] shadow-sm transition-transform active:scale-95"
               >
-                <Pencil className="h-3 w-3" />
+                <Pencil className="h-3.5 w-3.5" />
               </button>
             </div>
-          </Card>
+          </section>
         )}
 
         {!startDateStr && (
