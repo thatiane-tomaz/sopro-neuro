@@ -721,7 +721,7 @@ export default function Dashboard() {
         {/* Pílulas de conteúdo — entrada (título temporário) */}
         <button
           type="button"
-          className="mt-3 flex w-full items-center gap-2 overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] py-1 pl-1 pr-2 text-left ring-1 ring-[hsl(var(--lilac)/0.25)] shadow-primary backdrop-blur-md active:scale-[0.99] transition-transform"
+          className="mt-3 flex w-full items-center gap-2 overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] py-0.5 pl-1 pr-2 text-left ring-1 ring-[hsl(var(--lilac)/0.25)] backdrop-blur-md active:scale-[0.99] transition-transform"
         >
           <img src={neoIdeiaImg} alt="" aria-hidden width={88} height={62} draggable={false} className="h-[62px] w-[88px] flex-shrink-0 object-contain" />
           <div className="min-w-0 flex-1">
@@ -729,7 +729,7 @@ export default function Dashboard() {
               <Sparkles className="h-3 w-3" />
               Entenda para se libertar
             </span>
-            <p className="mt-1 text-balance text-sm font-bold leading-snug text-[hsl(var(--electric-blue))]">
+            <p className="mt-0.5 text-balance text-sm font-bold leading-tight text-[hsl(var(--electric-blue))]">
               Por que o cigarro te deixa mais ansioso?
             </p>
           </div>
