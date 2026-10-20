@@ -573,7 +573,7 @@ export default function Jornada() {
             <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
               {isAbstinencia ? "Sua jornada de Liberdade" : "Sua jornada de Redução"}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1 text-balance">
+            <p className="text-sm font-medium leading-snug text-muted-foreground mt-1 text-balance">
               {isAbstinencia
                 ? "Aprenda a lidar com a vontade de fumar, supere antigos gatilhos e fortaleça sua vida sem cigarro."
                 : "Enfraqueça os hábitos e crenças que te prendem ao cigarro. Prepare-se para parar no seu tempo."}
