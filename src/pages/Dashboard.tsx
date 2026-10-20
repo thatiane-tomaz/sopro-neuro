@@ -759,13 +759,12 @@ export default function Dashboard() {
           </div>
 
           <h1 className="mt-2 text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
-            {tituloGatilho}
+            Método Sopro para Enfraquecer o Vício
           </h1>
-          {subtituloGatilho && (
-            <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
-              {subtituloGatilho}
-            </p>
-          )}
+          <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
+            <span className="font-semibold text-foreground">Gatilho atual: {tituloGatilho}</span>
+            {subtituloGatilho && <> / {subtituloGatilho}</>}
+          </p>
 
           {(() => {
             // Conteúdos do tema: Transforme (hipnose), Experimente (missão) e
@@ -834,6 +833,9 @@ export default function Dashboard() {
                           aria-label={`${step.title}: ${step.subtitle}`}
                           className="flex min-w-0 flex-1 flex-col items-center gap-2 rounded-2xl text-center transition-transform active:scale-95"
                         >
+                          <span className="whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-0.5 text-[10px] font-semibold text-[hsl(var(--lilac))]">
+                            Passo {index + 1}: {step.key === "hipnose" ? "Hipnose" : step.key === "missao" ? "Missão" : "Mural"}
+                          </span>
                           <div className="relative flex h-20 w-20 items-center justify-center">
                             <img src={step.image} alt="" className="h-20 w-20 object-contain" draggable={false} />
                             {step.done && (
