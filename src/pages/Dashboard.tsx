@@ -728,7 +728,7 @@ export default function Dashboard() {
             <div className="relative flex h-[18px] w-full items-start gap-1">
               <span className="absolute bottom-full left-0 mb-1 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-0.5 text-[10px] font-semibold text-[hsl(var(--lilac))]">
                 <Sparkles className="h-3 w-3" />
-                Entenda para se libertar
+                Neo Explica
               </span>
               <p className="min-w-0 flex-1 text-sm font-bold leading-[18px] text-[hsl(var(--electric-blue))]">
                 Por que o cigarro te deixa mais ansioso?
