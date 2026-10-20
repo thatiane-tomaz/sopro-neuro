@@ -851,12 +851,12 @@ function StatCard({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] p-3">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col items-center rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] p-3 text-center">
+      <div className="flex items-center justify-center gap-2">
         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-card text-[hsl(var(--lilac))] shadow-sm">
           {icon}
         </div>
-        <p className="text-balance text-[11px] font-medium leading-tight text-muted-foreground">
+        <p className="text-balance text-left text-[11px] font-medium leading-tight text-muted-foreground">
           {label}
         </p>
       </div>
