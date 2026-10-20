@@ -68,7 +68,7 @@ export default function FocoAtualCard({
             />
           )}
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--lilac))]">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--lilac))]">
               {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
             </p>
             <p className="text-pretty text-base font-bold leading-snug text-foreground">{tituloGatilho}</p>
