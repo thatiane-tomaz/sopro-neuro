@@ -50,7 +50,7 @@ const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) =>
       <div className="max-w-md mx-auto space-y-5">
         {/* Preço */}
         <div className="relative rounded-3xl bg-card border-2 border-primary shadow-2xl p-6 text-center">
-          <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 rounded-full bg-accent text-accent-foreground text-sm font-bold px-3 py-1 uppercase tracking-wide">
+          <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-accent text-accent-foreground text-sm font-bold px-3 py-1 uppercase tracking-wide">
             <Sparkles className="w-3 h-3" /> Acesso completo
           </span>
           <div className="flex items-baseline justify-center gap-1 mt-2">

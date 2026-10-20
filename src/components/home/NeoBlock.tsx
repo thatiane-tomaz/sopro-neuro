@@ -125,7 +125,7 @@ export default function NeoBlock({
                   key={m.label}
                   type="button"
                   onClick={() => (needsReview ? onOpenReview() : onOpenChat(m.seed))}
-                  className={`flex flex-col items-center gap-1 rounded-2xl px-1 py-2.5 text-sm font-semibold ring-1 active:scale-[0.97] transition-transform ${m.cls}`}
+                  className={`flex flex-col items-center gap-1 rounded-2xl px-0.5 py-2.5 text-sm font-semibold tracking-tight whitespace-nowrap ring-1 active:scale-[0.97] transition-transform ${m.cls}`}
                 >
                   <span className="text-2xl leading-none" aria-hidden>{m.emoji}</span>
                   {m.label}
