@@ -368,6 +368,30 @@ export type Database = {
         }
         Relationships: []
       }
+      free_content_claims: {
+        Row: {
+          content_identifier: string
+          created_at: string
+          id: string
+          kind: string
+          user_id: string
+        }
+        Insert: {
+          content_identifier: string
+          created_at?: string
+          id?: string
+          kind: string
+          user_id: string
+        }
+        Update: {
+          content_identifier?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       freelist_users: {
         Row: {
           created_at: string
