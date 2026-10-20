@@ -429,7 +429,7 @@ export default function Progresso() {
           <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
             Seu progresso
           </h1>
-          <p className="text-sm text-muted-foreground mt-1 text-balance">
+          <p className="text-sm font-medium leading-snug text-muted-foreground mt-1 text-balance">
             Acompanhe sua evolução e tudo o que você já conquistou nessa jornada.
           </p>
         </div>

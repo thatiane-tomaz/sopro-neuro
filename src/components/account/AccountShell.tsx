@@ -40,7 +40,7 @@ export function AccountShell({
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-1 text-balance text-sm text-muted-foreground">{subtitle}</p>
+            <p className="mt-1 text-balance text-sm font-medium text-muted-foreground">{subtitle}</p>
           )}
         </div>
 

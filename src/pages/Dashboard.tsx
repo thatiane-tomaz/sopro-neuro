@@ -903,7 +903,7 @@ export default function Dashboard() {
               <h3 className="text-base font-bold text-foreground leading-snug">
                 Pronto para seu próximo passo?
               </h3>
-              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+              <p className="text-sm font-medium text-muted-foreground mt-2 leading-relaxed">
                 Quando você se sentir pronto para viver completamente sem cigarro, estaremos aqui para te apoiar.
               </p>
               <button

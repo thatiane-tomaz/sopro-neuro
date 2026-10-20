@@ -573,7 +573,7 @@ export default function Jornada() {
             <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
               {isAbstinencia ? "Sua jornada de Liberdade" : "Sua jornada de Redução"}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1 text-balance">
+            <p className="text-sm font-medium leading-snug text-muted-foreground mt-1 text-balance">
               {isAbstinencia
                 ? "Aprenda a lidar com a vontade de fumar, supere antigos gatilhos e fortaleça sua vida sem cigarro."
                 : "Enfraqueça os hábitos e crenças que te prendem ao cigarro. Prepare-se para parar no seu tempo."}
@@ -599,7 +599,7 @@ export default function Jornada() {
         <section className="mt-5 -mx-2 rounded-3xl bg-white/85 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] px-3 py-3">
           {items.length === 0 ? (
             <div className="py-10 text-center">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm font-medium text-muted-foreground">
                 Complete o onboarding para ver seus temas.
               </p>
             </div>

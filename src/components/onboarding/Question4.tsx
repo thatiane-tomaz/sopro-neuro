@@ -62,7 +62,7 @@ const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
       <div className="w-full max-w-md space-y-6">
         {/* Progress */}
         <div className="space-y-2">
-          <div className="flex justify-between text-sm text-muted-foreground">
+          <div className="flex justify-between text-sm font-medium text-muted-foreground">
             <span>Pergunta 5 de 6</span>
             <span>83%</span>
           </div>
@@ -75,7 +75,7 @@ const Question4 = ({ data, updateData, onNext, onPrev }: Question4Props) => {
             <CardTitle className="text-xl text-foreground">
               Quais são os principais motivos pelos quais você fuma?
             </CardTitle>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm font-medium text-muted-foreground mt-2">
               Selecione todos que se aplicam
             </p>
           </CardHeader>

@@ -163,7 +163,7 @@ export default function Mural() {
           <h1 className="text-2xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
             {tema ? tema : (<>Um espaço para<br />compartilhar a jornada</>)}
           </h1>
-          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
+          <p className="text-sm font-medium text-muted-foreground mt-2 leading-relaxed">
             Você não está sozinho!
           </p>
         </div>
@@ -181,7 +181,7 @@ export default function Mural() {
 
         <div className="mt-6">
           {isLoading ? (
-            <div className="text-center py-12 text-sm text-muted-foreground">Carregando…</div>
+            <div className="text-center py-12 text-sm font-medium text-muted-foreground">Carregando…</div>
           ) : posts && posts.length > 0 ? (
             <div className="columns-2 gap-3">
               {posts.map((p) => (
@@ -199,7 +199,7 @@ export default function Mural() {
                 <Sparkles className="h-6 w-6" />
               </div>
               <p className="mt-3 font-bold text-foreground">O mural ainda está em branco</p>
-              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+              <p className="mt-1 text-sm font-medium text-muted-foreground leading-relaxed">
                 Seja a primeira pessoa a compartilhar uma experiência que possa inspirar quem está começando.
               </p>
             </div>

@@ -41,7 +41,7 @@ const EmailConfirmed = () => {
                   <p className="font-medium text-foreground">
                     Volte ao app
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Abra o app Sopro e faça login com seu email e senha para continuar sua jornada.
                   </p>
                 </div>

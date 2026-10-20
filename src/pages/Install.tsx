@@ -56,7 +56,7 @@ const Install = () => {
         {isIOS ? (
           <div className="space-y-4">
             <p className="text-sm font-medium">Para instalar no iOS:</p>
-            <ol className="space-y-3 text-sm text-muted-foreground">
+            <ol className="space-y-3 text-sm font-medium text-muted-foreground">
               <li className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
                   1
@@ -89,7 +89,7 @@ const Install = () => {
         ) : (
           <div className="text-center space-y-2">
             <Check className="w-12 h-12 text-green-500 mx-auto" />
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm font-medium text-muted-foreground">
               App já instalado ou não disponível para instalação neste navegador
             </p>
           </div>

@@ -65,7 +65,7 @@ const BuildingJourneyScreen = ({ onDone, journeyType }: Props) => {
       <h1 className="text-2xl font-bold text-center text-foreground text-balance">
         Estou construindo sua jornada
       </h1>
-      <p className="mt-2 text-sm text-muted-foreground text-center max-w-xs text-balance">
+      <p className="mt-2 text-sm font-medium text-muted-foreground text-center max-w-xs text-balance">
         Cada resposta sua vira uma peça do seu plano. Isso leva só alguns segundos.
       </p>
       <p className="mt-1.5 text-sm font-medium text-foreground text-center max-w-xs text-balance">
