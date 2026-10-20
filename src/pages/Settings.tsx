@@ -194,7 +194,6 @@ const Settings = () => {
       <AccountCard
         icon={<Mail className="h-5 w-5" />}
         title="Alterar email"
-        description="Você vai receber um link de confirmação no email novo."
       >
         <form onSubmit={handleEmailChange} className="space-y-3">
           <div className="space-y-1.5">
