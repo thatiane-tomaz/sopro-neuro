@@ -77,36 +77,9 @@ export default function FocoAtualCard({
             )}
           </div>
         </div>
-        {totalFocos > 0 && (
-          <button
-            type="button"
-            onClick={onOpenJornada}
-            className="flex w-full items-center gap-3 border-t border-[hsl(var(--lilac)/0.15)] px-2.5 py-2 text-left transition-colors active:bg-[hsl(var(--lilac)/0.1)]"
-          >
-            <div className="flex flex-1 gap-1" aria-hidden>
-              {Array.from({ length: totalFocos }).map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-1.5 flex-1 rounded-full ${
-                    i === focoAtualNumero - 1
-                      ? "bg-[hsl(var(--electric-blue))]"
-                      : i < focosConcluidos
-                        ? "bg-[hsl(var(--lilac))]"
-                        : "bg-[hsl(var(--lilac)/0.2)]"
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="inline-flex flex-shrink-0 items-center text-xs font-semibold text-[hsl(var(--electric-blue))]">
-              Ver sua jornada
-              <ChevronRight className="h-4 w-4" />
-            </span>
-          </button>
-        )}
-      </div>
-
+<div className="px-2.5 pb-3">
       {/* Passos do método */}
-      <div className="mt-4 flex items-start" aria-label="Passos do método">
+      <div className="mt-1 flex items-start border-t border-[hsl(var(--lilac)/0.15)] px-1 pt-3 pb-0" aria-label="Passos do método">
         {steps.map((step, index) => {
           const isCurrent = nextStep?.key === step.key;
           return (
@@ -134,7 +107,7 @@ export default function FocoAtualCard({
                     draggable={false}
                   />
                   {step.done && (
-                    <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--lilac))] text-primary-foreground ring-2 ring-card">
+                    <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--lilac))] text-primary-foreground ring-2 ring-[hsl(var(--lilac-soft))]">
                       <Check className="h-3 w-3" strokeWidth={3} />
                     </span>
                   )}
@@ -185,7 +158,34 @@ export default function FocoAtualCard({
             {doneCount} de {steps.length} passos concluídos
           </p>
         </div>
-      )}
+</div>
+      </div>
+        {totalFocos > 0 && (
+          <button
+            type="button"
+            onClick={onOpenJornada}
+            className="flex w-full items-center gap-3 mt-3 rounded-2xl px-1 py-1 text-left transition-colors active:bg-[hsl(var(--lilac)/0.1)]"
+          >
+            <div className="flex flex-1 gap-1" aria-hidden>
+              {Array.from({ length: totalFocos }).map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1.5 flex-1 rounded-full ${
+                    i === focoAtualNumero - 1
+                      ? "bg-[hsl(var(--electric-blue))]"
+                      : i < focosConcluidos
+                        ? "bg-[hsl(var(--lilac))]"
+                        : "bg-[hsl(var(--lilac)/0.2)]"
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="inline-flex flex-shrink-0 items-center text-xs font-semibold text-[hsl(var(--electric-blue))]">
+              Ver sua jornada
+              <ChevronRight className="h-4 w-4" />
+            </span>
+          </button>
+        )}
     </section>
   );
 }
