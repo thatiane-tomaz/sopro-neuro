@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import WaveBackground from "@/components/home/WaveBackground";
-import soproLogo from "@/assets/sopro-logo.png";
+import soproLogo from "@/assets/sopro-logo.webp";
 
 /**
  * Moldura das telas de conta (Conta, Cancelar assinatura, Excluir conta):
