@@ -559,10 +559,12 @@ export default function Jornada() {
         <div className="mt-6 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
-              Sua jornada personalizada
+              {isAbstinencia ? "Sua jornada de Liberdade" : "Sua jornada de Redução"}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Criada a partir do que te prende ao cigarro.
+            <p className="text-sm text-muted-foreground mt-1 text-balance">
+              {isAbstinencia
+                ? "Aprenda a lidar com a vontade de fumar, supere antigos gatilhos e fortaleça sua vida sem cigarro."
+                : "Enfraqueça os hábitos e crenças que te prendem ao cigarro e prepare-se para parar no seu tempo."}
             </p>
           </div>
           <button
