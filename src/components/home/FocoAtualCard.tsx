@@ -115,11 +115,12 @@ export default function FocoAtualCard({
                 className="flex min-w-0 flex-1 flex-col items-center rounded-2xl text-center transition-transform active:scale-95"
               >
                 <span
-                  className={`whitespace-nowrap text-xs font-bold ${
+                  className={`flex flex-col items-center leading-tight ${
                     isCurrent ? "text-[hsl(var(--electric-blue))]" : "text-[hsl(var(--lilac))]"
                   }`}
                 >
-                  Passo {index + 1}: {step.label}
+                  <span className="whitespace-nowrap text-[13px] font-semibold opacity-80">Passo {index + 1}</span>
+                  <span className="whitespace-nowrap text-xs font-bold">{step.label}</span>
                 </span>
                 <div className="relative mt-1.5 flex h-[72px] w-[72px] items-center justify-center">
                   <img
