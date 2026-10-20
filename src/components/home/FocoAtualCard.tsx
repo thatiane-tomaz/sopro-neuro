@@ -70,7 +70,7 @@ export default function FocoAtualCard({
             </p>
             <p className="text-balance text-sm font-bold leading-snug text-foreground">{tituloGatilho}</p>
             {subtituloGatilho && (
-              <p className="mt-0.5 text-balance text-xs leading-snug text-muted-foreground">{subtituloGatilho}</p>
+              <p className="mt-0.5 text-balance text-[13px] font-medium leading-snug text-foreground/65">{subtituloGatilho}</p>
             )}
           </div>
         </div>
@@ -133,7 +133,7 @@ export default function FocoAtualCard({
                     draggable={false}
                   />
                 </div>
-                <span className="mt-1 max-w-[7rem] text-balance text-[11px] leading-tight text-muted-foreground">
+                <span className="mt-1 max-w-[7.5rem] text-balance text-xs font-medium leading-tight text-foreground/65">
                   <span className="font-semibold text-foreground">{step.verb}</span> {step.rest}
                 </span>
               </button>
@@ -175,7 +175,7 @@ export default function FocoAtualCard({
               />
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs font-medium text-foreground/65">
             {doneCount} de {steps.length} passos concluídos
           </p>
         </div>
