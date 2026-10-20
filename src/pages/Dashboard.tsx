@@ -705,28 +705,6 @@ export default function Dashboard() {
           </Card>
         )}
 
-        {/* Comece aqui: vídeo de introdução (some se o usuário trocar de jornada) */}
-        {!abstinenciaBloqueada && startHere && !startHere.trocouJornada && !startHereWatched && (
-          <button
-            type="button"
-            onClick={openStartHereVideo}
-            disabled={loadingStartHere}
-            className="mt-4 w-full flex items-center gap-3 rounded-2xl bg-white/70 p-3.5 text-left ring-1 ring-white/80 backdrop-blur-md shadow-[0_12px_30px_-22px_hsl(258_70%_45%/0.4)] active:scale-[0.99] transition-transform"
-          >
-            <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] text-white shadow-sm">
-              <Play className="h-4 w-4" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-[9px] font-bold uppercase tracking-[0.14em] text-[hsl(258_45%_58%)]">
-                Comece aqui
-              </span>
-              <span className="block text-[12.5px] font-semibold leading-tight text-[hsl(258_45%_32%)] text-balance">
-                {loadingStartHere ? "Abrindo vídeo..." : "Entenda como funciona sua jornada"}
-              </span>
-            </span>
-            <ChevronRight className="h-4 w-4 flex-shrink-0 text-[hsl(258_35%_65%)]" />
-          </button>
-        )}
 
         <div
           className={

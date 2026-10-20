@@ -567,14 +567,6 @@ export default function Jornada() {
                 : "Enfraqueça os hábitos e crenças que te prendem ao cigarro. Prepare-se para parar no seu tempo."}
             </p>
           </div>
-          <button
-            onClick={openStartHereVideo}
-            disabled={loadingStartHere}
-            className="h-9 w-9 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03] active:scale-95 transition-transform"
-            aria-label="Como funciona"
-          >
-            <Info className="h-4 w-4 text-[hsl(230_85%_55%)]" />
-          </button>
         </div>
 
         {/* Progress chip */}
