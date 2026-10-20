@@ -60,8 +60,8 @@ export default function NeoExplicaCard({ jornada }: { jornada: NeoExplicaJornada
         <img src={neoIdeiaImg} alt="" aria-hidden width={88} height={62} draggable={false} className="-my-2 h-[76px] w-[96px] flex-shrink-0 object-contain" />
         <div className="flex min-w-0 flex-1 items-center self-stretch">
           <div className="relative flex h-[18px] w-full items-start gap-1">
-            <span className="absolute bottom-full left-0 mb-1 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-0.5 text-[10px] font-semibold text-[hsl(var(--lilac))]">
-              <Sparkles className="h-3 w-3" />
+            <span className="absolute bottom-full left-0 mb-1 inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2.5 py-0.5 text-xs font-semibold text-[hsl(var(--lilac))]">
+              <Sparkles className="h-3.5 w-3.5" />
               Neo Explica
             </span>
             <p className="min-w-0 flex-1 text-sm font-bold leading-[18px] text-[hsl(var(--electric-blue))]">
