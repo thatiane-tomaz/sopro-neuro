@@ -59,9 +59,9 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import MediaPlayer from "@/components/MediaPlayer";
-import stepVideoImg from "@/assets/step-video.png";
 import stepHipnoseImg from "@/assets/step-hipnose.png";
 import stepMissaoImg from "@/assets/step-missao.png";
+import stepMuralImg from "@/assets/step-mural.png";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import WaveBackground from "@/components/home/WaveBackground";
 import NeoBlock from "@/components/home/NeoBlock";
@@ -235,7 +235,8 @@ export default function Dashboard() {
   const explicacaoDesafio: string =
     (gatilho as any)?.explicacao_missao ||
     "Observe esse hábito nos próximos dias: em quais momentos ele aparece, o que você sente antes e o que muda depois. Anote mentalmente os padrões para conversarmos sobre sua experiência.";
-  const hasVideo: boolean = (gatilho as any)?.hasVideo ?? true;
+  // Os temas não têm mais vídeo: só hipnose, missão e mural.
+  const hasVideo = false;
   const hasHipnose: boolean = (gatilho as any)?.hasHipnose ?? true;
   const hasMissao: boolean = (gatilho as any)?.hasMissao ?? true;
 
@@ -745,17 +746,10 @@ export default function Dashboard() {
           )}
 
           {(() => {
+            // Conteúdos do tema: Transforme (hipnose), Experimente (missão) e
+            // Compartilhe (mural). Todos ficam liberados ao mesmo tempo; o mural
+            // não conta como atividade concluída.
             const steps = [
-              hasVideo && {
-                key: "video",
-                image: stepVideoImg,
-                title: "Entenda",
-                subtitle: "o que acontece no seu cérebro",
-                icon: Play,
-                done: weeklyVideoDone,
-                onClick: () => openMedia("video"),
-                actionLabel: "Começar com o vídeo",
-              },
               hasHipnose && {
                 key: "hipnose",
                 image: stepHipnoseImg,
@@ -763,6 +757,7 @@ export default function Dashboard() {
                 subtitle: "seus hábitos com Hipnose",
                 icon: Headphones,
                 done: weeklyHipnoseDone,
+                countsAsActivity: true,
                 onClick: () => openMedia("hypnosis"),
                 actionLabel: "Continuar com a hipnose",
               },
@@ -773,30 +768,50 @@ export default function Dashboard() {
                 subtitle: "uma nova vida mais leve",
                 icon: ClipboardList,
                 done: weeklyMissaoDone,
+                countsAsActivity: true,
                 onClick: openMissionDialog,
                 actionLabel: "Continuar com a missão",
+              },
+              {
+                key: "mural",
+                image: stepMuralImg,
+                title: "Compartilhe",
+                subtitle: "sua jornada com outras pessoas",
+                icon: MessageCircleHeart,
+                done: false,
+                countsAsActivity: false,
+                onClick: () =>
+                  navigate(`/mural?tema=${encodeURIComponent(tituloGatilho)}`),
+                actionLabel: "Compartilhe no mural",
               },
             ].filter(Boolean) as Array<{
               key: string;
               title: string;
               subtitle: string;
               image: string;
-              icon: typeof Play;
+              icon: typeof Headphones;
               done: boolean;
+              countsAsActivity: boolean;
               onClick: () => void;
               actionLabel: string;
             }>;
-            const nextStep = steps.find((step) => !step.done);
+            const activities = steps.filter((step) => step.countsAsActivity);
+            const nextStep = activities.find((step) => !step.done);
 
             return (
               <>
-                <div className="mt-4 flex items-start" aria-label="Etapas do foco atual">
+                <div className="mt-4 flex items-start" aria-label="Conteúdos do foco atual">
                   {steps.map((step, index) => {
                     const isCurrent = nextStep?.key === step.key;
                     return (
                       <div key={step.key} className="relative flex min-w-0 flex-1 items-start">
-                        <div className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center">
-                          <div className={`relative flex h-20 w-20 items-center justify-center transition-opacity ${!isCurrent && !step.done ? "opacity-80" : ""}`}>
+                        <button
+                          type="button"
+                          onClick={step.onClick}
+                          aria-label={`${step.title}: ${step.subtitle}`}
+                          className="flex min-w-0 flex-1 flex-col items-center gap-2 rounded-2xl text-center transition-transform active:scale-95"
+                        >
+                          <div className="relative flex h-20 w-20 items-center justify-center">
                             <img src={step.image} alt="" className="h-20 w-20 object-contain" draggable={false} />
                             {step.done && (
                               <span className="absolute right-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--lilac))] text-primary-foreground ring-2 ring-card">
@@ -804,15 +819,15 @@ export default function Dashboard() {
                               </span>
                             )}
                           </div>
-                          <span className={`text-sm font-semibold ${isCurrent ? "text-foreground" : "text-muted-foreground"}`}>
+                          <span className={`text-sm font-semibold ${isCurrent ? "text-foreground" : "text-foreground/80"}`}>
                             {step.title}
                           </span>
                           <span className="-mt-1.5 max-w-[7.5rem] text-balance text-[11px] leading-tight text-muted-foreground">
                             {step.subtitle}
                           </span>
-                        </div>
+                        </button>
                         {index < steps.length - 1 && (
-                          <ArrowRight className="absolute right-0 top-10 h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.55)]" strokeWidth={2.5} />
+                          <ArrowRight className="pointer-events-none absolute right-0 top-10 h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.55)]" strokeWidth={2.5} />
                         )}
                       </div>
                     );
@@ -836,9 +851,9 @@ export default function Dashboard() {
                   </div>
                 )}
 
-                {steps.length > 0 && (
+                {activities.length > 0 && (
                   <p className="mt-3 text-center text-xs text-muted-foreground">
-                    {steps.filter((step) => step.done).length} de {steps.length} atividades concluídas
+                    {activities.filter((step) => step.done).length} de {activities.length} atividades concluídas
                   </p>
                 )}
               </>
