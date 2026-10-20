@@ -428,8 +428,8 @@ export default function Progresso() {
           <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent">
             Seu progresso
           </h1>
-          <p className="text-xs text-muted-foreground mt-1">
-            Acompanhe a redução do seu consumo dia após dia.
+          <p className="text-sm text-muted-foreground mt-1 text-balance">
+            Acompanhe sua evolução e tudo o que você já conquistou nessa jornada.
           </p>
         </div>
 
