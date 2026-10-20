@@ -158,6 +158,7 @@ export default function FocoAtualCard({
             {doneCount} de {steps.length} passos concluídos
           </p>
         </div>
+      )}
 </div>
       </div>
         {totalFocos > 0 && (
