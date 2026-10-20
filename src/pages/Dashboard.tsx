@@ -729,7 +729,7 @@ export default function Dashboard() {
               <Sparkles className="h-3 w-3" />
               Entenda para se libertar
             </span>
-            <p className="mt-0.5 text-balance text-sm font-bold leading-tight text-[hsl(var(--electric-blue))]">
+            <p className="mt-0.5 text-sm font-bold leading-tight text-[hsl(var(--electric-blue))]">
               Por que o cigarro te deixa mais ansioso?
             </p>
           </div>
