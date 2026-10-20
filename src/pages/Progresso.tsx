@@ -847,16 +847,16 @@ function StatCard({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-3.5 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.03]">
+    <div className="rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] p-3">
       <div className="flex items-center gap-2">
-        <div className="h-8 w-8 rounded-lg bg-white text-[hsl(258_60%_50%)] flex items-center justify-center flex-shrink-0 shadow-sm">
+        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-card text-[hsl(var(--lilac))] shadow-sm">
           {icon}
         </div>
-        <p className="text-[11px] font-medium text-foreground leading-tight">
+        <p className="text-balance text-[11px] font-medium leading-tight text-muted-foreground">
           {label}
         </p>
       </div>
-      <p className="mt-2 text-xl font-bold text-[hsl(258_60%_45%)] tabular-nums">
+      <p className="mt-2 text-xl font-bold tabular-nums text-[hsl(var(--electric-blue))]">
         {value}
       </p>
     </div>
@@ -875,18 +875,19 @@ function PotentialTile({
   return (
     <div
       className={
-        accent
-          ? "rounded-xl bg-gradient-to-br from-[hsl(140_65%_96%)] to-[hsl(160_70%_96%)] px-3 py-2.5 ring-1 ring-[hsl(140_50%_88%)]"
-          : "rounded-xl bg-[hsl(258_80%_98%)] px-3 py-2.5 ring-1 ring-[hsl(258_70%_92%)]"
+        "rounded-2xl px-3 py-2.5 " +
+        (accent
+          ? "bg-[hsl(var(--electric-blue)/0.08)]"
+          : "bg-[hsl(var(--lilac-soft)/0.7)]")
       }
     >
-      <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
         {label}
       </p>
       <p
         className={
-          "mt-1 text-lg font-bold tabular-nums " +
-          (accent ? "text-[hsl(140_50%_32%)]" : "text-[hsl(258_60%_45%)]")
+          "mt-0.5 text-lg font-bold tabular-nums " +
+          (accent ? "text-[hsl(var(--electric-blue))]" : "text-[hsl(var(--lilac))]")
         }
       >
         {value}
