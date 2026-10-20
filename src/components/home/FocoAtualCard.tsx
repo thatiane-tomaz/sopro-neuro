@@ -71,7 +71,7 @@ export default function FocoAtualCard({
             <p className="text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--lilac))]">
               {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
             </p>
-            <p className="text-pretty text-sm font-bold leading-snug text-foreground">{tituloGatilho}</p>
+            <p className="text-pretty text-base font-bold leading-snug text-foreground">{tituloGatilho}</p>
             {subtituloGatilho && (
               <p className="mt-0.5 text-pretty text-sm font-medium leading-snug text-muted-foreground">{subtituloGatilho}</p>
             )}
