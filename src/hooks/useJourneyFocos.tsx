@@ -119,7 +119,9 @@ export function useJourneyFocos(jornadaType?: string) {
       objetivo_chat_missao: h.objetivo_chat_missao ?? null,
       posicao: h.posicao != null ? Number(h.posicao) : null,
       tema_fixo: !!h.tema_fixo,
-      hasVideo: h.video !== false && !!h.video_nome?.trim(),
+      // Os temas não têm mais vídeo: conteúdos são Transforme (hipnose),
+      // Experimente (missão) e Compartilhe (mural).
+      hasVideo: false,
       hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
       hasMissao: h.missao !== false,
       isSelected,
