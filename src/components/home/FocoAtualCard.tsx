@@ -69,7 +69,7 @@ export default function FocoAtualCard({
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-sm font-bold uppercase tracking-wider text-[hsl(var(--lilac))]">
+              <p className="text-sm font-semibold text-[hsl(var(--lilac))]">
                 {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
               </p>
               <button type="button" onClick={onOpenJornada} className="-my-1 inline-flex flex-shrink-0 items-center py-1 text-sm font-semibold text-[hsl(var(--electric-blue))]">
