@@ -80,6 +80,8 @@ import SmokingLogDialog from "@/components/SmokingLogDialog";
 import NeoExplicaCard from "@/components/home/NeoExplicaCard";
 import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import SosThinBlock from "@/components/home/SosThinBlock";
+import FocoAtualCard, { type FocoStep } from "@/components/home/FocoAtualCard";
+import { getThemeImageThumbUrl } from "@/lib/themeImage";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { cancelDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
@@ -741,150 +743,49 @@ export default function Dashboard() {
         {/* Neo Explica — stories que trocam a cada 2 dias ou ao abrir */}
         <NeoExplicaCard jornada={isAbstinencia ? "liberdade" : "reducao"} />
 
-        {/* Foco atual — sequência guiada pelo próximo conteúdo pendente */}
-        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-          <div className="flex flex-nowrap items-center gap-1">
-            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--lilac))]">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--lilac)/0.6)]" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--lilac))]" />
-              </span>
-              Recomendado para hoje
-            </span>
-            <span className="ml-auto inline-flex whitespace-nowrap items-center gap-1 rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--electric-blue))]">
-              <Sparkles className="h-3 w-3 flex-shrink-0" />
-              <span>Jornada Personalizada</span>
-              {totalFocos > 0 && <span className="font-medium opacity-70">· {focoAtualNumero}/{totalFocos}</span>}
-            </span>
-          </div>
-
-          <h1 className="mt-2 text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
-            Método Sopro para Enfraquecer o Vício
-          </h1>
-          <p className="mt-1 text-balance text-xs leading-relaxed text-muted-foreground">
-            <span className="font-semibold text-foreground">Gatilho atual: {tituloGatilho}</span>
-            {subtituloGatilho && <> / {subtituloGatilho}</>}
-          </p>
-
-          {(() => {
-            // Conteúdos do tema: Transforme (hipnose), Experimente (missão) e
-            // Compartilhe (mural). Todos ficam liberados ao mesmo tempo.
-            const steps = [
-              hasHipnose && {
-                key: "hipnose",
-                image: stepHipnoseImg,
-                title: "Transforme",
-                subtitle: "seus hábitos com Hipnose",
-                icon: Headphones,
-                done: weeklyHipnoseDone,
-                countsAsActivity: true,
-                onClick: () => openMedia("hypnosis"),
-                actionLabel: "Continuar com a hipnose",
-              },
-              hasMissao && {
-                key: "missao",
-                image: stepMissaoImg,
-                title: "Experimente",
-                subtitle: "uma nova vida mais leve",
-                icon: ClipboardList,
-                done: weeklyMissaoDone,
-                countsAsActivity: true,
-                onClick: openMissionDialog,
-                actionLabel: "Continuar com a missão",
-              },
-              {
-                key: "mural",
-                image: stepMuralImg,
-                title: "Compartilhe",
-                subtitle: "sua jornada com outras pessoas",
-                icon: MessageCircleHeart,
-                done: weeklyMuralDone,
-                countsAsActivity: true,
-                onClick: () =>
-                  navigate(`/mural?tema=${encodeURIComponent(tituloGatilho)}`),
-                actionLabel: "Compartilhe no mural",
-              },
-            ].filter(Boolean) as Array<{
-              key: string;
-              title: string;
-              subtitle: string;
-              image: string;
-              icon: typeof Headphones;
-              done: boolean;
-              countsAsActivity: boolean;
-              onClick: () => void;
-              actionLabel: string;
-            }>;
-            // As 3 atividades contam no total, mas o foco já é concluído com
-            // hipnose + missão (o mural é opcional para avançar).
-            const activities = steps.filter((step) => step.countsAsActivity);
-            const nextStep = steps.find((step) => !step.done);
-
-            return (
-              <>
-                <div className="mt-4 flex items-start" aria-label="Conteúdos do foco atual">
-                  {steps.map((step, index) => {
-                    const isCurrent = nextStep?.key === step.key;
-                    return (
-                      <div key={step.key} className="relative flex min-w-0 flex-1 items-start">
-                        <button
-                          type="button"
-                          onClick={step.onClick}
-                          aria-label={`${step.title}: ${step.subtitle}`}
-                          className="flex min-w-0 flex-1 flex-col items-center gap-2 rounded-2xl text-center transition-transform active:scale-95"
-                        >
-                          <span className="whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-0.5 text-[10px] font-semibold text-[hsl(var(--lilac))]">
-                            Passo {index + 1}: {step.key === "hipnose" ? "Hipnose" : step.key === "missao" ? "Missão" : "Mural"}
-                          </span>
-                          <div className="relative flex h-20 w-20 items-center justify-center">
-                            <img src={step.image} alt="" className="h-20 w-20 object-contain" draggable={false} />
-                            {step.done && (
-                              <span className="absolute right-0.5 top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--lilac))] text-primary-foreground ring-2 ring-card">
-                                <Check className="h-3 w-3" strokeWidth={3} />
-                              </span>
-                            )}
-                          </div>
-                          <span className={`text-sm font-semibold ${isCurrent ? "text-foreground" : "text-foreground/80"}`}>
-                            {step.title}
-                          </span>
-                          <span className="-mt-1.5 max-w-[7.5rem] text-balance text-[11px] leading-tight text-muted-foreground">
-                            {step.subtitle}
-                          </span>
-                        </button>
-                        {index < steps.length - 1 && (
-                          <ArrowRight className="pointer-events-none absolute right-0 top-[4.25rem] h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.55)]" strokeWidth={2.5} />
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {nextStep ? (
-                  <Button
-                    type="button"
-                    onClick={nextStep.onClick}
-                    className="mt-4 h-12 w-full rounded-full bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-sm font-bold text-primary-foreground shadow-wellness"
-                  >
-                    <nextStep.icon className="mr-2 h-5 w-5" />
-                    <span className="text-balance">{nextStep.actionLabel}</span>
-                    <ChevronRight className="ml-1 h-5 w-5" />
-                  </Button>
-                ) : (
-                  <div className="mt-4 flex h-12 items-center justify-center gap-2 rounded-full bg-[hsl(var(--lilac-soft))] font-semibold text-[hsl(var(--lilac))]">
-                    <CheckCircle2 className="h-5 w-5" />
-                    Foco concluído
-                  </div>
-                )}
-
-                {activities.length > 0 && (
-                  <p className="mt-3 text-center text-xs text-muted-foreground">
-                    {activities.filter((step) => step.done).length} de {activities.length} atividades concluídas
-                  </p>
-                )}
-              </>
-            );
-          })()}
-        </section>
+        {/* Foco atual — método Sopro, gatilho do momento e passos numerados */}
+        <FocoAtualCard
+          tituloGatilho={tituloGatilho}
+          subtituloGatilho={subtituloGatilho}
+          imagemGatilho={getThemeImageThumbUrl((gatilho as any)?.imagem_nome, 128)}
+          focoAtualNumero={focoAtualNumero}
+          totalFocos={totalFocos}
+          steps={([
+            hasHipnose && {
+              key: "hipnose",
+              label: "Hipnose",
+              verb: "Transforme",
+              rest: "seus hábitos",
+              image: stepHipnoseImg,
+              icon: Headphones,
+              done: weeklyHipnoseDone,
+              onClick: () => openMedia("hypnosis"),
+              actionLabel: "Continuar com a hipnose",
+            },
+            hasMissao && {
+              key: "missao",
+              label: "Missão",
+              verb: "Experimente",
+              rest: "uma vida mais leve",
+              image: stepMissaoImg,
+              icon: ClipboardList,
+              done: weeklyMissaoDone,
+              onClick: openMissionDialog,
+              actionLabel: "Continuar com a missão",
+            },
+            {
+              key: "mural",
+              label: "Mural",
+              verb: "Compartilhe",
+              rest: "sua jornada",
+              image: stepMuralImg,
+              icon: MessageCircleHeart,
+              done: weeklyMuralDone,
+              onClick: () => navigate(`/mural?tema=${encodeURIComponent(tituloGatilho)}`),
+              actionLabel: "Compartilhe no mural",
+            },
+          ].filter(Boolean) as FocoStep[])}
+        />
 
         {/* SOS fino — logo após o Foco atual (jornada de abstinência) */}
         {isAbstinencia && <SosThinBlock />}
