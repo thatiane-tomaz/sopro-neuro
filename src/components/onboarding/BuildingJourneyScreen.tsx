@@ -84,7 +84,7 @@ const BuildingJourneyScreen = ({ onDone, journeyType }: Props) => {
             }}
           />
         </div>
-        <div className="mt-1.5 text-right text-xs font-medium text-muted-foreground">
+        <div className="mt-1.5 text-right text-sm font-medium text-muted-foreground">
           {progress}%
         </div>
       </div>

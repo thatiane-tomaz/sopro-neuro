@@ -93,7 +93,7 @@ const Question5 = ({ data, updateData, onNext, onPrev }: Question5Props) => {
             ,00
           </span>
         </div>
-        <p className="text-[13px] text-muted-foreground mt-2 text-center font-medium">
+        <p className="text-sm text-muted-foreground mt-2 text-center font-medium">
           Digite o valor sem centavos
         </p>
       </div>

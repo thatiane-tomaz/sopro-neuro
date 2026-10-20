@@ -662,7 +662,7 @@ function GoogleAuthButton({ label }: { label: string }) {
     <div className="mt-5">
       <div className="flex items-center gap-3 mb-4">
         <span className="h-px flex-1 bg-[hsl(220_30%_92%)]" />
-        <span className="text-[13px] text-muted-foreground font-medium">ou</span>
+        <span className="text-sm text-muted-foreground font-medium">ou</span>
         <span className="h-px flex-1 bg-[hsl(220_30%_92%)]" />
       </div>
       <button

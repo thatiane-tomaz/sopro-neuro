@@ -18,7 +18,7 @@ const JourneyBadgePreview = () => {
               <p className="text-sm font-semibold text-foreground leading-tight">
                 Bom dia, Ana!
               </p>
-              <p className="text-xs text-muted-foreground leading-tight font-medium">
+              <p className="text-sm text-muted-foreground leading-tight font-medium">
                 Seu cérebro está aprendendo<br />uma nova forma de viver.
               </p>
             </div>

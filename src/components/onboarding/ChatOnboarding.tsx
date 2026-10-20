@@ -546,7 +546,7 @@ const ChatOnboarding = ({ data, updateData, onFinish, isSubmitting }: Props) => 
                     } ${current.suffix ? "pr-24" : "pr-4"}`}
                   />
                   {current.suffix && (
-                    <span className="absolute right-14 top-1/2 -translate-y-1/2 text-[13px] text-muted-foreground font-medium">
+                    <span className="absolute right-14 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">
                       {current.suffix}
                     </span>
                   )}
