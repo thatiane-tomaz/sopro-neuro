@@ -51,7 +51,7 @@ const EmailConfirmed = () => {
         </Card>
 
         {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground">
+        <p className="text-center text-[13px] text-muted-foreground font-medium">
           © {new Date().getFullYear()} Sopro Neuro. Todos os direitos reservados.
         </p>
       </div>

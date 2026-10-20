@@ -218,7 +218,7 @@ export default function AbstinenceExtras({
             <h2 className="mt-1 text-lg sm:text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
               Hipnoses de Apoio
             </h2>
-            <p className="mt-0.5 text-xs text-muted-foreground leading-snug text-balance">
+            <p className="mt-0.5 text-[13px] text-muted-foreground leading-snug text-balance font-medium">
               Se prepare para superar gatilhos específicos
             </p>
           </div>
@@ -251,7 +251,7 @@ export default function AbstinenceExtras({
                   {t.title}
                 </p>
                 {t.description && (
-                  <p className="text-[11px] text-muted-foreground leading-snug mt-0.5 line-clamp-2">
+                  <p className="text-xs text-muted-foreground leading-snug mt-0.5 line-clamp-2 font-medium">
                     {t.description}
                   </p>
                 )}
@@ -293,7 +293,7 @@ export default function AbstinenceExtras({
             <span className="text-[13px] font-bold text-[hsl(258_60%_45%)] leading-tight text-balance">
               Voltou a fumar?
             </span>
-            <span className="text-[11px] text-muted-foreground leading-snug mt-0.5 text-balance">
+            <span className="text-xs text-muted-foreground leading-snug mt-0.5 text-balance font-medium">
               Retorne para a jornada de redução e se fortaleça para a próxima tentativa de parar de fumar.
             </span>
           </span>
@@ -308,7 +308,7 @@ export default function AbstinenceExtras({
             <DialogTitle className="text-base font-bold">
               Percebeu que o hábito voltou?
             </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground">
+            <DialogDescription className="text-[13px] text-muted-foreground font-medium">
               Voltar para a jornada de redução pode ajudar você a recuperar o controle, enfraquecer os gatilhos e tornar a próxima tentativa de parar mais leve.
             </DialogDescription>
           </DialogHeader>

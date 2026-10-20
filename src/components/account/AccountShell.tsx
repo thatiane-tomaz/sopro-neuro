@@ -90,7 +90,7 @@ export function AccountCard({
               </h2>
             )}
             {description && (
-              <p className="mt-0.5 text-balance text-xs leading-snug text-muted-foreground">
+              <p className="mt-0.5 text-balance text-[13px] leading-snug text-muted-foreground font-medium">
                 {description}
               </p>
             )}
