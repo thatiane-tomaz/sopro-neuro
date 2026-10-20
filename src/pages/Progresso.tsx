@@ -438,7 +438,7 @@ export default function Progresso() {
         {!isReducao && smokeFreeDays !== null && (
           <section className="mt-4 overflow-hidden rounded-3xl border border-[hsl(var(--lilac)/0.2)] bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] p-4">
             <div className="flex flex-col items-center text-center">
-              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
+              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
                 <Sparkles className="h-3 w-3" />
                 Sem fumar
               </span>
@@ -452,7 +452,7 @@ export default function Progresso() {
               </div>
               <div className="mt-3 flex items-center gap-1.5 rounded-full bg-card/70 py-1 pl-3 pr-1 ring-1 ring-border/40 backdrop-blur">
                 <CalendarIcon className="h-3.5 w-3.5 text-[hsl(var(--lilac))]" />
-                <span className="text-[11px] font-medium text-foreground/80">
+                <span className="text-sm font-medium text-foreground/80">
                   Último cigarro em {lastCigLabel}
                 </span>
                 <button
@@ -469,7 +469,7 @@ export default function Progresso() {
 
         {/* Savings — cigs avoided + money saved */}
         <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-          <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--electric-blue))]">
+          <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-sm font-semibold text-[hsl(var(--electric-blue))]">
             <Sparkles className="h-3 w-3" />
             Suas conquistas
           </span>
@@ -515,7 +515,7 @@ export default function Progresso() {
               Cigarros por dia
             </h2>
             {stats.avoided > 0 && (
-              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-[10px] font-semibold text-[hsl(var(--lilac))]">
+              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold text-[hsl(var(--lilac))]">
                 <TrendingDown className="h-3 w-3" />
                 em queda
               </span>
@@ -525,14 +525,14 @@ export default function Progresso() {
           {/* Start & current average stats */}
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-2xl bg-muted/60 p-3 text-center">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Início</p>
+              <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Início</p>
               <p className="mt-0.5 text-lg font-bold leading-tight text-foreground tabular-nums">
                 {baseline}
                 <span className="text-sm font-medium text-muted-foreground">/dia</span>
               </p>
             </div>
             <div className="rounded-2xl bg-[hsl(var(--lilac-soft)/0.8)] p-3 text-center">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-[hsl(var(--lilac))]">Média atual (3 dias)</p>
+              <p className="text-sm font-semibold uppercase tracking-wide text-[hsl(var(--lilac))]">Média atual (3 dias)</p>
               <p className="mt-0.5 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] tabular-nums">
                 {stats.daysWithLog > 0 ? Math.floor(stats.avgPerDay) : "—"}
                 <span className="text-sm font-medium text-muted-foreground">/dia</span>
@@ -885,7 +885,7 @@ function PotentialTile({
           : "bg-[hsl(var(--lilac-soft)/0.7)]")
       }
     >
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         {label}
       </p>
       <p

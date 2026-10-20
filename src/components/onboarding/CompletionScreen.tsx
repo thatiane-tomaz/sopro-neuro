@@ -46,7 +46,7 @@ const CompletionScreen = ({ onFinish, isSubmitting }: CompletionScreenProps) => 
           />
         </div>
 
-        <span className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 backdrop-blur-md border border-white/60 shadow-sm text-xs font-semibold text-primary animate-fade-in" style={{ animationDelay: "0.2s" }}>
+        <span className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 backdrop-blur-md border border-white/60 shadow-sm text-sm font-semibold text-primary animate-fade-in" style={{ animationDelay: "0.2s" }}>
           <Sparkles className="w-3.5 h-3.5" />
           Jornada pronta
         </span>

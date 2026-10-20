@@ -63,7 +63,7 @@ const IntroScreen = ({ onNext }: IntroScreenProps) => {
           </div>
 
           <div className="w-full flex items-center justify-center mt-6 animate-fade-in" style={{ animationDelay: "0.35s" }}>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 backdrop-blur-md border border-white/60 shadow-sm text-xs font-medium text-foreground">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/70 backdrop-blur-md border border-white/60 shadow-sm text-sm font-medium text-foreground">
               <Clock className="w-3.5 h-3.5 text-primary" />
               3 minutos
             </span>

@@ -210,7 +210,7 @@ export default function AbstinenceExtras({
           <div className="flex-1 min-w-0">
             <div className="inline-flex items-center gap-1.5 min-w-0">
               <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
-              <span className="text-[10px] font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
+              <span className="text-sm font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
                 Gatilhos
               </span>
             </div>
@@ -247,7 +247,7 @@ export default function AbstinenceExtras({
                 <Headphones className="h-5 w-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-bold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                <p className="text-sm font-bold text-foreground leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                   {t.title}
                 </p>
                 {t.description && (
@@ -290,7 +290,7 @@ export default function AbstinenceExtras({
             <RotateCcw className="h-5 w-5 text-white" />
           </span>
           <span className="flex-1 min-w-0 flex flex-col">
-            <span className="text-[13px] font-bold text-[hsl(258_60%_45%)] leading-tight text-balance">
+            <span className="text-sm font-bold text-[hsl(258_60%_45%)] leading-tight text-balance">
               Voltou a fumar?
             </span>
             <span className="text-sm text-muted-foreground leading-snug mt-0.5 text-balance font-medium">

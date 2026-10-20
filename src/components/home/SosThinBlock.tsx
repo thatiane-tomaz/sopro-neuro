@@ -68,11 +68,11 @@ export default function SosThinBlock() {
           <span className="block text-sm font-bold text-[hsl(258_60%_45%)] leading-tight">
             Vontade de fumar?
           </span>
-          <span className="block text-xs text-[hsl(258_40%_60%)] leading-tight mt-0.5">
+          <span className="block text-sm text-[hsl(258_40%_60%)] leading-tight mt-0.5">
             Hipnose para alívio rápido
           </span>
         </span>
-        <span className="flex-shrink-0 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-2 text-xs font-bold text-primary-foreground shadow-[0_8px_20px_-8px_hsl(258_70%_50%/0.6)]">
+        <span className="flex-shrink-0 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-2 text-sm font-bold text-primary-foreground shadow-[0_8px_20px_-8px_hsl(258_70%_50%/0.6)]">
           Ajuda agora
         </span>
       </button>

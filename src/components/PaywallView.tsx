@@ -50,7 +50,7 @@ const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) =>
       <div className="max-w-md mx-auto space-y-5">
         {/* Preço */}
         <div className="relative rounded-3xl bg-card border-2 border-primary shadow-2xl p-6 text-center">
-          <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 rounded-full bg-accent text-accent-foreground text-xs font-bold px-3 py-1 uppercase tracking-wide">
+          <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 rounded-full bg-accent text-accent-foreground text-sm font-bold px-3 py-1 uppercase tracking-wide">
             <Sparkles className="w-3 h-3" /> Acesso completo
           </span>
           <div className="flex items-baseline justify-center gap-1 mt-2">
@@ -100,7 +100,7 @@ const PaywallView = ({ isPurchasing, onPurchase, onRestore, onClose }: Props) =>
 
         {/* Termos obrigatórios (Apple 3.1.2) */}
         <div className="text-center space-y-2">
-          <div className="text-xs text-muted-foreground leading-relaxed space-y-1 font-medium">
+          <div className="text-sm text-muted-foreground leading-relaxed space-y-1 font-medium">
             <p>A assinatura é renovada automaticamente a menos que a renovação automática seja desativada pelo menos 24 horas antes do final do período atual.</p>
             <p>O pagamento será cobrado na sua conta do iTunes na confirmação da compra. O valor da renovação será cobrado dentro de 24 horas antes do final do período atual.</p>
             <p>Você pode gerenciar e cancelar suas assinaturas acessando as configurações da sua conta na App Store após a compra.</p>

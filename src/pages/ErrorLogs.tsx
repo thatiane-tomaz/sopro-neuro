@@ -171,38 +171,38 @@ const ErrorLogs = () => {
                   </p>
                   <div className="flex items-center gap-2 shrink-0">
                     {log.platform && (
-                      <Badge variant="outline" className="text-[10px]">
+                      <Badge variant="outline" className="text-sm">
                         {log.platform}
                       </Badge>
                     )}
-                    <span className="text-xs text-muted-foreground whitespace-nowrap font-medium">
+                    <span className="text-sm text-muted-foreground whitespace-nowrap font-medium">
                       {formatDate(log.created_at)}
                     </span>
                   </div>
                 </div>
 
                 {log.page_url && (
-                  <p className="text-xs text-muted-foreground mt-1 font-medium">{log.page_url}</p>
+                  <p className="text-sm text-muted-foreground mt-1 font-medium">{log.page_url}</p>
                 )}
 
                 {expandedId === log.id && (
                   <div className="mt-3 space-y-2">
                     {log.error_context && (
                       <div>
-                        <p className="text-xs text-muted-foreground font-medium">Contexto:</p>
-                        <p className="text-xs text-foreground">{log.error_context}</p>
+                        <p className="text-sm text-muted-foreground font-medium">Contexto:</p>
+                        <p className="text-sm text-foreground">{log.error_context}</p>
                       </div>
                     )}
                     {log.error_stack && (
                       <div>
-                        <p className="text-xs text-muted-foreground font-medium">Stack:</p>
-                        <pre className="text-xs text-muted-foreground bg-muted/50 p-2 rounded overflow-x-auto max-h-40 whitespace-pre-wrap font-medium">
+                        <p className="text-sm text-muted-foreground font-medium">Stack:</p>
+                        <pre className="text-sm text-muted-foreground bg-muted/50 p-2 rounded overflow-x-auto max-h-40 whitespace-pre-wrap font-medium">
                           {log.error_stack}
                         </pre>
                       </div>
                     )}
                     {log.user_id && (
-                      <p className="text-xs text-muted-foreground font-medium">
+                      <p className="text-sm text-muted-foreground font-medium">
                         User: {log.user_id.substring(0, 8)}...
                       </p>
                     )}

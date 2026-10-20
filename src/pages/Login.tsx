@@ -374,7 +374,7 @@ const Login = () => {
                 <p className="text-sm text-amber-800 font-medium mb-1">
                   📧 Este email possui assinatura ativa!
                 </p>
-                <p className="text-xs text-amber-700">
+                <p className="text-sm text-amber-700">
                   Mas ainda não tem conta cadastrada. Vá para a aba{" "}
                   <span className="font-semibold">"Cadastrar"</span> para criar sua conta.
                 </p>
@@ -473,7 +473,7 @@ const Login = () => {
       </Tabs>
 
 
-      <div className="text-center text-xs mt-6 pt-5 border-t border-[hsl(220_30%_94%)]">
+      <div className="text-center text-sm mt-6 pt-5 border-t border-[hsl(220_30%_94%)]">
         <p className="text-muted-foreground mb-1">Ao cadastrar, você concorda com nossos</p>
         <p>
           <a
@@ -550,7 +550,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={id} className="text-xs font-semibold text-foreground/80">
+      <Label htmlFor={id} className="text-sm font-semibold text-foreground/80">
         {label}
       </Label>
       <div className="relative">
@@ -590,7 +590,7 @@ function FieldPassword({
 }) {
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={id} className="text-xs font-semibold text-foreground/80">
+      <Label htmlFor={id} className="text-sm font-semibold text-foreground/80">
         {label}
       </Label>
       <div className="relative">

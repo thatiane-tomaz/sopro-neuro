@@ -711,7 +711,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
                   <button
                     key={s}
                     onClick={() => send(s)}
-                    className={`text-[11.5px] whitespace-nowrap px-3 py-1.5 rounded-full backdrop-blur-sm ring-1 font-medium shadow-sm active:scale-95 transition-transform ${
+                    className={`text-sm whitespace-nowrap px-3 py-1.5 rounded-full backdrop-blur-sm ring-1 font-medium shadow-sm active:scale-95 transition-transform ${
                       isReflect
                         ? "bg-[hsl(258_70%_96%)] ring-[hsl(258_70%_85%)] text-[hsl(258_60%_40%)]"
                         : "bg-white/80 ring-[hsl(258_70%_92%)] text-[hsl(258_60%_45%)]"
@@ -784,7 +784,7 @@ export default function Chat({ embedded = false, initialMessage, greetingText, o
             {isStreaming ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
           </button>
         </form>
-        <p className="mx-auto max-w-md text-center text-xs text-muted-foreground mt-2 px-4 font-medium">
+        <p className="mx-auto max-w-md text-center text-sm text-muted-foreground mt-2 px-4 font-medium">
           Sou seu amigo virtual. Em caso de emergência ou crise, ligue 188 (CVV).
         </p>
       </div>
