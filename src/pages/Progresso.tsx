@@ -525,14 +525,14 @@ export default function Progresso() {
           {/* Start & current average stats */}
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-2xl bg-muted/60 p-3 text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Início</p>
+              <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">INÍCIO{"\n\n"}</p>
               <p className="mt-0.5 text-lg font-bold leading-tight text-foreground tabular-nums">
                 {baseline}
                 <span className="text-sm font-medium text-muted-foreground">/dia</span>
               </p>
             </div>
             <div className="rounded-2xl bg-[hsl(var(--lilac-soft)/0.8)] p-3 text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-[hsl(var(--lilac))]">Média atual (3 dias)</p>
+              <p className="text-sm font-semibold uppercase tracking-wide text-[hsl(var(--lilac))]">MÉDIA ATUAL{" "}{"\n"}3 DIAS</p>
               <p className="mt-0.5 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] tabular-nums">
                 {stats.daysWithLog > 0 ? Math.floor(stats.avgPerDay) : "—"}
                 <span className="text-sm font-medium text-muted-foreground">/dia</span>
