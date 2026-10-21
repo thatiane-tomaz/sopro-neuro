@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ClipboardList, Headphones, MessageCircleHeart } from "lucide-react";
 import NeoBlock from "@/components/home/NeoBlock";
 import NeoExplicaStory from "@/components/home/NeoExplicaStory";
+import MetodoExplicacao from "@/components/home/MetodoExplicacao";
 import FocoAtualCard from "@/components/home/FocoAtualCard";
 import stepHipnose from "@/assets/step-hipnose.png";
 import stepMissao from "@/assets/step-missao.png";
@@ -11,6 +12,7 @@ import neoIdeia from "@/assets/neo-ideia.png";
 /** Pré-visualização do foco atual, do bloco do Neo e dos stories do Neo Explica. */
 export default function NeoPreview() {
   const [storyOpen, setStoryOpen] = useState(false);
+  const [metodoOpen, setMetodoOpen] = useState(false);
   return (
     <div className="min-h-screen bg-gradient-to-b from-[hsl(258_60%_97%)] to-white px-3 py-8">
       <div className="mx-auto w-full max-w-[394px]">
@@ -25,6 +27,7 @@ export default function NeoPreview() {
           totalFocos={7}
           focosConcluidos={1}
           onOpenJornada={() => {}}
+          onOpenMetodo={() => setMetodoOpen(true)}
           steps={[
             { key: "hipnose", label: "Hipnose", verb: "Transforme", rest: "seus hábitos", image: stepHipnose, icon: Headphones, done: true, onClick: () => {}, actionLabel: "Continuar com a hipnose" },
             { key: "missao", label: "Missão", verb: "Experimente", rest: "uma vida mais leve", image: stepMissao, icon: ClipboardList, done: false, onClick: () => {}, actionLabel: "Continuar com a missão" },
@@ -43,6 +46,7 @@ export default function NeoPreview() {
           onOpenReview={() => {}}
         />
       </div>
+      {metodoOpen && <MetodoExplicacao jornada="reducao" onClose={() => setMetodoOpen(false)} />}
       {storyOpen && (
         <NeoExplicaStory
           titulo="Por que o cigarro te deixa mais ansioso?"
