@@ -1006,6 +1006,11 @@ export default function Dashboard() {
         />
       )}
 
+      {metodoOpen && (
+        <MetodoExplicacao jornada={isAbstinencia ? "liberdade" : "reducao"} onClose={() => setMetodoOpen(false)} />
+      )}
+
+
 
       <SmokingLogDialog
         open={smokingDialogOpen}
