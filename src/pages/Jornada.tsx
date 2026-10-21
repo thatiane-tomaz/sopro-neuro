@@ -961,7 +961,7 @@ function ThemeRow({
           />
           <div className="min-w-0 flex-1">
             {isFocus && (
-              <span className="mb-0.5 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-0.5 text-sm font-bold uppercase tracking-[0.1em] text-[hsl(258_60%_45%)]">
+              <span className="mb-1 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-px text-sm font-semibold leading-tight text-[hsl(258_60%_45%)]">
                 Seu foco atual
               </span>
             )}
