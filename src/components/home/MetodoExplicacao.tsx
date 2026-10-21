@@ -2,12 +2,14 @@ import { useEffect } from "react";
 import { X } from "lucide-react";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import metodoReducao from "@/assets/metodo-reducao.webp";
+import metodoLiberdade from "@/assets/metodo-liberdade.webp";
 
 export type MetodoJornada = "reducao" | "liberdade";
 
-/** Imagem com a explicação do método para cada jornada (liberdade ainda sem arte). */
+/** Imagem com a explicação do método para cada jornada. */
 const METODO_IMAGENS: Partial<Record<MetodoJornada, string>> = {
   reducao: metodoReducao,
+  liberdade: metodoLiberdade,
 };
 
 export const metodoImagem = (jornada: MetodoJornada): string | null => METODO_IMAGENS[jornada] ?? null;
