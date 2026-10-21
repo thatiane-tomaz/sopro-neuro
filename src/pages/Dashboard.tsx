@@ -81,6 +81,7 @@ import NeoExplicaCard from "@/components/home/NeoExplicaCard";
 import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import SosThinBlock from "@/components/home/SosThinBlock";
 import FocoAtualCard, { type FocoStep } from "@/components/home/FocoAtualCard";
+import MetodoExplicacao, { metodoImagem } from "@/components/home/MetodoExplicacao";
 import { getThemeImageThumbUrl } from "@/lib/themeImage";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { cancelDailySmokingReminder } from "@/services/dailySmokingReminder";
@@ -143,6 +144,7 @@ export default function Dashboard() {
   const [quitPickerDate, setQuitPickerDate] = useState<Date | undefined>(new Date());
   const [switchingJornada, setSwitchingJornada] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [metodoOpen, setMetodoOpen] = useState(false);
   const [chatSeed, setChatSeed] = useState<string | undefined>(undefined);
   const [chatSampleId, setChatSampleId] = useState<string | undefined>(undefined);
 
@@ -752,6 +754,7 @@ export default function Dashboard() {
           totalFocos={totalFocos}
           focosConcluidos={focosConcluidos}
           onOpenJornada={() => navigate("/jornada")}
+          onOpenMetodo={metodoImagem(isAbstinencia ? "liberdade" : "reducao") ? () => setMetodoOpen(true) : undefined}
           steps={([
             hasHipnose && {
               key: "hipnose",
@@ -1002,6 +1005,11 @@ export default function Dashboard() {
           onComplete={handleComplete}
         />
       )}
+
+      {metodoOpen && (
+        <MetodoExplicacao jornada={isAbstinencia ? "liberdade" : "reducao"} onClose={() => setMetodoOpen(false)} />
+      )}
+
 
 
       <SmokingLogDialog
