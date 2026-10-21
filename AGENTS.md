@@ -4,3 +4,4 @@
 - Pure business rules live in `src/lib/` and are tested with `bun test` under `tests/` (outside `src` so the app typecheck ignores `bun:test`). Why: no test framework is installed in the app.
 - Neo Explica stories: one row per story in `neo_explica` (folder `pasta` in private bucket `neo-explica`, slides = image files sorted by name); per-user card state in `neo_explica_estado`, opens in `neo_explica_views`; rotation rule in `src/lib/neoExplica.ts`. Why: content team uploads images without code changes and the card choice stays testable.
 - No offline service worker: `public/sw.js` is a kill-switch that clears old cached versions; home-screen install uses `public/manifest.webmanifest` only. Why: the old offline cache kept phones on stale versions after publishing.
+- App images ship as files in `src/assets` (not lovable-assets pointers). Why: Capacitor native builds load the bundle locally and cannot reach hosted asset paths.

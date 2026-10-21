@@ -40,13 +40,16 @@ export default function MetodoExplicacao({ jornada, onClose }: Props) {
       className="fixed inset-0 z-[60] flex justify-center bg-foreground/90 animate-in fade-in duration-200"
       onClick={onClose}
     >
-      <div className="relative h-full w-full max-w-md overflow-y-auto overscroll-contain" onClick={(e) => e.stopPropagation()}>
-        <img
-          src={src}
-          alt="Método Sopro Neuro: como funciona a sua jornada"
-          draggable={false}
-          className="block w-full select-none"
-        />
+      <div className="relative h-full w-full max-w-md overflow-y-auto overscroll-contain">
+        <div className="flex min-h-full items-center">
+          <img
+            src={src}
+            alt="Método Sopro Neuro: como funciona a sua jornada"
+            draggable={false}
+            onClick={(e) => e.stopPropagation()}
+            className="block w-full select-none"
+          />
+        </div>
       </div>
       <button
         type="button"
