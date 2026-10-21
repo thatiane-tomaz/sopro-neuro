@@ -532,7 +532,7 @@ export default function Progresso() {
               </p>
             </div>
             <div className="rounded-2xl bg-[hsl(var(--lilac-soft)/0.8)] p-3 text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-[hsl(var(--lilac))]">MÉDIA ATUAL{" "}{"\n"}3 DIAS</p>
+              <p className="text-sm font-semibold uppercase tracking-wide text-[hsl(var(--lilac))]">MÉDIA ATUAL</p>
               <p className="mt-0.5 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] tabular-nums">
                 {stats.daysWithLog > 0 ? Math.floor(stats.avgPerDay) : "—"}
                 <span className="text-sm font-medium text-muted-foreground">/dia</span>
