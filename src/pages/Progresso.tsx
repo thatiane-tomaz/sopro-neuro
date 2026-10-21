@@ -712,7 +712,7 @@ export default function Progresso() {
 
         {/* Potencial ao parar de fumar */}
         {equivCigsPerDay > 0 && (
-          <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+          <section className="mt-3 rounded-3xl bg-card/80 p-3.5 text-center shadow-primary ring-1 ring-border/40 backdrop-blur-md">
             <h2 className="text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
               Seu potencial ao parar de fumar
             </h2>
@@ -741,11 +741,13 @@ export default function Progresso() {
               />
             </div>
 
-            <div className="mt-3 flex items-center gap-2 rounded-2xl bg-muted/50 py-2 pl-3 pr-1">
-              <p className="min-w-0 flex-1 text-sm leading-relaxed text-muted-foreground font-medium">
-                <span className="font-semibold text-foreground/80">Antes de começar a jornada</span>
+            <div className="mt-3 flex items-center gap-1 rounded-2xl bg-muted/50 py-2 pl-2 pr-1">
+              <p className="min-w-0 flex-1 text-center leading-relaxed text-muted-foreground font-medium">
+                <span className="text-sm font-semibold text-foreground/80">Antes de começar a jornada</span>
                 <br />
-                {baseline} cigarros/dia · {vapesPerMonth} vapes/mês · {formatBRLCompact(weeklyCostNum)}/semana
+                <span className="block whitespace-nowrap text-[11.5px] min-[400px]:text-[13px] sm:text-sm">
+                  {baseline} cigarros/dia · {vapesPerMonth} vapes/mês · {formatBRLCompact(weeklyCostNum)}/semana
+                </span>
               </p>
               <button
                 onClick={() => setConsumoDialogOpen(true)}
