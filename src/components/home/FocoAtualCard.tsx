@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Check, CheckCircle2, ChevronRight, type LucideIcon } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, ChevronRight, Info, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export interface FocoStep {
@@ -25,6 +25,8 @@ interface Props {
   totalFocos: number;
   focosConcluidos: number;
   onOpenJornada: () => void;
+  /** Abre a tela que explica o método; sem ela, a entrada não aparece. */
+  onOpenMetodo?: () => void;
   steps: FocoStep[];
 }
 
@@ -40,6 +42,7 @@ export default function FocoAtualCard({
   totalFocos,
   focosConcluidos,
   onOpenJornada,
+  onOpenMetodo,
   steps,
 }: Props) {
   const [imgFailed, setImgFailed] = useState(false);
@@ -48,9 +51,21 @@ export default function FocoAtualCard({
 
   return (
     <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-      <h1 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
-        Método Sopro Neuro
-      </h1>
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+          Método Sopro Neuro
+        </h1>
+        {onOpenMetodo && (
+          <button
+            type="button"
+            onClick={onOpenMetodo}
+            className="-my-1 inline-flex flex-shrink-0 items-center gap-1 rounded-full bg-[hsl(var(--lilac-soft))] px-2.5 py-1 text-sm font-semibold text-[hsl(var(--lilac))] active:scale-95"
+          >
+            <Info className="h-4 w-4" />
+            Como funciona
+          </button>
+        )}
+      </div>
       <p className="mt-1 text-pretty text-sm font-medium leading-snug text-muted-foreground">
         Siga os passos para enfraquecer os gatilhos que te prendem ao cigarro.
       </p>
