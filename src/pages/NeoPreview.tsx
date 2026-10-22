@@ -4,10 +4,10 @@ import NeoBlock from "@/components/home/NeoBlock";
 import NeoExplicaStory from "@/components/home/NeoExplicaStory";
 import MetodoExplicacao from "@/components/home/MetodoExplicacao";
 import FocoAtualCard from "@/components/home/FocoAtualCard";
-import stepHipnose from "@/assets/step-hipnose.png";
-import stepMissao from "@/assets/step-missao.png";
-import stepMural from "@/assets/step-mural.png";
-import neoIdeia from "@/assets/neo-ideia.png";
+import stepHipnose from "@/assets/step-hipnose.webp";
+import stepMissao from "@/assets/step-missao.webp";
+import stepMural from "@/assets/step-mural.webp";
+import neoIdeia from "@/assets/neo-ideia.webp";
 
 /** Pré-visualização do foco atual, do bloco do Neo e dos stories do Neo Explica. */
 export default function NeoPreview() {

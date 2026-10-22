@@ -39,9 +39,9 @@ import BottomNav from "@/components/home/BottomNav";
 import PageLoader from "@/components/home/PageLoader";
 import { getStartHereVideoUrl } from "@/lib/startHereVideo";
 import soproLogo from "@/assets/sopro-logo.webp";
-import stepHipnoseImg from "@/assets/step-hipnose.png";
-import stepMissaoImg from "@/assets/step-missao.png";
-import stepMuralImg from "@/assets/step-mural.png";
+import stepHipnoseImg from "@/assets/step-hipnose.webp";
+import stepMissaoImg from "@/assets/step-missao.webp";
+import stepMuralImg from "@/assets/step-mural.webp";
 import { performLogout } from "@/lib/logout";
 
 const getGreeting = () => {

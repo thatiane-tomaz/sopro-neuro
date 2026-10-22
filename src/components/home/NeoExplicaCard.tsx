@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronRight, Sparkles } from "lucide-react";
-import neoIdeiaImg from "@/assets/neo-ideia.png";
+import neoIdeiaImg from "@/assets/neo-ideia.webp";
 import NeoExplicaStory from "@/components/home/NeoExplicaStory";
 import { useNeoExplica, loadNeoExplicaSlides, type NeoExplica } from "@/hooks/useNeoExplica";
 import { useContentAccess } from "@/hooks/useContentAccess";
