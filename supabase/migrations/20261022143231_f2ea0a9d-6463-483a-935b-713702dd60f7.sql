@@ -1,0 +1,1 @@
+DROP POLICY "tmp upload neo-explica ansiedade" ON storage.objects;
