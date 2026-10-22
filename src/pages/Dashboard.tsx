@@ -92,6 +92,7 @@ import { buildNeoSuggestions } from "@/lib/neoSuggestions";
 import { useJourneyReview } from "@/hooks/useJourneyReview";
 import { useJourneyFocos } from "@/hooks/useJourneyFocos";
 import { performLogout } from "@/lib/logout";
+import { computePotential } from "@/lib/potential";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -470,12 +471,10 @@ export default function Dashboard() {
     return isFinite(parsed) && parsed > 0 ? norm(parsed) : 0;
   })();
 
-  const phase1Stats = useMemo(() => ({
-    cigsMonth: equivCigsPerDay * 30,
-    cigsYear: equivCigsPerDay * 365,
-    moneyMonth: weeklyCostNum * 4,
-    moneyYear: weeklyCostNum * 52,
-  }), [equivCigsPerDay, weeklyCostNum]);
+  const phase1Stats = useMemo(
+    () => computePotential(equivCigsPerDay, weeklyCostNum),
+    [equivCigsPerDay, weeklyCostNum],
+  );
 
   const lastCigDateStr = onboarding?.last_cigarette_date as string | undefined;
   const lastCigDate = lastCigDateStr ? new Date(lastCigDateStr + "T00:00:00") : null;
