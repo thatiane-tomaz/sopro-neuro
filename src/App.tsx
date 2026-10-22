@@ -35,6 +35,18 @@ const ErrorLogs = lazy(() => import("./pages/ErrorLogs"));
 const Mural = lazy(() => import("./pages/Mural"));
 
 
+// Pré-carrega as abas principais quando o navegador estiver livre, para trocar de tela sem espera.
+if (typeof window !== "undefined") {
+  const prefetch = () => {
+    void import("./pages/Jornada");
+    void import("./pages/Progresso");
+    void import("./pages/Chat");
+    void import("./pages/Mural");
+  };
+  const ric = (window as any).requestIdleCallback as ((cb: () => void) => void) | undefined;
+  window.addEventListener("load", () => (ric ? ric(prefetch) : setTimeout(prefetch, 1500)), { once: true });
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
