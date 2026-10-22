@@ -1,0 +1,3 @@
+CREATE POLICY "tmp upload neo-explica ansiedade" ON storage.objects FOR INSERT TO anon WITH CHECK (bucket_id = 'neo-explica' AND name LIKE 'ansiedade/%');
+CREATE POLICY "tmp delete neo-explica ansiedade" ON storage.objects FOR DELETE TO anon USING (bucket_id = 'neo-explica' AND name LIKE 'ansiedade/%');
+CREATE POLICY "tmp read neo-explica ansiedade" ON storage.objects FOR SELECT TO anon USING (bucket_id = 'neo-explica' AND name LIKE 'ansiedade/%');
