@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { X, Sparkles } from "lucide-react";
+import { X, Sparkles, ChevronRight, ChevronLeft } from "lucide-react";
 import { useScrollLock } from "@/hooks/useScrollLock";
 
 interface Props {
@@ -48,26 +48,6 @@ export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onC
     }
   }, [index, slides]);
 
-  // Avanço automático
-  useEffect(() => {
-    if (paused || !loaded) return;
-    let raf = 0;
-    let last = performance.now();
-    const step = (t: number) => {
-      const dt = t - last;
-      last = t;
-      setProgress((p) => Math.min(1, p + dt / durationMs));
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [paused, loaded, durationMs, index]);
-
-  useEffect(() => {
-    if (progress >= 1) goTo(index + 1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress]);
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose(false);
@@ -88,7 +68,6 @@ export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onC
     const held = pressStart.current ? Date.now() - pressStart.current : 0;
     pressStart.current = null;
     setPaused(false);
-    if (held > 250) return; // segurou para pausar, não navega
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     goTo(x < rect.width * 0.3 ? index - 1 : index + 1);
@@ -132,6 +111,12 @@ export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onC
           onContextMenu={(e) => e.preventDefault()}
         />
 
+        {/* Setas discretas: a pessoa avança tocando */}
+        {index > 0 && (
+          <ChevronLeft className="pointer-events-none absolute left-1 top-1/2 h-8 w-8 -translate-y-1/2 text-background/60 drop-shadow" />
+        )}
+        <ChevronRight className="pointer-events-none absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-background/70 drop-shadow" />
+
         {/* Topo: progresso, etiqueta e fechar */}
         <div className="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-foreground/60 to-transparent px-3 pb-8 pt-[max(env(safe-area-inset-top),12px)]">
           <div className="flex gap-1">
@@ -139,7 +124,7 @@ export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onC
               <div key={i} className="h-[3px] flex-1 overflow-hidden rounded-full bg-background/30">
                 <div
                   className="h-full rounded-full bg-background"
-                  style={{ width: `${i < index ? 100 : i === index ? progress * 100 : 0}%` }}
+                  style={{ width: `${i <= index ? 100 : 0}%` }}
                 />
               </div>
             ))}
