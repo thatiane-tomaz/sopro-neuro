@@ -112,9 +112,9 @@ export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onC
 
         {/* Setas discretas: a pessoa avança tocando */}
         {index > 0 && (
-          <ChevronLeft className="pointer-events-none absolute left-1 top-1/2 h-8 w-8 -translate-y-1/2 text-background/60 drop-shadow" />
+          <ChevronLeft className="pointer-events-none absolute left-2 top-1/2 h-9 w-9 -translate-y-1/2 rounded-full bg-foreground/30 p-1.5 text-background/90 backdrop-blur-sm" />
         )}
-        <ChevronRight className="pointer-events-none absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 text-background/70 drop-shadow" />
+        <ChevronRight className="pointer-events-none absolute right-2 top-1/2 h-9 w-9 -translate-y-1/2 rounded-full bg-foreground/30 p-1.5 text-background/90 backdrop-blur-sm" />
 
         {/* Topo: progresso, etiqueta e fechar */}
         <div className="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-foreground/60 to-transparent px-3 pb-8 pt-[max(env(safe-area-inset-top),12px)]">
