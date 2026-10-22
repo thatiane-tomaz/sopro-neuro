@@ -66,9 +66,9 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import MediaPlayer from "@/components/MediaPlayer";
-import stepHipnoseImg from "@/assets/step-hipnose.png";
-import stepMissaoImg from "@/assets/step-missao.png";
-import stepMuralImg from "@/assets/step-mural.png";
+import stepHipnoseImg from "@/assets/step-hipnose.webp";
+import stepMissaoImg from "@/assets/step-missao.webp";
+import stepMuralImg from "@/assets/step-mural.webp";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import WaveBackground from "@/components/home/WaveBackground";
 import NeoBlock from "@/components/home/NeoBlock";

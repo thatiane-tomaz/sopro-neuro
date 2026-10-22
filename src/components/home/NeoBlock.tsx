@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Send, MessageCircle } from "lucide-react";
 import ProgressBrain from "@/components/home/ProgressBrain";
-import neoCloud from "@/assets/neo-cloud-bg.png";
+import neoCloud from "@/assets/neo-cloud-bg.webp";
 
 // Cada opção abre o chat já com uma mensagem que direciona o Neo:
 // "bem" → reforçar e entender o que está ajudando na rotina;
