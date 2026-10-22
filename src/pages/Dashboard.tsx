@@ -125,11 +125,14 @@ export default function Dashboard() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Relógio de 1s só enquanto a contagem da missão está visível (evita redesenhar a tela inteira a cada segundo).
   const [tick, setTick] = useState(0);
+  const [clockOn, setClockOn] = useState(false);
   useEffect(() => {
+    if (!clockOn) return;
     const i = setInterval(() => setTick((t) => t + 1), 1000);
     return () => clearInterval(i);
-  }, []);
+  }, [clockOn]);
 
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [trackingId, setTrackingId] = useState<string | null>(null);
@@ -314,6 +317,9 @@ export default function Dashboard() {
     const s = Math.floor((ms % 60_000) / 1000);
     return `${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
   }, [tick, missaoLocked, missaoUnlockAt]);
+  useEffect(() => {
+    setClockOn(missionDialogOpen && missaoLocked);
+  }, [missionDialogOpen, missaoLocked]);
 
   const openMissionDialog = async () => {
     if (
@@ -617,9 +623,6 @@ export default function Dashboard() {
               <p className="text-sm font-semibold text-foreground leading-tight">
                 {getGreeting()}{firstName ? `, ${firstName}!` : "!"}
               </p>
-              <p className="text-sm text-muted-foreground leading-tight font-medium">
-                Seu cérebro está aprendendo<br />uma nova forma de viver.
-              </p>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -860,26 +863,7 @@ export default function Dashboard() {
         {/* Extras da jornada de abstinência: SOS + gatilhos (a lista abaixo termina com "voltar para redução") */}
 
 
-        {/* Entradas de acompanhamento */}
-        {!isAbstinencia && (
-            <button
-              onClick={() => navigate("/progresso")}
-              className="mt-6 w-full text-left rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-4 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] ring-1 ring-[hsl(258_70%_92%)] active:scale-[0.99] transition-transform flex items-center gap-3"
-            >
-              <div className="h-11 w-11 rounded-full bg-white flex items-center justify-center text-[hsl(258_60%_50%)] shadow-sm flex-shrink-0">
-                <Cigarette className="h-5 w-5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-foreground leading-tight whitespace-nowrap">
-                  Acompanhe sua evolução
-                </p>
-                <p className="text-sm text-muted-foreground mt-0.5 leading-snug whitespace-nowrap font-medium">
-                  Veja seu gráfico de consumo e economia.
-                </p>
-              </div>
-              <div className="text-[hsl(258_60%_50%)] text-lg font-bold">→</div>
-            </button>
-        )}
+        {/* Evolução fica na aba Progresso do menu inferior (sem atalho duplicado aqui). */}
 
           {phaseNumber !== 1 && lastCigDate && (
             <div className="mt-4 flex items-start justify-between gap-3 text-sm bg-[hsl(258_80%_97%)] rounded-2xl px-3 py-2.5">
@@ -904,28 +888,23 @@ export default function Dashboard() {
         {isAbstinencia && <AbstinenceExtras mode="return" />}
         {/* CTA — Decidir parar de fumar */}
         {showQuitCTA && !showQuitDatePicker && (
-          <Card className="mt-6 p-3.5 bg-[hsl(45_80%_97%)] backdrop-blur-sm border-0 shadow-[0_14px_40px_-16px_hsl(258_70%_45%/0.25)] ring-1 ring-black/[0.04] rounded-2xl overflow-hidden relative">
-            <div className="relative z-10">
-              <h3 className="text-base font-bold text-foreground leading-snug">
-                Pronto para seu próximo passo?
-              </h3>
-              <p className="text-sm font-medium text-muted-foreground mt-2 leading-relaxed">
-                Quando você se sentir pronto para viver completamente sem cigarro, estaremos aqui para te apoiar.
-              </p>
-              <button
-                onClick={() => setRitualDialogOpen(true)}
-                className="mt-4 w-full flex items-center justify-center gap-2 rounded-full px-3 py-3 text-sm font-bold text-white shadow-[0_10px_28px_-10px_hsl(258_70%_40%/0.55)] active:scale-95 transition-transform text-center leading-tight whitespace-nowrap"
-                style={{
-                  background: "linear-gradient(135deg, hsl(258, 70%, 55%), hsl(280, 65%, 55%))",
-                }}
-              >
-                <span className="relative inline-flex items-center justify-center shrink-0">
-                  <Cigarette className="h-5 w-5" />
-                  <Ban className="h-5 w-5 absolute text-white/90" strokeWidth={2.5} />
-                </span>
-                Estou pronto para meu último cigarro
-              </button>
-            </div>
+          <Card className="mt-6 p-3.5 bg-white/70 border-0 ring-1 ring-[hsl(258_70%_92%)] rounded-2xl shadow-none">
+            <h3 className="text-base font-bold text-foreground leading-snug text-balance">
+              Pronto para seu próximo passo?
+            </h3>
+            <p className="text-sm font-medium text-muted-foreground mt-1 leading-relaxed text-pretty">
+              Quando quiser viver sem cigarro, estaremos aqui para te apoiar.
+            </p>
+            <button
+              onClick={() => setRitualDialogOpen(true)}
+              className="mt-3 w-full flex items-center justify-center gap-2 rounded-full px-3 py-3 text-sm font-bold text-[hsl(258_60%_45%)] bg-[hsl(258_80%_96%)] ring-1 ring-[hsl(258_70%_88%)] active:scale-95 transition-transform leading-tight whitespace-nowrap"
+            >
+              <span className="relative inline-flex items-center justify-center shrink-0">
+                <Cigarette className="h-5 w-5" />
+                <Ban className="h-5 w-5 absolute" strokeWidth={2.5} />
+              </span>
+              Estou pronto para meu último cigarro
+            </button>
           </Card>
         )}
 
