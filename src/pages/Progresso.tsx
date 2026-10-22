@@ -66,6 +66,7 @@ import ConsumptionEditDialog from "@/components/ConsumptionEditDialog";
 
 import soproLogo from "@/assets/sopro-logo.webp";
 import { performLogout } from "@/lib/logout";
+import { computePotential } from "@/lib/potential";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -217,12 +218,10 @@ export default function Progresso() {
     refetchOnboarding?.();
   };
 
-  const potential = useMemo(() => ({
-    cigsMonth: equivCigsPerDay * 30,
-    cigsYear: equivCigsPerDay * 365,
-    moneyMonth: weeklyCostNum * 4,
-    moneyYear: weeklyCostNum * 52,
-  }), [equivCigsPerDay, weeklyCostNum]);
+  const potential = useMemo(
+    () => computePotential(equivCigsPerDay, weeklyCostNum),
+    [equivCigsPerDay, weeklyCostNum],
+  );
 
   // Start from the onboarding completion date (the user's declared "início").
   // Convert the UTC timestamp stored in Supabase to the user's local date so
