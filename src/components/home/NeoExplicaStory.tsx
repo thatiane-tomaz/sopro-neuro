@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { X, Sparkles } from "lucide-react";
 import { useScrollLock } from "@/hooks/useScrollLock";
 
@@ -93,12 +94,14 @@ export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onC
     goTo(x < rect.width * 0.3 ? index - 1 : index + 1);
   };
 
-  return (
+  // Portal no body: um ancestral com transform/animação faria o "fixed"
+  // se prender ao card em vez da tela inteira.
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       aria-label={titulo}
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground animate-in fade-in duration-200"
     >
       <div className="relative h-full w-full max-w-md">
         <img
@@ -158,6 +161,7 @@ export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onC
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
