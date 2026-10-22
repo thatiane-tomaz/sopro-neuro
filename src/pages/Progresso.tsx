@@ -453,7 +453,7 @@ export default function Progresso() {
               <div className="mt-3 flex items-center gap-1.5 rounded-full bg-card/70 py-1 pl-3 pr-1 ring-1 ring-border/40 backdrop-blur">
                 <CalendarIcon className="h-3.5 w-3.5 text-[hsl(var(--lilac))]" />
                 <span className="text-sm font-medium text-foreground/80">
-                  Último cigarro em {lastCigLabel}
+                  Último cigarro em{"\n"}{lastCigLabel}
                 </span>
                 <button
                   onClick={openDateDialog}
