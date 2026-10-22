@@ -88,6 +88,7 @@ import { cancelDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
 import soproLogo from "@/assets/sopro-logo.webp";
 import { useChatPrompts } from "@/hooks/useChatPrompts";
+import { buildNeoSuggestions } from "@/lib/neoSuggestions";
 import { useJourneyReview } from "@/hooks/useJourneyReview";
 import { useJourneyFocos } from "@/hooks/useJourneyFocos";
 import { performLogout } from "@/lib/logout";
@@ -210,7 +211,9 @@ export default function Dashboard() {
 
   // Revisão de gatilhos: substitui as sugestões do Neo.
   const [revisaoChatOpen, setRevisaoChatOpen] = useState(false);
-  const sugestoesAtuais = needsReview ? ["Sim, vamos!"] : sugestoes;
+  const sugestoesAtuais = needsReview
+    ? ["Sim, vamos!"]
+    : buildNeoSuggestions(sugestoes, user?.created_at);
 
   // Prompt the user for yesterday's cigarette count once per session
   // (only if they haven't logged it yet). For users on the abstinência
