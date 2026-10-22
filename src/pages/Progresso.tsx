@@ -449,10 +449,13 @@ export default function Progresso() {
                   {smokeFreeDays === 1 ? "dia" : "dias"}
                 </span>
               </div>
-              <div className="mt-3 flex items-center gap-1.5 rounded-full bg-card/70 py-1 pl-3 pr-1 ring-1 ring-border/40 backdrop-blur">
-                <CalendarIcon className="h-3.5 w-3.5 text-[hsl(var(--lilac))]" />
-                <span className="text-sm font-medium text-foreground/80">
-                  Último cigarro em{"\n"}{lastCigLabel}
+              <div className="mt-3 flex items-center gap-3 rounded-2xl bg-card/70 py-2 pl-2 pr-1 ring-1 ring-border/40 backdrop-blur">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--lilac-soft))]">
+                  <CalendarIcon className="h-4 w-4 text-[hsl(var(--lilac))]" />
+                </span>
+                <span className="flex flex-col text-left leading-tight">
+                  <span className="text-sm font-medium text-muted-foreground">Último cigarro em</span>
+                  <span className="text-base font-bold text-[hsl(var(--electric-blue))]">{lastCigLabel}</span>
                 </span>
                 <button
                   onClick={openDateDialog}
