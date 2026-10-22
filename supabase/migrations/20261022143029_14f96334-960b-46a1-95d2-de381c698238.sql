@@ -1,0 +1,1 @@
+CREATE POLICY "tmp upload neo-explica ansiedade" ON storage.objects FOR INSERT TO anon WITH CHECK (bucket_id = 'neo-explica' AND name LIKE 'ansiedade/%');
