@@ -712,10 +712,10 @@ export default function Progresso() {
         {/* Potencial ao parar de fumar */}
         {equivCigsPerDay > 0 && (
           <section className="mt-3 rounded-3xl bg-card/80 p-3.5 text-center shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-            <h2 className="text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+            <h2 className="text-left text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
               Seu potencial ao parar de fumar
             </h2>
-            <p className="mt-1 text-balance text-sm leading-relaxed text-muted-foreground font-medium">
+            <p className="mt-1 text-left text-balance text-sm leading-relaxed text-muted-foreground font-medium">
               O quanto você deixa de fumar e economiza.
             </p>
 
