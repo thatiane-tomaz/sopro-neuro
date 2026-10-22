@@ -14,7 +14,7 @@ interface Props {
 /**
  * Visualizador em tela cheia no formato de stories:
  * barrinhas de progresso no topo, toque à direita avança, à esquerda volta,
- * segurar o dedo pausa. Passa sozinho depois de alguns segundos.
+ * só avança quando a pessoa toca (sem troca automática).
  */
 export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onClose }: Props) {
   useScrollLock(true);
@@ -65,7 +65,6 @@ export default function NeoExplicaStory({ titulo, slides, segundosPorImagem, onC
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    const held = pressStart.current ? Date.now() - pressStart.current : 0;
     pressStart.current = null;
     setPaused(false);
     const rect = e.currentTarget.getBoundingClientRect();
