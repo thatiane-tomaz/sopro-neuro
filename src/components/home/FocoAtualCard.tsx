@@ -133,7 +133,7 @@ export default function FocoAtualCard({
                     </span>
                   )}
                 </div>
-                <span className="mt-1 max-w-[7.5rem] text-balance text-sm font-medium leading-tight text-muted-foreground">
+                <span className="mt-1 max-w-[7.5rem] text-balance text-[13px] font-medium leading-tight text-muted-foreground">
                   {step.verb} {step.rest}
                 </span>
               </button>
