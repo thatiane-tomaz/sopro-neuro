@@ -125,11 +125,14 @@ export default function Dashboard() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Relógio de 1s só enquanto a contagem da missão está visível (evita redesenhar a tela inteira a cada segundo).
   const [tick, setTick] = useState(0);
+  const [clockOn, setClockOn] = useState(false);
   useEffect(() => {
+    if (!clockOn) return;
     const i = setInterval(() => setTick((t) => t + 1), 1000);
     return () => clearInterval(i);
-  }, []);
+  }, [clockOn]);
 
   const [selectedMedia, setSelectedMedia] = useState<any>(null);
   const [trackingId, setTrackingId] = useState<string | null>(null);
@@ -314,6 +317,9 @@ export default function Dashboard() {
     const s = Math.floor((ms % 60_000) / 1000);
     return `${String(h).padStart(2, "0")}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
   }, [tick, missaoLocked, missaoUnlockAt]);
+  useEffect(() => {
+    setClockOn(missionDialogOpen && missaoLocked);
+  }, [missionDialogOpen, missaoLocked]);
 
   const openMissionDialog = async () => {
     if (
