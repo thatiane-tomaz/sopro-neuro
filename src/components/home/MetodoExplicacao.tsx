@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import metodoReducao from "@/assets/metodo-reducao.webp";
@@ -34,12 +35,12 @@ export default function MetodoExplicacao({ jornada, onClose }: Props) {
 
   if (!src) return null;
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       aria-label="Como funciona o Método Sopro Neuro"
-      className="fixed inset-0 z-[60] flex justify-center bg-foreground/90 animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex justify-center bg-foreground/90 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div className="relative h-full w-full max-w-md overflow-y-auto overscroll-contain">
@@ -61,6 +62,7 @@ export default function MetodoExplicacao({ jornada, onClose }: Props) {
       >
         <X className="h-6 w-6" />
       </button>
-    </div>
+    </div>,
+    document.body,
   );
 }
