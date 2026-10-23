@@ -6,16 +6,18 @@ import { getThemeImagePath, getThemeImageThumbUrl, getThemeImageUrl } from "@/li
  * cai para o arquivo original. `failed` fica true quando nenhuma abre.
  */
 export function useThemeImage(name: string | null | undefined, size = 160) {
-  const path = getThemeImagePath(name);
-  const [src, setSrc] = useState<string | null>(null);
+  // Endereço já pronto (ex.: imagem local nas telas de exemplo): usa direto.
+  const direct = name && /^(https?:|data:|blob:|\/)/.test(name) ? name : null;
+  const path = direct ? null : getThemeImagePath(name);
+  const [src, setSrc] = useState<string | null>(direct);
   const [usingOriginal, setUsingOriginal] = useState(false);
-  const [failed, setFailed] = useState(!path);
+  const [failed, setFailed] = useState(!path && !direct);
 
   useEffect(() => {
     let alive = true;
-    setSrc(null);
-    setUsingOriginal(false);
-    setFailed(!path);
+    setSrc(direct);
+    setUsingOriginal(Boolean(direct));
+    setFailed(!path && !direct);
     if (!path) return;
     getThemeImageThumbUrl(name, size).then(async (thumb) => {
       if (!alive) return;
@@ -29,7 +31,7 @@ export function useThemeImage(name: string | null | undefined, size = 160) {
     return () => {
       alive = false;
     };
-  }, [path, size, name]);
+  }, [path, size, name, direct]);
 
   const onError = useCallback(() => {
     if (usingOriginal) {
