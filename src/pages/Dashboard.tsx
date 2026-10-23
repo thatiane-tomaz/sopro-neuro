@@ -82,7 +82,6 @@ import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import SosThinBlock from "@/components/home/SosThinBlock";
 import FocoAtualCard, { type FocoStep } from "@/components/home/FocoAtualCard";
 import MetodoExplicacao, { metodoImagem } from "@/components/home/MetodoExplicacao";
-import { getThemeImageThumbUrl } from "@/lib/themeImage";
 import { useSmokingLogs, yesterdayStr } from "@/hooks/useSmokingLogs";
 import { cancelDailySmokingReminder } from "@/services/dailySmokingReminder";
 import { useBrainSparks } from "@/hooks/useBrainSparks";
@@ -754,7 +753,7 @@ export default function Dashboard() {
         <FocoAtualCard
           tituloGatilho={tituloGatilho}
           subtituloGatilho={subtituloGatilho}
-          imagemGatilho={getThemeImageThumbUrl((gatilho as any)?.imagem_nome, 128)}
+          imagemGatilho={(gatilho as any)?.imagem_nome ?? null}
           focoAtualNumero={focoAtualNumero}
           totalFocos={totalFocos}
           focosConcluidos={focosConcluidos}

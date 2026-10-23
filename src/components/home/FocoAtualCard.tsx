@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useThemeImage } from "@/hooks/useThemeImage";
 import { ArrowRight, Check, CheckCircle2, ChevronRight, Info, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -20,6 +20,7 @@ export interface FocoStep {
 interface Props {
   tituloGatilho: string;
   subtituloGatilho: string | null;
+  /** Nome da imagem do tema (habitos_jornada.imagem_nome). */
   imagemGatilho: string | null;
   focoAtualNumero: number;
   totalFocos: number;
@@ -45,7 +46,7 @@ export default function FocoAtualCard({
   onOpenMetodo,
   steps,
 }: Props) {
-  const [imgFailed, setImgFailed] = useState(false);
+  const img = useThemeImage(imagemGatilho, 128);
   const nextStep = steps.find((s) => !s.done);
   const doneCount = steps.filter((s) => s.done).length;
 
@@ -73,11 +74,11 @@ export default function FocoAtualCard({
       {/* Gatilho atual + entrada para a jornada completa */}
       <div className="mt-3 overflow-hidden rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] ring-1 ring-[hsl(var(--lilac)/0.15)]">
         <div className="flex items-center gap-3 p-2.5">
-          {imagemGatilho && !imgFailed && (
+          {img.src && !img.failed && (
             <img
-              src={imagemGatilho}
+              src={img.src}
               alt=""
-              onError={() => setImgFailed(true)}
+              onError={img.onError}
               className="h-12 w-12 flex-shrink-0 rounded-xl object-cover"
               draggable={false}
             />

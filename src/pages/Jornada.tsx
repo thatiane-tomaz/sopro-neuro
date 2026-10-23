@@ -13,7 +13,7 @@ import { useContentTracking } from "@/hooks/useContentTracking";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { supabase } from "@/integrations/supabase/client";
 import { getSignedMediaUrl } from "@/lib/mediaUrl";
-import { getThemeImageThumbUrl, getThemeImageUrl } from "@/lib/themeImage";
+import { useThemeImage } from "@/hooks/useThemeImage";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -822,12 +822,9 @@ function ThemeThumb({
   isLocked: boolean;
   sizeClass: string;
 }) {
-  const thumb = getThemeImageThumbUrl(imagemNome, 200);
-  const original = getThemeImageUrl(imagemNome);
-  const [src, setSrc] = useState<string | null>(thumb);
-  const [failed, setFailed] = useState(false);
+  const { src, failed, onError } = useThemeImage(imagemNome, 200);
 
-  if (!thumb || failed) {
+  if (!src || failed) {
     return (
       <div
         aria-hidden
@@ -840,15 +837,12 @@ function ThemeThumb({
 
   return (
     <img
-      src={src ?? thumb}
+      src={src}
       alt=""
       loading="lazy"
       decoding="async"
       draggable={false}
-      onError={() => {
-        if (src !== original && original) setSrc(original);
-        else setFailed(true);
-      }}
+      onError={onError}
       className={`${sizeClass} flex-shrink-0 rounded-xl object-cover shadow-[0_6px_16px_-8px_hsl(230_60%_40%/0.35)] ${
         isLocked ? "opacity-60 grayscale-[35%]" : ""
       }`}
