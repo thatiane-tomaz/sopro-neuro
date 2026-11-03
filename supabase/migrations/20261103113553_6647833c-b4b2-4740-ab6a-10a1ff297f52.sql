@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Temp upload neo-explica desmotivacao" ON storage.objects;
