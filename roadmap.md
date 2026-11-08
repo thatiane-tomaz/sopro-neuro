@@ -2,6 +2,6 @@
 - [x] Destacar a ação e reduzir o tema nos cartões da Home e Jornada.
 - [x] Abrir a missão do tema ouvido somente ao terminar a hipnose, preservando acesso e prazo existentes.
 - [x] Verificar dados e 27 testes; testar reprodutor e cartão isolados em celular/computador. Fluxo com conta real não verificável neste Supabase externo.
-- [ ] Refinar hierarquia, cores, superfícies e controles nas três abas sem mudar informações ou funcionamento.
-- [ ] Identificar o gatilho recomendado para hoje e suavizar Como funciona, Ver jornada e contagem.
-- [ ] Conferir apresentação em celular e computador e verificar avisos do app.
+- [x] Refinar hierarquia, cores, superfícies e controles nas três abas sem mudar informações ou funcionamento.
+- [x] Identificar o gatilho recomendado para hoje e suavizar Como funciona, Ver jornada e contagem.
+- [x] Conferir cartões, popup e navegação isolados em celular/computador; 12 testes passaram, sem avisos de compilação. Telas com conta real não verificáveis neste Supabase externo.

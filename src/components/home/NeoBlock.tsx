@@ -70,7 +70,7 @@ export default function NeoBlock({
             width={640}
             height={357}
             draggable={false}
-            className="pointer-events-none absolute -right-12 top-1 w-[250px] max-w-none select-none opacity-90"
+            className="pointer-events-none absolute -right-12 top-1 w-[210px] max-w-none select-none opacity-70"
           />
 
           {/* Cabeçalho: título/descrição à esquerda · Neo à direita */}

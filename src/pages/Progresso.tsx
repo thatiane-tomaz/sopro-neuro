@@ -471,10 +471,9 @@ export default function Progresso() {
 
         {/* Savings — cigs avoided + money saved */}
         <section className="app-surface mt-4 p-3.5">
-          <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-sm font-semibold text-electric-blue">
-            <Sparkles className="h-3 w-3" />
+          <h2 className="text-balance text-lg font-bold leading-tight text-electric-blue">
             Suas conquistas
-          </span>
+          </h2>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <StatCard
               icon={<Cigarette className="h-4 w-4" />}
