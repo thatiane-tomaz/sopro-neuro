@@ -72,7 +72,7 @@ export default function FocoAtualCard({
       </p>
 
       {/* Gatilho atual + entrada para a jornada completa */}
-      <div className="mt-3 overflow-hidden rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] shadow-[0_4px_16px_-6px_hsl(var(--lilac)/0.35)]">
+      <div className="mt-3 overflow-hidden rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] shadow-surface">
         <div className="flex items-center gap-3 p-2.5">
           {img.src && !img.failed && (
             <img

@@ -11,19 +11,19 @@ const MOODS = [
     emoji: "😌",
     label: "Estou bem",
     seed: "Hoje estou bem com a minha vontade de fumar. Me ajuda a entender o que na minha rotina está me fazendo bem, para eu continuar assim?",
-    cls: "bg-[hsl(230_85%_96%)] ring-[hsl(230_80%_88%)] text-[hsl(230_55%_38%)]",
+    cls: "bg-[hsl(230_85%_96%)] text-[hsl(230_55%_38%)]",
   },
   {
     emoji: "😐",
     label: "Senti vontade",
     seed: "Hoje senti vontade de fumar. Me ajuda a entender o que está acontecendo e o que posso fazer para melhorar?",
-    cls: "bg-[hsl(var(--lilac-soft))] ring-[hsl(var(--lilac-light))] text-[hsl(258_45%_38%)]",
+    cls: "bg-[hsl(var(--lilac-soft))] text-[hsl(258_45%_38%)]",
   },
   {
     emoji: "😣",
     label: "Está difícil",
     seed: "Hoje está difícil, a vontade de fumar está forte. Me ajuda a entender o que está acontecendo e o que posso fazer agora para melhorar?",
-    cls: "bg-[hsl(285_70%_95%)] ring-[hsl(285_60%_87%)] text-[hsl(285_40%_36%)]",
+    cls: "bg-[hsl(285_70%_95%)] text-[hsl(285_40%_36%)]",
   },
 ];
 
@@ -49,7 +49,7 @@ export default function NeoBlock({
   const [draft, setDraft] = useState("");
 
   return (
-    <section className="mt-7 relative overflow-hidden rounded-[28px] bg-gradient-to-b from-white/80 via-white/60 to-[hsl(258_80%_97%)]/70 p-3.5 ring-1 ring-white/70 backdrop-blur-xl shadow-[0_24px_60px_-32px_hsl(258_70%_45%/0.35)]">
+    <section className="mt-7 relative overflow-hidden rounded-[28px] bg-gradient-to-b from-white/80 via-white/60 to-[hsl(258_80%_97%)]/70 p-3.5 backdrop-blur-xl shadow-[0_24px_60px_-32px_hsl(258_70%_45%/0.35)]">
       <div
         aria-hidden
         className="pointer-events-none absolute -top-16 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-[hsl(258_80%_75%/0.25)] blur-3xl"
@@ -115,7 +115,7 @@ export default function NeoBlock({
             </div>
           </div>
 
-          <div className="relative -mt-1 rounded-3xl bg-white/85 px-3 pb-3 pt-3.5 ring-1 ring-white shadow-[0_10px_30px_-20px_hsl(258_70%_45%/0.35)]">
+          <div className="relative -mt-1 rounded-3xl bg-white/85 px-3 pb-3 pt-3.5 shadow-[0_10px_30px_-20px_hsl(258_70%_45%/0.35)]">
             <p className="text-sm font-semibold text-foreground">
               Como está sua vontade de fumar hoje?
             </p>
@@ -125,7 +125,7 @@ export default function NeoBlock({
                   key={m.label}
                   type="button"
                   onClick={() => (needsReview ? onOpenReview() : onOpenChat(m.seed))}
-                  className={`flex flex-col items-center gap-1 rounded-2xl px-0.5 py-2.5 text-sm font-semibold tracking-tight whitespace-nowrap ring-1 active:scale-[0.97] transition-transform ${m.cls}`}
+                  className={`flex flex-col items-center gap-1 rounded-2xl px-0.5 py-2.5 text-sm font-semibold tracking-tight whitespace-nowrap shadow-surface active:scale-[0.97] transition-transform ${m.cls}`}
                 >
                   <span className="text-2xl leading-none" aria-hidden>{m.emoji}</span>
                   {m.label}
@@ -140,7 +140,7 @@ export default function NeoBlock({
                     key={p}
                     type="button"
                     onClick={() => (needsReview ? onOpenReview() : onOpenChat(p))}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-left text-sm font-medium leading-snug text-[hsl(258_45%_32%)] ring-1 ring-[hsl(258_60%_90%)] active:scale-[0.97] transition-transform"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-left text-sm font-medium leading-snug text-[hsl(258_45%_32%)] shadow-surface active:scale-[0.97] transition-transform"
                   >
                     <MessageCircle className="h-3.5 w-3.5 flex-shrink-0 text-[hsl(258_70%_55%)]" />
                     {p}

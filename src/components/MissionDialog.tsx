@@ -18,7 +18,7 @@ interface MissionDialogProps {
 export default function MissionDialog({ open, title, primary, secondary, done, locked, countdown, onClose, onChat }: MissionDialogProps) {
   return (
     <Dialog open={open} onOpenChange={(value) => { if (!value) onClose(); }}>
-      <DialogContent className="max-h-[calc(100dvh-3rem)] w-[calc(100%-1.5rem)] max-w-md gap-0 overflow-y-auto rounded-3xl border-border/40 bg-background p-0 shadow-primary sm:rounded-3xl [&>button]:right-4 [&>button]:top-4 [&>button]:flex [&>button]:h-11 [&>button]:w-11 [&>button]:items-center [&>button]:justify-center [&>button]:rounded-full [&>button]:bg-card [&>button]:text-muted-foreground [&>button]:opacity-100">
+      <DialogContent className="max-h-[calc(100dvh-3rem)] w-[calc(100%-1.5rem)] max-w-md gap-0 overflow-y-auto rounded-3xl border-0 bg-background p-0 shadow-primary sm:rounded-3xl [&>button]:right-4 [&>button]:top-4 [&>button]:flex [&>button]:h-11 [&>button]:w-11 [&>button]:items-center [&>button]:justify-center [&>button]:rounded-full [&>button]:bg-card [&>button]:text-muted-foreground [&>button]:opacity-100">
         <DialogHeader className="space-y-0 bg-gradient-to-br from-lilac-soft/80 to-card px-5 pb-5 pt-5 text-left sm:text-left">
           <div className="flex items-center gap-3 pr-10">
             <img src={missionImage} alt="" draggable={false} className="h-16 w-16 flex-shrink-0 object-contain" />

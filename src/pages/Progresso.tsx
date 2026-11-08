@@ -435,7 +435,7 @@ export default function Progresso() {
 
         {/* Smoke free counter */}
         {!isReducao && smokeFreeDays !== null && (
-          <section className="mt-4 overflow-hidden rounded-3xl border border-[hsl(var(--lilac)/0.2)] bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] p-4">
+          <section className="mt-4 overflow-hidden rounded-3xl shadow-primary bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] p-4">
             <div className="flex flex-col items-center text-center">
               <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
                 <Sparkles className="h-3 w-3" />
@@ -449,7 +449,7 @@ export default function Progresso() {
                   {smokeFreeDays === 1 ? "dia" : "dias"}
                 </span>
               </div>
-              <div className="mt-3 flex items-center gap-3 rounded-2xl bg-card/70 py-2 pl-2 pr-1 ring-1 ring-border/40 backdrop-blur">
+              <div className="mt-3 flex items-center gap-3 rounded-2xl bg-card/70 py-2 pl-2 pr-1 shadow-surface backdrop-blur">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--lilac-soft))]">
                   <CalendarIcon className="h-4 w-4 text-[hsl(var(--lilac))]" />
                 </span>
@@ -470,7 +470,7 @@ export default function Progresso() {
         )}
 
         {/* Savings — cigs avoided + money saved */}
-        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary backdrop-blur-md">
           <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-sm font-semibold text-[hsl(var(--electric-blue))]">
             <Sparkles className="h-3 w-3" />
             Suas conquistas
@@ -493,7 +493,7 @@ export default function Progresso() {
         {!yesterdayLogged && (
           <button
             onClick={() => openDialog(yesterdayStr())}
-            className="mt-3 flex w-full items-center gap-3 rounded-3xl bg-card/80 p-3.5 text-left shadow-primary ring-1 ring-border/40 backdrop-blur-md transition-transform active:scale-[0.99]"
+            className="mt-3 flex w-full items-center gap-3 rounded-3xl bg-card/80 p-3.5 text-left shadow-primary backdrop-blur-md transition-transform active:scale-[0.99]"
           >
             <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-primary-foreground shadow-wellness">
               <Plus className="h-5 w-5" />
@@ -511,7 +511,7 @@ export default function Progresso() {
         )}
 
         {/* Chart */}
-        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary backdrop-blur-md">
           <div className="flex items-center justify-between gap-2">
             <h2 className="text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
               Cigarros por dia
@@ -582,7 +582,8 @@ export default function Progresso() {
                   <Tooltip
                     contentStyle={{
                       borderRadius: 12,
-                      border: "1px solid hsl(258 80% 92%)",
+                      border: "none",
+                      boxShadow: "var(--shadow-surface)",
                       fontSize: 12,
                     }}
                     formatter={(v: any) =>
@@ -646,7 +647,7 @@ export default function Progresso() {
                   <PopoverTrigger asChild>
                     <button
                       type="button"
-                      className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-full bg-[hsl(var(--lilac-soft)/0.6)] px-4 text-left text-sm ring-1 ring-[hsl(var(--lilac)/0.2)] transition-transform active:scale-[0.99]"
+                      className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-full bg-[hsl(var(--lilac-soft)/0.6)] px-4 text-left text-sm shadow-surface transition-transform active:scale-[0.99]"
                     >
                       <CalendarIcon className="h-4 w-4 flex-shrink-0 text-[hsl(var(--lilac))]" />
                       <span
@@ -666,7 +667,7 @@ export default function Progresso() {
                   </PopoverTrigger>
                   <PopoverContent
                     align="start"
-                    className="w-auto p-0 z-50 bg-white"
+                    className="w-auto p-0 z-50 bg-card border-0 shadow-primary"
                   >
                     <Calendar
                       mode="single"
@@ -714,7 +715,7 @@ export default function Progresso() {
 
         {/* Potencial ao parar de fumar */}
         {equivCigsPerDay > 0 && (
-          <section className="mt-3 rounded-3xl bg-card/80 p-3.5 text-center shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+          <section className="mt-3 rounded-3xl bg-card/80 p-3.5 text-center shadow-primary backdrop-blur-md">
             <h2 className="text-left text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
               Seu potencial ao parar de fumar
             </h2>
@@ -821,7 +822,7 @@ export default function Progresso() {
           <DialogFooter className="px-5 pb-5 pt-1 flex-row gap-2 sm:gap-2">
             <Button
               variant="outline"
-              className="flex-1 rounded-xl"
+              className="flex-1 rounded-xl border-0 bg-lilac-soft/60 shadow-surface"
               onClick={() => setDateDialogOpen(false)}
               disabled={savingDate}
             >

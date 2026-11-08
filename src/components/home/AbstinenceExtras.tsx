@@ -224,7 +224,7 @@ export default function AbstinenceExtras({
           </div>
 
           <span
-            className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-[hsl(258_70%_96%)] ring-1 ring-[hsl(258_70%_90%)]"
+            className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-[hsl(258_70%_96%)] shadow-surface"
             aria-hidden="true"
           >
             <ChevronDown
@@ -241,7 +241,7 @@ export default function AbstinenceExtras({
             <button
               key={t.id}
               onClick={() => handleTrigger(t)}
-              className="w-full flex items-center gap-3 rounded-2xl bg-white/70 ring-1 ring-[hsl(220_30%_94%)] p-3 text-left active:scale-[0.99] transition-transform"
+              className="w-full flex items-center gap-3 rounded-2xl bg-white/70 shadow-surface p-3 text-left active:scale-[0.99] transition-transform"
             >
               <div className="h-11 w-11 flex-shrink-0 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-[0_8px_20px_-10px_hsl(258_70%_50%/0.6)]">
                 <Headphones className="h-5 w-5 text-white" />
@@ -284,7 +284,7 @@ export default function AbstinenceExtras({
         <div className="mt-8">
         <button
           onClick={() => setConfirmOpen(true)}
-          className="w-full flex items-center gap-3 rounded-2xl bg-white/70 backdrop-blur p-3.5 ring-1 ring-[hsl(258_70%_90%)] shadow-[0_10px_24px_-14px_hsl(258_60%_45%/0.45)] active:scale-[0.98] transition-transform text-left"
+          className="w-full flex items-center gap-3 rounded-2xl bg-white/70 backdrop-blur p-3.5 shadow-[0_10px_24px_-14px_hsl(258_60%_45%/0.45)] active:scale-[0.98] transition-transform text-left"
         >
           <span className="h-11 w-11 shrink-0 rounded-full bg-gradient-to-br from-[hsl(258_70%_60%)] to-[hsl(280_70%_65%)] flex items-center justify-center shadow-[0_8px_20px_-10px_hsl(258_70%_50%/0.6)]">
             <RotateCcw className="h-5 w-5 text-white" />
@@ -315,7 +315,7 @@ export default function AbstinenceExtras({
           <DialogFooter className="flex-row gap-2 sm:gap-2">
             <Button
               variant="outline"
-              className="flex-1 rounded-xl"
+              className="flex-1 rounded-xl border-0 bg-lilac-soft/60 shadow-surface"
               onClick={() => setConfirmOpen(false)}
               disabled={switching}
             >
