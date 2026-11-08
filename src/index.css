@@ -39,6 +39,7 @@ All colors MUST be HSL.
     --lilac-light: 258 80% 88%;
     --lilac-soft: 258 80% 95%;
     --electric-blue: 230 85% 60%;
+    --gradient-method: linear-gradient(110deg, hsl(var(--electric-blue)), hsl(var(--lilac)));
 
     /* Gradient ondas tela inicial */
     --gradient-waves: linear-gradient(180deg, hsl(210 50% 98%) 0%, hsl(220 60% 96%) 40%, hsl(258 60% 96%) 100%);

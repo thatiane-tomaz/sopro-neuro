@@ -24,6 +24,12 @@ export default {
 				'montserrat': ['Montserrat', 'sans-serif'],
 			},
 			colors: {
+				'electric-blue': 'hsl(var(--electric-blue))',
+				lilac: {
+					DEFAULT: 'hsl(var(--lilac))',
+					soft: 'hsl(var(--lilac-soft))',
+					light: 'hsl(var(--lilac-light))'
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -82,6 +88,7 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			backgroundImage: {
+				'gradient-method': 'var(--gradient-method)',
 				'gradient-primary': 'var(--gradient-primary)',
 				'gradient-hero': 'var(--gradient-hero)',
 				'gradient-wellness': 'var(--gradient-wellness)',
