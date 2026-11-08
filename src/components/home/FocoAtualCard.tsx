@@ -51,20 +51,21 @@ export default function FocoAtualCard({
   const doneCount = steps.filter((s) => s.done).length;
 
   return (
-    <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-      <div className="flex items-center justify-between gap-2">
-        <h1 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+    <section className="app-surface mt-3 p-3.5">
+      <div className="flex flex-wrap items-center justify-between gap-x-2">
+        <h1 className="text-balance text-lg font-bold leading-tight text-electric-blue">
           Método Sopro Neuro
         </h1>
         {onOpenMetodo && (
-          <button
+          <Button
+            variant="ghost"
             type="button"
             onClick={onOpenMetodo}
-            className="-my-1 inline-flex flex-shrink-0 items-center gap-1 rounded-full bg-[hsl(var(--lilac-soft))] px-2.5 py-1 text-sm font-semibold text-[hsl(var(--lilac))] active:scale-95"
+            className="h-11 shrink-0 gap-1 rounded-full px-1 text-sm font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground"
           >
             <Info className="h-4 w-4" />
             Como funciona
-          </button>
+          </Button>
         )}
       </div>
       <p className="mt-1 text-pretty text-sm font-medium leading-snug text-muted-foreground">
@@ -72,8 +73,15 @@ export default function FocoAtualCard({
       </p>
 
       {/* Gatilho atual + entrada para a jornada completa */}
-      <div className="mt-3 overflow-hidden rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] ring-1 ring-[hsl(var(--lilac)/0.15)]">
-        <div className="flex items-center gap-3 p-2.5">
+      <div className="mt-3 overflow-hidden rounded-2xl bg-lilac-soft/60 ring-1 ring-lilac/15">
+        <div className="flex items-center justify-between gap-2 px-3 pt-2">
+          <p className="text-sm font-medium text-muted-foreground">Recomendado para hoje</p>
+          <Button variant="ghost" type="button" onClick={onOpenJornada} className="h-11 shrink-0 gap-0 rounded-full px-1 text-sm font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground">
+            Ver jornada
+            <ChevronRight className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+        <div className="flex items-center gap-3 px-3 pb-3">
           {img.src && !img.failed && (
             <img
               src={img.src}
@@ -84,16 +92,12 @@ export default function FocoAtualCard({
             />
           )}
           <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-sm font-semibold text-[hsl(var(--lilac))]">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
                 {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
               </p>
-              <button type="button" onClick={onOpenJornada} className="-my-1 inline-flex flex-shrink-0 items-center py-1 text-sm font-semibold text-[hsl(var(--electric-blue))]">
-                Ver jornada
-                <ChevronRight className="h-3.5 w-3.5" />
-              </button>
             </div>
-            <p className="text-pretty text-base font-bold leading-snug text-foreground">{tituloGatilho}</p>
+            <p className="mt-0.5 text-balance text-base font-bold leading-snug text-foreground">{tituloGatilho}</p>
             {subtituloGatilho && (
               <p className="mt-0.5 text-pretty text-sm font-medium leading-snug text-muted-foreground">{subtituloGatilho}</p>
             )}
@@ -101,24 +105,26 @@ export default function FocoAtualCard({
         </div>
 <div className="px-2.5 pb-3">
       {/* Passos do método */}
-      <div className="mt-1 flex items-start border-t border-[hsl(var(--lilac)/0.15)] px-1 pt-3 pb-0" aria-label="Passos do método">
+      <div className="mt-1 flex items-start border-t border-lilac/15 px-1 pt-3 pb-0" aria-label="Passos do método">
         {steps.map((step, index) => {
           const isCurrent = nextStep?.key === step.key;
           return (
             <div key={step.key} className="relative flex min-w-0 flex-1 items-start">
-              <button
+              <Button
+                variant="ghost"
                 type="button"
                 onClick={step.onClick}
                 aria-label={`${index + 1}. ${step.label}. ${step.verb} ${step.rest}`}
-                className="flex min-w-0 flex-1 flex-col items-center rounded-2xl text-center transition-transform active:scale-95"
+                aria-current={isCurrent ? "step" : undefined}
+                className="h-auto min-w-0 flex-1 flex-col items-center gap-0 whitespace-normal rounded-2xl p-0 text-center hover:bg-surface-raised/50 hover:text-foreground active:scale-95"
               >
                 <span
                   className={`flex flex-col items-center leading-tight ${
-                    isCurrent ? "text-[hsl(var(--electric-blue))]" : "text-[hsl(var(--lilac))]"
+                    isCurrent ? "text-electric-blue" : "text-foreground"
                   }`}
                 >
                   <span className="whitespace-nowrap text-sm font-bold">
-                    <span className="font-semibold opacity-60">{index + 1}.</span> {step.label}
+                    <span className="font-medium text-muted-foreground">{index + 1}.</span> {step.label}
                   </span>
                 </span>
                 <div className="relative mt-1.5 flex h-[72px] w-[72px] items-center justify-center">
@@ -130,7 +136,7 @@ export default function FocoAtualCard({
                     draggable={false}
                   />
                   {step.done && (
-                    <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--lilac))] text-primary-foreground ring-2 ring-[hsl(var(--lilac-soft))]">
+                    <span className="absolute right-0 top-0 flex h-5 w-5 items-center justify-center rounded-full bg-lilac text-primary-foreground ring-2 ring-lilac-soft">
                       <Check className="h-3 w-3" strokeWidth={3} />
                     </span>
                   )}
@@ -138,10 +144,10 @@ export default function FocoAtualCard({
                 <span className="mt-1 max-w-[7.5rem] text-balance text-[13px] font-medium leading-tight text-muted-foreground">
                   {step.verb}
                 </span>
-              </button>
+              </Button>
               {index < steps.length - 1 && (
                 <ArrowRight
-                  className="pointer-events-none absolute right-0 top-[4.6rem] h-4 w-4 -translate-y-1/2 translate-x-1/2 text-[hsl(var(--lilac)/0.55)]"
+                  className="pointer-events-none absolute right-0 top-[4.6rem] h-4 w-4 -translate-y-1/2 translate-x-1/2 text-lilac/40"
                   strokeWidth={2.5}
                 />
               )}
@@ -154,14 +160,14 @@ export default function FocoAtualCard({
         <Button
           type="button"
           onClick={nextStep.onClick}
-          className="mt-4 h-12 w-full rounded-full bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-sm font-bold text-primary-foreground shadow-wellness"
+          className="mt-4 h-12 w-full rounded-full bg-gradient-method text-sm font-semibold text-primary-foreground shadow-wellness"
         >
           <nextStep.icon className="mr-2 h-5 w-5" />
           <span className="text-balance">Fazer {nextStep.label}</span>
           <ChevronRight className="ml-1 h-5 w-5" />
         </Button>
       ) : (
-        <div className="mt-4 flex h-12 items-center justify-center gap-2 rounded-full bg-[hsl(var(--lilac-soft))] font-semibold text-[hsl(var(--lilac))]">
+        <div className="mt-4 flex h-12 items-center justify-center gap-2 rounded-full bg-lilac-soft font-semibold text-lilac">
           <CheckCircle2 className="h-5 w-5" />
           Foco concluído
         </div>
@@ -169,14 +175,6 @@ export default function FocoAtualCard({
 
       {steps.length > 0 && (
         <div className="mt-3 flex items-center justify-center gap-2">
-          <div className="flex gap-1" aria-hidden>
-            {steps.map((s) => (
-              <span
-                key={s.key}
-                className={`h-1.5 w-5 rounded-full ${s.done ? "bg-[hsl(var(--lilac))]" : "bg-[hsl(var(--lilac)/0.2)]"}`}
-              />
-            ))}
-          </div>
           <p className="text-sm font-medium text-muted-foreground">
             {doneCount} de {steps.length} passos concluídos
           </p>
