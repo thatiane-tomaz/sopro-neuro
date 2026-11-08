@@ -24,11 +24,6 @@ export default {
 				'montserrat': ['Montserrat', 'sans-serif'],
 			},
 			colors: {
-				'surface-raised': 'hsl(var(--surface-raised))',
-				'surface-subtle': 'hsl(var(--surface-subtle))',
-				'mood-calm': 'hsl(var(--mood-calm))',
-				'mood-challenging': 'hsl(var(--mood-challenging))',
-				'mood-challenging-soft': 'hsl(var(--mood-challenging-soft))',
 				'electric-blue': 'hsl(var(--electric-blue))',
 				lilac: {
 					DEFAULT: 'hsl(var(--lilac))',
@@ -100,8 +95,6 @@ export default {
 				'gradient-transformation': 'var(--gradient-transformation)'
 			},
 			boxShadow: {
-				'surface': 'var(--shadow-surface)',
-				'navigation': 'var(--shadow-navigation)',
 				'primary': 'var(--shadow-primary)',
 				'wellness': 'var(--shadow-wellness)',
 				'glow': 'var(--shadow-glow)'

@@ -33,7 +33,6 @@ import {
   ChevronLeft,
   X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import MissionDialog from "@/components/MissionDialog";
 import { getMissionCopy, shouldOpenMissionAfterHypnosis } from "@/lib/mission";
 import MediaPlayer from "@/components/MediaPlayer";
@@ -541,7 +540,7 @@ export default function Jornada() {
     <div className="relative min-h-screen overflow-x-hidden pb-32">
       <WaveBackground />
 
-      <div className="mx-auto max-w-md animate-page-in px-3 pt-[env(safe-area-inset-top)]">
+      <div className="mx-auto max-w-md animate-page-in px-5 pt-[env(safe-area-inset-top)]">
         {/* Header (matches Dashboard) */}
         <header className="flex items-center justify-between pt-4">
           <img src={soproLogo} alt="Sopro Neuro" className="h-10 w-auto" />
@@ -556,9 +555,9 @@ export default function Jornada() {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Abrir menu da conta" className="app-account-control h-11 w-11 rounded-full">
-                  <User className="h-5 w-5 text-electric-blue" />
-                </Button>
+                <button className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
+                  <User className="h-5 w-5 text-primary" />
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => navigate("/settings")}>
@@ -578,7 +577,7 @@ export default function Jornada() {
         {/* Page title */}
         <div className="mt-6 flex items-center justify-between">
           <div>
-            <h1 className="text-balance text-xl font-bold leading-tight text-electric-blue">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
               {isAbstinencia ? "Sua jornada de Liberdade" : "Sua jornada de Redução"}
             </h1>
             <p className="text-sm font-medium leading-snug text-muted-foreground mt-1 text-balance">
@@ -591,8 +590,8 @@ export default function Jornada() {
 
         {/* Progress chip */}
         {items.length > 0 && (
-          <div className="app-surface mt-4 px-4 py-3 flex items-center gap-3">
-            <div className="h-9 w-9 rounded-2xl bg-electric-blue/10 flex items-center justify-center text-electric-blue">
+          <div className="mt-4 rounded-2xl bg-white/85 backdrop-blur ring-1 ring-black/[0.04] shadow-[0_10px_30px_-16px_hsl(230_60%_40%/0.25)] px-4 py-3 flex items-center gap-3">
+            <div className="h-9 w-9 rounded-2xl bg-[hsl(220_85%_96%)] flex items-center justify-center text-[hsl(230_85%_55%)]">
               <Sparkles className="h-4 w-4" />
             </div>
             <div className="flex-1">
@@ -604,7 +603,7 @@ export default function Jornada() {
         )}
 
         {/* Themes list */}
-        <section className="mt-4 py-1">
+        <section className="mt-5 -mx-2 rounded-3xl bg-white/85 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] px-3 py-3">
           {items.length === 0 ? (
             <div className="py-10 text-center">
               <p className="text-sm font-medium text-muted-foreground">
@@ -642,7 +641,7 @@ export default function Jornada() {
 
         {/* Hipnoses da redução liberadas para quem está na abstinência */}
         {isAbstinencia && (temasReducao?.length ?? 0) > 0 && (
-          <section className="app-surface mt-5 p-3.5">
+          <section className="mt-5 rounded-3xl bg-white/85 backdrop-blur-md shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] p-4">
             <div className="inline-flex items-center gap-1.5">
               <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
               <span className="text-sm font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
@@ -886,12 +885,15 @@ function ThemeRow({
 }) {
   const isCompleted = status === "completed";
 
+  const accentFrom = isIntro ? "hsl(220, 90%, 55%)" : "hsl(230, 85%, 55%)";
+  const accentTo = "hsl(258, 80%, 60%)";
 
   const numberCircle = (() => {
     if (isCompleted) {
       return (
         <div
-          className="h-5 w-5 rounded-full flex items-center justify-center text-primary-foreground bg-gradient-method shadow-sm"
+          className="h-5 w-5 rounded-full flex items-center justify-center text-white shadow-sm"
+          style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
           <Check className="h-3 w-3" strokeWidth={3} />
         </div>
@@ -900,24 +902,25 @@ function ThemeRow({
     if (isFocus) {
       return (
         <div
-          className="h-6 w-6 rounded-full flex items-center justify-center text-primary-foreground bg-gradient-method text-sm font-semibold ring-2 ring-lilac-soft"
+          className="h-6 w-6 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm ring-2 ring-[hsl(258_80%_92%)]"
+          style={{ background: `linear-gradient(135deg, ${accentFrom}, ${accentTo})` }}
         >
           {seq}
         </div>
       );
     }
     return (
-      <div className="h-5 w-5 rounded-full flex items-center justify-center text-muted-foreground text-sm font-medium bg-surface-raised border border-border">
+      <div className="h-5 w-5 rounded-full flex items-center justify-center text-[hsl(220_20%_55%)] text-sm font-semibold bg-white border border-[hsl(220_30%_88%)]">
         {seq}
       </div>
     );
   })();
 
-  const lineClass = isCompleted ? "bg-lilac/40" : "bg-border";
+  const lineColor = isCompleted ? accentTo : "hsl(220, 30%, 90%)";
 
   const cardClass = isFocus
-    ? "bg-lilac-soft/70 ring-1 ring-lilac/25 shadow-surface"
-    : "bg-surface-raised/80 ring-1 ring-border/60";
+    ? "bg-gradient-to-br from-[hsl(258_85%_96%)] to-[hsl(228_85%_96%)] ring-1 ring-[hsl(258_70%_88%)] shadow-[0_12px_30px_-18px_hsl(258_70%_45%/0.45)]"
+    : "bg-[hsl(225_60%_97.5%)] ring-1 ring-[hsl(225_40%_92%)]";
 
   return (
     <div>
@@ -932,22 +935,24 @@ function ThemeRow({
         {!isFirst && !label && (
           <div
             aria-hidden
-            className={`absolute left-3 top-0 h-1/2 w-px -translate-x-1/2 ${lineClass}`}
+            className="absolute left-3 top-0 h-1/2 w-px -translate-x-1/2"
+            style={{ background: lineColor }}
           />
         )}
         {!isLast && !nextHasLabel && (
           <div
             aria-hidden
-            className={`absolute left-3 top-1/2 bottom-0 w-px -translate-x-1/2 ${lineClass}`}
+            className="absolute left-3 top-1/2 bottom-0 w-px -translate-x-1/2"
+            style={{ background: lineColor }}
           />
         )}
 
         <div className="z-10 flex w-6 flex-shrink-0 justify-center">{numberCircle}</div>
 
-        <Button variant="ghost"
+        <button
           type="button"
           onClick={onOpen}
-          className={`flex h-auto min-w-0 flex-1 items-center justify-start gap-2.5 whitespace-normal rounded-2xl px-2.5 py-2.5 text-left hover:bg-lilac-soft/50 hover:text-foreground active:scale-[0.98] ${cardClass}`}
+          className={`flex min-w-0 flex-1 items-center gap-2.5 rounded-2xl px-2 py-1.5 text-left transition-transform active:scale-[0.98] ${cardClass}`}
         >
           <ThemeThumb
             imagemNome={imagemNome}
@@ -956,11 +961,11 @@ function ThemeRow({
           />
           <div className="min-w-0 flex-1">
             {isFocus && (
-              <span className="mb-1 inline-flex text-sm font-medium leading-tight text-muted-foreground">
+              <span className="mb-1 inline-flex rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-px text-sm font-semibold leading-tight text-[hsl(258_60%_45%)]">
                 Seu foco atual
               </span>
             )}
-            <p className="text-balance text-base font-semibold leading-snug text-foreground">
+            <p className="text-balance text-sm font-semibold leading-tight text-foreground">
               {title}
             </p>
             {subtitle && (
@@ -970,7 +975,7 @@ function ThemeRow({
             )}
           </div>
           <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground/50" aria-hidden />
-        </Button>
+        </button>
       </div>
     </div>
   );
@@ -1016,14 +1021,14 @@ function ThemeSheet({
       >
         <div className="flex items-center gap-3 bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-4 pb-4 pt-4">
           {onBack && (
-            <Button variant="ghost"
+            <button
               type="button"
               onClick={onBack}
               aria-label="Voltar"
-              className="-ml-1 flex h-11 w-11 p-0 flex-shrink-0 items-center justify-center rounded-full bg-surface-raised/90 text-muted-foreground shadow-surface ring-1 ring-border/60 hover:bg-muted/50 hover:text-foreground active:scale-95"
+              className="-ml-1 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] active:scale-95"
             >
               <ChevronLeft className="h-4 w-4" />
-            </Button>
+            </button>
           )}
           <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="h-16 w-16" />
           <div className="min-w-0 flex-1 pr-9">
@@ -1036,14 +1041,14 @@ function ThemeSheet({
               </p>
             )}
           </div>
-          <Button variant="ghost"
+          <button
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="absolute right-3 top-3 flex h-11 w-11 p-0 items-center justify-center rounded-full bg-surface-raised/90 text-muted-foreground shadow-surface ring-1 ring-border/60 hover:bg-muted/50 hover:text-foreground active:scale-95"
+            className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] active:scale-95"
           >
             <X className="h-4 w-4" />
-          </Button>
+          </button>
         </div>
         {children}
       </div>
@@ -1055,29 +1060,29 @@ function SheetOptions({ options }: { options: SheetOption[] }) {
   return (
     <div className="space-y-2 px-4 pb-5 pt-4">
       {options.map((o, index) => (
-        <Button variant="ghost"
+        <button
           key={o.key}
           type="button"
           onClick={o.onClick}
-          className="flex h-auto w-full items-center justify-start gap-3 whitespace-normal rounded-2xl bg-surface-subtle px-3 py-3 text-left ring-1 ring-border/60 hover:bg-lilac-soft/50 hover:text-foreground active:scale-[0.98]"
+          className="flex w-full items-center gap-3 rounded-2xl bg-[hsl(225_60%_97.5%)] px-3 py-2 text-left ring-1 ring-[hsl(225_40%_92%)] transition-transform active:scale-[0.98]"
         >
           <div className="relative h-14 w-14 flex-shrink-0">
             <img src={o.image} alt="" className="h-14 w-14 object-contain" draggable={false} />
             {o.done && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full text-primary-foreground bg-gradient-method shadow-sm ring-2 ring-surface-raised">
+              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-white shadow-sm ring-2 ring-white">
                 <Check className="h-3 w-3" strokeWidth={3} />
               </span>
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-muted-foreground">
-              {index + 1}. {o.stepName}
+            <p className="text-sm font-bold uppercase tracking-wide text-[hsl(var(--lilac))]">
+              Passo {index + 1} · {o.stepName}
             </p>
             <p className="mt-0.5 text-sm font-semibold leading-tight text-foreground">{o.title}</p>
             <p className="mt-0.5 text-balance text-sm leading-snug text-muted-foreground font-medium">{o.subtitle}</p>
           </div>
           <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground/50" aria-hidden />
-        </Button>
+        </button>
       ))}
     </div>
   );
