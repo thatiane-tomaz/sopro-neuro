@@ -33,6 +33,8 @@ import {
   ChevronLeft,
   X,
 } from "lucide-react";
+import MissionDialog from "@/components/MissionDialog";
+import { getMissionCopy, shouldOpenMissionAfterHypnosis } from "@/lib/mission";
 import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
 import BottomNav from "@/components/home/BottomNav";
@@ -64,6 +66,8 @@ type JornadaItem = {
   hipnose_nome: string | null;
   imagem_nome: string | null;
   explicacao_missao: string | null;
+  missao_principal: string | null;
+  missao_secundaria: string | null;
   objetivo_chat_missao: string | null;
   hasVideo: boolean;
   hasHipnose: boolean;
@@ -240,6 +244,8 @@ export default function Jornada() {
       hipnose_nome: h.hipnose_nome ?? null,
       imagem_nome: h.imagem_nome ?? null,
       explicacao_missao: h.explicacao_missao?.trim() || null,
+      missao_principal: h.missao_principal ?? null,
+      missao_secundaria: h.missao_secundaria ?? null,
       objetivo_chat_missao: h.objetivo_chat_missao ?? null,
       // Os temas não têm mais vídeo (Transforme, Experimente e Compartilhe).
       hasVideo: false,
@@ -419,7 +425,7 @@ export default function Jornada() {
         mission: {
           habitoId: it.id,
           habitoTitulo: it.habito_titulo,
-          explicacaoDesafio: it.explicacao_missao || DEFAULT_MISSAO_TEXT,
+          explicacaoDesafio: getMissionCopy(it).full,
           objetivoChatMissao: it.objetivo_chat_missao ?? "",
           interactionType: missaoKeys(it).done,
         },
@@ -475,6 +481,7 @@ export default function Jornada() {
       contentType: type,
       day: it.seq,
       interactionType,
+      missionItemId: it.id,
     });
     try {
       const r = await startTracking({ interactionType });
@@ -728,26 +735,16 @@ export default function Jornada() {
               },
             ].filter(Boolean) as SheetOption[];
 
+            if (sheetView === "mission") {
+              const copy = getMissionCopy(it);
+              return <MissionDialog open title={it.habito_titulo} primary={copy.primary} secondary={copy.secondary}
+                done={missaoDone} locked={missaoLocked} countdown={countdown}
+                onClose={closeSheet} onChat={() => openMissionChat(it)} />;
+            }
             return (
-              <ThemeSheet
-                title={it.habito_titulo}
-                subtitle={it.subtitulo_habito}
-                imagemNome={it.imagem_nome}
-                onClose={closeSheet}
-                onBack={sheetView === "mission" ? () => setSheetView("options") : undefined}
-              >
-                {sheetView === "mission" ? (
-                  <MissionView
-                    text={it.explicacao_missao || DEFAULT_MISSAO_TEXT}
-                    done={missaoDone}
-                    locked={missaoLocked}
-                    countdown={countdown}
-                    onLater={closeSheet}
-                    onChat={() => openMissionChat(it)}
-                  />
-                ) : (
-                  <SheetOptions options={options} />
-                )}
+              <ThemeSheet title={it.habito_titulo} subtitle={it.subtitulo_habito}
+                imagemNome={it.imagem_nome} onClose={closeSheet}>
+                <SheetOptions options={options} />
               </ThemeSheet>
             );
           }
@@ -804,6 +801,15 @@ export default function Jornada() {
           }}
           onProgress={handleProgress}
           onComplete={handleComplete}
+          onPlaybackEnded={() => {
+            const idx = items.findIndex((it) => it.id === selectedMedia.missionItemId);
+            const it = items[idx];
+            if (!it || !shouldOpenMissionAfterHypnosis(selectedMedia.contentType, true, it.hasMissao)) return;
+            setSelectedMedia(null);
+            setTrackingId(null);
+            setSheet({ kind: "journey", idx });
+            void openMission(it);
+          }}
         />
       )}
 
@@ -1082,66 +1088,3 @@ function SheetOptions({ options }: { options: SheetOption[] }) {
   );
 }
 
-function MissionView({
-  text,
-  done,
-  locked,
-  countdown,
-  onLater,
-  onChat,
-}: {
-  text: string;
-  done: boolean;
-  locked: boolean;
-  countdown: string | null;
-  onLater: () => void;
-  onChat: () => void;
-}) {
-  return (
-    <div className="px-4 pb-5 pt-4">
-      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[hsl(258_50%_55%)]">
-        Sua missão
-      </p>
-      <div className="mt-2 rounded-2xl bg-[hsl(258_80%_97%)] px-4 py-4 ring-1 ring-[hsl(258_70%_92%)]">
-        <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/85">{text}</p>
-      </div>
-      <div className="mt-4 space-y-2">
-        <button
-          type="button"
-          onClick={onLater}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-[hsl(258_60%_42%)] shadow-sm ring-1 ring-[hsl(258_70%_88%)] transition-transform active:scale-[0.98]"
-        >
-          Ainda vou viver essa missão
-        </button>
-        <button
-          type="button"
-          onClick={onChat}
-          disabled={locked || done}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_28px_-12px_hsl(258_70%_40%/0.7)] transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
-        >
-          {done ? (
-            <>
-              <Check className="h-4 w-4" strokeWidth={3} />
-              Missão concluída
-            </>
-          ) : locked ? (
-            <>
-              <Lock className="h-4 w-4" />
-              Disponível em {countdown}
-            </>
-          ) : (
-            <>
-              <Sparkles className="h-4 w-4" />
-              Concluir a missão
-            </>
-          )}
-        </button>
-      </div>
-      {locked && !done && (
-        <p className="mt-3 text-balance text-center text-sm leading-relaxed text-muted-foreground font-medium">
-          Viva sua missão por 24 horas. Depois desse período, você poderá conversar com o chat sobre a experiência.
-        </p>
-      )}
-    </div>
-  );
-}

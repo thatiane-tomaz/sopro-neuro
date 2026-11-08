@@ -89,7 +89,9 @@ import soproLogo from "@/assets/sopro-logo.webp";
 import { useChatPrompts } from "@/hooks/useChatPrompts";
 import { buildNeoSuggestions } from "@/lib/neoSuggestions";
 import { useJourneyReview } from "@/hooks/useJourneyReview";
-import { useJourneyFocos } from "@/hooks/useJourneyFocos";
+import MissionDialog from "@/components/MissionDialog";
+import { getMissionCopy, shouldOpenMissionAfterHypnosis } from "@/lib/mission";
+import { useJourneyFocos, type Foco } from "@/hooks/useJourneyFocos";
 import { performLogout } from "@/lib/logout";
 import { computePotential } from "@/lib/potential";
 
@@ -141,6 +143,7 @@ export default function Dashboard() {
   const [pendingDate, setPendingDate] = useState<Date | undefined>(undefined);
   const [loadingStartHere, setLoadingStartHere] = useState(false);
   const [missionDialogOpen, setMissionDialogOpen] = useState(false);
+  const [missionTarget, setMissionTarget] = useState<{ foco: Foco; pos: number; prefix: string } | null>(null);
   useScrollLock(missionDialogOpen);
   const [smokingDialogOpen, setSmokingDialogOpen] = useState(false);
   const [ritualDialogOpen, setRitualDialogOpen] = useState(false);
@@ -297,9 +300,17 @@ export default function Dashboard() {
     staleTime: 60_000,
   });
 
-  // Mission unlock: 3 days after user first opens the mission dialog.
+  const missionFoco = missionTarget?.foco ?? gatilho;
+  const missionCopy = getMissionCopy(missionFoco ?? {});
+  const dialogMissionInteraction = missionTarget
+    ? `${missionTarget.prefix}missao_semana_${missionTarget.pos}` : missaoInteraction;
+  const dialogMissionStartInteraction = missionTarget
+    ? `${missionTarget.prefix}missao_iniciada_semana_${missionTarget.pos}` : missaoStartInteraction;
+  const dialogMissionDone = isInteractionFinished(dialogMissionInteraction);
+
+  // Mission unlock: 24 hours after user first opens the mission dialog.
   const missaoStartTrack = trackingData?.find(
-    (t) => t.interaction_type === missaoStartInteraction
+    (t) => t.interaction_type === dialogMissionStartInteraction
   );
   const missaoStartedAt = missaoStartTrack ? new Date(missaoStartTrack.started_at) : null;
   const MISSAO_LOCK_MS = 24 * 60 * 60 * 1000;
@@ -321,36 +332,28 @@ export default function Dashboard() {
     setClockOn(missionDialogOpen && missaoLocked);
   }, [missionDialogOpen, missaoLocked]);
 
-  const openMissionDialog = async () => {
-    if (
-      !ensureContentAccess({
-        source: "missao",
-        sample: { kind: "neo", id: missionSampleId((gatilho as any)?.id) },
-        claim: false,
-      })
-    )
-      return;
+  const openMissionDialog = async (target = gatilho ? { foco: gatilho, pos: posicao, prefix: journeyKey } : null) => {
+    if (!target) return;
+    if (!ensureContentAccess({ source: "missao", sample: { kind: "neo", id: missionSampleId(target.foco.id) }, claim: false })) return;
+    setMissionTarget(target);
     setMissionDialogOpen(true);
-    if (!missaoStartTrack) {
-      try {
-        await startTracking({ interactionType: missaoStartInteraction });
-      } catch (e) {
-        console.error("Erro ao iniciar missão:", e);
-      }
+    const startKey = `${target.prefix}missao_iniciada_semana_${target.pos}`;
+    if (!trackingData?.some((t) => t.interaction_type === startKey)) {
+      try { await startTracking({ interactionType: startKey }); }
+      catch (e) { console.error("Erro ao iniciar missão:", e); }
     }
   };
 
   const openMissionChat = () => {
+    if (!missionFoco) return;
     navigate("/chat", {
-      state: {
-        mission: {
-          habitoId: (gatilho as any)?.id,
-          habitoTitulo: (gatilho as any).habito_titulo ?? tituloGatilho,
-          explicacaoDesafio: explicacaoDesafio,
-          objetivoChatMissao: (gatilho as any).objetivo_chat_missao ?? "",
-          interactionType: missaoInteraction,
-        },
-      },
+      state: { mission: {
+        habitoId: missionFoco.id,
+        habitoTitulo: missionFoco.habito_titulo,
+        explicacaoDesafio: missionCopy.full,
+        objetivoChatMissao: missionFoco.objetivo_chat_missao ?? "",
+        interactionType: dialogMissionInteraction,
+      } },
     });
   };
 
@@ -528,6 +531,7 @@ export default function Dashboard() {
       contentType: type,
       day: posicao,
       interactionType,
+      missionTarget: gatilho ? { foco: gatilho, pos: posicao, prefix: journeyKey } : null,
     });
     try {
       const r = await startTracking({ interactionType });
@@ -779,7 +783,7 @@ export default function Dashboard() {
               image: stepMissaoImg,
               icon: ClipboardList,
               done: weeklyMissaoDone,
-              onClick: openMissionDialog,
+              onClick: () => openMissionDialog(),
               actionLabel: "Continuar com a missão",
             },
             {
@@ -983,6 +987,13 @@ export default function Dashboard() {
           }}
           onProgress={handleProgress}
           onComplete={handleComplete}
+          onPlaybackEnded={() => {
+            const target = selectedMedia.missionTarget;
+            if (!shouldOpenMissionAfterHypnosis(selectedMedia.contentType, true, target?.foco.hasMissao ?? false)) return;
+            setSelectedMedia(null);
+            setTrackingId(null);
+            void openMissionDialog(target);
+          }}
         />
       )}
 
@@ -1071,69 +1082,17 @@ export default function Dashboard() {
         </DialogContent>
       </Dialog>
 
-      {missionDialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-[hsl(258_40%_10%/0.55)] px-3 pb-[max(env(safe-area-inset-bottom),16px)] pt-4 backdrop-blur-sm sm:items-center sm:pt-8">
-          <div className="relative my-auto w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-[0_24px_70px_-22px_hsl(258_70%_35%/0.55)] animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-6 duration-200">
-            <button
-              onClick={() => setMissionDialogOpen(false)}
-              aria-label="Fechar"
-              className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] transition hover:text-foreground active:scale-95"
-            >
-              <X className="h-4 w-4" />
-            </button>
-            <div className="bg-gradient-to-br from-[hsl(258_80%_97%)] to-[hsl(220_85%_97%)] px-6 pb-7 pt-8">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-[hsl(258_65%_52%)] shadow-sm ring-1 ring-black/[0.03]">
-                <Sparkles className="h-8 w-8" />
-              </div>
-              <p className="mt-5 text-center text-sm font-semibold uppercase tracking-[0.14em] text-[hsl(258_50%_55%)]">
-                Sua missão
-              </p>
-              <h2 className="mt-2 text-center text-2xl font-bold leading-tight text-foreground">
-                {tituloGatilho}
-              </h2>
-            </div>
-
-            <div className="px-6 py-6">
-              <div className="rounded-2xl bg-[hsl(258_80%_97%)] px-5 py-5 ring-1 ring-[hsl(258_70%_92%)]">
-                <p className="text-[15px] leading-[1.65] text-foreground/85 whitespace-pre-line">
-                  {explicacaoDesafio}
-                </p>
-              </div>
-
-              <div className="mt-6 space-y-2.5">
-                <button
-                  onClick={() => setMissionDialogOpen(false)}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3.5 text-sm font-semibold text-[hsl(258_60%_42%)] ring-1 ring-[hsl(258_70%_88%)] shadow-sm active:scale-[0.98] transition-transform"
-                >
-                  Ainda vou viver essa missão
-                </button>
-                <button
-                  onClick={openMissionChat}
-                  disabled={missaoLocked || weeklyMissaoDone}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] px-4 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_-12px_hsl(258_70%_40%/0.7)] active:scale-[0.98] transition-transform disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
-                >
-                  {missaoLocked ? (
-                    <>
-                      <Lock className="h-4 w-4" />
-                      Disponível em {missaoCountdown}
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4" />
-                      Concluir a missão
-                    </>
-                  )}
-                </button>
-              </div>
-              {missaoLocked && (
-                <p className="mt-4 text-center text-sm leading-relaxed text-muted-foreground font-medium">
-                  Viva sua missão por 24 horas. Depois desse período, você poderá conversar com o chat sobre a experiência.
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <MissionDialog
+        open={missionDialogOpen}
+        title={missionFoco?.habito_titulo ?? tituloGatilho}
+        primary={missionCopy.primary}
+        secondary={missionCopy.secondary}
+        done={dialogMissionDone}
+        locked={missaoLocked}
+        countdown={missaoCountdown}
+        onClose={() => setMissionDialogOpen(false)}
+        onChat={openMissionChat}
+      />
 
       <Dialog open={dateDialogOpen} onOpenChange={setDateDialogOpen}>
         <DialogContent className="max-w-sm max-h-[88dvh] overflow-y-auto overscroll-contain rounded-3xl p-0 border-0 bg-white shadow-[0_24px_60px_-20px_hsl(258_60%_40%/0.4)]">
