@@ -628,9 +628,9 @@ export default function Dashboard() {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
-                  <User className="h-5 w-5 text-primary" />
-                </button>
+                <Button variant="ghost" size="icon" aria-label="Abrir menu da conta" className="app-account-control h-11 w-11 rounded-full">
+                  <User className="h-5 w-5 text-electric-blue" />
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => navigate("/settings")}>

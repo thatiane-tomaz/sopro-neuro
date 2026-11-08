@@ -404,9 +404,9 @@ export default function Progresso() {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="h-10 w-10 rounded-full bg-white/80 backdrop-blur flex items-center justify-center shadow-[0_4px_14px_-4px_hsl(220_40%_40%/0.18)] ring-1 ring-black/[0.03]">
-                  <User className="h-5 w-5 text-primary" />
-                </button>
+                <Button variant="ghost" size="icon" aria-label="Abrir menu da conta" className="app-account-control h-11 w-11 rounded-full">
+                  <User className="h-5 w-5 text-electric-blue" />
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => navigate("/settings")}>
@@ -424,8 +424,8 @@ export default function Progresso() {
         </header>
 
         {/* Title */}
-        <div className="mt-6 px-2">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
+        <div className="mt-6">
+          <h1 className="text-balance text-xl font-bold leading-tight text-electric-blue">
             Seu progresso
           </h1>
           <p className="text-sm font-medium leading-snug text-muted-foreground mt-1 text-balance">
@@ -437,7 +437,7 @@ export default function Progresso() {
         {!isReducao && smokeFreeDays !== null && (
           <section className="mt-4 overflow-hidden rounded-3xl border border-[hsl(var(--lilac)/0.2)] bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] p-4">
             <div className="flex flex-col items-center text-center">
-              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
+              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-lilac">
                 <Sparkles className="h-3 w-3" />
                 Sem fumar
               </span>
@@ -445,22 +445,22 @@ export default function Progresso() {
                 <span className="bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] bg-clip-text text-6xl font-bold leading-none tracking-tight text-transparent">
                   {smokeFreeDays}
                 </span>
-                <span className="pb-1.5 text-base font-semibold text-[hsl(var(--electric-blue))]">
+                <span className="pb-1.5 text-base font-semibold text-electric-blue">
                   {smokeFreeDays === 1 ? "dia" : "dias"}
                 </span>
               </div>
               <div className="mt-3 flex items-center gap-3 rounded-2xl bg-card/70 py-2 pl-2 pr-1 ring-1 ring-border/40 backdrop-blur">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--lilac-soft))]">
-                  <CalendarIcon className="h-4 w-4 text-[hsl(var(--lilac))]" />
+                  <CalendarIcon className="h-4 w-4 text-lilac" />
                 </span>
                 <span className="flex flex-col text-left leading-tight">
                   <span className="text-sm font-medium text-muted-foreground">Último cigarro em</span>
-                  <span className="text-base font-bold text-[hsl(var(--electric-blue))]">{lastCigLabel}</span>
+                  <span className="text-base font-bold text-electric-blue">{lastCigLabel}</span>
                 </span>
                 <button
                   onClick={openDateDialog}
                   aria-label="Alterar a data do último cigarro"
-                  className="flex h-7 w-7 items-center justify-center rounded-full text-[hsl(var(--lilac))] transition-transform active:scale-95"
+                  className="flex h-7 w-7 items-center justify-center rounded-full text-lilac transition-transform active:scale-95"
                 >
                   <Pencil className="h-3 w-3" />
                 </button>
@@ -470,11 +470,10 @@ export default function Progresso() {
         )}
 
         {/* Savings — cigs avoided + money saved */}
-        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-          <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-sm font-semibold text-[hsl(var(--electric-blue))]">
-            <Sparkles className="h-3 w-3" />
+        <section className="app-surface mt-4 p-3.5">
+          <h2 className="text-balance text-lg font-bold leading-tight text-electric-blue">
             Suas conquistas
-          </span>
+          </h2>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <StatCard
               icon={<Cigarette className="h-4 w-4" />}
@@ -499,25 +498,25 @@ export default function Progresso() {
               <Plus className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold leading-tight text-[hsl(var(--electric-blue))]">
+              <p className="text-sm font-bold leading-tight text-electric-blue">
                 Registrar ontem
               </p>
               <p className="mt-0.5 text-balance text-sm leading-snug text-muted-foreground font-medium">
                 Quantos cigarros você fumou ontem?
               </p>
             </div>
-            <ChevronRight className="h-5 w-5 flex-shrink-0 text-[hsl(var(--lilac))]" />
+            <ChevronRight className="h-5 w-5 flex-shrink-0 text-lilac" />
           </button>
         )}
 
         {/* Chart */}
-        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+        <section className="app-surface mt-4 p-3.5">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+            <h2 className="text-lg font-bold leading-tight text-electric-blue">
               Cigarros por dia
             </h2>
             {stats.avoided > 0 && (
-              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold text-[hsl(var(--lilac))]">
+              <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold text-lilac">
                 <TrendingDown className="h-3 w-3" />
                 em queda
               </span>
@@ -527,15 +526,15 @@ export default function Progresso() {
           {/* Start & current average stats */}
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-2xl bg-muted/60 p-3 text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">INÍCIO{"\n\n"}</p>
+              <p className="text-sm font-medium text-muted-foreground">INÍCIO{"\n\n"}</p>
               <p className="mt-0.5 text-lg font-bold leading-tight text-foreground tabular-nums">
                 {baseline}
                 <span className="text-sm font-medium text-muted-foreground">/dia</span>
               </p>
             </div>
             <div className="rounded-2xl bg-[hsl(var(--lilac-soft)/0.8)] p-3 text-center">
-              <p className="text-sm font-semibold uppercase tracking-wide text-[hsl(var(--lilac))]">MÉDIA ATUAL</p>
-              <p className="mt-0.5 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] tabular-nums">
+              <p className="text-sm font-medium text-muted-foreground">MÉDIA ATUAL</p>
+              <p className="mt-0.5 text-lg font-bold leading-tight text-electric-blue tabular-nums">
                 {stats.daysWithLog > 0 ? Math.floor(stats.avgPerDay) : "—"}
                 <span className="text-sm font-medium text-muted-foreground">/dia</span>
               </p>
@@ -555,25 +554,25 @@ export default function Progresso() {
                 >
                   <defs>
                     <linearGradient id="cigFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(258 70% 65%)" stopOpacity={0.35} />
-                      <stop offset="100%" stopColor="hsl(258 70% 65%)" stopOpacity={0} />
+                      <stop offset="0%" stopColor="hsl(var(--lilac))" stopOpacity={0.35} />
+                      <stop offset="100%" stopColor="hsl(var(--lilac))" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="cigStroke" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="hsl(230 85% 60%)" />
-                      <stop offset="100%" stopColor="hsl(258 70% 65%)" />
+                      <stop offset="0%" stopColor="hsl(var(--electric-blue))" />
+                      <stop offset="100%" stopColor="hsl(var(--lilac))" />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 30% 92%)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                   <XAxis
                     dataKey="label"
-                    tick={{ fontSize: 10, fill: "hsl(220 15% 55%)" }}
+                    tick={{ fontSize: 14, fill: "hsl(var(--muted-foreground))" }}
                     tickLine={false}
                     axisLine={false}
                     interval="preserveStartEnd"
-                    minTickGap={20}
+                    minTickGap={32}
                   />
                   <YAxis
-                    tick={{ fontSize: 10, fill: "hsl(220 15% 55%)" }}
+                    tick={{ fontSize: 14, fill: "hsl(var(--muted-foreground))" }}
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
@@ -582,8 +581,8 @@ export default function Progresso() {
                   <Tooltip
                     contentStyle={{
                       borderRadius: 12,
-                      border: "1px solid hsl(258 80% 92%)",
-                      fontSize: 12,
+                      border: "1px solid hsl(var(--border))",
+                      fontSize: 14,
                     }}
                     formatter={(v: any) =>
                       v === null || v === undefined ? ["—", "cigarros"] : [v, "cigarros"]
@@ -593,13 +592,13 @@ export default function Progresso() {
                   {baseline > 0 && (
                     <ReferenceLine
                       y={baseline}
-                      stroke="hsl(220 15% 70%)"
+                      stroke="hsl(var(--muted-foreground) / 0.5)"
                       strokeDasharray="4 4"
                       label={{
                         value: "Início",
                         position: "insideTopRight",
-                        fill: "hsl(220 15% 55%)",
-                        fontSize: 10,
+                        fill: "hsl(var(--muted-foreground))",
+                        fontSize: 14,
                       }}
                     />
                   )}
@@ -619,13 +618,13 @@ export default function Progresso() {
                           cx={cx}
                           cy={cy}
                           r={payload?.logged ? 3.5 : 0}
-                          fill="hsl(258 70% 65%)"
-                          stroke="white"
+                          fill="hsl(var(--lilac))"
+                          stroke="hsl(var(--surface-raised))"
                           strokeWidth={1.5}
                         />
                       );
                     }}
-                    activeDot={{ r: 5, fill: "hsl(230 85% 60%)" }}
+                    activeDot={{ r: 5, fill: "hsl(var(--electric-blue))" }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -648,7 +647,7 @@ export default function Progresso() {
                       type="button"
                       className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-full bg-[hsl(var(--lilac-soft)/0.6)] px-4 text-left text-sm ring-1 ring-[hsl(var(--lilac)/0.2)] transition-transform active:scale-[0.99]"
                     >
-                      <CalendarIcon className="h-4 w-4 flex-shrink-0 text-[hsl(var(--lilac))]" />
+                      <CalendarIcon className="h-4 w-4 flex-shrink-0 text-lilac" />
                       <span
                         className={
                           customDate ? "text-foreground" : "text-muted-foreground"
@@ -714,8 +713,8 @@ export default function Progresso() {
 
         {/* Potencial ao parar de fumar */}
         {equivCigsPerDay > 0 && (
-          <section className="mt-3 rounded-3xl bg-card/80 p-3.5 text-center shadow-primary ring-1 ring-border/40 backdrop-blur-md">
-            <h2 className="text-left text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+          <section className="app-surface mt-4 p-3.5 text-center">
+            <h2 className="text-left text-balance text-lg font-bold leading-tight text-electric-blue">
               Seu potencial ao parar de fumar
             </h2>
             <p className="mt-1 text-left text-balance text-sm leading-relaxed text-muted-foreground font-medium">
@@ -754,7 +753,7 @@ export default function Progresso() {
               <button
                 onClick={() => setConsumoDialogOpen(true)}
                 aria-label="Editar consumo e gasto"
-                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-card text-[hsl(var(--lilac))] shadow-sm transition-transform active:scale-95"
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-card text-lilac shadow-sm transition-transform active:scale-95"
               >
                 <Pencil className="h-3.5 w-3.5" />
               </button>
@@ -857,14 +856,14 @@ function StatCard({
   return (
     <div className="flex flex-col items-center rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] p-3 text-center">
       <div className="flex items-center justify-center gap-2">
-        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-card text-[hsl(var(--lilac))] shadow-sm">
+        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-card text-lilac shadow-sm">
           {icon}
         </div>
         <p className="text-balance text-left text-sm font-medium leading-tight text-muted-foreground">
           {label}
         </p>
       </div>
-      <p className="mt-2 text-xl font-bold tabular-nums text-[hsl(var(--electric-blue))]">
+      <p className="mt-2 text-xl font-bold tabular-nums text-electric-blue">
         {value}
       </p>
     </div>
@@ -889,13 +888,12 @@ function PotentialTile({
           : "bg-[hsl(var(--lilac-soft)/0.7)]")
       }
     >
-      <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+      <p className="text-sm font-medium text-muted-foreground">
         {label}
       </p>
       <p
         className={
-          "mt-0.5 text-lg font-bold tabular-nums " +
-          (accent ? "text-[hsl(var(--electric-blue))]" : "text-[hsl(var(--lilac))]")
+          "mt-1 text-xl font-bold tabular-nums text-electric-blue"
         }
       >
         {value}
