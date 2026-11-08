@@ -1,0 +1,4 @@
+- [ ] Separar as 21 missões em ação principal e orientação complementar, preservando a descrição antiga.
+- [ ] Destacar a ação e reduzir o tema nos cartões da Home e Jornada.
+- [ ] Abrir a missão do tema ouvido somente ao terminar a hipnose, preservando acesso e prazo existentes.
+- [ ] Verificar dados, testes e apresentação; informar limitação da verificação autenticada.
