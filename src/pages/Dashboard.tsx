@@ -888,10 +888,10 @@ export default function Dashboard() {
         {showQuitCTA && !showQuitDatePicker && (
           <Card className="mt-6 p-3.5 bg-white/70 border-0 ring-1 ring-[hsl(258_70%_92%)] rounded-2xl shadow-none">
             <h3 className="text-base font-bold text-foreground leading-snug text-balance">
-              Pronto para seu próximo passo?
+              Pronto para parar de fumar?
             </h3>
             <p className="text-sm font-medium text-muted-foreground mt-1 leading-relaxed text-pretty">
-              Quando quiser viver sem cigarro, estaremos aqui para te apoiar.
+              Criaremos uma nova jornada para te ajudar durante a abstinência.
             </p>
             <button
               onClick={() => setRitualDialogOpen(true)}
