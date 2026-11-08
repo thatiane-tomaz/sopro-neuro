@@ -10,6 +10,8 @@ export interface Foco {
   subtitulo_habito: string | null;
   imagem_nome: string | null;
   explicacao_missao: string | null;
+  missao_principal: string | null;
+  missao_secundaria: string | null;
   video_nome: string | null;
   hipnose_nome: string | null;
   objetivo_chat_missao: string | null;
@@ -116,6 +118,8 @@ export function useJourneyFocos(jornadaType?: string) {
       subtitulo_habito: h.subtitulo_habito ?? null,
       imagem_nome: h.imagem_nome ?? null,
       explicacao_missao: h.explicacao_missao ?? null,
+      missao_principal: h.missao_principal ?? null,
+      missao_secundaria: h.missao_secundaria ?? null,
       video_nome: h.video_nome ?? null,
       hipnose_nome: h.hipnose_nome ?? null,
       objetivo_chat_missao: h.objetivo_chat_missao ?? null,

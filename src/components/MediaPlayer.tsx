@@ -15,6 +15,7 @@ interface MediaPlayerProps {
   onClose: () => void;
   onProgress?: (percentage: number) => void;
   onComplete?: () => void;
+  onPlaybackEnded?: () => void;
   onCloseWithProgress?: (percentage: number) => void;
 }
 
@@ -27,6 +28,7 @@ const MediaPlayer = ({
   onClose,
   onProgress,
   onComplete,
+  onPlaybackEnded,
   onCloseWithProgress
 }: MediaPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -42,6 +44,8 @@ const MediaPlayer = ({
   // Store callbacks in refs to avoid dependency issues
   const onProgressRef = useRef(onProgress);
   const onCompleteRef = useRef(onComplete);
+  const onPlaybackEndedRef = useRef(onPlaybackEnded);
+  const endedRef = useRef(false);
   const onCloseWithProgressRef = useRef(onCloseWithProgress);
   
   // Throttle progress updates to prevent excessive database calls
@@ -57,8 +61,9 @@ const MediaPlayer = ({
   useEffect(() => {
     onProgressRef.current = onProgress;
     onCompleteRef.current = onComplete;
+    onPlaybackEndedRef.current = onPlaybackEnded;
     onCloseWithProgressRef.current = onCloseWithProgress;
-  }, [onProgress, onComplete, onCloseWithProgress]);
+  }, [onProgress, onComplete, onCloseWithProgress, onPlaybackEnded]);
 
   // Lock background scroll while the player modal is open
   useScrollLock(true);
@@ -255,11 +260,14 @@ const MediaPlayer = ({
     
     const handleEnded = () => {
       if (!isMounted) return;
+      if (endedRef.current) return;
+      endedRef.current = true;
       setIsPlaying(false);
       if (!hasCompleted && onCompleteRef.current) {
         setHasCompleted(true);
         onCompleteRef.current();
       }
+      onPlaybackEndedRef.current?.();
     };
     
     // Handle stalling (network issues, buffering)
