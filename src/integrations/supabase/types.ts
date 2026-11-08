@@ -428,6 +428,8 @@ export type Database = {
           id: string
           imagem_nome: string | null
           missao: boolean
+          missao_principal: string | null
+          missao_secundaria: string | null
           objetivo_chat_missao: string | null
           posicao: string | null
           subtitulo_habito: string | null
@@ -445,6 +447,8 @@ export type Database = {
           id?: string
           imagem_nome?: string | null
           missao?: boolean
+          missao_principal?: string | null
+          missao_secundaria?: string | null
           objetivo_chat_missao?: string | null
           posicao?: string | null
           subtitulo_habito?: string | null
@@ -462,6 +466,8 @@ export type Database = {
           id?: string
           imagem_nome?: string | null
           missao?: boolean
+          missao_principal?: string | null
+          missao_secundaria?: string | null
           objetivo_chat_missao?: string | null
           posicao?: string | null
           subtitulo_habito?: string | null
