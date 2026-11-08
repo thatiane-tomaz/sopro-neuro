@@ -109,7 +109,7 @@ export default function FocoAtualCard({
               <button
                 type="button"
                 onClick={step.onClick}
-                aria-label={`Passo ${index + 1}: ${step.label}. ${step.verb} ${step.rest}`}
+                aria-label={`${index + 1}. ${step.label}. ${step.verb} ${step.rest}`}
                 className="flex min-w-0 flex-1 flex-col items-center rounded-2xl text-center transition-transform active:scale-95"
               >
                 <span
@@ -117,8 +117,15 @@ export default function FocoAtualCard({
                     isCurrent ? "text-[hsl(var(--electric-blue))]" : "text-[hsl(var(--lilac))]"
                   }`}
                 >
-                  <span className="whitespace-nowrap text-sm font-semibold opacity-80">Passo {index + 1}</span>
-                  <span className="whitespace-nowrap text-sm font-bold">{step.label}</span>
+                  <span
+                    className={`flex h-5 w-5 items-center justify-center rounded-full text-[13px] font-bold ${
+                      isCurrent ? "bg-[hsl(var(--electric-blue)/0.12)]" : "bg-[hsl(var(--lilac)/0.12)]"
+                    }`}
+                    aria-hidden
+                  >
+                    {index + 1}
+                  </span>
+                  <span className="mt-0.5 whitespace-nowrap text-sm font-bold">{step.label}</span>
                 </span>
                 <div className="relative mt-1.5 flex h-[72px] w-[72px] items-center justify-center">
                   <img
@@ -156,7 +163,7 @@ export default function FocoAtualCard({
           className="mt-4 h-12 w-full rounded-full bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-sm font-bold text-primary-foreground shadow-wellness"
         >
           <nextStep.icon className="mr-2 h-5 w-5" />
-          <span className="text-balance">Fazer passo {steps.indexOf(nextStep) + 1}: {nextStep.label}</span>
+          <span className="text-balance">Fazer {nextStep.label}</span>
           <ChevronRight className="ml-1 h-5 w-5" />
         </Button>
       ) : (
