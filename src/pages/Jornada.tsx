@@ -1020,7 +1020,7 @@ function ThemeSheet({
               type="button"
               onClick={onBack}
               aria-label="Voltar"
-              className="-ml-1 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] active:scale-95"
+              className="-ml-1 flex h-11 w-11 p-0 flex-shrink-0 items-center justify-center rounded-full bg-surface-raised/90 text-muted-foreground shadow-surface ring-1 ring-border/60 hover:bg-muted/50 hover:text-foreground active:scale-95"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -1040,7 +1040,7 @@ function ThemeSheet({
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-foreground/70 shadow-sm ring-1 ring-black/[0.05] active:scale-95"
+            className="absolute right-3 top-3 flex h-11 w-11 p-0 items-center justify-center rounded-full bg-surface-raised/90 text-muted-foreground shadow-surface ring-1 ring-border/60 hover:bg-muted/50 hover:text-foreground active:scale-95"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -1059,12 +1059,12 @@ function SheetOptions({ options }: { options: SheetOption[] }) {
           key={o.key}
           type="button"
           onClick={o.onClick}
-          className="flex w-full items-center gap-3 rounded-2xl bg-[hsl(225_60%_97.5%)] px-3 py-2 text-left ring-1 ring-[hsl(225_40%_92%)] transition-transform active:scale-[0.98]"
+          className="flex h-auto w-full items-center justify-start gap-3 whitespace-normal rounded-2xl bg-surface-subtle px-3 py-3 text-left ring-1 ring-border/60 hover:bg-lilac-soft/50 hover:text-foreground active:scale-[0.98]"
         >
           <div className="relative h-14 w-14 flex-shrink-0">
             <img src={o.image} alt="" className="h-14 w-14 object-contain" draggable={false} />
             {o.done && (
-              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-primary-foreground bg-gradient-method shadow-sm ring-2 ring-white">
+              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full text-primary-foreground bg-gradient-method shadow-sm ring-2 ring-surface-raised">
                 <Check className="h-3 w-3" strokeWidth={3} />
               </span>
             )}

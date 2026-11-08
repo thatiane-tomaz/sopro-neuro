@@ -101,7 +101,7 @@ export default function NeoBlock({
                 <circle cx="28" cy="15" r="2.6" fill="hsl(var(--electric-blue))" />
                 <circle cx="37" cy="15" r="2.6" fill="hsl(var(--electric-blue))" />
               </svg>
-              <div className="relative -scale-x-100 [&>button]:w-full">
+              <div className="relative -scale-x-100 [&>div]:w-full [&>div>div]:!h-32 [&>div>div]:!w-full [&_button]:!h-24 [&_button]:!w-24">
                 <ProgressBrain
                   compact
                   locked={locked}
