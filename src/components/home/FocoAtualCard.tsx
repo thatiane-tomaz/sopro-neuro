@@ -75,18 +75,13 @@ export default function FocoAtualCard({
       <div className="mt-3 overflow-hidden rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] shadow-[0_4px_16px_-6px_hsl(var(--lilac)/0.35)]">
         <div className="flex items-center gap-3 p-2.5">
           {img.src && !img.failed && (
-            <div className="relative flex-shrink-0">
-              <img
-                src={img.src}
-                alt=""
-                onError={img.onError}
-                className="h-12 w-12 rounded-xl object-cover"
-                draggable={false}
-              />
-              <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[hsl(var(--lilac))] px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-primary-foreground shadow-sm">
-                Hoje
-              </span>
-            </div>
+            <img
+              src={img.src}
+              alt=""
+              onError={img.onError}
+              className="h-12 w-12 flex-shrink-0 rounded-xl object-cover"
+              draggable={false}
+            />
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
