@@ -559,7 +559,7 @@ export default function Jornada() {
                   <User className="h-5 w-5 text-primary" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="border-0 shadow-primary">
                 <DropdownMenuItem onClick={() => navigate("/settings")}>
                   <User className="h-4 w-4 mr-2" /> Conta
                 </DropdownMenuItem>

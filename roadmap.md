@@ -2,5 +2,5 @@
 - [x] Destacar a ação e reduzir o tema nos cartões da Home e Jornada.
 - [x] Abrir a missão do tema ouvido somente ao terminar a hipnose, preservando acesso e prazo existentes.
 - [x] Verificar dados e 27 testes; testar reprodutor e cartão isolados em celular/computador. Fluxo com conta real não verificável neste Supabase externo.
-- [ ] Padronizar cartões e ações das três abas com sombras suaves, preservando seleção e foco.
-- [ ] Conferir resultado e erros disponíveis; registrar limites da verificação visual.
+- [x] Padronizar cartões e ações das três abas com sombras suaves, preservando seleção e foco.
+- [x] Conferir resultado: compilação sem erros e 4 testes da missão aprovados; Neo e missão conferidos isoladamente em 394px e 1280px. Abas com conta real não verificáveis neste Supabase externo.

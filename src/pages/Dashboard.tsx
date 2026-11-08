@@ -632,7 +632,7 @@ export default function Dashboard() {
                   <User className="h-5 w-5 text-primary" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="border-0 shadow-primary">
                 <DropdownMenuItem onClick={() => navigate("/settings")}>
                   <User className="h-4 w-4 mr-2" /> Conta
                 </DropdownMenuItem>
@@ -821,7 +821,7 @@ export default function Dashboard() {
           }}
         >
           <DialogContent
-            className="p-0 gap-0 overflow-hidden rounded-3xl sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden"
+            className="p-0 gap-0 overflow-hidden rounded-3xl border-0 shadow-primary sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden"
           >
             <DialogHeader className="sr-only">
               <DialogTitle>Chat com o Neo</DialogTitle>
@@ -844,7 +844,7 @@ export default function Dashboard() {
 
         {/* Revisão de gatilhos ao concluir todos os focos da jornada */}
         <Dialog open={revisaoChatOpen} onOpenChange={setRevisaoChatOpen}>
-          <DialogContent className="p-0 gap-0 overflow-hidden rounded-3xl sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden">
+          <DialogContent className="p-0 gap-0 overflow-hidden rounded-3xl border-0 shadow-primary sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden">
             <DialogHeader className="sr-only">
               <DialogTitle>Revisão de gatilhos com o Neo</DialogTitle>
               <DialogDescription>
