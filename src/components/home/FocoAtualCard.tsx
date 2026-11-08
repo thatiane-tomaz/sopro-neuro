@@ -89,7 +89,7 @@ export default function FocoAtualCard({
                 {totalFocos > 0 ? `Hoje · Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
               </p>
               <button type="button" onClick={onOpenJornada} className="-my-1 inline-flex flex-shrink-0 items-center py-1 text-[13px] font-semibold text-[hsl(var(--electric-blue))]">
-                Ver jornada
+                Jornada
                 <ChevronRight className="h-3 w-3" />
               </button>
             </div>
