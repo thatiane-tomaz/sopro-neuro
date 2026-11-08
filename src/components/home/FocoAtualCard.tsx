@@ -68,7 +68,7 @@ export default function FocoAtualCard({
         )}
       </div>
       <p className="mt-1 text-pretty text-sm font-medium leading-snug text-muted-foreground">
-        Siga os passos para enfraquecer os gatilhos que te prendem ao cigarro.
+        Enfraqueça o que te faz fumar.
       </p>
 
       {/* Gatilho atual + entrada para a jornada completa */}
@@ -135,7 +135,7 @@ export default function FocoAtualCard({
                   )}
                 </div>
                 <span className="mt-1 max-w-[7.5rem] text-balance text-[13px] font-medium leading-tight text-muted-foreground">
-                  {step.verb} {step.rest}
+                  {step.verb}
                 </span>
               </button>
               {index < steps.length - 1 && (
