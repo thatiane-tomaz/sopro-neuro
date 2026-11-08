@@ -96,6 +96,7 @@ export default {
 			},
 			boxShadow: {
 				'primary': 'var(--shadow-primary)',
+				'surface': 'var(--shadow-surface)',
 				'wellness': 'var(--shadow-wellness)',
 				'glow': 'var(--shadow-glow)'
 			},
