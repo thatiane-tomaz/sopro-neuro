@@ -55,7 +55,7 @@ export default function NeoExplicaCard({ jornada }: { jornada: NeoExplicaJornada
         type="button"
         onClick={open}
         aria-busy={opening}
-        className="mt-3 flex min-h-[90px] w-full items-center gap-2 overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] py-3.5 pl-1 pr-3.5 text-left border border-[hsl(var(--lilac)/0.2)] active:scale-[0.99] transition-transform disabled:opacity-70"
+        className="mt-3 flex min-h-[90px] w-full items-center gap-2 overflow-hidden rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] py-3.5 pl-1 pr-3.5 text-left shadow-primary active:scale-[0.99] transition-transform disabled:opacity-70"
       >
         <img src={neoIdeiaImg} alt="" aria-hidden width={88} height={62} draggable={false} className="-my-2 h-[76px] w-[96px] flex-shrink-0 object-contain" />
         <div className="flex min-w-0 flex-1 items-center self-stretch">

@@ -632,7 +632,7 @@ export default function Dashboard() {
                   <User className="h-5 w-5 text-primary" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="border-0 shadow-primary">
                 <DropdownMenuItem onClick={() => navigate("/settings")}>
                   <User className="h-4 w-4 mr-2" /> Conta
                 </DropdownMenuItem>
@@ -652,13 +652,13 @@ export default function Dashboard() {
 
         {/* Bloqueio da jornada de abstinência até definir a data */}
         {abstinenciaBloqueada && (
-          <Card className="mt-6 p-3.5 bg-white/95 backdrop-blur-md border-0 shadow-[0_20px_60px_-18px_hsl(258_70%_45%/0.35)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
+          <Card className="mt-6 p-3.5 bg-white/95 backdrop-blur-md border-0 shadow-[0_20px_60px_-18px_hsl(258_70%_45%/0.35)] rounded-3xl">
             <div className="flex items-center gap-3">
               <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[hsl(258_80%_95%)] to-[hsl(220_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
                 <CalendarIcon className="h-6 w-6" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(258_80%_96%)] px-2 py-0.5 ring-1 ring-[hsl(258_70%_90%)]">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-[hsl(258_80%_96%)] px-2 py-0.5 shadow-surface">
                   <Sparkles className="h-3 w-3 text-[hsl(258_65%_52%)]" />
                   <span className="text-sm font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
                     Ritual do último cigarro
@@ -710,7 +710,7 @@ export default function Dashboard() {
                 <div className="mt-3 flex gap-2">
                   <Button
                     variant="outline"
-                    className="flex-1 rounded-xl"
+                    className="flex-1 rounded-xl border-0 bg-lilac-soft/60 shadow-surface"
                     onClick={() => setShowQuitDatePicker(false)}
                     disabled={savingDate}
                   >
@@ -821,7 +821,7 @@ export default function Dashboard() {
           }}
         >
           <DialogContent
-            className="p-0 gap-0 overflow-hidden rounded-3xl sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden"
+            className="p-0 gap-0 overflow-hidden rounded-3xl border-0 shadow-primary sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden"
           >
             <DialogHeader className="sr-only">
               <DialogTitle>Chat com o Neo</DialogTitle>
@@ -844,7 +844,7 @@ export default function Dashboard() {
 
         {/* Revisão de gatilhos ao concluir todos os focos da jornada */}
         <Dialog open={revisaoChatOpen} onOpenChange={setRevisaoChatOpen}>
-          <DialogContent className="p-0 gap-0 overflow-hidden rounded-3xl sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden">
+          <DialogContent className="p-0 gap-0 overflow-hidden rounded-3xl border-0 shadow-primary sm:max-w-md w-[calc(100vw-24px)] h-[86dvh] max-h-[86dvh] [&>button]:hidden">
             <DialogHeader className="sr-only">
               <DialogTitle>Revisão de gatilhos com o Neo</DialogTitle>
               <DialogDescription>
@@ -890,7 +890,7 @@ export default function Dashboard() {
         {isAbstinencia && <AbstinenceExtras mode="return" />}
         {/* CTA — Decidir parar de fumar */}
         {showQuitCTA && !showQuitDatePicker && (
-          <Card className="mt-6 p-3.5 bg-white/70 border-0 ring-1 ring-[hsl(258_70%_92%)] rounded-2xl shadow-none">
+          <Card className="mt-6 p-3.5 bg-white/70 border-0 rounded-2xl shadow-primary">
             <h3 className="text-base font-bold text-foreground leading-snug text-balance">
               Pronto para parar de fumar?
             </h3>
@@ -899,7 +899,7 @@ export default function Dashboard() {
             </p>
             <button
               onClick={() => setRitualDialogOpen(true)}
-              className="mt-3 w-full flex items-center justify-center gap-2 rounded-full px-3 py-3 text-sm font-bold text-[hsl(258_60%_45%)] bg-[hsl(258_80%_96%)] ring-1 ring-[hsl(258_70%_88%)] active:scale-95 transition-transform leading-tight whitespace-nowrap"
+              className="mt-3 w-full flex items-center justify-center gap-2 rounded-full px-3 py-3 text-sm font-bold text-[hsl(258_60%_45%)] bg-[hsl(258_80%_96%)] shadow-surface active:scale-95 transition-transform leading-tight whitespace-nowrap"
             >
               <span className="relative inline-flex items-center justify-center shrink-0">
                 <Cigarette className="h-5 w-5" />
@@ -912,7 +912,7 @@ export default function Dashboard() {
 
         {/* Inline date picker (fallback — usado apenas para redução) */}
         {showQuitDatePicker && !lastCigDate && !isAbstinencia && (
-          <Card className="mt-6 p-3.5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] ring-1 ring-[hsl(258_70%_92%)] rounded-3xl">
+          <Card className="mt-6 p-3.5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] rounded-3xl">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-2xl bg-[hsl(258_80%_95%)] text-[hsl(258_60%_50%)] flex items-center justify-center shadow-sm">
                 <CalendarIcon className="h-5 w-5" />
@@ -947,7 +947,7 @@ export default function Dashboard() {
             <div className="mt-3 flex gap-2">
               <Button
                 variant="outline"
-                className="flex-1 rounded-xl"
+                className="flex-1 rounded-xl border-0 bg-lilac-soft/60 shadow-surface"
                 onClick={() => setShowQuitDatePicker(false)}
                 disabled={savingDate}
               >
@@ -1029,7 +1029,7 @@ export default function Dashboard() {
             </DialogHeader>
           </div>
           <div className="px-5 pt-4 pb-2 space-y-3">
-            <div className="rounded-2xl bg-[hsl(258_80%_97%)] px-4 py-3.5 ring-1 ring-[hsl(258_70%_92%)]">
+            <div className="rounded-2xl bg-[hsl(258_80%_97%)] px-4 py-3.5 shadow-surface">
               <p className="text-sm font-bold uppercase tracking-[0.14em] text-[hsl(258_60%_45%)]">
                 Faça o ritual
               </p>
@@ -1040,7 +1040,7 @@ export default function Dashboard() {
                 Esse gesto simples reforça a mudança e ajuda seu cérebro a fechar esse ciclo.
               </p>
             </div>
-            <div className="rounded-2xl bg-[hsl(220_80%_97%)] px-4 py-3.5 ring-1 ring-[hsl(220_70%_92%)]">
+            <div className="rounded-2xl bg-[hsl(220_80%_97%)] px-4 py-3.5 shadow-surface">
               <p className="text-sm font-bold uppercase tracking-[0.14em] text-[hsl(220_60%_45%)]">
                 Sua jornada vai mudar
               </p>
@@ -1131,7 +1131,7 @@ export default function Dashboard() {
           <DialogFooter className="px-5 pb-5 pt-1 flex-row gap-2 sm:gap-2">
             <Button
               variant="outline"
-              className="flex-1 rounded-xl"
+              className="flex-1 rounded-xl border-0 bg-lilac-soft/60 shadow-surface"
               onClick={() => setDateDialogOpen(false)}
               disabled={savingDate}
             >

@@ -559,7 +559,7 @@ export default function Jornada() {
                   <User className="h-5 w-5 text-primary" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="border-0 shadow-primary">
                 <DropdownMenuItem onClick={() => navigate("/settings")}>
                   <User className="h-4 w-4 mr-2" /> Conta
                 </DropdownMenuItem>
@@ -910,7 +910,7 @@ function ThemeRow({
       );
     }
     return (
-      <div className="h-5 w-5 rounded-full flex items-center justify-center text-[hsl(220_20%_55%)] text-sm font-semibold bg-white border border-[hsl(220_30%_88%)]">
+      <div className="h-5 w-5 rounded-full flex items-center justify-center text-[hsl(220_20%_55%)] text-sm font-semibold bg-muted shadow-surface">
         {seq}
       </div>
     );
@@ -919,8 +919,8 @@ function ThemeRow({
   const lineColor = isCompleted ? accentTo : "hsl(220, 30%, 90%)";
 
   const cardClass = isFocus
-    ? "bg-gradient-to-br from-[hsl(258_85%_96%)] to-[hsl(228_85%_96%)] ring-1 ring-[hsl(258_70%_88%)] shadow-[0_12px_30px_-18px_hsl(258_70%_45%/0.45)]"
-    : "bg-[hsl(225_60%_97.5%)] ring-1 ring-[hsl(225_40%_92%)]";
+    ? "bg-gradient-to-br from-[hsl(258_85%_96%)] to-[hsl(228_85%_96%)] shadow-primary"
+    : "bg-[hsl(225_60%_97.5%)] shadow-surface";
 
   return (
     <div>
@@ -1064,7 +1064,7 @@ function SheetOptions({ options }: { options: SheetOption[] }) {
           key={o.key}
           type="button"
           onClick={o.onClick}
-          className="flex w-full items-center gap-3 rounded-2xl bg-[hsl(225_60%_97.5%)] px-3 py-2 text-left ring-1 ring-[hsl(225_40%_92%)] transition-transform active:scale-[0.98]"
+          className="flex w-full items-center gap-3 rounded-2xl bg-[hsl(225_60%_97.5%)] px-3 py-2 text-left shadow-surface transition-transform active:scale-[0.98]"
         >
           <div className="relative h-14 w-14 flex-shrink-0">
             <img src={o.image} alt="" className="h-14 w-14 object-contain" draggable={false} />

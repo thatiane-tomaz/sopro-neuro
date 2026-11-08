@@ -69,6 +69,7 @@ All colors MUST be HSL.
 
     /* Shadows mais definidas */
     --shadow-primary: 0 4px 20px -8px hsl(200 70% 45% / 0.25);
+    --shadow-surface: 0 4px 16px -6px hsl(var(--lilac) / 0.22);
     --shadow-wellness: 0 3px 15px -5px hsl(200 60% 50% / 0.3);
     --shadow-glow: 0 0 30px hsl(180 60% 42% / 0.25);
 
