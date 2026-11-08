@@ -51,7 +51,7 @@ export default function FocoAtualCard({
   const doneCount = steps.filter((s) => s.done).length;
 
   return (
-    <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary ring-1 ring-border/40 backdrop-blur-md">
+    <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary backdrop-blur-md">
       <div className="flex items-center justify-between gap-2">
         <h1 className="whitespace-nowrap text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
           Método Sopro Neuro
@@ -60,9 +60,9 @@ export default function FocoAtualCard({
           <button
             type="button"
             onClick={onOpenMetodo}
-            className="-my-1 inline-flex flex-shrink-0 items-center gap-1 rounded-full bg-[hsl(var(--lilac-soft))] px-2.5 py-1 text-sm font-semibold text-[hsl(var(--lilac))] active:scale-95"
+            className="-my-1 inline-flex flex-shrink-0 items-center gap-1 rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-0.5 text-[13px] font-semibold text-[hsl(var(--lilac))] active:scale-95"
           >
-            <Info className="h-4 w-4" />
+            <Info className="h-3.5 w-3.5" />
             Como funciona
           </button>
         )}
@@ -72,25 +72,30 @@ export default function FocoAtualCard({
       </p>
 
       {/* Gatilho atual + entrada para a jornada completa */}
-      <div className="mt-3 overflow-hidden rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] ring-1 ring-[hsl(var(--lilac)/0.15)]">
+      <div className="mt-3 overflow-hidden rounded-2xl bg-[hsl(var(--lilac-soft)/0.7)] shadow-[0_4px_16px_-6px_hsl(var(--lilac)/0.35)]">
         <div className="flex items-center gap-3 p-2.5">
           {img.src && !img.failed && (
-            <img
-              src={img.src}
-              alt=""
-              onError={img.onError}
-              className="h-12 w-12 flex-shrink-0 rounded-xl object-cover"
-              draggable={false}
-            />
+            <div className="relative flex-shrink-0">
+              <img
+                src={img.src}
+                alt=""
+                onError={img.onError}
+                className="h-12 w-12 rounded-xl object-cover"
+                draggable={false}
+              />
+              <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[hsl(var(--lilac))] px-1.5 py-px text-[9px] font-bold uppercase tracking-wide text-primary-foreground shadow-sm">
+                Hoje
+              </span>
+            </div>
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
               <p className="text-sm font-semibold text-[hsl(var(--lilac))]">
-                {totalFocos > 0 ? `Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
+                {totalFocos > 0 ? `Hoje · Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
               </p>
-              <button type="button" onClick={onOpenJornada} className="-my-1 inline-flex flex-shrink-0 items-center py-1 text-sm font-semibold text-[hsl(var(--electric-blue))]">
+              <button type="button" onClick={onOpenJornada} className="-my-1 inline-flex flex-shrink-0 items-center py-1 text-[13px] font-semibold text-[hsl(var(--electric-blue))]">
                 Ver jornada
-                <ChevronRight className="h-3.5 w-3.5" />
+                <ChevronRight className="h-3 w-3" />
               </button>
             </div>
             <p className="text-pretty text-base font-bold leading-snug text-foreground">{tituloGatilho}</p>
@@ -101,7 +106,7 @@ export default function FocoAtualCard({
         </div>
 <div className="px-2.5 pb-3">
       {/* Passos do método */}
-      <div className="mt-1 flex items-start border-t border-[hsl(var(--lilac)/0.15)] px-1 pt-3 pb-0" aria-label="Passos do método">
+      <div className="mt-1 flex items-start px-1 pt-3 pb-0" aria-label="Passos do método">
         {steps.map((step, index) => {
           const isCurrent = nextStep?.key === step.key;
           return (
@@ -173,11 +178,11 @@ export default function FocoAtualCard({
             {steps.map((s) => (
               <span
                 key={s.key}
-                className={`h-1.5 w-5 rounded-full ${s.done ? "bg-[hsl(var(--lilac))]" : "bg-[hsl(var(--lilac)/0.2)]"}`}
+                className={`h-1 w-4 rounded-full ${s.done ? "bg-[hsl(var(--lilac))]" : "bg-[hsl(var(--lilac)/0.2)]"}`}
               />
             ))}
           </div>
-          <p className="text-sm font-medium text-muted-foreground">
+          <p className="text-[13px] font-medium text-muted-foreground">
             {doneCount} de {steps.length} passos concluídos
           </p>
         </div>
