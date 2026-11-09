@@ -343,6 +343,8 @@ serve(async (req) => {
 
       const okItems = settled.filter((s) => s.ok);
       failed += settled.length - okItems.length;
+      const firstFail = settled.find((s) => !s.ok);
+      if (firstFail) console.error("OneSignal falhou:", JSON.stringify(firstFail.onesignalRes).slice(0, 500));
       scheduled += okItems.length;
 
       if (!dryRun && okItems.length > 0) {
