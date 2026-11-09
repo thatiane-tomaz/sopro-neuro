@@ -99,6 +99,7 @@ export default function FocoAtualCard({
             )}
           </div>
         </div>
+<div className="mx-4 h-px bg-gradient-to-r from-transparent via-[hsl(var(--lilac)/0.3)] to-transparent" aria-hidden="true" />
 <div className="px-2.5 pb-3">
       {/* Passos do método */}
       <div className="mt-1 flex items-start px-1 pt-3 pb-0" aria-label="Passos do método">
