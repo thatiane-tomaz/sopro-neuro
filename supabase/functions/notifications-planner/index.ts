@@ -320,11 +320,11 @@ serve(async (req) => {
         const playerId = playerById.get(p.user)!;
         if (dryRun) return { p, onesignalRes: { dryRun: true } as any, ok: true };
         try {
-          const res = await fetch("https://onesignal.com/api/v1/notifications", {
+          const res = await fetch("https://api.onesignal.com/notifications", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `${(ONESIGNAL_REST_API_KEY ?? "").startsWith("os_v2_") ? "Key" : "Basic"} ${ONESIGNAL_REST_API_KEY}`,
+              Authorization: `${(ONESIGNAL_REST_API_KEY ?? "").trim().startsWith("os_v2_") ? "Key" : "Basic"} ${(ONESIGNAL_REST_API_KEY ?? "").trim()}`,
             },
             body: JSON.stringify({
               app_id: ONESIGNAL_APP_ID,
