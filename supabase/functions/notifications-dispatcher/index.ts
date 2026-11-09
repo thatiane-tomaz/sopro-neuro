@@ -338,7 +338,7 @@ serve(async (req) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
+            Authorization: `${(ONESIGNAL_REST_API_KEY ?? "").startsWith("os_v2_") ? "Key" : "Basic"} ${ONESIGNAL_REST_API_KEY}`,
           },
           body: JSON.stringify({
             app_id: ONESIGNAL_APP_ID,
