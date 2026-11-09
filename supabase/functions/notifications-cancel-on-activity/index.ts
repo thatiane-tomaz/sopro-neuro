@@ -98,7 +98,7 @@ serve(async (req) => {
       const url = `https://api.onesignal.com/notifications/${item.onesignal_notification_id}?app_id=${ONESIGNAL_APP_ID}`;
       const res = await fetch(url, {
         method: "DELETE",
-        headers: { Authorization: `${(ONESIGNAL_REST_API_KEY ?? "").startsWith("os_v2_") ? "Key" : "Basic"} ${(ONESIGNAL_REST_API_KEY ?? "").trim()}` },
+        headers: { Authorization: `${(ONESIGNAL_REST_API_KEY ?? "").trim().startsWith("os_v2_") ? "Key" : "Basic"} ${(ONESIGNAL_REST_API_KEY ?? "").trim()}` },
       });
       const payload = await res.json().catch(() => ({}));
 
