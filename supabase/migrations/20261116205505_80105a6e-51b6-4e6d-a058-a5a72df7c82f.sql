@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS "Anyone authenticated can read push_messages" ON public.push_messages;
+CREATE POLICY "Admins can read push_messages" ON public.push_messages FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'));
