@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -433,12 +433,13 @@ export default function Jornada() {
                       {j.subtitle}
                     </p>
                   </div>
-                  <span className="flex-shrink-0 text-sm font-medium text-muted-foreground">
+                  <span className="flex-shrink-0 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground">
+                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
                     {done} de {list.length}
                   </span>
                 </div>
-                <div className="-mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-4 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  {list.map(({ it, idx }) => (
+                <JourneyRail total={list.length}>
+                  {list.map(({ it, idx }, i) => (
                     <ThemeCard
                       key={it.id}
                       title={it.habito_titulo}
@@ -446,10 +447,11 @@ export default function Jornada() {
                       imagemNome={it.imagem_nome}
                       completed={statusForIndex(idx) === "completed"}
                       isFocus={focoAtual?.id === it.id}
+                      hasNext={i < list.length - 1}
                       onOpen={() => openSheet({ kind: "journey", idx })}
                     />
                   ))}
-                </div>
+                </JourneyRail>
               </section>
             );
           })
@@ -575,12 +577,71 @@ const JOURNEYS: { id: JourneyId; title: string; subtitle: string }[] = [
   },
 ];
 
+/**
+ * Trilho horizontal de temas de uma jornada.
+ * Mostra a parte do próximo card, a seta de sequência e a contagem de posição
+ * ("N de M"), que acompanha o deslocamento do trilho.
+ */
+function JourneyRail({ total, children }: { total: number; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState(1);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const kids = Array.from(el.children) as HTMLElement[];
+      if (kids.length === 0) return;
+      // O card mais próximo da borda interna esquerda é o card "da vez".
+      const anchor = el.getBoundingClientRect().left + 20; // px-5
+      let best = 0;
+      let bestDist = Infinity;
+      kids.forEach((k, i) => {
+        const d = Math.abs(k.getBoundingClientRect().left - anchor);
+        if (d < bestDist) {
+          bestDist = d;
+          best = i;
+        }
+      });
+      setPos(best + 1);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    el.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      el.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [total]);
+
+  return (
+    <div>
+      <div
+        ref={ref}
+        className="-mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-3 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {children}
+      </div>
+      <p className="mt-1 text-center text-sm font-medium tabular-nums text-muted-foreground">
+        {pos} de {total}
+      </p>
+    </div>
+  );
+}
+
 function ThemeCard({
   title,
   subtitle,
   imagemNome,
   completed,
   isFocus,
+  hasNext,
   onOpen,
 }: {
   title: string;
@@ -588,20 +649,31 @@ function ThemeCard({
   imagemNome: string | null;
   completed: boolean;
   isFocus: boolean;
+  hasNext: boolean;
   onOpen: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={onOpen}
-      className={`relative flex w-[46%] min-w-[150px] max-w-[180px] flex-shrink-0 snap-start flex-col overflow-hidden rounded-3xl text-left transition-transform active:scale-[0.98] ${
+      className={`relative flex w-[74%] min-w-[240px] max-w-[300px] flex-shrink-0 snap-start flex-col overflow-hidden rounded-3xl text-left transition-transform active:scale-[0.98] ${
         isFocus
           ? "bg-gradient-to-br from-[hsl(258_85%_96%)] to-[hsl(228_85%_96%)] shadow-primary"
           : "bg-card/90 shadow-surface"
       }`}
     >
       <div className="p-2 pb-0">
-        <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="aspect-square w-full" />
+        <div className="relative">
+          <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="aspect-[4/3] w-full" />
+          {hasNext && (
+            <span
+              aria-hidden
+              className="pointer-events-none absolute right-1.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/70 text-[hsl(var(--electric-blue))] opacity-60 backdrop-blur-[2px]"
+            >
+              <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
+            </span>
+          )}
+        </div>
       </div>
       {completed && (
         <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-white shadow-sm">
@@ -614,9 +686,9 @@ function ThemeCard({
             Foco de hoje
           </span>
         )}
-        <p className="text-balance text-sm font-semibold leading-tight text-foreground">{title}</p>
+        <p className="text-balance text-base font-semibold leading-tight text-foreground">{title}</p>
         {subtitle && (
-          <p className="mt-1 line-clamp-2 text-sm leading-snug text-muted-foreground font-medium">{subtitle}</p>
+          <p className="mt-1 text-balance text-sm font-medium leading-snug text-muted-foreground">{subtitle}</p>
         )}
       </div>
     </button>
