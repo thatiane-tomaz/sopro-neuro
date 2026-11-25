@@ -63,6 +63,7 @@ import PageLoader from "@/components/home/PageLoader";
 import WaveBackground from "@/components/home/WaveBackground";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
 import ConsumptionEditDialog from "@/components/ConsumptionEditDialog";
+import RitualPrompt from "@/components/RitualPrompt";
 
 import soproLogo from "@/assets/sopro-logo.webp";
 import { performLogout } from "@/lib/logout";
@@ -152,12 +153,12 @@ export default function Progresso() {
   }, [ritualDate, mode.counterStart, mode.showCounter, mode.recordedSmokeFreeDays]);
 
   const lastCigLabel = useMemo(() => {
-    const date = ritualDate ? mode.counterStart : mode.zeroRunStart;
+    const date = ritualDate ? mode.counterStart : null;
     if (!date) return null;
     const d = new Date(date + "T00:00:00");
     if (isNaN(d.getTime())) return null;
     return format(d, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
-  }, [ritualDate, mode.counterStart, mode.zeroRunStart]);
+  }, [ritualDate, mode.counterStart]);
 
   const openDateDialog = () => {
     const raw = onboarding?.last_cigarette_date as string | undefined;
@@ -390,7 +391,7 @@ export default function Progresso() {
             <div className="flex flex-col items-center text-center">
               <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
                 <Sparkles className="h-3 w-3" />
-                {ritualDate ? "Sem fumar" : "Registros sem fumar"}
+                Sem fumar
               </span>
               <div className="mt-2 flex items-end justify-center gap-1.5">
                 <span className="bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] bg-clip-text text-6xl font-bold leading-none tracking-tight text-transparent">
@@ -400,12 +401,13 @@ export default function Progresso() {
                   {smokeFreeDays === 1 ? "dia" : "dias"}
                 </span>
               </div>
-              <div className="mt-3 flex items-center gap-3 rounded-2xl bg-card/70 py-2 pl-2 pr-1 shadow-surface backdrop-blur">
+              {!ritualDate && <p className="mt-3 text-balance text-sm font-medium text-muted-foreground">Dias registrados com 0 cigarros</p>}
+              {ritualDate && <div className="mt-3 flex items-center gap-3 rounded-2xl bg-card/70 py-2 pl-2 pr-1 shadow-surface backdrop-blur">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--lilac-soft))]">
                   <CalendarIcon className="h-4 w-4 text-[hsl(var(--lilac))]" />
                 </span>
                 <span className="flex flex-col text-left leading-tight">
-                  <span className="text-sm font-medium text-muted-foreground">{ritualDate ? "Último cigarro em" : "Sem fumar desde"}</span>
+                  <span className="text-sm font-medium text-muted-foreground">Último cigarro em</span>
                   <span className="text-base font-bold text-[hsl(var(--electric-blue))]">{lastCigLabel}</span>
                 </span>
                 {ritualDate && <Button
@@ -417,34 +419,8 @@ export default function Progresso() {
                 >
                   <Pencil className="h-3 w-3" />
                 </Button>}
-              </div>
+              </div>}
             </div>
-          </section>
-        )}
-
-        {/* Ritual do último cigarro: entrada para quem está reduzindo, ou
-            pergunta da data para quem veio da abstinência sem informar. */}
-        {mode.askRitualDate && (
-          <section className="mt-4 rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.1)] to-[hsl(var(--lilac)/0.16)] p-4 shadow-primary">
-            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
-              <Sparkles className="h-3 w-3" />
-              Ritual do último cigarro
-            </span>
-            <h3 className="mt-2 text-base font-bold leading-snug text-foreground text-balance">
-              {isReducao ? "Se sente preparado para parar totalmente?" : "Quando foi seu último cigarro?"}
-            </h3>
-            <p className="mt-1 text-sm font-medium leading-relaxed text-muted-foreground text-pretty">
-              {isReducao
-                ? "Escolha a data do ritual do seu último cigarro. A partir dela, contamos seus dias sem fumar."
-                : "Informe a data para começarmos a contar seus dias sem fumar."}
-            </p>
-            <button
-              onClick={openDateDialog}
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-method px-3 py-3 text-sm font-bold text-primary-foreground shadow-surface transition-transform active:scale-95"
-            >
-              <CalendarIcon className="h-4 w-4" />
-              {isReducao ? "Estou pronto para parar" : "Informar data do último cigarro"}
-            </button>
           </section>
         )}
 
@@ -693,7 +669,7 @@ export default function Progresso() {
         </section>
 
         {/* Potencial ao parar de fumar */}
-        {equivCigsPerDay > 0 && (
+        {(equivCigsPerDay > 0 || mode.askRitualDate) && (
           <section className="mt-3 rounded-3xl bg-card/80 p-3.5 text-center shadow-primary backdrop-blur-md">
             <h2 className="text-left text-balance text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
               Seu potencial ao parar de fumar
@@ -739,6 +715,7 @@ export default function Progresso() {
                 <Pencil className="h-3.5 w-3.5" />
               </button>
             </div>
+            {mode.askRitualDate && <RitualPrompt compact isReducao={isReducao} onChooseDate={openDateDialog} />}
           </section>
         )}
 

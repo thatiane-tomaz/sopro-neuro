@@ -90,6 +90,7 @@ import { useChatPrompts } from "@/hooks/useChatPrompts";
 import { buildNeoSuggestions } from "@/lib/neoSuggestions";
 import { useJourneyReview } from "@/hooks/useJourneyReview";
 import MissionDialog from "@/components/MissionDialog";
+import RitualPrompt from "@/components/RitualPrompt";
 import { getMissionCopy, shouldOpenMissionAfterHypnosis } from "@/lib/mission";
 import { useJourneyFocos, type Foco } from "@/hooks/useJourneyFocos";
 import { journeyPrefix } from "@/lib/journeyFocus";
@@ -587,10 +588,6 @@ export default function Dashboard() {
   };
 
   const isAbstinencia = jornadaType === "abstinência";
-  // Na jornada de redução o convite para marcar o último cigarro fica sempre visível,
-  // mesmo que exista uma data antiga (por exemplo, quem voltou a fumar).
-  // A entrada para o ritual do último cigarro fica na aba Progresso.
-  const showQuitCTA = false;
   // Bloqueio: abstinência sem data do último cigarro precisa escolher antes de acessar a jornada.
   const abstinenciaBloqueada = false;
 
@@ -881,28 +878,6 @@ export default function Dashboard() {
               </button>
             </div>
           )}
-        {/* CTA — Decidir parar de fumar */}
-        {showQuitCTA && !showQuitDatePicker && (
-          <Card className="mt-6 p-3.5 bg-white/70 border-0 rounded-2xl shadow-primary">
-            <h3 className="text-base font-bold text-foreground leading-snug text-balance">
-              Pronto para parar de fumar?
-            </h3>
-            <p className="text-sm font-medium text-muted-foreground mt-1 leading-relaxed text-pretty">
-              Criaremos uma nova jornada para te ajudar durante a abstinência.
-            </p>
-            <button
-              onClick={() => setRitualDialogOpen(true)}
-              className="mt-3 w-full flex items-center justify-center gap-2 rounded-full px-3 py-3 text-sm font-bold text-[hsl(258_60%_45%)] bg-[hsl(258_80%_96%)] shadow-surface active:scale-95 transition-transform leading-tight whitespace-nowrap"
-            >
-              <span className="relative inline-flex items-center justify-center shrink-0">
-                <Cigarette className="h-5 w-5" />
-                <Ban className="h-5 w-5 absolute" strokeWidth={2.5} />
-              </span>
-              Estou pronto para meu último cigarro
-            </button>
-          </Card>
-        )}
-
         {/* Inline date picker (fallback — usado apenas para redução) */}
         {showQuitDatePicker && !lastCigDate && !isAbstinencia && (
           <Card className="mt-6 p-3.5 bg-white/90 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(258_70%_45%/0.3)] rounded-3xl">
@@ -963,6 +938,10 @@ export default function Dashboard() {
             </div>
           </Card>
         )}
+        {!onboardingLoading && !lastCigDate && <RitualPrompt onChooseDate={() => {
+          setPendingDate(undefined);
+          setDateDialogOpen(true);
+        }} />}
         </div>
       </div>
 

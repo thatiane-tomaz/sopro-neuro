@@ -26,7 +26,7 @@ describe("Progresso", () => {
   });
   test("redução com 0 registrado mostra contagem sem 0 automático", () => {
     const m = computeProgressMode({ onboardingJourney: "reducao", ritualDate: null, logs: [{ log_date: "2026-11-05", cigarettes_count: 3 }, { log_date: "2026-11-06", cigarettes_count: 0 }] });
-    expect([m.layout, m.showCounter, m.autoZero, m.counterStart]).toEqual(["reducao", true, false, "2026-11-05"]);
+    expect([m.layout, m.showCounter, m.autoZero, m.counterStart, m.recordedSmokeFreeDays]).toEqual(["reducao", true, false, null, 1]);
   });
   test("abstinência continua liberdade mesmo registrando que fumou", () => {
     const m = computeProgressMode({ onboardingJourney: "abstinencia", ritualDate: "2026-11-01", logs: [{ log_date: "2026-11-08", cigarettes_count: 2 }] });
@@ -36,21 +36,28 @@ describe("Progresso", () => {
     expect(shouldAskYesterday(null)).toBe(true);
     expect(shouldAskYesterday("2026-11-01")).toBe(false);
   });
-  test("sopro.neuro: zeros antigos não contam depois de 1 cigarro em 24/11", () => {
+  test("todos os dias de zero continuam contando após um registro de cigarro, sem presumir ritual", () => {
     const m = computeProgressMode({ onboardingJourney: "reducao", ritualDate: null, logs: [
       { log_date: "2026-10-27", cigarettes_count: 0 },
       { log_date: "2026-10-28", cigarettes_count: 0 },
       { log_date: "2026-11-04", cigarettes_count: 1 },
       { log_date: "2026-11-24", cigarettes_count: 1 },
     ] });
-    expect([m.showCounter, m.counterStart, m.recordedSmokeFreeDays, m.askRitualDate, m.autoZero]).toEqual([false, null, 0, true, false]);
+    expect([m.showCounter, m.counterStart, m.recordedSmokeFreeDays, m.askRitualDate, m.autoZero]).toEqual([true, null, 2, true, false]);
   });
-  test("zero sem ritual conta somente registros consecutivos, não dias sem registro", () => {
+  test("zero sem ritual soma todos os dias registrados, mesmo não consecutivos", () => {
     const m = computeProgressMode({ onboardingJourney: "reducao", ritualDate: null, logs: [
       { log_date: "2026-10-25", cigarettes_count: 0 },
       { log_date: "2026-10-27", cigarettes_count: 0 },
       { log_date: "2026-10-28", cigarettes_count: 0 },
     ] });
-    expect([m.recordedSmokeFreeDays, m.zeroRunStart, m.askRitualDate, m.autoZero]).toEqual([2, "2026-10-27", true, false]);
+    expect([m.recordedSmokeFreeDays, m.counterStart, m.askRitualDate, m.autoZero]).toEqual([3, null, true, false]);
+  });
+  test("o mesmo dia não conta duas vezes", () => {
+    const m = computeProgressMode({ onboardingJourney: "reducao", ritualDate: null, logs: [
+      { log_date: "2026-10-25", cigarettes_count: 0 },
+      { log_date: "2026-10-25", cigarettes_count: 0 },
+    ] });
+    expect(m.recordedSmokeFreeDays).toBe(1);
   });
 });
