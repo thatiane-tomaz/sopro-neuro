@@ -106,9 +106,17 @@ export default function Progresso() {
   const ritualDate: string | null = onboarding?.last_cigarette_date
     ? String(onboarding.last_cigarette_date).slice(0, 10)
     : null;
+  // O contador e o gráfico usam o mesmo período do onboarding atual.
+  const startDateStr: string | undefined = onboarding?.completed_at
+    ? toLocalDateStr(new Date(onboarding.completed_at))
+    : logs[0]?.log_date;
+  const activeLogs = useMemo(
+    () => (startDateStr ? logs.filter((l) => l.log_date >= startDateStr) : logs),
+    [logs, startDateStr],
+  );
   const mode = useMemo(
-    () => computeProgressMode({ onboardingJourney, ritualDate, logs }),
-    [onboardingJourney, ritualDate, logs],
+    () => computeProgressMode({ onboardingJourney, ritualDate, logs: activeLogs }),
+    [onboardingJourney, ritualDate, activeLogs],
   );
   const isReducao = mode.layout === "reducao";
 
@@ -133,6 +141,7 @@ export default function Progresso() {
 
   // Dias sem fumar, contados desde o último dia em que fumou.
   const smokeFreeDays = useMemo(() => {
+    if (!ritualDate) return mode.showCounter ? mode.recordedSmokeFreeDays : null;
     if (!mode.counterStart) return null;
     const start = new Date(mode.counterStart + "T00:00:00");
     if (isNaN(start.getTime())) return null;
@@ -140,14 +149,15 @@ export default function Progresso() {
     today.setHours(0, 0, 0, 0);
     const diff = Math.floor((today.getTime() - start.getTime()) / 86_400_000);
     return diff >= 0 ? diff : null;
-  }, [mode.counterStart]);
+  }, [ritualDate, mode.counterStart, mode.showCounter, mode.recordedSmokeFreeDays]);
 
   const lastCigLabel = useMemo(() => {
-    if (!mode.counterStart) return null;
-    const d = new Date(mode.counterStart + "T00:00:00");
+    const date = ritualDate ? mode.counterStart : mode.zeroRunStart;
+    if (!date) return null;
+    const d = new Date(date + "T00:00:00");
     if (isNaN(d.getTime())) return null;
     return format(d, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
-  }, [mode.counterStart]);
+  }, [ritualDate, mode.counterStart, mode.zeroRunStart]);
 
   const openDateDialog = () => {
     const raw = onboarding?.last_cigarette_date as string | undefined;
@@ -177,26 +187,9 @@ export default function Progresso() {
     [equivCigsPerDay, weeklyCostNum],
   );
 
-  // Start from the onboarding completion date (the user's declared "início").
-  // Convert the UTC timestamp stored in Supabase to the user's local date so
-  // the graph starts on the correct calendar day.
-  const startDateStr: string | undefined = (() => {
-    if (onboarding?.completed_at) {
-      return toLocalDateStr(new Date(onboarding.completed_at));
-    }
-    return logs.length ? logs[0].log_date : undefined;
-  })();
-
   // Dias que entram como 0 automático no gráfico (sem registro do usuário).
   const isAbstinenceDay = (ds: string) =>
     mode.autoZero && (mode.autoZeroFrom ? ds >= mode.autoZeroFrom : !!startDateStr && ds >= startDateStr);
-
-  // Ignore registros antigos quando o usuário refez o onboarding: o gráfico e
-  // as métricas precisam refletir a jornada iniciada na última resposta.
-  const activeLogs = useMemo(
-    () => (startDateStr ? logs.filter((l) => l.log_date >= startDateStr) : logs),
-    [logs, startDateStr],
-  );
 
   // Build a continuous timeline from onboarding date to today.
   // `count` is always filled (carry forward last known log; baseline before
@@ -397,7 +390,7 @@ export default function Progresso() {
             <div className="flex flex-col items-center text-center">
               <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
                 <Sparkles className="h-3 w-3" />
-                Sem fumar
+                {ritualDate ? "Sem fumar" : "Registros sem fumar"}
               </span>
               <div className="mt-2 flex items-end justify-center gap-1.5">
                 <span className="bg-gradient-to-r from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] bg-clip-text text-6xl font-bold leading-none tracking-tight text-transparent">
@@ -412,16 +405,18 @@ export default function Progresso() {
                   <CalendarIcon className="h-4 w-4 text-[hsl(var(--lilac))]" />
                 </span>
                 <span className="flex flex-col text-left leading-tight">
-                  <span className="text-sm font-medium text-muted-foreground">Último cigarro em</span>
+                  <span className="text-sm font-medium text-muted-foreground">{ritualDate ? "Último cigarro em" : "Sem fumar desde"}</span>
                   <span className="text-base font-bold text-[hsl(var(--electric-blue))]">{lastCigLabel}</span>
                 </span>
-                <button
+                {ritualDate && <Button
                   onClick={openDateDialog}
                   aria-label="Alterar a data do último cigarro"
+                  variant="ghost"
+                  size="icon"
                   className="flex h-7 w-7 items-center justify-center rounded-full text-[hsl(var(--lilac))] transition-transform active:scale-95"
                 >
                   <Pencil className="h-3 w-3" />
-                </button>
+                </Button>}
               </div>
             </div>
           </section>

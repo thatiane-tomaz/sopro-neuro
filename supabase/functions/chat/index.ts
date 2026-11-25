@@ -119,6 +119,7 @@ Mostra o gatilho atual recomendado (sem impedir de escolher outro na Aba Jornada
 
 6.8 Aba Progresso
 Mostra a evolução dos cigarros fumados, cigarros evitados e dinheiro economizado. Os cálculos usam o consumo informado no onboarding como referência, então são ESTIMATIVAS, nunca medições exatas. Se a pessoa preencheu algo errado, pode atualizar esses dados no final da Aba Progresso. Ao falar de progresso, valorize tanto os números quanto a mudança nos hábitos.
+Registrar zero cigarros não significa ter feito o ritual. Sem data informada do ritual, o contador mostra apenas a sequência de dias consecutivos registrados com zero, sem contar lacunas ou dias futuros; um registro posterior de cigarros fumados encerra essa sequência. Nunca deduza que a pessoa parou ou voltou a fumar apenas pela jornada escolhida.
 
 6.9 Como explicar o método
 Sempre conecte a metodologia às funcionalidades reais. Não apresente o Sopro só como app de hipnoses nem como curso de neurociência: o diferencial é jornada personalizada + compreensão dos gatilhos + experiências práticas de mudança. Responda a dúvida específica, sem despejar todas as funcionalidades de uma vez. Use exemplos de gatilhos do dia a dia.
@@ -435,16 +436,11 @@ async function buildUserContext(userId: string): Promise<string> {
   const seq = [onbV2?.jornada_inicial, ...hist.map((h) => h.jornada)].filter(Boolean) as string[];
   const trocas: string[] = [];
   for (let i = 1; i < seq.length; i++) if (seq[i] !== seq[i - 1]) trocas.push(`${seq[i - 1]}→${seq[i]}`);
-  if (trocas.some((t) => t === "abstinencia→reducao")) {
-    lines.push(`- Já voltou da Jornada de Liberdade para a de Redução (voltou a fumar em algum momento)`);
-  } else if (trocas.some((t) => t === "reducao→abstinencia")) {
-    lines.push(`- Começou na Redução e já passou para a Liberdade (marcou o último cigarro)`);
-  }
-  if (jornadaAtual === "abstinencia") {
-    const dsl = daysSince(onb?.last_cigarette_date);
-    if (dsl !== null) {
-      lines.push(dsl === 0 ? `- Último cigarro: hoje` : `- Sem fumar há ${dsl} dia(s) (último cigarro em ${onb.last_cigarette_date})`);
-    }
+  if (trocas.length) lines.push(`- Jornadas escolhidas anteriormente: ${trocas.join(", ")}. Escolher conteúdo não confirma parada ou recaída.`);
+  if (onb?.last_cigarette_date) {
+    lines.push(`- Data do ritual informada pela pessoa: ${onb.last_cigarette_date}. Não afirme abstinência contínua se houver cigarros registrados depois dessa data.`);
+  } else {
+    lines.push(`- Não informou data do ritual do último cigarro. Registros de zero não confirmam que fez o ritual.`);
   }
 
   // --- Gatilho atual

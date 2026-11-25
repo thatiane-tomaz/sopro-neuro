@@ -36,4 +36,21 @@ describe("Progresso", () => {
     expect(shouldAskYesterday(null)).toBe(true);
     expect(shouldAskYesterday("2026-11-01")).toBe(false);
   });
+  test("sopro.neuro: zeros antigos não contam depois de 1 cigarro em 24/11", () => {
+    const m = computeProgressMode({ onboardingJourney: "reducao", ritualDate: null, logs: [
+      { log_date: "2026-10-27", cigarettes_count: 0 },
+      { log_date: "2026-10-28", cigarettes_count: 0 },
+      { log_date: "2026-11-04", cigarettes_count: 1 },
+      { log_date: "2026-11-24", cigarettes_count: 1 },
+    ] });
+    expect([m.showCounter, m.counterStart, m.recordedSmokeFreeDays, m.askRitualDate, m.autoZero]).toEqual([false, null, 0, true, false]);
+  });
+  test("zero sem ritual conta somente registros consecutivos, não dias sem registro", () => {
+    const m = computeProgressMode({ onboardingJourney: "reducao", ritualDate: null, logs: [
+      { log_date: "2026-10-25", cigarettes_count: 0 },
+      { log_date: "2026-10-27", cigarettes_count: 0 },
+      { log_date: "2026-10-28", cigarettes_count: 0 },
+    ] });
+    expect([m.recordedSmokeFreeDays, m.zeroRunStart, m.askRitualDate, m.autoZero]).toEqual([2, "2026-10-27", true, false]);
+  });
 });

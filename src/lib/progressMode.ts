@@ -21,8 +21,8 @@ const dayBefore = (ds: string) => {
  *   abstinência sem data tem 0 automático desde o início.
  * - Redução sem ritual mas com algum dia de 0 cigarros → mostra a contagem,
  *   sem 0 automático.
- * - A contagem parte do último dia em que fumou (registro > 0), do ritual ou
- *   do dia anterior ao primeiro registro 0.
+ * - Sem ritual, só contam dias consecutivos explicitamente registrados com
+ *   zero, encerrados no registro mais recente; lacunas não confirmam abstinência.
  */
 export function computeProgressMode({ onboardingJourney, ritualDate, logs }: ProgressModeInput) {
   const layout: JourneyId = onboardingJourney === "abstinencia" || ritualDate ? "abstinencia" : "reducao";
@@ -30,15 +30,21 @@ export function computeProgressMode({ onboardingJourney, ritualDate, logs }: Pro
   const autoZeroFrom: string | null = ritualDate ?? null; // null = desde o início
 
   const sorted = [...logs].sort((a, b) => a.log_date.localeCompare(b.log_date));
-  const zeroLogs = sorted.filter((l) => l.cigarettes_count === 0);
   const lastSmoked = sorted.filter((l) => l.cigarettes_count > 0).pop()?.log_date ?? null;
 
   let counterStart: string | null = null;
+  let recordedSmokeFreeDays = 0;
   if (ritualDate) {
     counterStart = lastSmoked && lastSmoked > ritualDate ? lastSmoked : ritualDate;
-  } else if (zeroLogs.length > 0) {
-    const firstZero = zeroLogs[0].log_date;
-    counterStart = lastSmoked && lastSmoked >= firstZero ? lastSmoked : dayBefore(firstZero);
+  } else {
+    let expectedDate = sorted.at(-1)?.log_date;
+    for (let i = sorted.length - 1; i >= 0; i--) {
+      const log = sorted[i];
+      if (log.cigarettes_count !== 0 || log.log_date !== expectedDate) break;
+      recordedSmokeFreeDays++;
+      counterStart = dayBefore(log.log_date);
+      expectedDate = counterStart;
+    }
   }
 
   return {
@@ -47,6 +53,9 @@ export function computeProgressMode({ onboardingJourney, ritualDate, logs }: Pro
     autoZeroFrom,
     showCounter: counterStart !== null,
     counterStart,
+    recordedSmokeFreeDays,
+    zeroRunStart: !ritualDate && recordedSmokeFreeDays > 0
+      ? sorted[sorted.length - recordedSmokeFreeDays].log_date : null,
     askRitualDate: !ritualDate,
   };
 }
