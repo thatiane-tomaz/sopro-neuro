@@ -565,8 +565,8 @@ export default function Jornada() {
 const JOURNEYS: { id: JourneyId; title: string; subtitle: string }[] = [
   {
     id: "reducao",
-    title: "Fumando cada vez menos.",
-    subtitle: "Enfraqueça o vício e reduza os cigarros naturalmente",
+    title: "Enfraquecendo o vício",
+    subtitle: "Para quem quer reduzir os cigarros até decidir parar totalmente.",
   },
   {
     id: "abstinencia",
