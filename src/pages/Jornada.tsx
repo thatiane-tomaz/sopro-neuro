@@ -407,7 +407,7 @@ export default function Jornada() {
             Escolha a sua jornada
           </h1>
           <p className="text-sm font-medium leading-snug text-muted-foreground mt-1 text-balance">
-            Uma jornada para cada momento.
+            Jornadas criadas a partir dos seus gatilhos.
           </p>
         </div>
 
