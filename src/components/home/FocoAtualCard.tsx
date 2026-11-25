@@ -25,6 +25,7 @@ interface Props {
   focoAtualNumero: number;
   totalFocos: number;
   focosConcluidos: number;
+  focusKind?: "Dia" | "Gatilho";
   onOpenJornada: () => void;
   /** Abre a tela que explica o método; sem ela, a entrada não aparece. */
   onOpenMetodo?: () => void;
@@ -42,6 +43,7 @@ export default function FocoAtualCard({
   focoAtualNumero,
   totalFocos,
   focosConcluidos,
+  focusKind = "Gatilho",
   onOpenJornada,
   onOpenMetodo,
   steps,
@@ -86,7 +88,7 @@ export default function FocoAtualCard({
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
               <p className="text-sm font-semibold text-[hsl(var(--lilac))]">
-                {totalFocos > 0 ? `Hoje · Gatilho ${focoAtualNumero} de ${totalFocos}` : "Gatilho atual"}
+                {totalFocos > 0 ? `Hoje · ${focusKind} ${focoAtualNumero} de ${totalFocos}` : `${focusKind} atual`}
               </p>
               <button type="button" onClick={onOpenJornada} className="-my-1 inline-flex flex-shrink-0 items-center py-1 text-[13px] font-semibold text-[hsl(var(--electric-blue))]">
                 Jornada
@@ -138,6 +140,7 @@ export default function FocoAtualCard({
                 </div>
                 <span className="mt-1 max-w-[7.5rem] text-balance text-[13px] font-medium leading-tight text-muted-foreground">
                   {step.verb}
+                  {step.rest && <span className="mt-0.5 block text-balance text-sm">{step.rest}</span>}
                 </span>
               </button>
               {index < steps.length - 1 && (

@@ -45,10 +45,12 @@ import soproLogo from "@/assets/sopro-logo.webp";
 import stepHipnoseImg from "@/assets/step-hipnose.webp";
 import stepMissaoImg from "@/assets/step-missao.webp";
 import stepMuralImg from "@/assets/step-mural.webp";
+import stepVideoImg from "@/assets/step-video.png";
 import { performLogout } from "@/lib/logout";
 import { useAllJourneyTemas, useJourneyFocos } from "@/hooks/useJourneyFocos";
 import { useJourneyChoice } from "@/hooks/useJourneyChoice";
-import { journeyPrefix, type JourneyId } from "@/lib/journeyFocus";
+import { JOURNEY_IDS, journeyPrefix, type JourneyId } from "@/lib/journeyFocus";
+import { JOURNEYS, isJourneyContentCompleted, journeyVideoBucket } from "@/lib/journeys";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -65,6 +67,7 @@ type JornadaItem = {
   habito_titulo: string;
   subtitulo_habito: string | null;
   hasMissao: boolean;
+  hasMural: boolean;
   posicao_original: number | null;
   video_nome: string | null;
   hipnose_nome: string | null;
@@ -117,19 +120,20 @@ export default function Jornada() {
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
 
-  // As duas jornadas aparecem juntas: primeiro Redução, depois Liberdade.
+  // Todas as jornadas aparecem juntas, na ordem do catálogo.
   const { temas, isLoading: temasLoading } = useAllJourneyTemas();
   const { chooseJourney } = useJourneyChoice();
   const { focoAtual } = useJourneyFocos();
   const items = useMemo<JornadaItem[]>(
     () =>
-      (["reducao", "abstinencia"] as JourneyId[]).flatMap((j) =>
+      JOURNEY_IDS.flatMap((j) =>
         temas[j].map((f, i) => ({
           id: f.id,
           seq: i + 1,
           habito_titulo: f.habito_titulo,
           subtitulo_habito: f.subtitulo_habito,
           hasMissao: f.hasMissao,
+          hasMural: f.hasMural,
           posicao_original: f.posicao,
           video_nome: f.video_nome,
           hipnose_nome: f.hipnose_nome,
@@ -138,7 +142,7 @@ export default function Jornada() {
           missao_principal: f.missao_principal,
           missao_secundaria: f.missao_secundaria,
           objetivo_chat_missao: f.objetivo_chat_missao,
-          hasVideo: false,
+          hasVideo: f.hasVideo,
           hasHipnose: f.hasHipnose,
           isIntro: f.tema_fixo,
           isSelected: f.isSelected,
@@ -185,12 +189,11 @@ export default function Jornada() {
 
   // Tema concluído = hipnose e missão existentes concluídas (mesma regra da
   // tela inicial). O mural não conta para a conclusão.
-  const itemCompleted = (it: JornadaItem) => {
-    const checks: boolean[] = [];
-    if (it.hasHipnose) checks.push(isFinished(interactionKey(it, "hypnosis")));
-    if (it.hasMissao) checks.push(isFinished(missaoKeys(it).done));
-    return checks.length > 0 && checks.every(Boolean);
-  };
+  const itemCompleted = (it: JornadaItem) => isJourneyContentCompleted(it, {
+    video: isFinished(interactionKey(it, "video")),
+    hipnose: isFinished(interactionKey(it, "hypnosis")),
+    missao: isFinished(missaoKeys(it).done),
+  });
 
   // Todos os temas da jornada ficam sempre abertos (sem bloqueio sequencial).
   // A assinatura continua sendo exigida ao abrir cada conteúdo.
@@ -213,6 +216,9 @@ export default function Jornada() {
   const openSheet = (target: SheetTarget) => {
     setSheetView("options");
     setSheet(target);
+    if (target.kind === "journey" && items[target.idx]?.journey === "ultimo_cigarro") {
+      void chooseJourney("ultimo_cigarro");
+    }
   };
   const closeSheet = () => {
     setSheet(null);
@@ -270,7 +276,7 @@ export default function Jornada() {
     it: JornadaItem,
     type: "video" | "hypnosis",
   ): Promise<string | null> => {
-    const bucket = type === "video" ? "videos_2" : "hipnoses_2";
+    const bucket = type === "video" ? journeyVideoBucket(it.journey) : "hipnoses_2";
     const fileName = type === "video" ? it.video_nome : it.hipnose_nome;
     return getSignedMediaUrl(bucket, fileName, type, type === "video" ? ["videos"] : ["hypnosis"]);
   };
@@ -443,6 +449,7 @@ export default function Jornada() {
                       title={it.habito_titulo}
                       subtitle={it.subtitulo_habito}
                       imagemNome={it.imagem_nome}
+                      blankImage={it.journey === "ultimo_cigarro"}
                       completed={statusForIndex(idx) === "completed"}
                       isFocus={focoAtual?.id === it.id}
                       position={i + 1}
@@ -480,12 +487,24 @@ export default function Jornada() {
               : null;
 
             const options: SheetOption[] = [
+              it.hasVideo && {
+                key: "video",
+                stepName: "Vídeo",
+                image: stepVideoImg,
+                title: "Entenda",
+                subtitle: "o que o vício faz",
+                done: isFinished(interactionKey(it, "video")),
+                onClick: () => {
+                  closeSheet();
+                  openMedia(idx, "video");
+                },
+              },
               it.hasHipnose && {
                 key: "hipnose",
                 stepName: "Hipnose",
                 image: stepHipnoseImg,
-                title: "Transforme",
-                subtitle: "seus hábitos com Hipnose",
+                title: it.journey === "ultimo_cigarro" ? "Enfraqueça" : "Transforme",
+                subtitle: it.journey === "ultimo_cigarro" ? "as crenças que te prendem" : "seus hábitos com Hipnose",
                 done: isFinished(interactionKey(it, "hypnosis")),
                 onClick: () => {
                   closeSheet();
@@ -501,7 +520,7 @@ export default function Jornada() {
                 done: missaoDone,
                 onClick: () => openMission(it),
               },
-              {
+              it.hasMural && {
                 key: "mural",
                 stepName: "Mural",
                 image: stepMuralImg,
@@ -523,7 +542,7 @@ export default function Jornada() {
             }
             return (
               <ThemeSheet title={it.habito_titulo} subtitle={it.subtitulo_habito}
-                imagemNome={it.imagem_nome} onClose={closeSheet}>
+                imagemNome={it.imagem_nome} blankImage={it.journey === "ultimo_cigarro"} onClose={closeSheet}>
                 <SheetOptions options={options} />
               </ThemeSheet>
             );
@@ -562,23 +581,11 @@ export default function Jornada() {
 
 /* ---------- Sub-components ---------- */
 
-const JOURNEYS: { id: JourneyId; title: string; subtitle: string }[] = [
-  {
-    id: "reducao",
-    title: "Enfraquecendo o vício",
-    subtitle: "Para quem quer reduzir os cigarros até decidir parar totalmente.",
-  },
-  {
-    id: "abstinencia",
-    title: "Superando a abstinência",
-    subtitle: "Para quem já parou de fumar e quer fortalecer a decisão e superar a vontade.",
-  },
-];
-
 function ThemeCard({
   title,
   subtitle,
   imagemNome,
+  blankImage = false,
   completed,
   isFocus,
   position,
@@ -587,6 +594,7 @@ function ThemeCard({
   title: string;
   subtitle: string | null;
   imagemNome: string | null;
+  blankImage?: boolean;
   completed: boolean;
   isFocus: boolean;
   position: number;
@@ -604,7 +612,11 @@ function ThemeCard({
     >
       <div className="p-2 pb-0">
         <div className="relative">
-          <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="aspect-[4/3] w-full" />
+          {blankImage ? (
+            <div aria-hidden className="aspect-[4/3] w-full rounded-xl bg-background" />
+          ) : (
+            <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="aspect-[4/3] w-full" />
+          )}
           <span
             aria-hidden
             className="absolute left-2 top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-white/75 px-1 text-sm font-semibold leading-none tabular-nums text-[hsl(var(--electric-blue))] opacity-90 backdrop-blur-[2px]"
@@ -810,6 +822,7 @@ function ThemeSheet({
   title,
   subtitle,
   imagemNome,
+  blankImage = false,
   onClose,
   onBack,
   children,
@@ -817,6 +830,7 @@ function ThemeSheet({
   title: string;
   subtitle: string | null;
   imagemNome: string | null;
+  blankImage?: boolean;
   onClose: () => void;
   onBack?: () => void;
   children: React.ReactNode;
@@ -844,7 +858,11 @@ function ThemeSheet({
               <ChevronLeft className="h-4 w-4" />
             </button>
           )}
-          <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="h-16 w-16" />
+          {blankImage ? (
+            <div aria-hidden className="h-16 w-16 shrink-0 rounded-xl bg-background" />
+          ) : (
+            <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="h-16 w-16" />
+          )}
           <div className="min-w-0 flex-1 pr-9">
             <h2 className="text-balance text-base font-bold leading-tight text-[hsl(var(--electric-blue))]">
               {title}

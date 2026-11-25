@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const SYSTEM_PROMPT = `Você é a IA do app Sopro Neuro, que usa o Método Sopro Neuro: uma jornada personalizada pelos gatilhos de cada pessoa, que combina neurociência, psicologia comportamental, hipnose e mudança de hábitos para ajudar pessoas a se libertarem do cigarro e do vape.
-IMPORTANTE: o app NÃO é mais um programa de 14 dias, NÃO tem fases de 7 dias, NÃO libera dias a cada 6 horas e NÃO tem "hipnose do dia X". Nunca fale em "dia X de 14", "Fase 1" ou "Fase 2". Se o usuário mencionar isso, explique com leveza que o app agora funciona por gatilhos, numa jornada personalizada.
+IMPORTANTE: o app NÃO é mais um programa de 14 dias, NÃO tem fases nem libera dias a cada 6 horas. Há jornadas personalizadas por gatilhos e uma jornada opcional "7 Dias para o Último Cigarro", com vídeo e hipnose por dia. Não confunda essa jornada intensiva com o antigo programa. Nunca fale em "dia X de 14", "Fase 1" ou "Fase 2".
 
 1. PAPEL E OBJETIVOS
 Você atua como uma presença acolhedora, uma guia estratégica e uma especialista em comportamento e vício, acompanhando o usuário durante a jornada de abstinência.
@@ -90,18 +90,19 @@ Os quatro passos do método (são a FILOSOFIA, não uma sequência rígida nem q
 3) Fazer o ritual do último cigarro: quando a pessoa decidir parar, transformar esse momento num marco consciente. É opcional e não tem data obrigatória.
 4) Sustentar a decisão com calma e confiança: lidar com a abstinência, seguir enfraquecendo gatilhos e fortalecer a identidade de quem não fuma.
 
-6.2 As duas jornadas
+6.2 As jornadas
 - Jornada de Redução: para quem ainda fuma e quer reduzir aos poucos até se sentir preparado para parar. Não precisa parar de imediato. Foco: entender gatilhos e crenças, trazer o automático para a consciência, enfraquecer associações, experimentar novas formas de viver situações, reduzir o consumo e ganhar confiança para decidir parar.
 - Jornada de Liberdade: para quem já parou e precisa de ajuda com a abstinência e para manter a decisão. Foco: lidar com a vontade de fumar e os sintomas de abstinência, enfraquecer gatilhos que continuam presentes, criar alternativas para situações de risco, fortalecer novos hábitos e a identidade de não fumante.
 - A Jornada de Liberdade NÃO é uma simples continuação da Redução: é adaptada à nova realidade e pode ser iniciada direto por quem chegou ao app já sem fumar.
+- 7 Dias para o Último Cigarro: jornada intensiva para enfraquecer o vício e ajudar a pessoa a conseguir parar em 7 dias. Tem sete cards, Dia 1 a Dia 7, em ordem. Cada dia tem só dois passos: 1) Vídeo — Entenda o que o vício faz; 2) Hipnose — Enfraqueça as crenças que te prendem. Não tem missão nem mural. O dia é concluído quando vídeo e hipnose são concluídos. Sete dias é o objetivo da jornada, nunca uma garantia de resultado ou motivo de culpa se a pessoa precisar de mais tempo.
 
 6.3 Onboarding e jornada personalizada
 Na conversa inicial de criação da conta, a pessoa escolheu os gatilhos que fazem parte da relação dela com o cigarro, escolheu a jornada (reduzir até parar = Redução; já parou = Liberdade) e informou o consumo de cigarros (usado nos indicadores de progresso). Com isso, o app montou uma jornada personalizada com os gatilhos dela. Duas pessoas podem ter jornadas diferentes (ex.: uma trabalha café e cigarro, outra ansiedade ou pausas no trabalho). Trabalha-se um gatilho de cada vez.
 
 6.4 Aba Jornada
-Mostra a sequência personalizada de gatilhos. O app sugere qual trabalhar agora, mas a pessoa é livre para escolher qualquer um. Há dois caminhos: pela Home (indica o gatilho atual) ou pela Aba Jornada (lista de gatilhos para escolher). A jornada NÃO é um calendário de dias ou semanas e NÃO tem ordem obrigatória.
+Mostra todas as jornadas em sequências de cards que deslizam para o lado: Redução, Liberdade e 7 Dias para o Último Cigarro. O app sugere qual trabalhar agora, mas a pessoa é livre para escolher qualquer card. As jornadas por gatilhos não são um calendário e não têm ordem obrigatória; o intensivo tem uma sequência sugerida de sete dias, sem bloqueio por tempo. Há dois caminhos: pela Home (indica o gatilho ou dia atual) ou pela Aba Jornadas.
 
-6.5 Ferramentas de cada gatilho: Hipnose, Missão e Mural
+6.5 Ferramentas das jornadas por gatilhos: Hipnose, Missão e Mural
 - Hipnose: experiência guiada de relaxamento, imaginação e sugestões, voltada para um gatilho. Ajuda a ensaiar mentalmente uma nova forma de viver aquela situação (ex.: imaginar o prazer do café sem precisar fumar).
 - Missão: exercício prático no dia a dia, para tirar o hábito do piloto automático e experimentar novas respostas (ex.: perceber o momento da vontade no café, notar o que se busca com o cigarro e aproveitar o café de outro jeito). Depois a pessoa conta ao Neo como foi.
 - Mural: espaço para compartilhar vivências, dificuldades, descobertas e conquistas sobre o gatilho, e perceber que não está sozinho.
@@ -113,7 +114,7 @@ Pílulas curtas (stories com imagens) sobre neurociência, fisiologia e comporta
 
 6.7 Home (aba central)
 Mostra o gatilho atual recomendado (sem impedir de escolher outro na Aba Jornada), o Neo, o Neo Explica e um botão de SOS com hipnose rápida para momentos de vontade forte.
-- As duas jornadas ficam juntas na Aba Jornada (primeiro Redução, depois Liberdade), com os temas em cards que deslizam para o lado; não existe botão para trocar de jornada. A pessoa pode abrir qualquer tema de qualquer jornada. A Home indica o primeiro tema ainda não concluído da última jornada em que a pessoa abriu um tema (no começo, a jornada escolhida no onboarding).
+- As três jornadas ficam juntas na Aba Jornadas (Redução, Liberdade e intensivo), com cards que deslizam para o lado; não existe botão para trocar de jornada. A Home indica o primeiro tema/dia ainda não concluído da última jornada escolhida (no começo, a jornada do onboarding). No intensivo, mostra Vídeo e Hipnose, sem missão nem mural. Escolher o intensivo não altera o gráfico de cigarros nem marca que a pessoa parou: isso depende dos registros e da data do ritual no Progresso.
 - Quando decidir parar: na Aba Progresso, no card "Ritual do último cigarro", a pessoa informa a data do último cigarro; a partir daí o Progresso conta os dias sem fumar. Não precisa concluir todos os gatilhos antes.
 
 6.8 Aba Progresso
@@ -281,6 +282,7 @@ function avg(nums: number[]): number | null {
 const JORNADA_LABEL: Record<string, string> = {
   reducao: "Jornada de Redução (ainda fuma, reduzindo até se sentir pronto para parar)",
   abstinencia: "Jornada de Liberdade (já parou, lidando com a abstinência)",
+  ultimo_cigarro: "7 Dias para o Último Cigarro (jornada intensiva com vídeo e hipnose em cada um dos sete dias)",
 };
 
 async function buildUserContext(userId: string): Promise<string> {
@@ -307,6 +309,7 @@ async function buildUserContext(userId: string): Promise<string> {
     logsRes,
     sessionsRes,
     feedbackRes,
+    lastChoiceRes,
   ] = await Promise.all([
     admin.from("profiles").select("display_name,created_at").eq("user_id", userId).maybeSingle(),
     admin
@@ -366,11 +369,12 @@ async function buildUserContext(userId: string): Promise<string> {
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(3),
+    admin.from("ultima_jornada_usuario").select("jornada").eq("user_id", userId).maybeSingle(),
   ]);
 
   for (const [name, r] of Object.entries({
     profileRes, onboardingRes, onboardingV2Res, histRes, statusRes, trackingRes,
-    missionRes, muralRes, explicaRes, logsRes, sessionsRes, feedbackRes,
+    missionRes, muralRes, explicaRes, logsRes, sessionsRes, feedbackRes, lastChoiceRes,
   })) {
     if ((r as any)?.error) console.error(`user context: ${name} failed`, (r as any).error.message);
   }
@@ -426,7 +430,7 @@ async function buildUserContext(userId: string): Promise<string> {
   }
 
   // --- Jornada atual e trocas
-  const jornadaAtual: string | null = hist[hist.length - 1]?.jornada ?? onbV2?.jornada_inicial ?? null;
+  const jornadaAtual: string | null = lastChoiceRes.data?.jornada ?? hist[hist.length - 1]?.jornada ?? onbV2?.jornada_inicial ?? null;
   if (jornadaAtual) lines.push(`- Jornada atual: ${JORNADA_LABEL[jornadaAtual] ?? jornadaAtual}`);
   const seq = [onbV2?.jornada_inicial, ...hist.map((h) => h.jornada)].filter(Boolean) as string[];
   const trocas: string[] = [];
@@ -444,7 +448,15 @@ async function buildUserContext(userId: string): Promise<string> {
   }
 
   // --- Gatilho atual
-  if (status?.jornada_concluida) {
+  if (jornadaAtual === "ultimo_cigarro") {
+    const isDone = (key: string) => tracking.some((t) => t.interaction_type === key && t.finished_at);
+    const completedDays = Array.from({ length: 7 }, (_, i) => i + 1).filter(
+      (day) => isDone(`ultimo_video_semana_${day}`) && isDone(`ultimo_hipnose_semana_${day}`),
+    );
+    const nextDay = Array.from({ length: 7 }, (_, i) => i + 1).find((day) => !completedDays.includes(day));
+    lines.push(`- Intensivo: ${completedDays.length} de 7 dias concluídos (vídeo + hipnose).`);
+    if (nextDay) lines.push(`- Próximo dia sugerido do intensivo: Dia ${nextDay}; vídeo ${isDone(`ultimo_video_semana_${nextDay}`) ? "feito" : "ainda não concluído"}, hipnose ${isDone(`ultimo_hipnose_semana_${nextDay}`) ? "feita" : "ainda não concluída"}. Não sugerir missão ou mural para esse dia.`);
+  } else if (status?.jornada_concluida) {
     lines.push(`- Concluiu todos os gatilhos da jornada atual`);
   } else if (status?.tema_atual) {
     const st = (v: string | null) =>

@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useJourneyTracking } from "@/hooks/useJourneyTracking";
 import { useJourneyChoice } from "@/hooks/useJourneyChoice";
 import { journeyPrefix, pickFocus, type JourneyId } from "@/lib/journeyFocus";
+import { getJourneyContentFlags, isJourneyContentCompleted, orderIntensiveDays } from "@/lib/journeys";
 
 export interface Foco {
   id: string;
@@ -22,11 +23,12 @@ export interface Foco {
   hasVideo: boolean;
   hasHipnose: boolean;
   hasMissao: boolean;
+  hasMural: boolean;
   isSelected: boolean;
   journey: JourneyId;
 }
 
-const TIPO: Record<JourneyId, string> = { reducao: "redução", abstinencia: "abstinência" };
+const TIPO: Record<JourneyId, string> = { reducao: "redução", abstinencia: "abstinência", ultimo_cigarro: "ultimo_cigarro" };
 
 /** Ordem dentro de cada jornada: fixos → escolhidos no onboarding → demais. */
 export function orderTemas(habitos: any[], selecionados: string[], journey: JourneyId): Foco[] {
@@ -62,9 +64,7 @@ export function orderTemas(habitos: any[], selecionados: string[], journey: Jour
     objetivo_chat_missao: h.objetivo_chat_missao ?? null,
     posicao: h.posicao != null ? Number(h.posicao) : null,
     tema_fixo: !!h.tema_fixo,
-    hasVideo: false,
-    hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
-    hasMissao: h.missao !== false,
+    ...getJourneyContentFlags(journey, h),
     isSelected,
     journey,
   });
@@ -79,7 +79,7 @@ export function orderTemas(habitos: any[], selecionados: string[], journey: Jour
 export const focoKey = (f: Foco, type: "hipnose" | "missao" | "missao_iniciada" | "video", index = 0) =>
   `${journeyPrefix(f.journey)}${type}_semana_${f.posicao ?? index + 1}`;
 
-/** Temas das duas jornadas (com seleção do onboarding). */
+/** Temas de todas as jornadas (com seleção do onboarding). */
 export function useAllJourneyTemas() {
   const { user } = useAuth();
   const { data, isLoading } = useQuery({
@@ -87,13 +87,15 @@ export function useAllJourneyTemas() {
     enabled: !!user?.id,
     staleTime: 5 * 60 * 1000,
     queryFn: async () => {
+      if (!user) throw new Error("Usuário não autenticado");
       const [hist, onb, habitosRes] = await Promise.all([
         (supabase as any).from("historico_jornada_usuario").select("habitos_selecionados")
-          .eq("user_id", user!.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+          .eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
         (supabase as any).from("onboarding_responses_v2").select("respostas")
-          .eq("user_id", user!.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
-        (supabase as any).from("habitos_jornada").select("*").in("tipo_usuario", [TIPO.reducao, TIPO.abstinencia]),
+          .eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+        (supabase as any).from("habitos_jornada").select("*").in("tipo_usuario", Object.values(TIPO)),
       ]);
+      if (habitosRes.error) throw habitosRes.error;
       const fromHist = Array.isArray(hist?.data?.habitos_selecionados) ? hist.data.habitos_selecionados : [];
       const fromOnb = Array.isArray(onb?.data?.respostas?.habitosSelecionados) ? onb.data.respostas.habitosSelecionados : [];
       const sel: string[] = (fromHist.length > 0 ? fromHist : fromOnb).filter((t: any) => typeof t === "string" && t.trim());
@@ -101,10 +103,11 @@ export function useAllJourneyTemas() {
       return {
         reducao: orderTemas(habitos.filter((h) => h.tipo_usuario === TIPO.reducao), sel, "reducao"),
         abstinencia: orderTemas(habitos.filter((h) => h.tipo_usuario === TIPO.abstinencia), sel, "abstinencia"),
+        ultimo_cigarro: orderTemas(orderIntensiveDays(habitos.filter((h) => h.tipo_usuario === TIPO.ultimo_cigarro)), [], "ultimo_cigarro"),
       } as Record<JourneyId, Foco[]>;
     },
   });
-  return { temas: data ?? { reducao: [], abstinencia: [] }, isLoading };
+  return { temas: data ?? { reducao: [], abstinencia: [], ultimo_cigarro: [] }, isLoading };
 }
 
 /** Tema indicado do dia (ver regra em src/lib/journeyFocus.ts). */
@@ -116,12 +119,11 @@ export function useJourneyFocos() {
   return useMemo(() => {
     const isDone = (type: string) =>
       !!trackingData?.some((t) => t.interaction_type === type && t.finished_at !== null);
-    const concluido = (f: Foco, i: number) => {
-      const checks: boolean[] = [];
-      if (f.hasHipnose) checks.push(isDone(focoKey(f, "hipnose", i)));
-      if (f.hasMissao) checks.push(isDone(focoKey(f, "missao", i)));
-      return checks.length > 0 && checks.every(Boolean);
-    };
+    const concluido = (f: Foco, i: number) => isJourneyContentCompleted(f, {
+      video: isDone(focoKey(f, "video", i)),
+      hipnose: isDone(focoKey(f, "hipnose", i)),
+      missao: isDone(focoKey(f, "missao", i)),
+    });
     const pick = pickFocus({
       temas,
       isDone: (_j, f, i) => concluido(f, i),

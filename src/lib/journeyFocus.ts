@@ -1,14 +1,17 @@
-export type JourneyId = "reducao" | "abstinencia";
+export const JOURNEY_IDS = ["reducao", "abstinencia", "ultimo_cigarro"] as const;
+export type JourneyId = typeof JOURNEY_IDS[number];
 
 /** Prefixo das chaves de progresso de cada jornada (journey_tracking). */
-export const journeyPrefix = (j: JourneyId) => (j === "abstinencia" ? "abst_" : "");
+export const journeyPrefix = (j: JourneyId) =>
+  j === "ultimo_cigarro" ? "ultimo_" : j === "abstinencia" ? "abst_" : "";
 
 /** Normaliza valores salvos ("abstinência", "liberdade", ...) para JourneyId. */
 export const toJourneyId = (raw: string | null | undefined): JourneyId =>
+  raw === "ultimo_cigarro" ? "ultimo_cigarro" :
   raw === "abstinencia" || raw === "abstinência" || raw === "liberdade" ? "abstinencia" : "reducao";
 
 export interface PickFocusInput<T> {
-  temas: Record<JourneyId, T[]>;
+  temas: Partial<Record<JourneyId, T[]>>;
   isDone: (journey: JourneyId, tema: T, index: number) => boolean;
   onboardingJourney: JourneyId;
   lastChosenJourney?: JourneyId | null;
@@ -17,12 +20,11 @@ export interface PickFocusInput<T> {
 /**
  * Tema indicado no Dash: primeiro tema não concluído da última jornada que a
  * pessoa escolheu (ou da jornada do onboarding, se nunca escolheu outra).
- * Se essa jornada estiver toda concluída, cai para a outra.
+ * Se essa jornada estiver toda concluída, procura nas demais.
  */
 export function pickFocus<T>({ temas, isDone, onboardingJourney, lastChosenJourney }: PickFocusInput<T>) {
   const preferred = lastChosenJourney ?? onboardingJourney;
-  const other: JourneyId = preferred === "reducao" ? "abstinencia" : "reducao";
-  for (const journey of [preferred, other]) {
+  for (const journey of [preferred, ...JOURNEY_IDS.filter((j) => j !== preferred)]) {
     const list = temas[journey] ?? [];
     const index = list.findIndex((t, i) => !isDone(journey, t, i));
     if (index !== -1) return { journey, tema: list[index], index };

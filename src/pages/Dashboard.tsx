@@ -69,6 +69,7 @@ import MediaPlayer from "@/components/MediaPlayer";
 import stepHipnoseImg from "@/assets/step-hipnose.webp";
 import stepMissaoImg from "@/assets/step-missao.webp";
 import stepMuralImg from "@/assets/step-mural.webp";
+import stepVideoImg from "@/assets/step-video.png";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import WaveBackground from "@/components/home/WaveBackground";
 import NeoBlock from "@/components/home/NeoBlock";
@@ -92,6 +93,7 @@ import MissionDialog from "@/components/MissionDialog";
 import { getMissionCopy, shouldOpenMissionAfterHypnosis } from "@/lib/mission";
 import { useJourneyFocos, type Foco } from "@/hooks/useJourneyFocos";
 import { journeyPrefix } from "@/lib/journeyFocus";
+import { journeyVideoBucket } from "@/lib/journeys";
 import { shouldAskYesterday } from "@/lib/progressMode";
 import { performLogout } from "@/lib/logout";
 import { computePotential } from "@/lib/potential";
@@ -192,7 +194,8 @@ export default function Dashboard() {
     focosConcluidos,
     journey: focoJourney,
   } = useJourneyFocos();
-  const jornadaType = focoJourney === "abstinencia" ? "abstinência" : "redução";
+  const isIntensive = focoJourney === "ultimo_cigarro";
+  const jornadaType = isIntensive ? "ultimo_cigarro" : focoJourney === "abstinencia" ? "abstinência" : "redução";
 
   const { gancho, sugestoes } = useChatPrompts(jornadaType === "abstinência");
   const { needsReview, revisao } = useJourneyReview(jornadaType);
@@ -239,10 +242,11 @@ export default function Dashboard() {
   const explicacaoDesafio: string =
     (gatilho as any)?.explicacao_missao ||
     "Observe esse hábito nos próximos dias: em quais momentos ele aparece, o que você sente antes e o que muda depois. Anote mentalmente os padrões para conversarmos sobre sua experiência.";
-  // Os temas não têm mais vídeo: só hipnose, missão e mural.
-  const hasVideo = false;
+  // O intensivo tem vídeo + hipnose; os gatilhos mantêm hipnose + missão + mural.
+  const hasVideo = gatilho?.hasVideo ?? false;
   const hasHipnose: boolean = (gatilho as any)?.hasHipnose ?? true;
   const hasMissao: boolean = (gatilho as any)?.hasMissao ?? true;
+  const hasMural = gatilho?.hasMural ?? !isIntensive;
 
   // Keep interaction keys unique per journey type so completions in "redução"
   // don't count as done in "abstinência" (and vice-versa).
@@ -264,7 +268,7 @@ export default function Dashboard() {
   const focoTituloParaMural: string | null = (gatilho as any)?.habito_titulo ?? null;
   const { data: weeklyMuralDone = false } = useQuery({
     queryKey: ["mural-own-post", user?.id, focoTituloParaMural],
-    enabled: !!user?.id && !!focoTituloParaMural,
+    enabled: !!user?.id && !!focoTituloParaMural && hasMural,
     queryFn: async () => {
       const { count, error } = await (supabase as any)
         .from("mural_posts")
@@ -474,7 +478,7 @@ export default function Dashboard() {
   // videos_2 / hipnoses_2, usando o nome de arquivo definido nas colunas
   // habitos_jornada.video_nome / habitos_jornada.hipnose_nome.
   const getMediaUrl = async (type: "video" | "hypnosis") => {
-    const bucket = type === "video" ? "videos_2" : "hipnoses_2";
+    const bucket = type === "video" ? journeyVideoBucket(focoJourney) : "hipnoses_2";
     const fileName =
       type === "video"
         ? ((gatilho as any)?.video_nome as string | null)
@@ -739,14 +743,26 @@ export default function Dashboard() {
           focoAtualNumero={focoAtualNumero}
           totalFocos={totalFocos}
           focosConcluidos={focosConcluidos}
+          focusKind={isIntensive ? "Dia" : "Gatilho"}
           onOpenJornada={() => navigate("/jornada")}
-          onOpenMetodo={metodoImagem(isAbstinencia ? "liberdade" : "reducao") ? () => setMetodoOpen(true) : undefined}
+          onOpenMetodo={!isIntensive && metodoImagem(isAbstinencia ? "liberdade" : "reducao") ? () => setMetodoOpen(true) : undefined}
           steps={([
+            hasVideo && {
+              key: "video",
+              label: "Vídeo",
+              verb: "Entenda",
+              rest: "o que o vício faz",
+              image: stepVideoImg,
+              icon: Play,
+              done: weeklyVideoDone,
+              onClick: () => openMedia("video"),
+              actionLabel: "Continuar com o vídeo",
+            },
             hasHipnose && {
               key: "hipnose",
               label: "Hipnose",
-              verb: "Transforme",
-              rest: "",
+              verb: isIntensive ? "Enfraqueça" : "Transforme",
+              rest: isIntensive ? "as crenças que te prendem" : "",
               image: stepHipnoseImg,
               icon: Headphones,
               done: weeklyHipnoseDone,
@@ -764,7 +780,7 @@ export default function Dashboard() {
               onClick: () => openMissionDialog(),
               actionLabel: "Continuar com a missão",
             },
-            {
+            hasMural && {
               key: "mural",
               label: "Mural",
               verb: "Compartilhe",

@@ -6,7 +6,7 @@ import { toJourneyId, type JourneyId } from "@/lib/journeyFocus";
 
 /**
  * Jornada do onboarding + última jornada em que a pessoa abriu um tema.
- * As duas jornadas ficam sempre disponíveis; isso só decide o tema indicado.
+ * Todas as jornadas ficam disponíveis; isso só decide o tema indicado.
  */
 export function useJourneyChoice() {
   const { user } = useAuth();
