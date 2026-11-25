@@ -421,11 +421,15 @@ export default function Jornada() {
               .map((it, idx) => ({ it, idx }))
               .filter(({ it }) => it.journey === j.id);
             if (list.length === 0) return null;
+            const concluidos = list.filter(({ it }) => itemCompleted(it)).length;
             return (
               <section key={j.id} className="mt-6">
                 <div>
-                  <h2 className="text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] text-balance">
-                    {j.title}
+                  <h2 className="flex items-center gap-2 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] text-balance">
+                    <span className="shrink-0 rounded-full bg-lilac-soft px-2.5 py-0.5 text-sm font-bold tabular-nums text-[hsl(var(--electric-blue))]">
+                      {concluidos}/{list.length}
+                    </span>
+                    <span className="text-balance">{j.title}</span>
                   </h2>
                   <p className="mt-0.5 text-sm font-medium leading-snug text-muted-foreground text-balance">
                     {j.subtitle}
