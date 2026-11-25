@@ -78,7 +78,6 @@ import PageLoader from "@/components/home/PageLoader";
 import { getStartHereVideoUrl, startHereKeyForJornada } from "@/lib/startHereVideo";
 import SmokingLogDialog from "@/components/SmokingLogDialog";
 import NeoExplicaCard from "@/components/home/NeoExplicaCard";
-import AbstinenceExtras from "@/components/home/AbstinenceExtras";
 import SosThinBlock from "@/components/home/SosThinBlock";
 import FocoAtualCard, { type FocoStep } from "@/components/home/FocoAtualCard";
 import MetodoExplicacao, { metodoImagem } from "@/components/home/MetodoExplicacao";
@@ -92,6 +91,8 @@ import { useJourneyReview } from "@/hooks/useJourneyReview";
 import MissionDialog from "@/components/MissionDialog";
 import { getMissionCopy, shouldOpenMissionAfterHypnosis } from "@/lib/mission";
 import { useJourneyFocos, type Foco } from "@/hooks/useJourneyFocos";
+import { journeyPrefix } from "@/lib/journeyFocus";
+import { shouldAskYesterday } from "@/lib/progressMode";
 import { performLogout } from "@/lib/logout";
 import { computePotential } from "@/lib/potential";
 
@@ -119,7 +120,7 @@ export default function Dashboard() {
     updateProgress,
     isLoading: trackingLoading,
   } = useJourneyTracking();
-  const { data: onboarding, refetch: refetchOnboarding } = useOnboardingData();
+  const { data: onboarding, isLoading: onboardingLoading, refetch: refetchOnboarding } = useOnboardingData();
   const { loading: subLoading, isPremium, isExpired } = useSubscription();
   const { isFreelist, loading: freelistLoading } = useIsFreelist();
   const { hasContentAccess, ensureContentAccess } = useContentAccess();
@@ -183,34 +184,15 @@ export default function Dashboard() {
     cancelDailySmokingReminder();
   }, [user]);
 
-  // Determine journey type (redução/abstinência) — latest historico wins,
-  // then onboarding v2, then default to "reducao".
-  const { data: jornadaType } = useQuery({
-    queryKey: ["jornada-type", user?.id],
-    enabled: !!user?.id,
-    staleTime: 5 * 60 * 1000,
-    queryFn: async () => {
-      const [hist, onb] = await Promise.all([
-        (supabase as any)
-          .from("historico_jornada_usuario")
-          .select("jornada")
-          .eq("user_id", user!.id)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-        (supabase as any)
-          .from("onboarding_responses_v2")
-          .select("jornada_inicial")
-          .eq("user_id", user!.id)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-      ]);
-      const raw =
-        hist?.data?.jornada ?? onb?.data?.jornada_inicial ?? "reducao";
-      return raw === "abstinencia" ? "abstinência" : "redução";
-    },
-  });
+  // As duas jornadas ficam abertas; a "jornada atual" é a do tema indicado.
+  const {
+    focoAtual,
+    focoAtualNumero,
+    totalFocos,
+    focosConcluidos,
+    journey: focoJourney,
+  } = useJourneyFocos();
+  const jornadaType = focoJourney === "abstinencia" ? "abstinência" : "redução";
 
   const { gancho, sugestoes } = useChatPrompts(jornadaType === "abstinência");
   const { needsReview, revisao } = useJourneyReview(jornadaType);
@@ -225,17 +207,20 @@ export default function Dashboard() {
   // (only if they haven't logged it yet). For users on the abstinência
   // journey, we auto-fill 0 silently — they can still edit it later on
   // the Progresso tab.
+  // Popup de cigarros de ontem: só para quem não tem data do ritual do último
+  // cigarro. Quem já tem a data recebe 0 automático (pode editar no Progresso).
   useEffect(() => {
-    if (!user || authLoading || smokingLogsLoading) return;
+    if (!user || authLoading || smokingLogsLoading || onboardingLoading) return;
     const alreadyLogged = smokingLogs.some((l) => l.log_date === yesterdayStr());
     if (alreadyLogged) return;
+    const ritualDate = (onboarding?.last_cigarette_date as string | null | undefined) ?? null;
 
-    if (jornadaType === "abstinência") {
-      upsertSmokingLog({ logDate: yesterdayStr(), count: 0 }).catch(() => {});
+    if (!shouldAskYesterday(ritualDate)) {
+      if (ritualDate && yesterdayStr() >= String(ritualDate).slice(0, 10)) {
+        upsertSmokingLog({ logDate: yesterdayStr(), count: 0 }).catch(() => {});
+      }
       return;
     }
-
-    if (!jornadaType) return;
 
     const key = `smoking_prompt_shown_${user.id}_${yesterdayStr()}`;
     if (sessionStorage.getItem(key)) return;
@@ -244,16 +229,8 @@ export default function Dashboard() {
       sessionStorage.setItem(key, "1");
     }, 1200);
     return () => clearTimeout(t);
-  }, [user, authLoading, smokingLogsLoading, smokingLogs, jornadaType, upsertSmokingLog]);
+  }, [user, authLoading, smokingLogsLoading, onboardingLoading, onboarding?.last_cigarette_date, smokingLogs, upsertSmokingLog]);
 
-  // Foco atual: calculado dinamicamente a partir de habitos_jornada, então
-  // novos temas inseridos na tabela entram no app sem nova versão.
-  const {
-    focoAtual,
-    focoAtualNumero,
-    totalFocos,
-    focosConcluidos,
-  } = useJourneyFocos(jornadaType);
   const gatilho = focoAtual;
 
   const posicao = (gatilho as any)?.posicao ?? focoAtualNumero ?? 1;
@@ -269,7 +246,7 @@ export default function Dashboard() {
 
   // Keep interaction keys unique per journey type so completions in "redução"
   // don't count as done in "abstinência" (and vice-versa).
-  const journeyKey = jornadaType === "abstinência" ? "abst_" : "";
+  const journeyKey = journeyPrefix(focoJourney);
   const videoInteraction = `${journeyKey}video_semana_${posicao}`;
   const hipnoseInteraction = `${journeyKey}hipnose_semana_${posicao}`;
   const missaoInteraction = `${journeyKey}missao_semana_${posicao}`;
@@ -608,9 +585,10 @@ export default function Dashboard() {
   const isAbstinencia = jornadaType === "abstinência";
   // Na jornada de redução o convite para marcar o último cigarro fica sempre visível,
   // mesmo que exista uma data antiga (por exemplo, quem voltou a fumar).
-  const showQuitCTA = !isAbstinencia;
+  // A entrada para o ritual do último cigarro fica na aba Progresso.
+  const showQuitCTA = false;
   // Bloqueio: abstinência sem data do último cigarro precisa escolher antes de acessar a jornada.
-  const abstinenciaBloqueada = isAbstinencia && !lastCigDate;
+  const abstinenciaBloqueada = false;
 
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-32">
@@ -801,7 +779,7 @@ export default function Dashboard() {
         />
 
         {/* SOS fino — logo após o Foco atual (jornada de abstinência) */}
-        {isAbstinencia && <SosThinBlock />}
+        <SosThinBlock />
 
         {/* Bloco da IA: Neo à esquerda, perguntas sugeridas à direita */}
         <NeoBlock
@@ -887,7 +865,6 @@ export default function Dashboard() {
               </button>
             </div>
           )}
-        {isAbstinencia && <AbstinenceExtras mode="return" />}
         {/* CTA — Decidir parar de fumar */}
         {showQuitCTA && !showQuitDatePicker && (
           <Card className="mt-6 p-3.5 bg-white/70 border-0 rounded-2xl shadow-primary">

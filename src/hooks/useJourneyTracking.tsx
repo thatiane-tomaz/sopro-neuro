@@ -20,33 +20,9 @@ export const useJourneyTracking = () => {
   const queryClient = useQueryClient();
   const { award } = useBrainSparks();
 
-  // Start date of the CURRENT journey (last row on historico_jornada_usuario).
-  // Progress made before this date belongs to a previous journey and must be
-  // ignored (ex.: user returned from "liberdade" to "redução").
-  const { data: journeyStart } = useQuery({
-    queryKey: ['journey-start', user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data, error } = await supabase
-        .from('historico_jornada_usuario')
-        .select('created_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (error) {
-        console.error('Error fetching journey start:', error);
-        return null;
-      }
-      return (data?.created_at as string | undefined) ?? null;
-    },
-    enabled: !!user?.id,
-    staleTime: 2 * 60 * 1000,
-  });
-
   // Fetch all tracking data for the user
   const { data: trackingData, isLoading } = useQuery({
-    queryKey: ['journey-tracking', user?.id, journeyStart],
+    queryKey: ['journey-tracking', user?.id],
     queryFn: async () => {
       if (!user) return [];
       
@@ -61,24 +37,14 @@ export const useJourneyTracking = () => {
           console.error('Error fetching journey tracking:', error);
           return [];
         }
-        const rows = (data || []) as JourneyTrack[];
-        if (!journeyStart) return rows;
-        const startMs = new Date(journeyStart).getTime();
-        // Only journey content (semanas/missões) is reset on a journey change.
-        // Extras (SOS, gatilhos, "comece aqui") keep their history.
-        const isJourneyContent = (type: string) =>
-          /_semana_\d+$/.test(type) || /_dia_\d+$/.test(type);
-        return rows.filter((t) => {
-          if (!isJourneyContent(t.interaction_type)) return true;
-          const ref = new Date(t.finished_at ?? t.started_at ?? t.created_at).getTime();
-          return ref >= startMs;
-        });
+        // As duas jornadas ficam abertas ao mesmo tempo: o progresso nunca é zerado.
+        return (data || []) as JourneyTrack[];
       } catch (error) {
         console.error('Error in journey tracking query:', error);
         return [];
       }
     },
-    enabled: !!user?.id && journeyStart !== undefined,
+    enabled: !!user?.id,
     staleTime: 2 * 60 * 1000,
     gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: true, // Refetch when user returns to app

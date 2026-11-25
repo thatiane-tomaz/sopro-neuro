@@ -45,6 +45,9 @@ import stepHipnoseImg from "@/assets/step-hipnose.webp";
 import stepMissaoImg from "@/assets/step-missao.webp";
 import stepMuralImg from "@/assets/step-mural.webp";
 import { performLogout } from "@/lib/logout";
+import { useAllJourneyTemas, useJourneyFocos } from "@/hooks/useJourneyFocos";
+import { useJourneyChoice } from "@/hooks/useJourneyChoice";
+import { journeyPrefix, type JourneyId } from "@/lib/journeyFocus";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -73,6 +76,7 @@ type JornadaItem = {
   hasHipnose: boolean;
   isIntro: boolean;
   isSelected: boolean;
+  journey: JourneyId;
 };
 
 type SheetTarget =
@@ -112,226 +116,49 @@ export default function Jornada() {
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
 
-  // ---- Load latest jornada type from historico (source of truth) ----
-  const { data: historicoJornada, isLoading: histLoading } = useQuery({
-    queryKey: ["historico-jornada", user?.id],
-    enabled: !!user?.id,
-    staleTime: 5 * 60 * 1000,
-    queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("historico_jornada_usuario")
-        .select("jornada, created_at, habitos_selecionados")
-        .eq("user_id", user!.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (error) {
-        console.error("historico jornada error", error);
-        return null;
-      }
-      return data as {
-        jornada: string;
-        created_at: string;
-        habitos_selecionados: string[] | null;
-      } | null;
-    },
-  });
-
-  // ---- Load user's onboarding (habits chosen + jornada) ----
-  const { data: onboardingV2, isLoading: onbLoading } = useQuery({
-    queryKey: ["onboarding-v2-jornada", user?.id],
-    enabled: !!user?.id,
-    staleTime: 5 * 60 * 1000,
-    queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("onboarding_responses_v2")
-        .select("respostas, jornada_inicial")
-        .eq("user_id", user!.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (error) {
-        console.error("onboarding v2 error", error);
-        return null;
-      }
-      return data as { respostas: any; jornada_inicial: string } | null;
-    },
-  });
-
-  // Priority: latest historico entry → onboarding v2 initial → default "reducao".
-  const jornadaRaw =
-    historicoJornada?.jornada ?? onboardingV2?.jornada_inicial ?? "reducao";
-  const tipoUsuario = JORNADA_MAP[jornadaRaw] ?? "redução";
-  const habitosSelecionados: string[] = useMemo(
-    () => {
-      // If the user returned to redução via the AI chat, the latest historico entry
-      // carries the AI-selected habit titles — those take precedence.
-      if (Array.isArray(historicoJornada?.habitos_selecionados) && historicoJornada!.habitos_selecionados!.length > 0) {
-        return historicoJornada!.habitos_selecionados as string[];
-      }
-      return Array.isArray(onboardingV2?.respostas?.habitosSelecionados)
-        ? (onboardingV2!.respostas.habitosSelecionados as string[])
-        : [];
-    },
-    [onboardingV2, historicoJornada],
+  // As duas jornadas aparecem juntas: primeiro Redução, depois Liberdade.
+  const { temas, isLoading: temasLoading } = useAllJourneyTemas();
+  const { chooseJourney } = useJourneyChoice();
+  const { focoAtual } = useJourneyFocos();
+  const items = useMemo<JornadaItem[]>(
+    () =>
+      (["reducao", "abstinencia"] as JourneyId[]).flatMap((j) =>
+        temas[j].map((f, i) => ({
+          id: f.id,
+          seq: i + 1,
+          habito_titulo: f.habito_titulo,
+          subtitulo_habito: f.subtitulo_habito,
+          hasMissao: f.hasMissao,
+          posicao_original: f.posicao,
+          video_nome: f.video_nome,
+          hipnose_nome: f.hipnose_nome,
+          imagem_nome: f.imagem_nome,
+          explicacao_missao: f.explicacao_missao,
+          missao_principal: f.missao_principal,
+          missao_secundaria: f.missao_secundaria,
+          objetivo_chat_missao: f.objetivo_chat_missao,
+          hasVideo: false,
+          hasHipnose: f.hasHipnose,
+          isIntro: f.tema_fixo,
+          isSelected: f.isSelected,
+          journey: j,
+        })),
+      ),
+    [temas],
   );
-
-  // ---- Load habitos_jornada for this journey type ----
-  const { data: allHabitos, isLoading: habitosLoading } = useQuery({
-    queryKey: ["habitos-jornada", tipoUsuario],
-    enabled: !!tipoUsuario,
-    staleTime: 10 * 60 * 1000,
-    queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("habitos_jornada")
-        .select("*")
-        .eq("tipo_usuario", tipoUsuario);
-      if (error) {
-        console.error("habitos error", error);
-        return [];
-      }
-      return (data as any[]) || [];
-    },
-  });
-
-  // ---- Build ordered list ----
-  const items = useMemo<JornadaItem[]>(() => {
-    if (!allHabitos || allHabitos.length === 0) return [];
-    // Fixed themes appear for every user, ordered by posicao
-    const fixed = allHabitos
-      .filter((h) => h.tema_fixo === true)
-      .sort((a, b) => {
-        const pa = a.posicao != null ? Number(a.posicao) : Infinity;
-        const pb = b.posicao != null ? Number(b.posicao) : Infinity;
-        return pa - pb;
-      });
-    const fixedIds = new Set(fixed.map((h) => h.id));
-    const byTitle = new Map<string, any>();
-    allHabitos.forEach((h) => byTitle.set(h.habito_titulo, h));
-
-    // Selected habits (user chose in onboarding), dedup, exclude fixed
-    const seen = new Set<string>();
-    const selected: any[] = [];
-    habitosSelecionados.forEach((t) => {
-      if (seen.has(t)) return;
-      const h = byTitle.get(t);
-      if (h && !fixedIds.has(h.id)) {
-        selected.push(h);
-        seen.add(t);
-      }
-    });
-
-    // Sort selected: numeric posicao asc first, nulls preserve user's selection order
-    selected.sort((a, b) => {
-      const pa = a.posicao != null ? Number(a.posicao) : Infinity;
-      const pb = b.posicao != null ? Number(b.posicao) : Infinity;
-      if (pa !== pb) return pa - pb;
-      return 0;
-    });
-
-    // A jornada mostra APENAS os temas fixos + os gatilhos que o usuário
-    // escolheu no onboarding. Temas não escolhidos não entram na jornada
-    // (antes apareciam como "futuros" e pareciam gatilhos atribuídos pela IA).
-    const ordered = [...fixed, ...selected];
-
-    return ordered.map((h, idx) => ({
-      id: h.id,
-      seq: idx + 1,
-      habito_titulo: h.habito_titulo,
-      subtitulo_habito: h.subtitulo_habito?.trim() || null,
-      posicao_original: h.posicao != null ? Number(h.posicao) : null,
-      video_nome: h.video_nome ?? null,
-      hipnose_nome: h.hipnose_nome ?? null,
-      imagem_nome: h.imagem_nome ?? null,
-      explicacao_missao: h.explicacao_missao?.trim() || null,
-      missao_principal: h.missao_principal ?? null,
-      missao_secundaria: h.missao_secundaria ?? null,
-      objetivo_chat_missao: h.objetivo_chat_missao ?? null,
-      // Os temas não têm mais vídeo (Transforme, Experimente e Compartilhe).
-      hasVideo: false,
-      hasHipnose: h.hipnose !== false && !!h.hipnose_nome?.trim(),
-      hasMissao: h.missao !== false,
-      isIntro: fixedIds.has(h.id),
-      isSelected: true,
-    }));
-  }, [allHabitos, habitosSelecionados]);
 
   // ---- Progress helpers ----
   const isFinished = (interactionType: string) =>
     !!trackingData?.some((t) => t.interaction_type === interactionType && t.finished_at !== null);
 
-  // Chaves de progresso compartilhadas com o Dashboard: prefixo da jornada +
-  // posição original do tema em habitos_jornada (estável, não muda se o
-  // usuário alterar os hábitos selecionados).
-  const journeyKey = tipoUsuario === "abstinência" ? "abst_" : "";
+  // Chaves de progresso compartilhadas com o Dashboard: prefixo da jornada do
+  // tema + posição original do tema em habitos_jornada.
   const interactionKey = (it: JornadaItem, type: "video" | "hypnosis") => {
     const pos = it.posicao_original ?? it.seq;
+    const journeyKey = journeyPrefix(it.journey);
     return type === "video"
       ? `${journeyKey}video_semana_${pos}`
       : `${journeyKey}hipnose_semana_${pos}`;
-  };
-
-  // ---- Hipnoses da jornada de redução (liberadas para quem está na abstinência) ----
-  const isAbstinencia = tipoUsuario === "abstinência";
-  const { data: temasReducao } = useQuery({
-    queryKey: ["hipnoses-reducao-extra"],
-    enabled: isAbstinencia,
-    staleTime: 10 * 60 * 1000,
-    queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from("habitos_jornada")
-        .select("id,habito_titulo,subtitulo_habito,video_nome,video,hipnose_nome,hipnose,posicao,imagem_nome")
-        .eq("tipo_usuario", "redução");
-      if (error) {
-        console.error("hipnoses reducao error", error);
-        return [];
-      }
-      return ((data as any[]) || [])
-        .sort((a, b) => {
-          const pa = a.posicao != null ? Number(a.posicao) : Infinity;
-          const pb = b.posicao != null ? Number(b.posicao) : Infinity;
-          if (pa !== pb) return pa - pb;
-          return String(a.habito_titulo).localeCompare(String(b.habito_titulo), "pt-BR");
-        });
-    },
-  });
-
-  const openMediaReducao = async (h: any, type: "video" | "hypnosis") => {
-    const bucket = type === "video" ? "videos_2" : "hipnoses_2";
-    const fileName = type === "video" ? h.video_nome : h.hipnose_nome;
-    if (!fileName) {
-      toast({
-        title: "Conteúdo em preparação",
-        description:
-          type === "video"
-            ? "O vídeo deste tema ainda será disponibilizado."
-            : "A hipnose deste tema ainda será disponibilizada.",
-      });
-      return;
-    }
-    const signedUrl = await getSignedMediaUrl(bucket, fileName, type, type === "video" ? ["videos"] : ["hypnosis"]);
-    if (!signedUrl) {
-      toast({
-        title: "Conteúdo em preparação",
-        description: "Este conteúdo ainda será disponibilizado.",
-      });
-      return;
-    }
-    const interactionType =
-      type === "video" ? `video_apoio_${h.id}` : `hipnose_apoio_${h.id}`;
-    setSelectedMedia({
-      title: h.habito_titulo,
-      fileUrl: signedUrl,
-      contentType: type,
-      day: 0,
-      interactionType,
-    });
-    try {
-      const r = await startTracking({ interactionType });
-      if (r?.id) setTrackingId(r.id);
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   // Vídeo "Comece aqui" (bucket videos_2 -> comece_reducao)
@@ -393,6 +220,7 @@ export default function Jornada() {
 
   const missaoKeys = (it: JornadaItem) => {
     const pos = it.posicao_original ?? it.seq;
+    const journeyKey = journeyPrefix(it.journey);
     return {
       done: `${journeyKey}missao_semana_${pos}`,
       start: `${journeyKey}missao_iniciada_semana_${pos}`,
@@ -408,6 +236,7 @@ export default function Jornada() {
       })
     )
       return;
+    void chooseJourney(it.journey);
     setSheetView("mission");
     const keys = missaoKeys(it);
     if (!trackingData?.some((t) => t.interaction_type === keys.start)) {
@@ -454,6 +283,7 @@ export default function Jornada() {
         ? { kind: "explicacao" as const, id: videoSampleId(it.video_nome) }
         : { kind: "hipnose" as const, id: hypnosisSampleId(it.hipnose_nome) };
     if (!ensureContentAccess({ source: type, sample })) return;
+    void chooseJourney(it.journey);
     if (!canOpen(idx)) {
       toast({
         title: "Tema bloqueado",
@@ -526,15 +356,12 @@ export default function Jornada() {
     trackingLoading ||
     subLoading ||
     freelistLoading ||
-    onbLoading ||
-    histLoading ||
-    habitosLoading
+    temasLoading
   ) {
     return <PageLoader />;
   }
   if (!user) return <Navigate to="/login" replace />;
 
-  const totalDone = items.filter((_, i) => statusForIndex(i) === "completed").length;
 
   return (
     <div className="relative min-h-screen overflow-x-hidden pb-32">
@@ -575,104 +402,57 @@ export default function Jornada() {
         </header>
 
         {/* Page title */}
-        <div className="mt-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
-              {isAbstinencia ? "Sua jornada de Liberdade" : "Sua jornada de Redução"}
-            </h1>
-            <p className="text-sm font-medium leading-snug text-muted-foreground mt-1 text-balance">
-              {isAbstinencia
-                ? "Aprenda a lidar com a vontade de fumar, supere antigos gatilhos e fortaleça sua vida sem cigarro."
-                : "Enfraqueça os hábitos e crenças que te prendem ao cigarro. Prepare-se para parar no seu tempo."}
-            </p>
-          </div>
+        <div className="mt-6">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
+            Suas jornadas
+          </h1>
+          <p className="text-sm font-medium leading-snug text-muted-foreground mt-1 text-balance">
+            Escolha qualquer tema, no seu tempo. Deslize para o lado para ver todos.
+          </p>
         </div>
 
-        {/* Progress chip */}
-        {items.length > 0 && (
-          <div className="mt-4 rounded-2xl bg-white/85 backdrop-blur ring-1 ring-black/[0.04] shadow-[0_10px_30px_-16px_hsl(230_60%_40%/0.25)] px-4 py-3 flex items-center gap-3">
-            <div className="h-9 w-9 rounded-2xl bg-[hsl(220_85%_96%)] flex items-center justify-center text-[hsl(230_85%_55%)]">
-              <Sparkles className="h-4 w-4" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-foreground leading-tight">
-                {totalDone} de {items.length} temas concluídos
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Themes list */}
-        <section className="mt-5 -mx-2 rounded-3xl bg-white/85 backdrop-blur-md border-0 shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] px-3 py-3">
-          {items.length === 0 ? (
-            <div className="py-10 text-center">
-              <p className="text-sm font-medium text-muted-foreground">
-                Complete o onboarding para ver seus temas.
-              </p>
-            </div>
-          ) : (
-            (() => {
-              const focusIndex = items.findIndex((_, i) => statusForIndex(i) !== "completed");
-              const labelFor = (i: number) => {
-                if (i === 0 && focusIndex !== 0) return "Já trabalhados";
-                if (focusIndex !== -1 && i === focusIndex + 1) return "Próximos temas da sua jornada";
-                return null;
-              };
-              return items.map((it, i) => (
-                <ThemeRow
-                  key={it.id}
-                  isFirst={i === 0}
-                  isLast={i === items.length - 1}
-                  label={labelFor(i)}
-                  nextHasLabel={!!labelFor(i + 1)}
-                  seq={it.seq}
-                  title={it.habito_titulo}
-                  subtitle={it.subtitulo_habito}
-                  imagemNome={it.imagem_nome}
-                  isIntro={it.isIntro}
-                  status={statusForIndex(i)}
-                  isFocus={i === focusIndex}
-                  onOpen={() => openSheet({ kind: "journey", idx: i })}
-                />
-              ));
-            })()
-          )}
-        </section>
-
-        {/* Hipnoses da redução liberadas para quem está na abstinência */}
-        {isAbstinencia && (temasReducao?.length ?? 0) > 0 && (
-          <section className="mt-5 rounded-3xl bg-white/85 backdrop-blur-md shadow-[0_18px_50px_-18px_hsl(230_60%_40%/0.22)] ring-1 ring-black/[0.03] p-4">
-            <div className="inline-flex items-center gap-1.5">
-              <Sparkles className="h-3 w-3 flex-shrink-0 text-[hsl(258_65%_52%)]" />
-              <span className="text-sm font-bold tracking-[0.14em] uppercase text-[hsl(258_60%_45%)]">
-                Extras
-              </span>
-            </div>
-            <h2 className="mt-1 text-lg font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(258_70%_55%)] bg-clip-text text-transparent leading-tight">
-              Hipnoses de Apoio
-            </h2>
-
-            <div className="mt-3 pt-1 border-t border-[hsl(220_30%_94%)]">
-              {(temasReducao ?? []).map((h: any, i: number) => (
-                <ThemeRow
-                  key={h.id}
-                  isFirst={i === 0}
-                  isLast={i === (temasReducao?.length ?? 0) - 1}
-                  seq={i + 1}
-                  title={h.habito_titulo}
-                  subtitle={h.subtitulo_habito ?? null}
-                  imagemNome={h.imagem_nome ?? null}
-                  isIntro={false}
-                  status={
-                    isFinished(`video_apoio_${h.id}`) || isFinished(`hipnose_apoio_${h.id}`)
-                      ? "completed"
-                      : "current"
-                  }
-                  onOpen={() => openSheet({ kind: "extra", h })}
-                />
-              ))}
-            </div>
-          </section>
+        {items.length === 0 ? (
+          <p className="mt-8 text-center text-sm font-medium text-muted-foreground">
+            Complete o onboarding para ver seus temas.
+          </p>
+        ) : (
+          JOURNEYS.map((j) => {
+            const list = items
+              .map((it, idx) => ({ it, idx }))
+              .filter(({ it }) => it.journey === j.id);
+            if (list.length === 0) return null;
+            const done = list.filter(({ idx }) => statusForIndex(idx) === "completed").length;
+            return (
+              <section key={j.id} className="mt-6">
+                <div className="flex items-end justify-between gap-3">
+                  <div className="min-w-0">
+                    <h2 className="text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] text-balance">
+                      {j.title}
+                    </h2>
+                    <p className="mt-0.5 text-sm font-medium leading-snug text-muted-foreground text-balance">
+                      {j.subtitle}
+                    </p>
+                  </div>
+                  <span className="flex-shrink-0 text-sm font-medium text-muted-foreground">
+                    {done} de {list.length}
+                  </span>
+                </div>
+                <div className="-mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-4 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {list.map(({ it, idx }) => (
+                    <ThemeCard
+                      key={it.id}
+                      title={it.habito_titulo}
+                      subtitle={it.subtitulo_habito}
+                      imagemNome={it.imagem_nome}
+                      completed={statusForIndex(idx) === "completed"}
+                      isFocus={focoAtual?.id === it.id}
+                      onOpen={() => openSheet({ kind: "journey", idx })}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })
         )}
       </div>
 
@@ -749,44 +529,7 @@ export default function Jornada() {
             );
           }
 
-          const h = sheet.h;
-          const hasH = h.hipnose !== false && !!h.hipnose_nome?.trim();
-          const options: SheetOption[] = [
-            hasH && {
-              key: "hipnose",
-                stepName: "Hipnose",
-              image: stepHipnoseImg,
-              title: "Transforme",
-              subtitle: "seus hábitos com Hipnose",
-              done: isFinished(`hipnose_apoio_${h.id}`),
-              onClick: () => {
-                closeSheet();
-                openMediaReducao(h, "hypnosis");
-              },
-            },
-            {
-              key: "mural",
-                stepName: "Mural",
-              image: stepMuralImg,
-              title: "Compartilhe",
-              subtitle: "sua jornada com outras pessoas",
-              done: false,
-              onClick: () => {
-                closeSheet();
-                navigate(`/mural?tema=${encodeURIComponent(h.habito_titulo)}`);
-              },
-            },
-          ].filter(Boolean) as SheetOption[];
-          return (
-            <ThemeSheet
-              title={h.habito_titulo}
-              subtitle={h.subtitulo_habito ?? null}
-              imagemNome={h.imagem_nome ?? null}
-              onClose={closeSheet}
-            >
-              <SheetOptions options={options} />
-            </ThemeSheet>
-          );
+          return null;
         })()}
 
       {selectedMedia && (
@@ -818,6 +561,67 @@ export default function Jornada() {
 }
 
 /* ---------- Sub-components ---------- */
+
+const JOURNEYS: { id: JourneyId; title: string; subtitle: string }[] = [
+  {
+    id: "reducao",
+    title: "Jornada de Redução",
+    subtitle: "Enfraqueça os hábitos que te prendem ao cigarro.",
+  },
+  {
+    id: "abstinencia",
+    title: "Jornada de Liberdade",
+    subtitle: "Supere a vontade de fumar e fortaleça sua vida sem cigarro.",
+  },
+];
+
+function ThemeCard({
+  title,
+  subtitle,
+  imagemNome,
+  completed,
+  isFocus,
+  onOpen,
+}: {
+  title: string;
+  subtitle: string | null;
+  imagemNome: string | null;
+  completed: boolean;
+  isFocus: boolean;
+  onOpen: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className={`relative flex w-[46%] min-w-[150px] max-w-[180px] flex-shrink-0 snap-start flex-col overflow-hidden rounded-3xl text-left transition-transform active:scale-[0.98] ${
+        isFocus
+          ? "bg-gradient-to-br from-[hsl(258_85%_96%)] to-[hsl(228_85%_96%)] shadow-primary"
+          : "bg-card/90 shadow-surface"
+      }`}
+    >
+      <div className="p-2 pb-0">
+        <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="aspect-square w-full" />
+      </div>
+      {completed && (
+        <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-[hsl(var(--electric-blue))] to-[hsl(var(--lilac))] text-white shadow-sm">
+          <Check className="h-3.5 w-3.5" strokeWidth={3} />
+        </span>
+      )}
+      <div className="flex flex-1 flex-col px-3 pb-3 pt-2">
+        {isFocus && (
+          <span className="mb-1 inline-flex self-start rounded-md bg-[hsl(258_80%_92%)] px-1.5 py-px text-sm font-semibold leading-tight text-[hsl(258_60%_45%)]">
+            Foco de hoje
+          </span>
+        )}
+        <p className="text-balance text-sm font-semibold leading-tight text-foreground">{title}</p>
+        {subtitle && (
+          <p className="mt-1 line-clamp-2 text-sm leading-snug text-muted-foreground font-medium">{subtitle}</p>
+        )}
+      </div>
+    </button>
+  );
+}
 
 function ThemeThumb({
   imagemNome,

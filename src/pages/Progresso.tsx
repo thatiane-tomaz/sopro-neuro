@@ -67,6 +67,8 @@ import ConsumptionEditDialog from "@/components/ConsumptionEditDialog";
 import soproLogo from "@/assets/sopro-logo.webp";
 import { performLogout } from "@/lib/logout";
 import { computePotential } from "@/lib/potential";
+import { computeProgressMode } from "@/lib/progressMode";
+import { useJourneyChoice } from "@/hooks/useJourneyChoice";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -98,54 +100,17 @@ export default function Progresso() {
   const [consumoDialogOpen, setConsumoDialogOpen] = useState(false);
 
 
-  // Journey history: define a jornada atual e os períodos em que o usuário
-  // esteve na jornada de liberdade (abstinência). Esses dias contam como 0.
-  const { data: journey } = useQuery({
-    queryKey: ["progresso-jornada", user?.id],
-    enabled: !!user?.id,
-    staleTime: 60 * 1000,
-    queryFn: async () => {
-      const [hist, onb] = await Promise.all([
-        (supabase as any)
-          .from("historico_jornada_usuario")
-          .select("jornada, created_at")
-          .eq("user_id", user!.id)
-          .order("created_at", { ascending: true }),
-        (supabase as any)
-          .from("onboarding_responses_v2")
-          .select("jornada_inicial")
-          .eq("user_id", user!.id)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-      ]);
-      const rows: { jornada: string; created_at: string }[] = hist?.data ?? [];
-      const inicial: string = onb?.data?.jornada_inicial ?? rows[0]?.jornada ?? "reducao";
-      const atual = rows.length ? rows[rows.length - 1].jornada : inicial;
-
-      // Intervalos [start, end) em que a jornada era de abstinência.
-      const intervals: { start: string; end: string | null }[] = [];
-      rows.forEach((r, idx) => {
-        if (r.jornada !== "abstinencia") return;
-        const start = toLocalDateStr(new Date(r.created_at));
-        const next = rows[idx + 1];
-        intervals.push({
-          start,
-          end: next ? toLocalDateStr(new Date(next.created_at)) : null,
-        });
-      });
-
-      return { atual, intervals };
-    },
-  });
-
-  const isReducao = (journey?.atual ?? "reducao") !== "abstinencia";
-
-  const isAbstinenceDay = useMemo(() => {
-    const intervals = journey?.intervals ?? [];
-    return (ds: string) =>
-      intervals.some((i) => ds >= i.start && (i.end === null || ds < i.end));
-  }, [journey]);
+  // Layout e 0 automático seguem a jornada do onboarding e a data do ritual
+  // do último cigarro (regras em src/lib/progressMode.ts).
+  const { onboardingJourney, isLoading: choiceLoading } = useJourneyChoice();
+  const ritualDate: string | null = onboarding?.last_cigarette_date
+    ? String(onboarding.last_cigarette_date).slice(0, 10)
+    : null;
+  const mode = useMemo(
+    () => computeProgressMode({ onboardingJourney, ritualDate, logs }),
+    [onboardingJourney, ritualDate, logs],
+  );
+  const isReducao = mode.layout === "reducao";
 
   const firstName = (profile?.display_name || "").split(" ")[0] || "";
 
@@ -166,34 +131,23 @@ export default function Progresso() {
   })();
   const costPerCig = baseline > 0 ? weeklyCostNum / 7 / baseline : 0;
 
-  // Dias sem fumar, contados desde a data informada do último cigarro.
+  // Dias sem fumar, contados desde o último dia em que fumou.
   const smokeFreeDays = useMemo(() => {
-    const raw = onboarding?.last_cigarette_date as string | undefined;
-    if (!raw) return null;
-    let startStr = String(raw).slice(0, 10);
-    // Se o usuário registrou que fumou depois da data informada, o último
-    // input dele tem prioridade e a contagem reinicia nesse dia.
-    const lastSmoked = logs
-      .filter((l) => l.cigarettes_count > 0 && l.log_date > startStr)
-      .map((l) => l.log_date)
-      .sort()
-      .pop();
-    if (lastSmoked) startStr = lastSmoked;
-    const start = new Date(startStr + "T00:00:00");
+    if (!mode.counterStart) return null;
+    const start = new Date(mode.counterStart + "T00:00:00");
     if (isNaN(start.getTime())) return null;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const diff = Math.floor((today.getTime() - start.getTime()) / 86_400_000);
     return diff >= 0 ? diff : null;
-  }, [onboarding?.last_cigarette_date, logs]);
+  }, [mode.counterStart]);
 
   const lastCigLabel = useMemo(() => {
-    const raw = onboarding?.last_cigarette_date as string | undefined;
-    if (!raw) return null;
-    const d = new Date(String(raw).slice(0, 10) + "T00:00:00");
+    if (!mode.counterStart) return null;
+    const d = new Date(mode.counterStart + "T00:00:00");
     if (isNaN(d.getTime())) return null;
     return format(d, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
-  }, [onboarding?.last_cigarette_date]);
+  }, [mode.counterStart]);
 
   const openDateDialog = () => {
     const raw = onboarding?.last_cigarette_date as string | undefined;
@@ -232,6 +186,10 @@ export default function Progresso() {
     }
     return logs.length ? logs[0].log_date : undefined;
   })();
+
+  // Dias que entram como 0 automático no gráfico (sem registro do usuário).
+  const isAbstinenceDay = (ds: string) =>
+    mode.autoZero && (mode.autoZeroFrom ? ds >= mode.autoZeroFrom : !!startDateStr && ds >= startDateStr);
 
   // Ignore registros antigos quando o usuário refez o onboarding: o gráfico e
   // as métricas precisam refletir a jornada iniciada na última resposta.
@@ -289,7 +247,7 @@ export default function Progresso() {
       i++;
     }
     return days;
-  }, [startDateStr, activeLogs, baseline, isAbstinenceDay]);
+  }, [startDateStr, activeLogs, baseline, mode.autoZero, mode.autoZeroFrom]);
 
   // Compute stats considering the WHOLE period between onboarding and yesterday.
   // For days without a log we carry forward the user's last known daily count
@@ -356,7 +314,7 @@ export default function Progresso() {
       totalSmoked,
       avgPerDay,
     };
-  }, [chartData, baseline, costPerCig, activeLogs, isAbstinenceDay]);
+  }, [chartData, baseline, costPerCig, activeLogs, mode.autoZero, mode.autoZeroFrom, startDateStr]);
 
   // Has the user already logged yesterday?
   const yesterdayLogged = useMemo(
@@ -379,7 +337,7 @@ export default function Progresso() {
     setDialogOpen(true);
   };
 
-  if (authLoading || profileLoading || onbLoading || logsLoading) {
+  if (authLoading || profileLoading || onbLoading || logsLoading || choiceLoading) {
     return <PageLoader />;
   }
   if (!user) return <Navigate to="/login" replace />;
@@ -434,7 +392,7 @@ export default function Progresso() {
         </div>
 
         {/* Smoke free counter */}
-        {!isReducao && smokeFreeDays !== null && (
+        {mode.showCounter && smokeFreeDays !== null && (
           <section className="mt-4 overflow-hidden rounded-3xl shadow-primary bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] p-4">
             <div className="flex flex-col items-center text-center">
               <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
@@ -466,6 +424,32 @@ export default function Progresso() {
                 </button>
               </div>
             </div>
+          </section>
+        )}
+
+        {/* Ritual do último cigarro: entrada para quem está reduzindo, ou
+            pergunta da data para quem veio da abstinência sem informar. */}
+        {mode.askRitualDate && (
+          <section className="mt-4 rounded-3xl bg-gradient-to-br from-[hsl(var(--electric-blue)/0.1)] to-[hsl(var(--lilac)/0.16)] p-4 shadow-primary">
+            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
+              <Sparkles className="h-3 w-3" />
+              Ritual do último cigarro
+            </span>
+            <h3 className="mt-2 text-base font-bold leading-snug text-foreground text-balance">
+              {isReducao ? "Se sente preparado para parar totalmente?" : "Quando foi seu último cigarro?"}
+            </h3>
+            <p className="mt-1 text-sm font-medium leading-relaxed text-muted-foreground text-pretty">
+              {isReducao
+                ? "Escolha a data do ritual do seu último cigarro. A partir dela, contamos seus dias sem fumar."
+                : "Informe a data para começarmos a contar seus dias sem fumar."}
+            </p>
+            <button
+              onClick={openDateDialog}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-method px-3 py-3 text-sm font-bold text-primary-foreground shadow-surface transition-transform active:scale-95"
+            >
+              <CalendarIcon className="h-4 w-4" />
+              {isReducao ? "Estou pronto para parar" : "Informar data do último cigarro"}
+            </button>
           </section>
         )}
 
