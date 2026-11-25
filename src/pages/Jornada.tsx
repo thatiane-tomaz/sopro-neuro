@@ -571,7 +571,7 @@ const JOURNEYS: { id: JourneyId; title: string; subtitle: string }[] = [
   {
     id: "abstinencia",
     title: "Superando a abstinência",
-    subtitle: "",
+    subtitle: "Para quem já parou de fumar e quer fortalecer a decisão e superar a vontade.",
   },
 ];
 
