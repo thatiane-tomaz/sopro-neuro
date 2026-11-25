@@ -4,3 +4,6 @@
 - [x] Verificar dados e 27 testes; testar reprodutor e cartão isolados em celular/computador. Fluxo com conta real não verificável neste Supabase externo.
 - [x] Padronizar cartões e ações das três abas com sombras suaves, preservando seleção e foco.
 - [x] Conferir resultado: compilação sem erros e 4 testes da missão aprovados; Neo e missão conferidos isoladamente em 394px e 1280px. Abas com conta real não verificáveis neste Supabase externo.
+- [ ] Adicionar a jornada 7 Dias para o Último Cigarro com sete dias ordenados, vídeo e hipnose, imagem vazia e sem missão/mural.
+- [ ] Integrar foco do Início, conclusão dos dias e conhecimento do Neo, preservando jornadas existentes.
+- [ ] Verificar arquivos, regras e navegação da nova jornada.
