@@ -421,22 +421,15 @@ export default function Jornada() {
               .map((it, idx) => ({ it, idx }))
               .filter(({ it }) => it.journey === j.id);
             if (list.length === 0) return null;
-            const done = list.filter(({ idx }) => statusForIndex(idx) === "completed").length;
             return (
               <section key={j.id} className="mt-6">
-                <div className="flex items-end justify-between gap-3">
-                  <div className="min-w-0">
-                    <h2 className="text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] text-balance">
-                      {j.title}
-                    </h2>
-                    <p className="mt-0.5 text-sm font-medium leading-snug text-muted-foreground text-balance">
-                      {j.subtitle}
-                    </p>
-                  </div>
-                  <span className="flex-shrink-0 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground">
-                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                    {done} de {list.length}
-                  </span>
+                <div>
+                  <h2 className="text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] text-balance">
+                    {j.title}
+                  </h2>
+                  <p className="mt-0.5 text-sm font-medium leading-snug text-muted-foreground text-balance">
+                    {j.subtitle}
+                  </p>
                 </div>
                 <div className="-mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-4 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {list.map(({ it, idx }, i) => (
