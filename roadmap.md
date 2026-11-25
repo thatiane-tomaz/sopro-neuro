@@ -7,4 +7,4 @@
 - [x] Adicionar a jornada 7 Dias para o Último Cigarro com sete dias ordenados, vídeo e hipnose, imagem vazia e sem missão/mural.
 - [x] Integrar foco do Início, conclusão dos dias e conhecimento do Neo, preservando jornadas existentes; Neo atualizado e publicado.
 - [x] Verificar os 14 arquivos, 41 testes e cartões/passos isolados em 394px e 1280px; compilação sem erros.
-- [ ] Verificar reprodução e gravação do progresso com conta autenticada — bloqueado: este Supabase externo não permite criar sessão de teste pelo Lovable.
+- [ ] Verificar reprodução e gravação do progresso com conta autenticada — bloqueado: este Supabase externo não permite criar sessão de teste pelo Lovable.- [x] Títulos, subtítulos e imagens locais dos 7 dias intensivos; setas de voltar em todas as jornadas; ordem das jornadas por onboarding, ritual ou 5 dias de 0 cigarros (47 testes, cartões e setas verificados em 394px).

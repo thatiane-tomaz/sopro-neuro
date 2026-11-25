@@ -51,6 +51,9 @@ import { useAllJourneyTemas, useJourneyFocos } from "@/hooks/useJourneyFocos";
 import { useJourneyChoice } from "@/hooks/useJourneyChoice";
 import { JOURNEY_IDS, journeyPrefix, type JourneyId } from "@/lib/journeyFocus";
 import { JOURNEYS, isJourneyContentCompleted, journeyVideoBucket } from "@/lib/journeys";
+import { orderJourneys } from "@/lib/journeyOrder";
+import { useOnboardingData } from "@/hooks/useOnboardingData";
+import { useSmokingLogs } from "@/hooks/useSmokingLogs";
 
 const getGreeting = () => {
   const h = new Date().getHours();
@@ -122,7 +125,25 @@ export default function Jornada() {
 
   // Todas as jornadas aparecem juntas, na ordem do catálogo.
   const { temas, isLoading: temasLoading } = useAllJourneyTemas();
-  const { chooseJourney } = useJourneyChoice();
+  const { chooseJourney, onboardingJourney } = useJourneyChoice();
+  const { data: onboarding } = useOnboardingData() as any;
+  const { logs } = useSmokingLogs();
+  // A ordem das jornadas acompanha o momento da pessoa (redução, ritual ou 0s).
+  const journeyOrder = useMemo(
+    () =>
+      orderJourneys({
+        onboardingJourney,
+        ritualDate: onboarding?.last_cigarette_date
+          ? String(onboarding.last_cigarette_date).slice(0, 10)
+          : null,
+        logs,
+      }),
+    [onboardingJourney, onboarding?.last_cigarette_date, logs],
+  );
+  const orderedJourneys = useMemo(
+    () => journeyOrder.map((id) => JOURNEYS.find((j) => j.id === id)!).filter(Boolean),
+    [journeyOrder],
+  );
   const { focoAtual } = useJourneyFocos();
   const items = useMemo<JornadaItem[]>(
     () =>
@@ -423,7 +444,7 @@ export default function Jornada() {
             Complete o onboarding para ver seus temas.
           </p>
         ) : (
-          JOURNEYS.map((j) => {
+          orderedJourneys.map((j) => {
             const list = items
               .map((it, idx) => ({ it, idx }))
               .filter(({ it }) => it.journey === j.id);
@@ -449,7 +470,6 @@ export default function Jornada() {
                       title={it.habito_titulo}
                       subtitle={it.subtitulo_habito}
                       imagemNome={it.imagem_nome}
-                      blankImage={it.journey === "ultimo_cigarro"}
                       completed={statusForIndex(idx) === "completed"}
                       isFocus={focoAtual?.id === it.id}
                       position={i + 1}
@@ -542,7 +562,7 @@ export default function Jornada() {
             }
             return (
               <ThemeSheet title={it.habito_titulo} subtitle={it.subtitulo_habito}
-                imagemNome={it.imagem_nome} blankImage={it.journey === "ultimo_cigarro"} onClose={closeSheet}>
+                imagemNome={it.imagem_nome} onClose={closeSheet}>
                 <SheetOptions options={options} />
               </ThemeSheet>
             );
@@ -585,7 +605,6 @@ function ThemeCard({
   title,
   subtitle,
   imagemNome,
-  blankImage = false,
   completed,
   isFocus,
   position,
@@ -594,7 +613,6 @@ function ThemeCard({
   title: string;
   subtitle: string | null;
   imagemNome: string | null;
-  blankImage?: boolean;
   completed: boolean;
   isFocus: boolean;
   position: number;
@@ -612,11 +630,7 @@ function ThemeCard({
     >
       <div className="p-2 pb-0">
         <div className="relative">
-          {blankImage ? (
-            <div aria-hidden className="aspect-[4/3] w-full rounded-xl bg-background" />
-          ) : (
-            <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="aspect-[4/3] w-full" />
-          )}
+          <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="aspect-[4/3] w-full" />
           <span
             aria-hidden
             className="absolute left-2 top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-white/75 px-1 text-sm font-semibold leading-none tabular-nums text-[hsl(var(--electric-blue))] opacity-90 backdrop-blur-[2px]"
@@ -822,7 +836,6 @@ function ThemeSheet({
   title,
   subtitle,
   imagemNome,
-  blankImage = false,
   onClose,
   onBack,
   children,
@@ -830,7 +843,6 @@ function ThemeSheet({
   title: string;
   subtitle: string | null;
   imagemNome: string | null;
-  blankImage?: boolean;
   onClose: () => void;
   onBack?: () => void;
   children: React.ReactNode;
@@ -858,11 +870,7 @@ function ThemeSheet({
               <ChevronLeft className="h-4 w-4" />
             </button>
           )}
-          {blankImage ? (
-            <div aria-hidden className="h-16 w-16 shrink-0 rounded-xl bg-background" />
-          ) : (
-            <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="h-16 w-16" />
-          )}
+          <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="h-16 w-16" />
           <div className="min-w-0 flex-1 pr-9">
             <h2 className="text-balance text-base font-bold leading-tight text-[hsl(var(--electric-blue))]">
               {title}

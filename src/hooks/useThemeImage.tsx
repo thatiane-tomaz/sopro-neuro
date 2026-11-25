@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { getThemeImagePath, getThemeImageThumbUrl, getThemeImageUrl } from "@/lib/themeImage";
+import { getLocalThemeImage } from "@/lib/localThemeImages";
 
 /**
  * Link de uma imagem de tema: tenta a versão reduzida e, se ela não abrir,
@@ -7,7 +8,8 @@ import { getThemeImagePath, getThemeImageThumbUrl, getThemeImageUrl } from "@/li
  */
 export function useThemeImage(name: string | null | undefined, size = 160) {
   // Endereço já pronto (ex.: imagem local nas telas de exemplo): usa direto.
-  const direct = name && /^(https?:|data:|blob:|\/)/.test(name) ? name : null;
+  const direct = getLocalThemeImage(name) ??
+    (name && /^(https?:|data:|blob:|\/)/.test(name) ? name : null);
   const path = direct ? null : getThemeImagePath(name);
   const [src, setSrc] = useState<string | null>(direct);
   const [usingOriginal, setUsingOriginal] = useState(false);

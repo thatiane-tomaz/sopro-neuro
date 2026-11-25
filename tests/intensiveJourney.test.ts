@@ -50,3 +50,35 @@ describe("jornada intensiva", () => {
     expect(journeyPrefix("ultimo_cigarro")).not.toBe(journeyPrefix("abstinencia"));
   });
 });
+import { orderJourneys, zeroSmokeDays } from "@/lib/journeyOrder";
+
+const logs = (counts: number[]) => counts.map((c, i) => ({ log_date: `2026-11-${String(i + 1).padStart(2, "0")}`, cigarettes_count: c }));
+
+test("redução no onboarding: Redução -> Intensivo -> Liberdade", () => {
+  expect(orderJourneys({ onboardingJourney: "reducao", ritualDate: null, logs: [] }))
+    .toEqual(["reducao", "ultimo_cigarro", "abstinencia"]);
+});
+
+test("abstinência no onboarding: Liberdade primeiro, mesmo com 0s", () => {
+  expect(orderJourneys({ onboardingJourney: "abstinencia", ritualDate: null, logs: logs([0,0,0,0,0,0]) }))
+    .toEqual(["abstinencia", "reducao", "ultimo_cigarro"]);
+});
+
+test("data do ritual: Liberdade primeiro", () => {
+  expect(orderJourneys({ onboardingJourney: "reducao", ritualDate: "2026-11-20", logs: [] }))
+    .toEqual(["abstinencia", "reducao", "ultimo_cigarro"]);
+});
+
+test("5 dias distintos com 0 cigarros: Intensivo primeiro", () => {
+  expect(orderJourneys({ onboardingJourney: "reducao", ritualDate: null, logs: logs([5,0,0,0,0,0]) }))
+    .toEqual(["ultimo_cigarro", "reducao", "abstinencia"]);
+});
+
+test("4 dias com 0 ainda mantém Redução primeiro", () => {
+  expect(orderJourneys({ onboardingJourney: "reducao", ritualDate: null, logs: logs([0,0,0,0,3]) }))
+    .toEqual(["reducao", "ultimo_cigarro", "abstinencia"]);
+});
+
+test("zeroSmokeDays conta dias distintos, não registros", () => {
+  expect(zeroSmokeDays([{ log_date: "2026-11-01", cigarettes_count: 0 }, { log_date: "2026-11-01", cigarettes_count: 0 }])).toBe(1);
+});
