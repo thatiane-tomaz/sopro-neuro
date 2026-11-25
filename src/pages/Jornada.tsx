@@ -34,6 +34,7 @@ import {
   X,
 } from "lucide-react";
 import MissionDialog from "@/components/MissionDialog";
+import JourneyRail from "@/components/JourneyRail";
 import { getMissionCopy, shouldOpenMissionAfterHypnosis } from "@/lib/mission";
 import MediaPlayer from "@/components/MediaPlayer";
 import WaveBackground from "@/components/home/WaveBackground";
@@ -435,7 +436,7 @@ export default function Jornada() {
                     {j.subtitle}
                   </p>
                 </div>
-                <div className="-mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-4 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <JourneyRail label={j.title}>
                   {list.map(({ it, idx }, i) => (
                     <ThemeCard
                       key={it.id}
@@ -445,11 +446,10 @@ export default function Jornada() {
                       completed={statusForIndex(idx) === "completed"}
                       isFocus={focoAtual?.id === it.id}
                       position={i + 1}
-                      total={list.length}
                       onOpen={() => openSheet({ kind: "journey", idx })}
                     />
                   ))}
-                </div>
+                </JourneyRail>
               </section>
             );
           })
@@ -582,7 +582,6 @@ function ThemeCard({
   completed,
   isFocus,
   position,
-  total,
   onOpen,
 }: {
   title: string;
@@ -591,10 +590,8 @@ function ThemeCard({
   completed: boolean;
   isFocus: boolean;
   position: number;
-  total: number;
   onOpen: () => void;
 }) {
-  const hasNext = position < total;
   return (
     <button
       type="button"
@@ -614,14 +611,6 @@ function ThemeCard({
           >
             {position}
           </span>
-          {hasNext && (
-            <span
-              aria-hidden
-              className="pointer-events-none absolute right-1.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/70 text-[hsl(var(--electric-blue))] opacity-60 backdrop-blur-[2px]"
-            >
-              <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
-            </span>
-          )}
         </div>
       </div>
       {completed && (
