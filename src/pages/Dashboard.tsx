@@ -547,7 +547,7 @@ export default function Dashboard() {
       return;
     }
     toast({ title: "Data salva!" });
-    refetchOnboarding();
+    await refetchOnboarding();
   };
 
   // Switch journey to "abstinência" (insert a new row on historico_jornada_usuario)

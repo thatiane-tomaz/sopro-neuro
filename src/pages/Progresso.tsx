@@ -68,7 +68,7 @@ import RitualPrompt from "@/components/RitualPrompt";
 import soproLogo from "@/assets/sopro-logo.webp";
 import { performLogout } from "@/lib/logout";
 import { computePotential } from "@/lib/potential";
-import { computeProgressMode } from "@/lib/progressMode";
+import { computeProgressMode, countSmokeFreeDays } from "@/lib/progressMode";
 import { useJourneyChoice } from "@/hooks/useJourneyChoice";
 
 const getGreeting = () => {
@@ -140,17 +140,8 @@ export default function Progresso() {
   })();
   const costPerCig = baseline > 0 ? weeklyCostNum / 7 / baseline : 0;
 
-  // Dias sem fumar, contados desde o último dia em que fumou.
-  const smokeFreeDays = useMemo(() => {
-    if (!ritualDate) return mode.showCounter ? mode.recordedSmokeFreeDays : null;
-    if (!mode.counterStart) return null;
-    const start = new Date(mode.counterStart + "T00:00:00");
-    if (isNaN(start.getTime())) return null;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const diff = Math.floor((today.getTime() - start.getTime()) / 86_400_000);
-    return diff >= 0 ? diff : null;
-  }, [ritualDate, mode.counterStart, mode.showCounter, mode.recordedSmokeFreeDays]);
+  // Ao salvar o ritual, substitui o total de zeros pelos dias desde a data informada.
+  const smokeFreeDays = countSmokeFreeDays(mode, new Date());
 
   const lastCigLabel = useMemo(() => {
     const date = ritualDate ? mode.counterStart : null;
@@ -180,7 +171,7 @@ export default function Progresso() {
       return;
     }
     toast({ title: "Data atualizada!" });
-    refetchOnboarding?.();
+    await refetchOnboarding?.();
   };
 
   const potential = useMemo(

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { pickFocus } from "../src/lib/journeyFocus";
-import { computeProgressMode, shouldAskYesterday } from "../src/lib/progressMode";
+import { computeProgressMode, countSmokeFreeDays, shouldAskYesterday } from "../src/lib/progressMode";
 
 const temas = { reducao: ["r1", "r2"], abstinencia: ["a1", "a2"] };
 
@@ -16,6 +16,25 @@ describe("tema indicado no Dash", () => {
 });
 
 describe("Progresso", () => {
+  test("salvar o ritual troca os zeros acumulados pelos dias desde a data informada", () => {
+    const logs = [
+      { log_date: "2026-11-01", cigarettes_count: 0 },
+      { log_date: "2026-11-03", cigarettes_count: 0 },
+      { log_date: "2026-11-08", cigarettes_count: 0 },
+      { log_date: "2026-11-24", cigarettes_count: 1 },
+    ];
+    const today = new Date(2026, 10, 25, 20, 34);
+    const before = computeProgressMode({ onboardingJourney: "reducao", ritualDate: null, logs });
+    const after = computeProgressMode({ onboardingJourney: "reducao", ritualDate: "2026-11-25", logs });
+    expect(countSmokeFreeDays(before, today)).toBe(3);
+    expect(countSmokeFreeDays(after, today)).toBe(0);
+    expect(countSmokeFreeDays(after, new Date(2026, 10, 26))).toBe(1);
+    expect(countSmokeFreeDays(after, new Date(2026, 10, 30))).toBe(5);
+  });
+  test("ritual informado em data passada conta dias decorridos sem exigir registros de zero", () => {
+    const mode = computeProgressMode({ onboardingJourney: "reducao", ritualDate: "2026-11-20", logs: [] });
+    expect(countSmokeFreeDays(mode, new Date(2026, 10, 25))).toBe(5);
+  });
   test("redução sem ritual nem 0: layout redução, sem contagem", () => {
     const m = computeProgressMode({ onboardingJourney: "reducao", ritualDate: null, logs: [{ log_date: "2026-11-01", cigarettes_count: 5 }] });
     expect([m.layout, m.showCounter, m.autoZero]).toEqual(["reducao", false, false]);

@@ -1,4 +1,5 @@
 import type { JourneyId } from "./journeyFocus";
+import { differenceInCalendarDays, isValid, parseISO } from "date-fns";
 
 export interface ProgressModeInput {
   onboardingJourney: JourneyId;
@@ -46,3 +47,13 @@ export function computeProgressMode({ onboardingJourney, ritualDate, logs }: Pro
 
 /** O popup de cigarros de ontem só aparece para quem não tem data do ritual. */
 export const shouldAskYesterday = (ritualDate: string | null) => !ritualDate;
+
+/** Após o ritual usa dias de calendário; os zeros anteriores não são somados. */
+export function countSmokeFreeDays(mode: ReturnType<typeof computeProgressMode>, today: Date): number | null {
+  if (!mode.showCounter) return null;
+  if (!mode.counterStart) return mode.recordedSmokeFreeDays;
+  const start = parseISO(mode.counterStart);
+  if (!isValid(start) || !isValid(today)) return null;
+  const days = differenceInCalendarDays(today, start);
+  return days >= 0 ? days : null;
+}
