@@ -613,9 +613,9 @@ function ThemeCard({
           <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="aspect-[4/3] w-full" />
           <span
             aria-hidden
-            className="absolute left-2 top-2 flex items-center rounded-full bg-white/75 px-2 py-0.5 text-sm font-semibold tabular-nums leading-tight text-[hsl(var(--electric-blue))] opacity-90 backdrop-blur-[2px]"
+            className="absolute left-2 top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-white/75 px-1 text-sm font-semibold leading-none tabular-nums text-[hsl(var(--electric-blue))] opacity-90 backdrop-blur-[2px]"
           >
-            {position} de {total}
+            {position}
           </span>
           {hasNext && (
             <span
