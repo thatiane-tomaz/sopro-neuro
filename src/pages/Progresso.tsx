@@ -594,9 +594,6 @@ export default function Progresso() {
               <p className="text-sm font-semibold text-foreground">
                 Registrar outro dia
               </p>
-              <p className="mt-0.5 text-balance text-sm text-muted-foreground font-medium">
-                Escolha uma data para registrar quantos cigarros fumou.
-              </p>
               <div className="mt-2.5 flex items-stretch gap-2">
                 <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
                   <PopoverTrigger asChild>
