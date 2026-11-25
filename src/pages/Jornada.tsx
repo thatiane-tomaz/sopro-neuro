@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -438,7 +438,7 @@ export default function Jornada() {
                     {done} de {list.length}
                   </span>
                 </div>
-                <JourneyRail total={list.length}>
+                <div className="-mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-4 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {list.map(({ it, idx }, i) => (
                     <ThemeCard
                       key={it.id}
@@ -447,11 +447,12 @@ export default function Jornada() {
                       imagemNome={it.imagem_nome}
                       completed={statusForIndex(idx) === "completed"}
                       isFocus={focoAtual?.id === it.id}
-                      hasNext={i < list.length - 1}
+                      position={i + 1}
+                      total={list.length}
                       onOpen={() => openSheet({ kind: "journey", idx })}
                     />
                   ))}
-                </JourneyRail>
+                </div>
               </section>
             );
           })
@@ -577,71 +578,14 @@ const JOURNEYS: { id: JourneyId; title: string; subtitle: string }[] = [
   },
 ];
 
-/**
- * Trilho horizontal de temas de uma jornada.
- * Mostra a parte do próximo card, a seta de sequência e a contagem de posição
- * ("N de M"), que acompanha o deslocamento do trilho.
- */
-function JourneyRail({ total, children }: { total: number; children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState(1);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      const kids = Array.from(el.children) as HTMLElement[];
-      if (kids.length === 0) return;
-      // O card mais próximo da borda interna esquerda é o card "da vez".
-      const anchor = el.getBoundingClientRect().left + 20; // px-5
-      let best = 0;
-      let bestDist = Infinity;
-      kids.forEach((k, i) => {
-        const d = Math.abs(k.getBoundingClientRect().left - anchor);
-        if (d < bestDist) {
-          bestDist = d;
-          best = i;
-        }
-      });
-      setPos(best + 1);
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-    update();
-    el.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      el.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [total]);
-
-  return (
-    <div>
-      <div
-        ref={ref}
-        className="-mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-3 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {children}
-      </div>
-      <p className="mt-1 text-center text-sm font-medium tabular-nums text-muted-foreground">
-        {pos} de {total}
-      </p>
-    </div>
-  );
-}
-
 function ThemeCard({
   title,
   subtitle,
   imagemNome,
   completed,
   isFocus,
-  hasNext,
+  position,
+  total,
   onOpen,
 }: {
   title: string;
@@ -649,9 +593,11 @@ function ThemeCard({
   imagemNome: string | null;
   completed: boolean;
   isFocus: boolean;
-  hasNext: boolean;
+  position: number;
+  total: number;
   onOpen: () => void;
 }) {
+  const hasNext = position < total;
   return (
     <button
       type="button"
@@ -665,6 +611,12 @@ function ThemeCard({
       <div className="p-2 pb-0">
         <div className="relative">
           <ThemeThumb imagemNome={imagemNome} isLocked={false} sizeClass="aspect-[4/3] w-full" />
+          <span
+            aria-hidden
+            className="absolute left-2 top-2 flex items-center rounded-full bg-white/75 px-2 py-0.5 text-sm font-semibold tabular-nums leading-tight text-[hsl(var(--electric-blue))] opacity-90 backdrop-blur-[2px]"
+          >
+            {position} de {total}
+          </span>
           {hasNext && (
             <span
               aria-hidden
