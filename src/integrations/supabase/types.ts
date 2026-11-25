@@ -1539,6 +1539,37 @@ export type Database = {
         Args: { p_event_key: string; p_metadata?: Json }
         Returns: Json
       }
+      crosstab: { Args: { "": string }; Returns: Record<string, unknown>[] }
+      crosstab2: {
+        Args: { "": string }
+        Returns: Database["public"]["CompositeTypes"]["tablefunc_crosstab_2"][]
+        SetofOptions: {
+          from: "*"
+          to: "tablefunc_crosstab_2"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      crosstab3: {
+        Args: { "": string }
+        Returns: Database["public"]["CompositeTypes"]["tablefunc_crosstab_3"][]
+        SetofOptions: {
+          from: "*"
+          to: "tablefunc_crosstab_3"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      crosstab4: {
+        Args: { "": string }
+        Returns: Database["public"]["CompositeTypes"]["tablefunc_crosstab_4"][]
+        SetofOptions: {
+          from: "*"
+          to: "tablefunc_crosstab_4"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_current_subscription: {
         Args: { user_uuid: string }
         Returns: {
@@ -1615,7 +1646,24 @@ export type Database = {
       subscription_status: "free" | "premium" | "cancelled" | "expired"
     }
     CompositeTypes: {
-      [_ in never]: never
+      tablefunc_crosstab_2: {
+        row_name: string | null
+        category_1: string | null
+        category_2: string | null
+      }
+      tablefunc_crosstab_3: {
+        row_name: string | null
+        category_1: string | null
+        category_2: string | null
+        category_3: string | null
+      }
+      tablefunc_crosstab_4: {
+        row_name: string | null
+        category_1: string | null
+        category_2: string | null
+        category_3: string | null
+        category_4: string | null
+      }
     }
   }
 }
