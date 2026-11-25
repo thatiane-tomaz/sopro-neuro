@@ -404,10 +404,10 @@ export default function Jornada() {
         {/* Page title */}
         <div className="mt-6">
           <h1 className="text-xl font-bold bg-gradient-to-r from-[hsl(220_90%_55%)] to-[hsl(230_90%_45%)] bg-clip-text text-transparent">
-            Suas jornadas
+            Escolha a sua jornada
           </h1>
           <p className="text-sm font-medium leading-snug text-muted-foreground mt-1 text-balance">
-            Escolha qualquer tema, no seu tempo. Deslize para o lado para ver todos.
+            Uma jornada para cada momento.
           </p>
         </div>
 
@@ -565,13 +565,13 @@ export default function Jornada() {
 const JOURNEYS: { id: JourneyId; title: string; subtitle: string }[] = [
   {
     id: "reducao",
-    title: "Jornada de Redução",
-    subtitle: "Enfraqueça os hábitos que te prendem ao cigarro.",
+    title: "Fumando cada vez menos.",
+    subtitle: "Enfraqueça o vício e reduza os cigarros naturalmente",
   },
   {
     id: "abstinencia",
-    title: "Jornada de Liberdade",
-    subtitle: "Supere a vontade de fumar e fortaleça sua vida sem cigarro.",
+    title: "Superando a abstinência",
+    subtitle: "",
   },
 ];
 
