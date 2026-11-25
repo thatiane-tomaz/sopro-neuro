@@ -28,10 +28,10 @@ export default function RitualPrompt({ onChooseDate, compact = false, isReducao 
         onClick={onChooseDate}
         variant={compact ? "ghost" : "default"}
         className={compact
-          ? "mt-2 h-auto min-h-11 max-w-full justify-start whitespace-normal px-0 text-sm text-primary"
+          ? "mt-3 h-auto min-h-11 w-full justify-center whitespace-normal rounded-full bg-primary/10 px-3 py-3 text-center text-sm font-semibold text-primary hover:bg-primary/15 hover:text-primary"
           : "mt-3 h-auto min-h-11 w-full whitespace-normal rounded-full bg-gradient-method px-3 py-3 text-sm font-bold text-primary-foreground shadow-surface"}
       >
-        <CalendarDays className="mr-2 h-4 w-4 shrink-0" />
+        <CalendarDays className="h-4 w-4 shrink-0" />
         {isReducao ? "Estou pronto para parar" : "Informar data do último cigarro"}
       </Button>
     </section>
