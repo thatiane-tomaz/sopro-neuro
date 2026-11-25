@@ -425,11 +425,11 @@ export default function Jornada() {
             return (
               <section key={j.id} className="mt-6">
                 <div>
-                  <h2 className="flex items-center gap-2 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))] text-balance">
+                  <h2 className="flex items-center justify-between gap-2 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
+                    <span className="text-balance">{j.title}</span>
                     <span className="shrink-0 rounded-full bg-lilac-soft px-2.5 py-0.5 text-sm font-bold tabular-nums text-[hsl(var(--electric-blue))]">
                       {concluidos}/{list.length}
                     </span>
-                    <span className="text-balance">{j.title}</span>
                   </h2>
                   <p className="mt-0.5 text-sm font-medium leading-snug text-muted-foreground text-balance">
                     {j.subtitle}
