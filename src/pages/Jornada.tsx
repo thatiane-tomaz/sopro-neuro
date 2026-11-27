@@ -451,7 +451,7 @@ export default function Jornada() {
             if (list.length === 0) return null;
             const concluidos = list.filter(({ it }) => itemCompleted(it)).length;
             return (
-              <section key={j.id} className="mt-6">
+              <section key={j.id} data-tour={`journey-${j.id}`} className="mt-6">
                 <div>
                   <h2 className="flex items-center justify-between gap-2 text-lg font-bold leading-tight text-[hsl(var(--electric-blue))]">
                     <span className="text-balance">{j.title}</span>
@@ -620,6 +620,7 @@ function ThemeCard({
 }) {
   return (
     <button
+      data-tour-card={position}
       type="button"
       onClick={onOpen}
       className={`relative flex w-[74%] min-w-[240px] max-w-[300px] flex-shrink-0 snap-start flex-col overflow-hidden rounded-3xl text-left transition-transform active:scale-[0.98] ${

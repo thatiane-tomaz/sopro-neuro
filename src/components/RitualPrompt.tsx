@@ -26,6 +26,7 @@ export default function RitualPrompt({ onChooseDate, compact = false, isReducao 
       </p>
       <Button
         onClick={onChooseDate}
+        data-tour={compact ? "ritual-btn" : undefined}
         variant={compact ? "ghost" : "default"}
         className={compact
           ? "mt-3 h-auto min-h-11 w-full justify-center whitespace-normal rounded-full bg-primary/10 px-3 py-3 text-center text-sm font-semibold text-primary hover:bg-primary/15 hover:text-primary"

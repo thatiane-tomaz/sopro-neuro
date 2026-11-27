@@ -56,6 +56,7 @@ export default function SosThinBlock() {
     <>
       <button
         onClick={handleSos}
+        data-tour="sos"
         aria-label="Ajuda agora: hipnose rápida contra a vontade de fumar"
         className="mt-6 w-full flex items-center gap-3 rounded-2xl bg-gradient-to-br from-[hsl(258_80%_98%)] to-[hsl(220_80%_98%)] p-3.5 shadow-[0_6px_20px_-12px_hsl(258_70%_45%/0.25)] active:scale-[0.99] transition-transform text-left"
       >

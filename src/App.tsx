@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ErrorLoggerProvider } from "@/components/ErrorLoggerProvider";
 import PushInitializer from "@/components/PushInitializer";
+import GuidedTour from "@/components/GuidedTour";
 import PageLoader from "@/components/home/PageLoader";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -73,6 +74,7 @@ const App = () => (
         <AuthProvider>
           <ErrorLoggerProvider>
             <PushInitializer />
+            <GuidedTour />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />

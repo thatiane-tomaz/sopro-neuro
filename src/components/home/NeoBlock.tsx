@@ -157,6 +157,7 @@ export default function NeoBlock({
                 setDraft("");
                 onOpenChat(text);
               }}
+              data-tour="neo-input"
               className="mt-2.5 flex items-center gap-2"
             >
               <input

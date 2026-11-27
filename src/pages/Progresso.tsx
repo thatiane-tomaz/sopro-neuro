@@ -378,7 +378,7 @@ export default function Progresso() {
 
         {/* Smoke free counter */}
         {mode.showCounter && smokeFreeDays !== null && (
-          <section className="mt-4 overflow-hidden rounded-3xl shadow-primary bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] p-4">
+          <section data-tour="sem-fumar" className="mt-4 overflow-hidden rounded-3xl shadow-primary bg-gradient-to-br from-[hsl(var(--electric-blue)/0.12)] to-[hsl(var(--lilac)/0.18)] p-4">
             <div className="flex flex-col items-center text-center">
               <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--lilac-soft))] px-2 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--lilac))]">
                 <Sparkles className="h-3 w-3" />
@@ -416,7 +416,7 @@ export default function Progresso() {
         )}
 
         {/* Savings — cigs avoided + money saved */}
-        <section className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary backdrop-blur-md">
+        <section data-tour="conquistas" className="mt-3 rounded-3xl bg-card/80 p-3.5 shadow-primary backdrop-blur-md">
           <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-[hsl(var(--electric-blue)/0.1)] px-2 py-1 text-sm font-semibold text-[hsl(var(--electric-blue))]">
             <Sparkles className="h-3 w-3" />
             Suas conquistas
@@ -666,7 +666,7 @@ export default function Progresso() {
               O quanto você deixa de fumar e economiza.
             </p>
 
-            <div className="mt-3 grid grid-cols-2 gap-2">
+            <div data-tour="potencial" className="mt-3 grid grid-cols-2 gap-2">
               <PotentialTile
                 label="Cigarros / mês"
                 value={potential.cigsMonth.toLocaleString("pt-BR")}

@@ -19,6 +19,7 @@ export default function BottomNav() {
     <button
       onClick={() => navigate(to)}
       aria-label={label}
+      data-tour={`nav-${to.slice(1)}`}
       aria-current={active ? "page" : undefined}
       className={`flex-1 flex flex-col items-center gap-1 py-2 transition-all duration-200 active:scale-95 ${
         active
