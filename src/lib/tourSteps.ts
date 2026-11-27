@@ -4,23 +4,27 @@ export type TourStep = {
   title: string;
   text: string;
   route: string;
+  /** Vazio = apresenta a tela inteira, sem destaque. */
   targets: string[];
-  /** next = botão Continuar; route = espera o toque que abre nextRoute; reveal = espera rolar até o alvo */
-  advance: "next" | "route" | "reveal";
+  /** next = botão Continuar; route = espera o toque que abre nextRoute */
+  advance: "next" | "route";
   nextRoute?: string;
-  bubbleTop?: boolean;
   finishLabel?: string;
 };
 
+export const TOUR_INTRO = {
+  title: "Quer descobrir como o Sopro te ajuda a parar de fumar?",
+  text: "Um tour rápido pelo app. Leva menos de 1 minuto.",
+};
+
 export const TOUR_STEPS: TourStep[] = [
-  { title: "Conteúdo de hoje", text: "Seu passo de hoje leva em conta seu momento e seu objetivo.", route: "/dashboard", targets: ['[data-tour="foco-hoje"]'], advance: "next" },
+  { title: "Conteúdo de hoje", text: "De acordo com seu objetivo e gatilhos, indicamos o conteúdo que irá enfraquecer o vício aos poucos.", route: "/dashboard", targets: ['[data-tour="foco-hoje"]'], advance: "next" },
   { title: "Ajuda rápida", text: "A vontade apertou? Aqui tem uma hipnose para te ajudar agora.", route: "/dashboard", targets: ['[data-tour="sos"]'], advance: "next" },
-  { title: "Neo", text: "Pode contar com o Neo. Ele te escuta e te ajuda a encontrar o próximo passo.", route: "/dashboard", targets: ['[data-tour="neo-input"]'], advance: "next" },
-  { title: "Abrir Jornadas", text: "Toque em Jornadas para conhecer seus gatilhos.", route: "/dashboard", targets: ['[data-tour="jornadas-btn"]'], advance: "route", nextRoute: "/jornada" },
-  { title: "Rolar para ver os gatilhos", text: "Role para baixo até ‘Enfraquecendo o vício’.", route: "/jornada", targets: ['[data-tour="journey-reducao"] [data-tour-card="1"]'], advance: "reveal", bubbleTop: true },
-  { title: "Escolher um gatilho", text: "Esses gatilhos vêm do que você contou. Você escolhe qual quer enfraquecer primeiro.", route: "/jornada", targets: ['[data-tour="journey-reducao"] [data-tour-card="1"]'], advance: "next" },
-  { title: "Abrir Progresso", text: "Toque em Progresso para acompanhar suas conquistas.", route: "/jornada", targets: ['[data-tour="nav-progresso"]'], advance: "route", nextRoute: "/progresso" },
-  { title: "Acompanhar a evolução", text: "Veja quantos cigarros você evitou e quanto economizou. Cada dia registrado com zero cigarros entra na sua contagem.", route: "/progresso", targets: ['[data-tour="sem-fumar"]', '[data-tour="conquistas"]'], advance: "next" },
+  { title: "Neo", text: "Pode contar com o Neo. Ele te escuta e te ajuda a encontrar o próximo passo.", route: "/dashboard", targets: ['[data-tour="neo-card"]'], advance: "next" },
+  { title: "Abrir Jornadas", text: "Toque em Jornadas, aqui embaixo, para conhecer seus gatilhos.", route: "/dashboard", targets: ['[data-tour="nav-jornada"]'], advance: "route", nextRoute: "/jornada" },
+  { title: "Suas jornadas", text: "Aqui ficam todos os temas do método. Além do conteúdo indicado para hoje, você pode enfraquecer qualquer outro gatilho quando sentir que precisa.", route: "/jornada", targets: [], advance: "next" },
+  { title: "Abrir Progresso", text: "Agora toque em Progresso para acompanhar suas conquistas.", route: "/jornada", targets: ['[data-tour="nav-progresso"]'], advance: "route", nextRoute: "/progresso" },
+  { title: "Acompanhar a evolução", text: "Registre diariamente quanto fumou e acompanhe sua evolução. Você também verá uma contagem de dias sem fumar.", route: "/progresso", targets: ['[data-tour="sem-fumar"]', '[data-tour="conquistas"]'], advance: "next" },
   { title: "Ver o potencial", text: "Veja quanto você pode economizar em um mês ou um ano sem fumar.", route: "/progresso", targets: ['[data-tour="potencial"]'], advance: "next" },
   { title: "Ritual do último cigarro", text: "Quando sentir que chegou a hora, marque aqui a data do seu último cigarro.", route: "/progresso", targets: ['[data-tour="ritual-btn"]'], advance: "next", finishLabel: "Começar o processo" },
 ];

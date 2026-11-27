@@ -25,6 +25,7 @@ export default {
 			},
 			colors: {
 				'electric-blue': 'hsl(var(--electric-blue))',
+				'tour-foreground': 'hsl(var(--tour-foreground))',
 				lilac: {
 					DEFAULT: 'hsl(var(--lilac))',
 					soft: 'hsl(var(--lilac-soft))',
@@ -89,6 +90,7 @@ export default {
 			},
 			backgroundImage: {
 				'gradient-method': 'var(--gradient-method)',
+				'tour': 'var(--tour-bg)',
 				'gradient-primary': 'var(--gradient-primary)',
 				'gradient-hero': 'var(--gradient-hero)',
 				'gradient-wellness': 'var(--gradient-wellness)',
@@ -96,6 +98,7 @@ export default {
 			},
 			boxShadow: {
 				'primary': 'var(--shadow-primary)',
+				'tour': 'var(--shadow-tour)',
 				'surface': 'var(--shadow-surface)',
 				'wellness': 'var(--shadow-wellness)',
 				'glow': 'var(--shadow-glow)'

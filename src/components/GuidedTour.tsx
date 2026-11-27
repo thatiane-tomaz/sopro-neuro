@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { TOUR_STEPS, TOUR_STORAGE_KEY } from "@/lib/tourSteps";
+import { TOUR_INTRO, TOUR_STEPS, TOUR_STORAGE_KEY } from "@/lib/tourSteps";
 
 type Rect = { top: number; left: number; width: number; height: number };
 const PAD = 6;
@@ -51,11 +51,17 @@ export default function GuidedTour() {
     setStep(i);
   }, [finish]);
 
-  // Rola até o alvo ao entrar no passo.
+  // Rola o alvo para perto do topo, deixando espaço para o balão embaixo.
   useEffect(() => {
-    if (!current || current.advance === "reveal" || pathname !== current.route) return;
+    if (!current || pathname !== current.route) return;
     const t = setTimeout(() => {
-      document.querySelector(current.targets[0])?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (!current.targets.length) return window.scrollTo({ top: 0, behavior: "smooth" });
+      const el = document.querySelector(current.targets[0]);
+      if (!el) return;
+      const pos = getComputedStyle(el.closest("nav") ?? el).position;
+      if (pos === "fixed") return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 96;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
     }, 250);
     return () => clearTimeout(t);
   }, [current, pathname]);
@@ -71,9 +77,6 @@ export default function GuidedTour() {
       if (pathname !== current.route) return setRect(null);
       const r = measure(current.targets);
       setRect(r);
-      if (current.advance === "reveal" && r && r.top + r.height * 0.5 < window.innerHeight * 0.75) {
-        goTo(step + 1);
-      }
     }, 120);
     return () => clearInterval(id);
   }, [current, step, pathname, goTo]);
@@ -84,58 +87,74 @@ export default function GuidedTour() {
 
   const blocking = !current || current.advance === "next";
   const vh = typeof window !== "undefined" ? window.innerHeight : 800;
-  let bubbleStyle: React.CSSProperties = { top: "calc(env(safe-area-inset-top) + 16px)" };
-  if (current && rect && !current.bubbleTop) {
-    const below = rect.top + rect.height + 12;
-    bubbleStyle = below + 200 < vh ? { top: below } : { bottom: vh - rect.top + 12 };
-  } else if (!current) {
-    bubbleStyle = { top: "50%", transform: "translateY(-50%)" };
+  let bubbleStyle: React.CSSProperties = { top: "50%", transform: "translateY(-50%)" };
+  if (current && rect) {
+    const below = rect.top + rect.height + 16;
+    bubbleStyle = below + 210 < vh ? { top: below } : { bottom: Math.max(16, vh - rect.top + 16) };
   }
+  const title = current ? current.title : TOUR_INTRO.title;
+  const text = current ? current.text : TOUR_INTRO.text;
 
   return createPortal(
     <div className="fixed inset-0 z-[100]" style={{ pointerEvents: blocking ? "auto" : "none" }} aria-live="polite">
       {rect && current ? (
         <div
-          className="pointer-events-none absolute rounded-2xl ring-2 ring-primary transition-all duration-200"
-          style={{ ...rect, boxShadow: "0 0 0 9999px hsl(var(--foreground) / 0.55)" }}
+          className="pointer-events-none absolute rounded-3xl ring-2 ring-[hsl(var(--lilac-light))] transition-all duration-300 ease-out"
+          style={{ ...rect, boxShadow: "0 0 0 9999px hsl(266 60% 12% / 0.62), 0 0 32px 4px hsl(var(--lilac) / 0.55)" }}
         />
       ) : (
-        <div className="pointer-events-none absolute inset-0 bg-foreground/55" style={{ opacity: current?.advance === "reveal" ? 0 : 1 }} />
+        <div className="pointer-events-none absolute inset-0 bg-[hsl(266_60%_12%/0.62)] backdrop-blur-[2px] transition-opacity" />
       )}
 
       <div
+        key={step}
         role="dialog"
         aria-label="Tour do app"
-        className="pointer-events-auto absolute inset-x-4 mx-auto max-w-sm rounded-3xl bg-card p-4 shadow-primary"
+        className="pointer-events-auto absolute inset-x-4 mx-auto max-w-sm overflow-hidden rounded-[28px] bg-tour p-5 text-tour-foreground shadow-tour animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-300"
         style={bubbleStyle}
       >
-        <div className="flex items-start gap-2">
-          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-          <div className="min-w-0 flex-1">
-            {current && <p className="text-sm font-semibold text-primary">{current.title}</p>}
-            <p className="mt-0.5 text-balance text-base font-semibold leading-snug text-foreground">
-              {current ? current.text : "Bora descobrir como o Sopro te ajuda a parar de fumar?"}
+        <div aria-hidden className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-[hsl(var(--lilac-light)/0.25)] blur-2xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-14 -left-8 h-32 w-32 rounded-full bg-[hsl(var(--electric-blue)/0.35)] blur-2xl" />
+        <div className="relative">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[hsl(var(--tour-foreground)/0.16)]">
+              <Sparkles className="h-4 w-4" />
+            </span>
+            <p className="flex-1 text-sm font-semibold uppercase tracking-wide text-[hsl(var(--tour-foreground)/0.8)]">
+              {current ? current.title : "Tour do Sopro"}
             </p>
+            <button onClick={finish} aria-label="Pular tour" className="-m-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[hsl(var(--tour-foreground)/0.8)]">
+              <X className="h-4 w-4" />
+            </button>
           </div>
-          <button onClick={finish} aria-label="Pular tour" className="-m-2 flex h-11 w-11 shrink-0 items-center justify-center text-muted-foreground">
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-        <div className="mt-3 flex items-center justify-between gap-2">
-          <span className="text-sm font-medium text-muted-foreground tabular-nums">
-            {current ? `${step + 1} de ${TOUR_STEPS.length}` : ""}
-          </span>
-          {!current && (
-            <div className="flex gap-2">
-              <Button variant="ghost" className="rounded-full" onClick={finish}>Agora não</Button>
-              <Button className="rounded-full bg-gradient-method font-bold" onClick={() => { navigate("/dashboard"); goTo(0); }}>Bora!</Button>
-            </div>
-          )}
-          {current?.advance === "next" && (
-            <Button className="rounded-full bg-gradient-method font-bold" onClick={() => (current.finishLabel ? finish() : goTo(step + 1))}>
-              {current.finishLabel ?? "Continuar"}
-            </Button>
-          )}
+          {!current && <p className="mt-3 text-balance text-xl font-bold leading-snug">{title}</p>}
+          <p className={current ? "mt-2 text-pretty text-base font-medium leading-relaxed" : "mt-1.5 text-pretty text-base font-medium text-[hsl(var(--tour-foreground)/0.85)]"}>
+            {text}
+          </p>
+          <div className="mt-4 flex items-center justify-between gap-3">
+            {current ? (
+              <div className="flex items-center gap-1" aria-label={`Passo ${step + 1} de ${TOUR_STEPS.length}`}>
+                {TOUR_STEPS.map((_, i) => (
+                  <span key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? "w-5 bg-[hsl(var(--tour-foreground))]" : "w-1.5 bg-[hsl(var(--tour-foreground)/0.35)]"}`} />
+                ))}
+              </div>
+            ) : (
+              <button onClick={finish} className="min-h-11 text-sm font-semibold text-[hsl(var(--tour-foreground)/0.8)]">Agora não</button>
+            )}
+            {!current && (
+              <Button className="rounded-full bg-[hsl(var(--tour-foreground))] px-6 font-bold text-[hsl(272_70%_38%)] hover:bg-[hsl(var(--tour-foreground)/0.9)]" onClick={() => { navigate("/dashboard"); goTo(0); }}>
+                Quero ver
+              </Button>
+            )}
+            {current?.advance === "next" && (
+              <Button className="rounded-full bg-[hsl(var(--tour-foreground))] px-6 font-bold text-[hsl(272_70%_38%)] hover:bg-[hsl(var(--tour-foreground)/0.9)]" onClick={() => (current.finishLabel ? finish() : goTo(step + 1))}>
+                {current.finishLabel ?? "Continuar"}
+              </Button>
+            )}
+            {current?.advance === "route" && (
+              <span className="text-sm font-semibold text-[hsl(var(--tour-foreground)/0.85)]">Toque no destaque ↓</span>
+            )}
+          </div>
         </div>
       </div>
     </div>,
