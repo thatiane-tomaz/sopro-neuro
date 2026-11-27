@@ -38,7 +38,8 @@ export default function GuidedTour() {
   // Começa só no Início, uma vez por aparelho.
   useEffect(() => {
     if (!user || step !== null || pathname !== "/dashboard") return;
-    if (localStorage.getItem(TOUR_STORAGE_KEY)) return;
+    // TEMPORÁRIO: mostrar a cada atualização. Voltar para 1x depois.
+    // if (localStorage.getItem(TOUR_STORAGE_KEY)) return;
     const t = setTimeout(() => setStep(-1), 1500);
     return () => clearTimeout(t);
   }, [user, pathname, step]);
