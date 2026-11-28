@@ -4,7 +4,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { TOUR_INTRO, TOUR_STEPS, TOUR_STORAGE_KEY } from "@/lib/tourSteps";
+import { TOUR_INTRO, TOUR_STEPS } from "@/lib/tourSteps";
+import { shouldShowTour, tourStorageKey } from "@/lib/tourVisibility";
 
 type Rect = { top: number; left: number; width: number; height: number };
 const PAD = 6;
@@ -31,16 +32,19 @@ export default function GuidedTour() {
   const [rect, setRect] = useState<Rect | null>(null);
 
   const finish = useCallback(() => {
-    localStorage.setItem(TOUR_STORAGE_KEY, "done");
+    if (user) localStorage.setItem(tourStorageKey(user.id), "done");
     setStep(null);
-  }, []);
+  }, [user]);
 
-  // Começa só no Início, uma vez por aparelho.
+  // Versioned per account, so existing users receive this release once too.
   useEffect(() => {
     if (!user || step !== null || pathname !== "/dashboard") return;
-    // TEMPORÁRIO: mostrar a cada atualização. Voltar para 1x depois.
-    // if (localStorage.getItem(TOUR_STORAGE_KEY)) return;
-    const t = setTimeout(() => setStep(-1), 1500);
+    const key = tourStorageKey(user.id);
+    if (!shouldShowTour(user.id, localStorage.getItem(key))) return;
+    const t = setTimeout(() => {
+      localStorage.setItem(key, "seen");
+      setStep(-1);
+    }, 1500);
     return () => clearTimeout(t);
   }, [user, pathname, step]);
 
@@ -86,10 +90,11 @@ export default function GuidedTour() {
   // Saiu do app principal (ex.: abriu um conteúdo): pausa sem perder o passo.
   if (current && pathname !== current.route && !(current.advance === "route")) return null;
 
-  const blocking = !current || current.advance === "next";
+  const blocking = !current || (current.advance === "next" && !current.allowExplore);
   const vh = typeof window !== "undefined" ? window.innerHeight : 800;
   const vw = typeof window !== "undefined" ? window.innerWidth : 390;
   let bubbleStyle: React.CSSProperties = { top: "50%", transform: "translateY(-50%)" };
+  if (current?.allowExplore) bubbleStyle = { bottom: 96 };
   if (current && rect) {
     const below = rect.top + rect.height + 16;
     bubbleStyle = below + 210 < vh ? { top: below } : { bottom: Math.max(16, vh - rect.top + 16) };
@@ -110,9 +115,9 @@ export default function GuidedTour() {
           className="pointer-events-none absolute rounded-3xl transition-all duration-300 ease-out"
           style={{ ...rect, boxShadow: "0 0 0 9999px hsl(266 60% 12% / 0.6), 0 0 34px 8px hsl(268 100% 74% / 0.55)" }}
         />
-      ) : (
+      ) : !current?.allowExplore ? (
         <div className="pointer-events-none absolute inset-0 bg-[hsl(266_60%_12%/0.62)] backdrop-blur-[2px] transition-opacity" />
-      )}
+      ) : null}
 
       <div
         key={step}
@@ -149,7 +154,7 @@ export default function GuidedTour() {
             </button>
           </div>
           {!current && <p className="mt-3 text-balance text-xl font-bold leading-snug">{title}</p>}
-          <p className={current ? "mt-2 text-pretty text-base font-medium leading-relaxed" : "mt-1.5 text-pretty text-base font-medium text-[hsl(var(--tour-foreground)/0.85)]"}>
+          <p className={current ? "mt-2 text-pretty text-base font-medium leading-relaxed" : "mt-1.5 whitespace-pre-line text-pretty text-base font-medium text-[hsl(var(--tour-foreground)/0.85)]"}>
             {text}
           </p>
           <div className="mt-4 flex items-center justify-between gap-3">
