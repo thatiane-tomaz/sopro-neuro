@@ -39,9 +39,12 @@ All colors MUST be HSL.
     --lilac-light: 258 80% 88%;
     --lilac-soft: 258 80% 95%;
     --electric-blue: 230 85% 60%;
-    --tour-bg: linear-gradient(150deg, hsl(262 72% 52%), hsl(272 70% 38%));
-    --tour-foreground: 0 0% 100%;
-    --shadow-tour: 0 30px 60px -16px hsl(268 80% 20% / 0.55), 0 10px 24px -10px hsl(262 80% 30% / 0.5);
+    --tour-bg: linear-gradient(160deg, hsl(268 100% 97%) 0%, hsl(256 100% 88%) 100%);
+    --tour-foreground: 266 45% 24%;
+    --tour-cta: 262 80% 52%;
+    --tour-cta-foreground: 0 0% 100%;
+    --shadow-tour: 0 26px 52px -12px hsl(262 90% 32% / 0.5), 0 8px 18px -8px hsl(262 85% 40% / 0.35), 0 0 42px hsl(268 100% 76% / 0.45);
+    --shadow-tour-cta: 0 10px 22px -8px hsl(262 85% 45% / 0.6);
     --gradient-method: linear-gradient(110deg, hsl(var(--electric-blue)), hsl(var(--lilac)));
 
     /* Gradient ondas tela inicial */

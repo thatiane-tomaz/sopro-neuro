@@ -26,6 +26,8 @@ export default {
 			colors: {
 				'electric-blue': 'hsl(var(--electric-blue))',
 				'tour-foreground': 'hsl(var(--tour-foreground))',
+				'tour-cta': 'hsl(var(--tour-cta))',
+				'tour-cta-foreground': 'hsl(var(--tour-cta-foreground))',
 				lilac: {
 					DEFAULT: 'hsl(var(--lilac))',
 					soft: 'hsl(var(--lilac-soft))',
@@ -99,6 +101,7 @@ export default {
 			boxShadow: {
 				'primary': 'var(--shadow-primary)',
 				'tour': 'var(--shadow-tour)',
+				'tour-cta': 'var(--shadow-tour-cta)',
 				'surface': 'var(--shadow-surface)',
 				'wellness': 'var(--shadow-wellness)',
 				'glow': 'var(--shadow-glow)'

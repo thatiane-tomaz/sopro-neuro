@@ -88,11 +88,18 @@ export default function GuidedTour() {
 
   const blocking = !current || current.advance === "next";
   const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+  const vw = typeof window !== "undefined" ? window.innerWidth : 390;
   let bubbleStyle: React.CSSProperties = { top: "50%", transform: "translateY(-50%)" };
   if (current && rect) {
     const below = rect.top + rect.height + 16;
     bubbleStyle = below + 210 < vh ? { top: below } : { bottom: Math.max(16, vh - rect.top + 16) };
   }
+  // A ponteira aponta para o alvo: nasce na borda do balão mais próxima dele.
+  const bubbleW = Math.min(384, vw - 32);
+  const bubbleBelow = !!(current && rect && bubbleStyle.top !== undefined);
+  const tailLeft = rect
+    ? Math.min(Math.max(rect.left + rect.width / 2 - (vw - bubbleW) / 2, 28), bubbleW - 28)
+    : 0;
   const title = current ? current.title : TOUR_INTRO.title;
   const text = current ? current.text : TOUR_INTRO.text;
 
@@ -100,8 +107,8 @@ export default function GuidedTour() {
     <div className="fixed inset-0 z-[100]" style={{ pointerEvents: blocking ? "auto" : "none" }} aria-live="polite">
       {rect && current ? (
         <div
-          className="pointer-events-none absolute rounded-3xl ring-2 ring-[hsl(var(--lilac-light))] transition-all duration-300 ease-out"
-          style={{ ...rect, boxShadow: "0 0 0 9999px hsl(266 60% 12% / 0.62), 0 0 32px 4px hsl(var(--lilac) / 0.55)" }}
+          className="pointer-events-none absolute rounded-3xl transition-all duration-300 ease-out"
+          style={{ ...rect, boxShadow: "0 0 0 9999px hsl(266 60% 12% / 0.6), 0 0 34px 8px hsl(268 100% 74% / 0.55)" }}
         />
       ) : (
         <div className="pointer-events-none absolute inset-0 bg-[hsl(266_60%_12%/0.62)] backdrop-blur-[2px] transition-opacity" />
@@ -111,14 +118,27 @@ export default function GuidedTour() {
         key={step}
         role="dialog"
         aria-label="Tour do app"
-        className="pointer-events-auto absolute inset-x-4 mx-auto max-w-sm overflow-hidden rounded-[28px] bg-tour p-5 text-tour-foreground shadow-tour animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-300"
+        className="pointer-events-auto absolute inset-x-4 mx-auto max-w-sm rounded-[28px] bg-tour p-5 text-tour-foreground shadow-tour animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-300"
         style={bubbleStyle}
       >
-        <div aria-hidden className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-[hsl(var(--lilac-light)/0.25)] blur-2xl" />
-        <div aria-hidden className="pointer-events-none absolute -bottom-14 -left-8 h-32 w-32 rounded-full bg-[hsl(var(--electric-blue)/0.35)] blur-2xl" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
+          <div className="absolute -right-10 -top-12 h-36 w-36 rounded-full bg-[hsl(var(--lilac)/0.28)] blur-2xl" />
+          <div className="absolute -bottom-14 -left-8 h-32 w-32 rounded-full bg-[hsl(var(--accent)/0.2)] blur-2xl" />
+        </div>
+        {current && rect && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute h-4 w-4 rounded-[4px] bg-tour"
+            style={{
+              left: tailLeft,
+              transform: "translateX(-50%) rotate(45deg)",
+              ...(bubbleBelow ? { top: -7 } : { bottom: -7 }),
+            }}
+          />
+        )}
         <div className="relative">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[hsl(var(--tour-foreground)/0.16)]">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[hsl(var(--lilac)/0.22)] text-tour-cta">
               <Sparkles className="h-4 w-4" />
             </span>
             <p className="flex-1 text-sm font-semibold uppercase tracking-wide text-[hsl(var(--tour-foreground)/0.8)]">
@@ -143,12 +163,12 @@ export default function GuidedTour() {
               <button onClick={finish} className="min-h-11 text-sm font-semibold text-[hsl(var(--tour-foreground)/0.8)]">Agora não</button>
             )}
             {!current && (
-              <Button className="rounded-full bg-[hsl(var(--tour-foreground))] px-6 font-bold text-[hsl(272_70%_38%)] hover:bg-[hsl(var(--tour-foreground)/0.9)]" onClick={() => { navigate("/dashboard"); goTo(0); }}>
+              <Button className="rounded-full bg-tour-cta px-6 font-bold text-tour-cta-foreground shadow-tour-cta hover:bg-tour-cta/90" onClick={() => { navigate("/dashboard"); goTo(0); }}>
                 Quero ver
               </Button>
             )}
             {current?.advance === "next" && (
-              <Button className="rounded-full bg-[hsl(var(--tour-foreground))] px-6 font-bold text-[hsl(272_70%_38%)] hover:bg-[hsl(var(--tour-foreground)/0.9)]" onClick={() => (current.finishLabel ? finish() : goTo(step + 1))}>
+              <Button className="rounded-full bg-tour-cta px-6 font-bold text-tour-cta-foreground shadow-tour-cta hover:bg-tour-cta/90" onClick={() => (current.finishLabel ? finish() : goTo(step + 1))}>
                 {current.finishLabel ?? "Continuar"}
               </Button>
             )}
